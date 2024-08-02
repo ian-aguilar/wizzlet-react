@@ -3,9 +3,17 @@ import React, { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
+import Dashboard from "../dashboard/pages";
 
 // ** Pages **
-const Login = React.lazy(() => import("@/modules/Auth/pages/login"));
+const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
+const Otp = React.lazy(() => import("@/modules/Auth/pages/Otp"));
+const ForgotPassword = React.lazy(
+  () => import("@/modules/Auth/pages/ForgotPassword")
+);
+const Registration = React.lazy(
+  () => import("@/modules/Auth/pages/Registration")
+);
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -16,8 +24,24 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
 
 const AuthenticationRoutes = applySuspense([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/otp",
+    element: <Otp />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/signup",
+    element: <Registration />,
+  },
+  {
+    path: "/",
+    element: <Dashboard />,
   },
 ]);
 

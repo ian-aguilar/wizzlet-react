@@ -1,15 +1,15 @@
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode } from "react";
 import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
 
 export type FormControlProp<T extends FieldValues = FieldValues> = Control<T>;
 
 export type IInputProps<T extends FieldValues> = {
-  className: string;
-  InputEndIcon?: ReactNode;
-  control: FormControlProp<T>;
   name: Path<T>;
+  className?: string;
+  InputEndIcon?: ReactNode;
+  control?: FormControlProp<T>;
   label?: string;
-  errors: FieldErrors;
+  errors?: FieldErrors;
   placeholder?: string;
   type?: string;
 };
@@ -17,5 +17,13 @@ export type IInputProps<T extends FieldValues> = {
 export interface IButtonProps {
   btnName: string;
   type?: "button" | "submit" | "reset";
-  className: string;
+  btnClass?: string;
+  onClickHandler?: (e: MouseEvent<HTMLElement>) => void;
+  isLoading: boolean;
+  loaderClass?: string;
+}
+
+export interface IOtpInputProps {
+  onChangeHandler: (otp: string) => void;
+  value: string;
 }

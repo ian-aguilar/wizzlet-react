@@ -14,9 +14,11 @@ const RequiresUnAuth = () => {
           <div className="">
             <img src={MainLogo} className="mx-auto" alt="" />
 
-            <Suspense fallback={<></>}>
-              <Outlet />
-            </Suspense>
+            <div className="border-white border-[3px] relative z-[99] rounded-xl mt-8 sm:min-w-600 after:block after:z-[9] after:blur-[85px] after:absolute after:w-full after:h-full after:rounded-full after:bg-greenPrimary/30 after:top-20 after:left-0">
+              <Suspense fallback={<></>}>
+                <Outlet />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>
