@@ -1,6 +1,8 @@
 import { ErrorMessage } from "@hookform/error-message";
 import { IInputProps } from "../types";
 import { Controller, FieldValues } from "react-hook-form";
+import { useState } from "react";
+import { HidePassword } from "@/components/svgIcons";
 
 const Input = <T extends FieldValues>({
   placeholder,
@@ -9,9 +11,10 @@ const Input = <T extends FieldValues>({
   control,
   name,
   errors,
-  // label,
   type,
 }: IInputProps<T>) => {
+  const [isShow, setIsShow] = useState<boolean>(false);
+
   return (
     <>
       <div className="relative">
@@ -22,26 +25,28 @@ const Input = <T extends FieldValues>({
             <input
               onBlur={onBlur}
               onChange={onChange}
-              value={value}
-              type={type ? type : "text"}
-              className={` bg-inputAuthBg/60   p-4 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className} `}
+              value={value ? value : ""}
+              type={!isShow && type ? type : "text"}
+              className={`bg-inputAuthBg/60 p-3 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
               placeholder={placeholder}
             />
           )}
         />
 
         {InputEndIcon && (
-          <div className="absolute right-4 top-5 "> {InputEndIcon} </div>
+          <div
+            className="absolute right-4 top-4"
+            onClick={() => setIsShow((prev) => !prev)}
+          >
+            {!isShow ? InputEndIcon : <HidePassword />}
+          </div>
         )}
-        <span className="errorText text-red-400 text-xs"> </span>
 
         <ErrorMessage
           errors={errors}
           name={name}
           render={({ message }) => (
-            <span className="text-red-500 text-xs font-medium mt-1">
-              {message}
-            </span>
+            <span className="errorText text-red-400 text-xs">{message}</span>
           )}
         />
       </div>
