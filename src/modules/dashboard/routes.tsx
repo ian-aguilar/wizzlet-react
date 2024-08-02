@@ -1,11 +1,9 @@
 // ** React Imports **
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
-
-// ** Pages **
-const Login = React.lazy(() => import("@/modules/Auth/pages/login"));
+import Dashboard from "../dashboard/pages";
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -14,11 +12,11 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   }));
 };
 
-const AuthenticationRoutes = applySuspense([
+const UserRoutes = applySuspense([
   {
-    path: "/login",
-    element: <Login />,
+    path: "/",
+    element: <Dashboard />,
   },
 ]);
 
-export default AuthenticationRoutes;
+export default UserRoutes;

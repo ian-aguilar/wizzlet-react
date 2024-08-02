@@ -1,5 +1,6 @@
 // ** Packages **
 import {
+  Outlet,
   RouteObject,
   RouterProvider,
   createBrowserRouter,
@@ -8,6 +9,7 @@ import React, { Suspense } from "react";
 
 // ** Auth Routes
 import AuthenticationRoutes from "@/modules/Auth/routes";
+import UserRoutes from "./modules/dashboard/routes";
 
 // ** Types **
 export type RouteObjType = {
@@ -38,7 +40,21 @@ const RouterComponent = () => {
     },
   ]);
 
-  const router = createBrowserRouter([...routesForNotAuthenticatedOnly]);
+  const routesForAuthenticatedOnly: RouteObject[] = applySuspense([
+    {
+      element: (
+        <Suspense fallback={<></>}>
+          <Outlet />
+        </Suspense>
+      ),
+      children: UserRoutes,
+    },
+  ]);
+
+  const router = createBrowserRouter([
+    ...routesForNotAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
+  ]);
 
   return <RouterProvider router={router} />;
 };
