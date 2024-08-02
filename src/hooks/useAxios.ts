@@ -1,13 +1,9 @@
-import { Axios } from "@/base-axios";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+// ** Packages **
 import { useState } from "react";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-export type apiResponseType = {
-  data: any;
-  message: string;
-  toast: boolean;
-  responseType: string;
-};
+import { Axios } from "base-axios";
+import { ApiResponseType } from "base-axios/types";
 
 export const useAxiosGet = (): [
   (
@@ -17,7 +13,7 @@ export const useAxiosGet = (): [
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
-  // ================= State ====================
+  // ** State **
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -30,17 +26,19 @@ export const useAxiosGet = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
+
       let response: AxiosResponse<any, any>;
       if (baseUrl) {
         response = await Axios.get(url, { ...config });
       } else {
         response = await axios(url, { ...config });
       }
+
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
     } catch (error: any) {
-      const typedError = error as apiResponseType;
+      const typedError = error as ApiResponseType;
       setIsError(true);
       setIsLoading(false);
       return {
@@ -56,32 +54,31 @@ export const useAxiosGet = (): [
 export const useAxiosPost = (): [
   (
     url: string,
-    data: object | string,
+    data: object,
     config?: AxiosRequestConfig<object>
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
-  // ================= State ====================
+  // ** State **
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const postRequest = async (
     url: string,
-    data: object | string,
+    data: object,
     config: AxiosRequestConfig<object> = {}
   ) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);
-
+      setIsError(false);
       const response = await Axios.post(url, data, { ...config });
-
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
     } catch (error: any) {
-      const typedError = error as apiResponseType;
+      const typedError = error as ApiResponseType;
       setIsError(true);
       setIsLoading(false);
       return {
@@ -102,7 +99,7 @@ export const useAxiosPut = (): [
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
-  // ================= State ====================
+  // ** State **
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -115,12 +112,13 @@ export const useAxiosPut = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
+      setIsError(false);
       const response = await Axios.put(url, data, { ...config });
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
     } catch (error: any) {
-      const typedError = error as apiResponseType;
+      const typedError = error as ApiResponseType;
       setIsError(true);
       setIsLoading(false);
       return {
@@ -141,12 +139,12 @@ export const useAxiosPatch = (): [
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
-  // ================= State ====================
+  // ** State **
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const patchRequest = async (
+  const putRequest = async (
     url: string,
     data: object,
     config: AxiosRequestConfig<object> = {}
@@ -154,12 +152,15 @@ export const useAxiosPatch = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
+      setIsError(false);
+
       const response = await Axios.patch(url, data, { ...config });
+
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
     } catch (error: any) {
-      const typedError = error as apiResponseType;
+      const typedError = error as ApiResponseType;
       setIsError(true);
       setIsLoading(false);
       return {
@@ -169,7 +170,47 @@ export const useAxiosPatch = (): [
     }
   };
 
-  return [patchRequest, { isLoading, isError, isSuccess }];
+  return [putRequest, { isLoading, isError, isSuccess }];
+};
+
+export const useTempAxiosPatch = (): [
+  (
+    url: string,
+    data: object,
+    config?: AxiosRequestConfig<object>
+  ) => Promise<{ data?: any; error?: any }>,
+  { isLoading: boolean; isError: boolean; isSuccess: boolean }
+] => {
+  // ** State **
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const putRequest = async (
+    url: string,
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    try {
+      setIsSuccess(false);
+      setIsLoading(true);
+      setIsError(false);
+      const response = await Axios.patch(url, data, { ...config });
+      setIsLoading(false);
+      setIsSuccess(true);
+      return { data: response.data };
+    } catch (error: any) {
+      const typedError = error as ApiResponseType;
+      setIsError(true);
+      setIsLoading(false);
+      return {
+        error: typedError?.message || error?.message || error,
+        data: typedError?.data,
+      };
+    }
+  };
+
+  return [putRequest, { isLoading, isError, isSuccess }];
 };
 
 export const useAxiosDelete = (): [
@@ -179,7 +220,7 @@ export const useAxiosDelete = (): [
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
-  // ================= State ====================
+  // ** State **
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -191,12 +232,13 @@ export const useAxiosDelete = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
+      setIsError(false);
       const response = await Axios.delete(url, { ...config });
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
     } catch (error: any) {
-      const typedError = error as apiResponseType;
+      const typedError = error as ApiResponseType;
       setIsError(true);
       setIsLoading(false);
       return {
