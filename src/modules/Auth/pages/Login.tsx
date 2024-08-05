@@ -35,7 +35,12 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (!error && data) {
+    console.log("data", data);
+    if (!data.isVerified) {
+      // call API route - send email
+      navigate(RoutesPath.Otp);
+    }
+    if (!error && data && data.isVerified) {
       localStorage.setItem("access_token", data?.data?.access_token);
       dispatch(setCredentials({ token: data?.data?.access_token }));
       navigate(RoutesPath.Home);

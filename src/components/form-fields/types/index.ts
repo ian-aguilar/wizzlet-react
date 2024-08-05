@@ -12,7 +12,7 @@ export type IInputProps<T extends FieldValues> = {
   errors?: FieldErrors;
   placeholder?: string;
   type?: string;
-  autoComplete: string;
+  autoComplete?: string;
 };
 
 export interface IButtonProps {
@@ -20,7 +20,7 @@ export interface IButtonProps {
   type?: "button" | "submit" | "reset";
   btnClass?: string;
   onClickHandler?: (e: MouseEvent<HTMLElement>) => void;
-  isLoading: boolean;
+  isLoading?: boolean;
   loaderClass?: string;
 }
 

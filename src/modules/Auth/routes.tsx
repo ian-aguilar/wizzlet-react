@@ -7,6 +7,7 @@ import CMSHome from "../cms/pages/Home";
 import Faqs from "../cms/pages/Faqs";
 import Contact from "../cms/pages/Contact";
 import AboutUs from "../cms/pages/AboutUs";
+import ResetPassword from "./pages/ResetPassword";
 
 // ** Pages **
 const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
@@ -38,6 +39,10 @@ export const AuthenticationRoutes = applySuspense([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/signup",
