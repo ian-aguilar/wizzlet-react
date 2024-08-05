@@ -54,9 +54,11 @@ const Otp = () => {
         <p className="text-grayText text-lg md:text-2xl leading-tight ">
           Please enter 4 Digit Code sent to
         </p>
-        <p className="text-blackPrimary font-bold text-lg pt-2">
-          admin@gmail.com
-        </p>
+        {location?.state?.email && (
+          <p className="text-blackPrimary font-bold text-lg pt-2">
+            {location?.state?.email}
+          </p>
+        )}
       </div>
 
       <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
@@ -74,7 +76,10 @@ const Otp = () => {
           isLoading={loader}
         />
         <div className="text-center pt-9">
-          <a className="text-greenPrimary bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer">
+          <a
+            className="text-greenPrimary bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
+            href=""
+          >
             Resend Code
           </a>
         </div>

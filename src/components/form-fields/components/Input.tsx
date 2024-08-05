@@ -12,6 +12,7 @@ const Input = <T extends FieldValues>({
   name,
   errors,
   type,
+  autoComplete,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
 
@@ -29,6 +30,7 @@ const Input = <T extends FieldValues>({
               type={!isShow && type ? type : "text"}
               className={`bg-inputAuthBg/60 p-3 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
               placeholder={placeholder}
+              autoComplete={autoComplete}
             />
           )}
         />

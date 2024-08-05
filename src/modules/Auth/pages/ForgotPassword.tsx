@@ -57,6 +57,7 @@ const ForgotPassword = () => {
             type="text"
             control={control}
             errors={errors}
+            autoComplete={""}
           />
 
           <Button

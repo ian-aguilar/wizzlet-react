@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./slices/userSlice";
+import { reducer as authReducer } from "./slices/authSlice";
 import toastReducer from "./slices/toastSlice";
 
 const persistConfig = {
@@ -11,7 +11,7 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  user: userReducer,
+  auth: authReducer,
   toast: toastReducer,
 });
 

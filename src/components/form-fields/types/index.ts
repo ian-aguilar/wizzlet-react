@@ -12,6 +12,7 @@ export type IInputProps<T extends FieldValues> = {
   errors?: FieldErrors;
   placeholder?: string;
   type?: string;
+  autoComplete: string;
 };
 
 export interface IButtonProps {

@@ -22,7 +22,7 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   }));
 };
 
-const AuthenticationRoutes = applySuspense([
+export const AuthenticationRoutes = applySuspense([
   {
     path: "/login",
     element: <Login />,
@@ -39,10 +39,11 @@ const AuthenticationRoutes = applySuspense([
     path: "/signup",
     element: <Registration />,
   },
-  // {
-  //   path: "/",
-  //   element: <Dashboard />,
-  // },
 ]);
 
-export default AuthenticationRoutes;
+export const nonAuthenticationRoutes = applySuspense([
+  {
+    path: "/",
+    element: <Dashboard />,
+  },
+]);

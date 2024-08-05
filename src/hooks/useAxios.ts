@@ -2,8 +2,8 @@
 import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { Axios } from "base-axios";
-import { ApiResponseType } from "base-axios/types";
+import { Axios } from "@/base-axios";
+import { ApiResponseType } from "@/base-axios/types";
 
 export const useAxiosGet = (): [
   (

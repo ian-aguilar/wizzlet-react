@@ -1,6 +1,7 @@
 // ** Packages **
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** validations **
@@ -15,9 +16,11 @@ import Button from "@/components/form-fields/components/Button";
 import Input from "@/components/form-fields/components/Input";
 import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
+import { setCredentials } from "@/redux/slices/authSlice";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loginPostAPI, isLoading: loader } = useLoginPostAPI();
 
   const {
@@ -33,6 +36,8 @@ const Login = () => {
       password: values.password,
     });
     if (!error && data) {
+      localStorage.setItem("access_token", data?.data?.access_token);
+      dispatch(setCredentials({ token: data?.data?.access_token }));
       navigate(RoutesPath.Home);
     }
   };
@@ -60,6 +65,7 @@ const Login = () => {
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
@@ -70,6 +76,7 @@ const Login = () => {
               control={control}
               errors={errors}
               InputEndIcon={<ShowPassword />}
+              autoComplete={"new-password"}
             />
 
             <div className="flex gap-2 justify-center items-center">

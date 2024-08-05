@@ -66,6 +66,7 @@ const Registration = () => {
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
               <div className=" col-span-12 md:col-span-6">
@@ -77,6 +78,7 @@ const Registration = () => {
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
             </div>
@@ -88,6 +90,7 @@ const Registration = () => {
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
@@ -98,6 +101,7 @@ const Registration = () => {
               control={control}
               errors={errors}
               InputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Input
               className=""
@@ -108,6 +112,7 @@ const Registration = () => {
               control={control}
               errors={errors}
               InputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Button
               btnName="Submit in"

@@ -13,7 +13,7 @@ const OtpInputField = ({ onChangeHandler, value }: IOtpInputProps) => {
       renderSeparator={<span style={{ width: "8px" }}>-</span>}
       inputType="number"
       shouldAutoFocus={true}
-      // inputStyle={"otp_input"}
+      // inputStyle={"otp_input"} ,  -moz-appearance: textfield;,  -webkit-appearance: none;
       inputStyle={{
         flex: "center",
         border: "1px solid transparent",
