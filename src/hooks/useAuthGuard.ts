@@ -19,7 +19,6 @@ const useAuthGuard = () => {
   // ================= Custom hooks ====================
   const { getLoggedInUserAPI, isLoading } = useGetLoggedInUserAPI();
 
-  console.log("isLoading", isLoading);
   useEffect(() => {
     loadUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps

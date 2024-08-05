@@ -3,6 +3,10 @@ import React, { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
+import CMSHome from "../cms/pages/Home";
+import Faqs from "../cms/pages/Faqs";
+import Contact from "../cms/pages/Contact";
+import AboutUs from "../cms/pages/AboutUs";
 
 // ** Pages **
 const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
@@ -38,6 +42,25 @@ export const AuthenticationRoutes = applySuspense([
   {
     path: "/signup",
     element: <Registration />,
+  },
+]);
+
+export const CMSRoutes = applySuspense([
+  {
+    path: "/home",
+    element: <CMSHome />,
+  },
+  {
+    path: "/aboutus",
+    element: <AboutUs />,
+  },
+  {
+    path: "/faqs",
+    element: <Faqs />,
+  },
+  {
+    path: "/contact",
+    element: <Contact />,
   },
 ]);
 

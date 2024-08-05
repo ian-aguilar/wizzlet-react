@@ -1,6 +1,5 @@
 // ** Packages **
 import {
-  Outlet,
   RouteObject,
   RouterProvider,
   createBrowserRouter,
@@ -8,9 +7,9 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import UserRoutes from "./modules/dashboard/routes";
 import {
   AuthenticationRoutes,
+  CMSRoutes,
   nonAuthenticationRoutes,
 } from "./modules/Auth/routes";
 
@@ -57,6 +56,7 @@ const RouterComponent = () => {
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
     ...routesFortAuthenticatedOnly,
+    ...CMSRoutes,
   ]);
 
   return <RouterProvider router={router} />;
