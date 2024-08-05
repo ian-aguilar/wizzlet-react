@@ -35,12 +35,16 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    console.log("data", data);
     if (!data.isVerified) {
-      // call API route - send email
-      navigate(RoutesPath.Otp);
+      // add toast message only
+      navigate(RoutesPath.Otp, {
+        state: {
+          email: values.email,
+          previousRoute: RoutesPath.Login,
+        },
+      });
     }
-    if (!error && data && data.isVerified) {
+    if (!error && data) {
       localStorage.setItem("access_token", data?.data?.access_token);
       dispatch(setCredentials({ token: data?.data?.access_token }));
       navigate(RoutesPath.Home);

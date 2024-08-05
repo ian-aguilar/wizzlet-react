@@ -7,11 +7,8 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import {
-  AuthenticationRoutes,
-  CMSRoutes,
-  nonAuthenticationRoutes,
-} from "./modules/Auth/routes";
+import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
+import UserRoutes from "./modules/dashboard/routes";
 
 // ** Types **
 export type RouteObjType = {
@@ -26,7 +23,7 @@ const RequiresUnAuth = React.lazy(
   () => import("@/modules/Auth/components/RequiresUnAuth")
 );
 const RequiresAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresAuth")
+  () => import("@/modules/dashboard/components/RequiresAuth")
 );
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
@@ -49,7 +46,7 @@ const RouterComponent = () => {
   const routesFortAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresAuth />,
-      children: nonAuthenticationRoutes,
+      children: UserRoutes,
     },
   ]);
 

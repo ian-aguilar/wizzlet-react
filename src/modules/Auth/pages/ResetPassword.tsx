@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useIsValidateTokenAPI,
   useResetPasswordAPI,
@@ -7,20 +7,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ResetPasswordValidationSchema } from "../validation-schema/forgotPasswordValidation";
 import { PasswordDetailsFieldsType } from "../types/resetPassword";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import useAuthGuard from "@/hooks/useAuthGuard";
 import _ from "lodash";
 import Button from "@/components/form-fields/components/Button";
 import { RoutesPath } from "../types";
-import { setLogoutData } from "@/redux/slices/authSlice";
-import Input from "@/components/form-fields/components/Input";
+// import { setLogoutData } from "@/redux/slices/authSlice";
+import { TextLabel } from "@/components/common/TextLabel";
+import { ShowPassword } from "@/components/svgIcons";
 
 const ResetPassword = () => {
+  const [isValidPasswordSetToken, setValidPasswordSetToken] = useState(false);
+  // const [tokenError, setTokenError] = useState<boolean>(false);
+
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
-  const [isValidPasswordSetToken, setValidPasswordSetToken] = useState(false);
-  const [tokenError, setTokenError] = useState<boolean>(false);
 
   // ** Custom Hooks **
   const {
@@ -30,7 +31,7 @@ const ResetPassword = () => {
   } = useForm<PasswordDetailsFieldsType>({
     resolver: yupResolver(ResetPasswordValidationSchema),
   });
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { isValidateTokenAPI, isLoading: tokenLoading } =
@@ -50,105 +51,67 @@ const ResetPassword = () => {
     }
   };
   // ** Custom Hooks **
-  const { isAuthenticated } = useAuthGuard();
-  const { resetPasswordAPI, isSuccess } = useResetPasswordAPI();
+  const { resetPasswordAPI } = useResetPasswordAPI();
 
-  //   const onSubmit = handleSubmit(async (dataObj) => {
   const onSubmit: SubmitHandler<PasswordDetailsFieldsType> = async (values) => {
-    const { password: userPassword } = values;
+    const { password, confirmPassword } = values;
 
-    const { data, error } = await resetPasswordAPI({
+    if (password !== confirmPassword) {
+      console.log("password does not match");
+    }
+    const { error } = await resetPasswordAPI({
       token,
-      password: userPassword,
-      resettingPassword: false,
+      password: password,
     });
-    if (data && !error) {
-      setTokenError(false);
+    if (!error) {
+      // setTokenError(false);
+      navigate(RoutesPath.Login);
     }
-    if (error && error === "Token expired, try again") {
-      setTokenError(true);
-    }
+    // if (error && error === "Token expired, try again") {
+    //   setTokenError(true);
+    // }
   };
 
   return (
     <>
-      {isAuthenticated && !isValidPasswordSetToken && !tokenError ? (
-        <div className="card signup__Card w-[489px] max-w-full mx-auto mt-[20px]">
-          <div className="signup__Card__Body">
-            <p className="text-center text-colorBlack08 text-[18px] font-Biotif__Regular mt-[30px] mb-[20px]">
-              Your session are already stored please logout
-            </p>
-            <div className="flex items-center justify-center w-full">
-              <Button
-                btnName="Dashboard"
-                type="submit"
-                onClickHandler={() => navigate(RoutesPath.Home)}
-                isLoading={tokenLoading}
-              />
-
-              <Button
-                btnName="Logout"
-                type="submit"
-                onClickHandler={() => {
-                  dispatch(setLogoutData());
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
-
-      {!isSuccess &&
-        !tokenError &&
-        !isAuthenticated &&
-        !isValidPasswordSetToken && (
-          <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="pt-6 md:pt-9 pb-14 md:pb-32">
-                <Input
-                  placeholder="Enter Password"
-                  name="password"
-                  label="Password"
-                  type="password"
-                  control={control}
-                  errors={errors}
-                />
-
-                <Button
-                  btnName="Reset Password"
-                  btnClass="mt-9"
-                  type="submit"
-                  isLoading={tokenLoading}
-                />
-              </div>
-            </form>
-          </div>
-        )}
-
-      {isSuccess && (
-        <div className="w-[426px] max-w-full mx-auto">
-          <h2 className="heading text-[24px] font-Biotif__Bold text-textDark mb-[8px]">
-            Password Changed
-          </h2>
-
-          <p className="text text-[18px] font-Biotif__Regular text-textTertiary leading-[24px]">
-            Your password has been set successfully. Click below button to
-            login.
+      <div className="relative z-[99] bg-white py-6 lg:py-12 px-8 lg:px-24 rounded-xl overflow-hidden before:absolute before:w-[350px] before:h-[350px] before:bg-greenPrimary/15 before:blur-[85px] before:-top-[250px] before:left-1/2 before:-translate-x-1/2 before:z-[999]">
+        <div className="titleContainer text-center relative z-30 ">
+          <h1 className=" text-blackPrimary font-bold text-3xl md:text-[2.5rem] leading-normal ">
+            {" "}
+            Reset Password{" "}
+          </h1>
+          <p className="text-grayText text-lg md:text-2xl leading-tight ">
+            Change password for login
           </p>
-
-          <Button btnName="Sign in" type="submit" isLoading={false} />
-          <Button
-            btnName="Go To Login"
-            type="submit"
-            isLoading={tokenLoading}
-            onClickHandler={() => {
-              navigate(RoutesPath.Login);
-            }}
-          />
         </div>
-      )}
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className=" pt-6 md:pt-9  ">
+            <TextLabel
+              TextLabelName="New Password"
+              TextEndIcon={<ShowPassword />}
+              control={control}
+              name="password"
+              errors={errors}
+              type="password"
+            />
+            <TextLabel
+              TextLabelName="Re-type new Password"
+              TextEndIcon={<ShowPassword />}
+              control={control}
+              name="confirmPassword"
+              errors={errors}
+              type="password"
+            />
+            <Button
+              btnClass="mt-6"
+              btnName="Sign in"
+              type="submit"
+              isLoading={tokenLoading}
+            />
+          </div>
+        </form>
+      </div>
     </>
   );
 };

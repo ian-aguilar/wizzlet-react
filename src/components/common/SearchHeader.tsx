@@ -1,5 +1,4 @@
 import { SearchIcon } from "@/assets/Svg";
-import React from "react";
 
 export const SearchHeader = () => {
   return (

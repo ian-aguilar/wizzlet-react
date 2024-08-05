@@ -4,5 +4,5 @@ export enum RoutesPath {
   Home = "/",
   ForgotPassword = "/forgot-password",
   Otp = "/otp",
-  ResetPassword = "/reset-password",
+  ResetPassword = "/auth/reset-password",
 }
