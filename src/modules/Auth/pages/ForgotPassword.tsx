@@ -51,7 +51,7 @@ const ForgotPassword = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <Input
               className=""
               placeholder="Enter Registered Email Address"

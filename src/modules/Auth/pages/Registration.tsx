@@ -55,7 +55,7 @@ const Registration = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <div className="grid grid-cols-12 md:gap-2">
               <div className=" col-span-12 md:col-span-6">
                 <Input
