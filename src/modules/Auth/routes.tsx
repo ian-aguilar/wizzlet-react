@@ -3,7 +3,6 @@ import React, { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
-import Dashboard from "../dashboard/pages";
 
 // ** Pages **
 const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
@@ -14,6 +13,7 @@ const ForgotPassword = React.lazy(
 const Registration = React.lazy(
   () => import("@/modules/Auth/pages/Registration")
 );
+const Dashboard = React.lazy(() => import("@/modules/dashboard/pages"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -39,10 +39,10 @@ const AuthenticationRoutes = applySuspense([
     path: "/signup",
     element: <Registration />,
   },
-  {
-    path: "/",
-    element: <Dashboard />,
-  },
+  // {
+  //   path: "/",
+  //   element: <Dashboard />,
+  // },
 ]);
 
 export default AuthenticationRoutes;

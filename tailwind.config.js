@@ -9,6 +9,7 @@ export default {
           grayText: "#6C778B",
           grayLightBody:"#97A0B2",
           inputAuthBg: "#EAEDF3",
+          greyBorder: "#D8DCE4",
       },
       backgroundImage:{
         authPattern: "url('/images/bgPatternAuth.png');",
