@@ -17,6 +17,7 @@ import Input from "@/components/form-fields/components/Input";
 import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
 import { setCredentials } from "@/redux/slices/authSlice";
+import { Loader } from "@/components/common/Loader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ const Login = () => {
 
   return (
     <>
+      <Loader />
       <div className="relative z-[99] bg-white py-6 lg:py-12 px-8 lg:px-24 rounded-xl overflow-hidden before:absolute before:w-[350px] before:h-[350px] before:bg-greenPrimary/15 before:blur-[85px] before:-top-[250px] before:left-1/2 before:-translate-x-1/2 before:z-[999]">
         <div className="titleContainer text-center relative z-30 ">
           <h1 className=" text-blackPrimary font-bold text-3xl md:text-[2.5rem] leading-normal ">

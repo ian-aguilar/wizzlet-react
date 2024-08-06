@@ -17,11 +17,9 @@ const Button = ({
       onClick={onClickHandler}
     >
       {isLoading && (
-        <span
-          className={`animate-spin rounded-full w-5 h-5 border-4 border-white/70 border-solid border-t-white/20 ${
-            loaderClass ?? ""
-          } `}
-        />
+        <span className={` inline-flex mr-3 mt-1.5 ${loaderClass ?? ""} `}>
+          <div className="spinnerW"></div>
+        </span>
       )}
       {btnName}
     </button>
