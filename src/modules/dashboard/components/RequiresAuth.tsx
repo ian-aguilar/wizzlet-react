@@ -1,13 +1,12 @@
 // ** packages **
-import { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 // ** redux **
 import { getAuth, setLogoutData } from "../../../redux/slices/authSlice";
 
 // ** types **
-import { RoutesPath } from "@/modules/Auth/types";
+import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 
 // ** Icons **
 import {
@@ -21,37 +20,43 @@ import {
 } from "@/assets/Svg";
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
-import { SearchHeader } from "@/components/common/SearchHeader";
+import { setRemoveUser } from "@/redux/slices/userSlice";
 
-const RequiresAuth = () => {
+const RequiresAuth = ({ children }: any) => {
   const { isAuthenticated } = useSelector(getAuth);
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const navData = [
     {
       navIcon: <DashboardIcon />,
       navName: "Dashboard",
       navClass: "bg-greenPrimary text-white",
+      path: PrivateRoutesPath.dashboard.view,
     },
     {
       navIcon: <UserMgtIcon />,
       navName: "User Management",
       navClass: "bg-white text-grayText",
+      path: "",
     },
     {
       navIcon: <MarketPlaceIcon />,
       navName: "Marketplace",
       navClass: "bg-white text-grayText",
+      path: "",
     },
     {
       navIcon: <CMSMGTIcon />,
       navName: "CMS Management",
       navClass: "bg-white text-grayText",
+      path: "",
     },
     {
       navIcon: <SettingsIcon />,
       navName: "Settings",
       navClass: "bg-white text-grayText",
+      path: PrivateRoutesPath.setting.profile.view,
     },
   ];
 
@@ -78,8 +83,6 @@ const RequiresAuth = () => {
           </div>
 
           <div className=" flex gap-4 items-center">
-            <SearchHeader />
-
             <div className=" group w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center hover:brightness-110 transition-all duration-300 cursor-pointer relative">
               <div className="NotificationAlert absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary group-hover:brightness-110 group-hover:transition-all group-hover:duration-300 border border-greyBorder/50 ">
                 {" "}
@@ -92,7 +95,10 @@ const RequiresAuth = () => {
                 src={ProfilePlaceholder}
                 className="w-14 h-14 min-w-14"
                 alt=""
-                onClick={() => dispatch(setLogoutData())}
+                onClick={() => {
+                  dispatch(setLogoutData());
+                  dispatch(setRemoveUser());
+                }}
               />
             </div>
           </div>
@@ -107,7 +113,7 @@ const RequiresAuth = () => {
               {navData.map((data, i) => (
                 <Link
                   className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${data.navClass} `}
-                  to=""
+                  to={data.path}
                   key={i}
                 >
                   <span className="  group-hover:fill-blackPrimary">
@@ -119,9 +125,12 @@ const RequiresAuth = () => {
             </nav>
           </article>
 
-          <Suspense fallback={<></>}>
-            <Outlet />
-          </Suspense>
+          <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
+            <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+              {location.pathname === "/setting" ? "Settings" : "Dashboard"}
+            </h2>
+            {children}
+          </article>
         </div>
       </>
     );

@@ -8,7 +8,10 @@ import React, { Suspense } from "react";
 
 // ** Auth Routes
 import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
-import UserRoutes from "./modules/dashboard/routes";
+import { SettingRoutes } from "./modules/settings/routes";
+import { PrivateRoutesPath } from "./modules/Auth/types";
+import Dashboard from "./modules/dashboard";
+import SettingLayout from "./modules/settings/components/SettingLayout";
 
 // ** Types **
 export type RouteObjType = {
@@ -33,6 +36,13 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   }));
 };
 
+const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
+  return routes.map((route) => ({
+    ...route,
+    element: <RequiresAuth>{route.element}</RequiresAuth>,
+  }));
+};
+
 const RouterComponent = () => {
   // ** Un-Auth **
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
@@ -43,16 +53,20 @@ const RouterComponent = () => {
   ]);
 
   // ** Auth **
-  const routesFortAuthenticatedOnly: RouteObject[] = applySuspense([
+  const routesForAuthenticatedOnly: RouteObject[] = applyRequiresAuthSuspense([
     {
-      element: <RequiresAuth />,
-      children: UserRoutes,
+      path: PrivateRoutesPath.dashboard.view,
+      element: <Dashboard />,
+    },
+    {
+      element: <SettingLayout />,
+      children: SettingRoutes,
     },
   ]);
 
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
-    ...routesFortAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
     ...CMSRoutes,
   ]);
 

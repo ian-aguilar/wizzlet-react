@@ -29,15 +29,15 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
 
 export const AuthenticationRoutes = applySuspense([
   {
-    path: "/login",
+    path: RoutesPath.Login,
     element: <Login />,
   },
   {
-    path: "/otp",
+    path: RoutesPath.Otp,
     element: <Otp />,
   },
   {
-    path: "/forgot-password",
+    path: RoutesPath.ForgotPassword,
     element: <ForgotPassword />,
   },
   {
@@ -45,26 +45,26 @@ export const AuthenticationRoutes = applySuspense([
     element: <ResetPassword />,
   },
   {
-    path: "/signup",
+    path: RoutesPath.SignUp,
     element: <Registration />,
   },
 ]);
 
 export const CMSRoutes = applySuspense([
   {
-    path: "/home",
+    path: RoutesPath.CMSHome,
     element: <CMSHome />,
   },
   {
-    path: "/aboutus",
+    path: RoutesPath.CMSAboutUs,
     element: <AboutUs />,
   },
   {
-    path: "/faqs",
+    path: RoutesPath.CMSFaqs,
     element: <Faqs />,
   },
   {
-    path: "/contact",
+    path: RoutesPath.CMSContact,
     element: <Contact />,
   },
 ]);

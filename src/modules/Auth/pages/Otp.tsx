@@ -52,7 +52,7 @@ const Otp = () => {
           Verify your email{" "}
         </h1>
         <p className="text-grayText text-lg md:text-2xl leading-tight ">
-          Please enter 4 Digit Code sent to
+          Please enter 6 Digit Code sent to
         </p>
         {location?.state?.email && (
           <p className="text-blackPrimary font-bold text-lg pt-2">

@@ -1,24 +1,32 @@
+// ** packages **
 import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import _ from "lodash";
+
+// ** types **
+import { RoutesPath } from "../types";
+
+// ** icons **
+import { ShowPassword } from "@/components/svgIcons";
+
+// ** others **
+import { PasswordDetailsFieldsType } from "../types/resetPassword";
+import Button from "@/components/form-fields/components/Button";
+import { TextLabel } from "@/components/common/TextLabel";
+
+// ** services **
 import {
   useIsValidateTokenAPI,
   useResetPasswordAPI,
 } from "../services/auth.service";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+
+// ** validations **
 import { ResetPasswordValidationSchema } from "../validation-schema/forgotPasswordValidation";
-import { PasswordDetailsFieldsType } from "../types/resetPassword";
-// import { useDispatch } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import _ from "lodash";
-import Button from "@/components/form-fields/components/Button";
-import { RoutesPath } from "../types";
-// import { setLogoutData } from "@/redux/slices/authSlice";
-import { TextLabel } from "@/components/common/TextLabel";
-import { ShowPassword } from "@/components/svgIcons";
 
 const ResetPassword = () => {
   const [isValidPasswordSetToken, setValidPasswordSetToken] = useState(false);
-  // const [tokenError, setTokenError] = useState<boolean>(false);
 
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token") || "";
@@ -31,13 +39,11 @@ const ResetPassword = () => {
   } = useForm<PasswordDetailsFieldsType>({
     resolver: yupResolver(ResetPasswordValidationSchema),
   });
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { isValidateTokenAPI, isLoading: tokenLoading } =
     useIsValidateTokenAPI();
 
-  // check token
   useEffect(() => {
     if (_.isEqual(isValidPasswordSetToken, false)) {
       checkPasswordSetTokenAPI();
@@ -54,22 +60,15 @@ const ResetPassword = () => {
   const { resetPasswordAPI } = useResetPasswordAPI();
 
   const onSubmit: SubmitHandler<PasswordDetailsFieldsType> = async (values) => {
-    const { password, confirmPassword } = values;
+    const { password } = values;
 
-    if (password !== confirmPassword) {
-      console.log("password does not match");
-    }
     const { error } = await resetPasswordAPI({
       token,
       password: password,
     });
     if (!error) {
-      // setTokenError(false);
       navigate(RoutesPath.Login);
     }
-    // if (error && error === "Token expired, try again") {
-    //   setTokenError(true);
-    // }
   };
 
   return (

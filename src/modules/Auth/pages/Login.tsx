@@ -9,7 +9,7 @@ import { LoginValidationSchema } from "../validation-schema/signupLoginValidatio
 
 // ** types **
 import { ILoginForm } from "../types/login";
-import { RoutesPath } from "../types";
+import { PrivateRoutesPath, RoutesPath } from "../types";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
@@ -17,6 +17,7 @@ import Input from "@/components/form-fields/components/Input";
 import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
 import { setCredentials } from "@/redux/slices/authSlice";
+import { setUser } from "@/redux/slices/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,8 +36,8 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
+    console.log("data.isVerified", data);
     if (!data.isVerified) {
-      // add toast message only
       navigate(RoutesPath.Otp, {
         state: {
           email: values.email,
@@ -44,10 +45,11 @@ const Login = () => {
         },
       });
     }
-    if (!error && data) {
-      localStorage.setItem("access_token", data?.data?.access_token);
+    console.log("data", data);
+    if (!error && data && data?.data?.verified) {
       dispatch(setCredentials({ token: data?.data?.access_token }));
-      navigate(RoutesPath.Home);
+      dispatch(setUser({ user: data?.data?.user }));
+      navigate(PrivateRoutesPath.dashboard.view);
     }
   };
 

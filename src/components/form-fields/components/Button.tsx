@@ -7,6 +7,7 @@ const Button = ({
   onClickHandler,
   isLoading,
   loaderClass,
+  disabled,
 }: IButtonProps) => {
   return (
     <button
@@ -15,6 +16,7 @@ const Button = ({
       } `}
       type={type ? type : "button"}
       onClick={onClickHandler}
+      disabled={disabled}
     >
       {isLoading && (
         <span
