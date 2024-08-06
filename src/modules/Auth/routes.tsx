@@ -3,7 +3,12 @@ import React, { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
-import Dashboard from "../dashboard/pages";
+import CMSHome from "../cms/pages/Home";
+import Faqs from "../cms/pages/Faqs";
+import Contact from "../cms/pages/Contact";
+import AboutUs from "../cms/pages/AboutUs";
+import ResetPassword from "./pages/ResetPassword";
+import { RoutesPath } from "./types";
 
 // ** Pages **
 const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
@@ -22,7 +27,7 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   }));
 };
 
-const AuthenticationRoutes = applySuspense([
+export const AuthenticationRoutes = applySuspense([
   {
     path: "/login",
     element: <Login />,
@@ -36,13 +41,30 @@ const AuthenticationRoutes = applySuspense([
     element: <ForgotPassword />,
   },
   {
+    path: RoutesPath.ResetPassword,
+    element: <ResetPassword />,
+  },
+  {
     path: "/signup",
     element: <Registration />,
   },
-  {
-    path: "/",
-    element: <Dashboard />,
-  },
 ]);
 
-export default AuthenticationRoutes;
+export const CMSRoutes = applySuspense([
+  {
+    path: "/home",
+    element: <CMSHome />,
+  },
+  {
+    path: "/aboutus",
+    element: <AboutUs />,
+  },
+  {
+    path: "/faqs",
+    element: <Faqs />,
+  },
+  {
+    path: "/contact",
+    element: <Contact />,
+  },
+]);

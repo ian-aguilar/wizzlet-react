@@ -2,8 +2,8 @@
 import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { Axios } from "base-axios";
-import { ApiResponseType } from "base-axios/types";
+import { Axios } from "@/base-axios";
+import { ApiResponseType } from "@/base-axios/types";
 
 export const useAxiosGet = (): [
   (
@@ -26,14 +26,12 @@ export const useAxiosGet = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
-
       let response: AxiosResponse<any, any>;
       if (baseUrl) {
         response = await Axios.get(url, { ...config });
       } else {
         response = await axios(url, { ...config });
       }
-
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };

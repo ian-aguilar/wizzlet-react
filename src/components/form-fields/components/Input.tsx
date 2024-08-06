@@ -2,7 +2,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { IInputProps } from "../types";
 import { Controller, FieldValues } from "react-hook-form";
 import { useState } from "react";
-import { HidePassword } from "@/components/svgIcons";
+import { EyeIconSettings } from "@/assets/Svg";
 
 const Input = <T extends FieldValues>({
   placeholder,
@@ -12,45 +12,45 @@ const Input = <T extends FieldValues>({
   name,
   errors,
   type,
+  autoComplete,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
 
   return (
-    <>
-      <div className="relative">
-        <Controller
-          name={name}
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <input
-              onBlur={onBlur}
-              onChange={onChange}
-              value={value ? value : ""}
-              type={!isShow && type ? type : "text"}
-              className={`bg-inputAuthBg/60 p-3 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
-              placeholder={placeholder}
-            />
-          )}
-        />
-
-        {InputEndIcon && (
-          <div
-            className="absolute right-4 top-4"
-            onClick={() => setIsShow((prev) => !prev)}
-          >
-            {!isShow ? InputEndIcon : <HidePassword />}
-          </div>
+    <div className="relative">
+      <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <input
+            onBlur={onBlur}
+            onChange={onChange}
+            value={value ? value : ""}
+            type={!isShow && type ? type : "text"}
+            className={`bg-inputAuthBg/60 p-3 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+          />
         )}
+      />
 
-        <ErrorMessage
-          errors={errors}
-          name={name}
-          render={({ message }) => (
-            <span className="errorText text-red-400 text-xs">{message}</span>
-          )}
-        />
-      </div>
-    </>
+      {InputEndIcon && (
+        <div
+          className="absolute right-4 top-4"
+          onClick={() => setIsShow((prev) => !prev)}
+        >
+          {!isShow ? InputEndIcon : <EyeIconSettings />}
+        </div>
+      )}
+
+      <ErrorMessage
+        errors={errors}
+        name={name}
+        render={({ message }) => (
+          <span className="errorText text-red-400 text-xs">{message}</span>
+        )}
+      />
+    </div>
   );
 };
 

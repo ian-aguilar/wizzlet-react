@@ -9,12 +9,29 @@ export default {
           grayText: "#6C778B",
           grayLightBody:"#97A0B2",
           inputAuthBg: "#EAEDF3",
+          greyBorder: "#D8DCE4",
       },
       backgroundImage:{
         authPattern: "url('/images/bgPatternAuth.png');",
       },
       fontFamily:{
         jost : "Jost",
+      },
+      container: {
+        // you can configure the container to be centered
+        center: true,
+        // or have default horizontal padding
+        padding: '1rem',
+        screens: {
+          sm: '600px',
+          md: '768px',
+          lg: '990px',
+          xl: '1280px',
+          '2xl': '1340px',
+        },
+      },
+      boxShadow:{
+        headerWeb: " 0px 4px 4px 0px #0000000A",
       }
     },
   },

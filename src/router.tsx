@@ -7,7 +7,8 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import AuthenticationRoutes from "@/modules/Auth/routes";
+import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
+import UserRoutes from "./modules/dashboard/routes";
 
 // ** Types **
 export type RouteObjType = {
@@ -21,6 +22,9 @@ export type RouteObjType = {
 const RequiresUnAuth = React.lazy(
   () => import("@/modules/Auth/components/RequiresUnAuth")
 );
+const RequiresAuth = React.lazy(
+  () => import("@/modules/dashboard/components/RequiresAuth")
+);
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -30,7 +34,7 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
 };
 
 const RouterComponent = () => {
-  // ** Un-Auth
+  // ** Un-Auth **
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresUnAuth />,
@@ -38,7 +42,19 @@ const RouterComponent = () => {
     },
   ]);
 
-  const router = createBrowserRouter([...routesForNotAuthenticatedOnly]);
+  // ** Auth **
+  const routesFortAuthenticatedOnly: RouteObject[] = applySuspense([
+    {
+      element: <RequiresAuth />,
+      children: UserRoutes,
+    },
+  ]);
+
+  const router = createBrowserRouter([
+    ...routesForNotAuthenticatedOnly,
+    ...routesFortAuthenticatedOnly,
+    ...CMSRoutes,
+  ]);
 
   return <RouterProvider router={router} />;
 };
