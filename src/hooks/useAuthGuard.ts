@@ -30,7 +30,6 @@ const useAuthGuard = () => {
       const { data, error } = await getLoggedInUserAPI({});
 
       if (!error && data) {
-        console.log("data", data);
         dispatch(setCredentials({ token: token }));
         dispatch(setUser({ user: data?.data?.user }));
         dispatch(setAuthInitialized());

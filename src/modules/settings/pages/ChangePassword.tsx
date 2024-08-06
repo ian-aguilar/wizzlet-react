@@ -17,7 +17,6 @@ const ChangePassword = () => {
   } = useForm<IFormInputs>();
 
   const onSubmit = (data: IFormInputs) => {
-    console.log("first");
     console.log("setting sidebar", data);
   };
 
