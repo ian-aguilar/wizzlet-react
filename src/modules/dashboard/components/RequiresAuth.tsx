@@ -1,13 +1,12 @@
 // ** packages **
-import { Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
 
 // ** redux **
 import { getAuth, setLogoutData } from "../../../redux/slices/authSlice";
 
 // ** types **
-import { RoutesPath } from "@/modules/Auth/types";
+import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 
 // ** Icons **
 import {
@@ -21,37 +20,68 @@ import {
 } from "@/assets/Svg";
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
-import { SearchHeader } from "@/components/common/SearchHeader";
+import { setRemoveUser } from "@/redux/slices/userSlice";
+import { useEffect, useState } from "react";
 
-const RequiresAuth = () => {
+enum sidebarList {
+  dashboard = "dashboard",
+  marketplace = "marketplace",
+  user = "user",
+  cms = "cms",
+  setting = "setting",
+}
+const RequiresAuth = ({ children }: any) => {
   const { isAuthenticated } = useSelector(getAuth);
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  const [active, setActive] = useState(sidebarList.dashboard);
+  const [activeBoard, setActiveBoard] = useState("Dashboard");
+
+  useEffect(() => {
+    if (location.pathname) {
+      const activeKey = navData.find((el) =>
+        location.pathname.includes(el.key)
+      );
+
+      if (activeKey?.key) setActive(activeKey?.key);
+      if (activeKey?.navName) setActiveBoard(activeKey?.navName);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const navData = [
     {
       navIcon: <DashboardIcon />,
+      // navIcon: (className) => <DashboardIcon className={className} />,
       navName: "Dashboard",
       navClass: "bg-greenPrimary text-white",
+      path: PrivateRoutesPath.dashboard.view,
+      key: sidebarList.dashboard,
     },
     {
       navIcon: <UserMgtIcon />,
       navName: "User Management",
-      navClass: "bg-white text-grayText",
+      path: "",
+      key: sidebarList.user,
     },
     {
       navIcon: <MarketPlaceIcon />,
       navName: "Marketplace",
-      navClass: "bg-white text-grayText",
+      path: "",
+      key: sidebarList.marketplace,
     },
     {
       navIcon: <CMSMGTIcon />,
       navName: "CMS Management",
-      navClass: "bg-white text-grayText",
+      path: "",
+      key: sidebarList.cms,
     },
     {
       navIcon: <SettingsIcon />,
       navName: "Settings",
-      navClass: "bg-white text-grayText",
+      path: PrivateRoutesPath.setting.profile.view,
+      key: sidebarList.setting,
     },
   ];
 
@@ -78,8 +108,6 @@ const RequiresAuth = () => {
           </div>
 
           <div className=" flex gap-4 items-center">
-            <SearchHeader />
-
             <div className=" group w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center hover:brightness-110 transition-all duration-300 cursor-pointer relative">
               <div className="NotificationAlert absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary group-hover:brightness-110 group-hover:transition-all group-hover:duration-300 border border-greyBorder/50 ">
                 {" "}
@@ -92,7 +120,10 @@ const RequiresAuth = () => {
                 src={ProfilePlaceholder}
                 className="w-14 h-14 min-w-14"
                 alt=""
-                onClick={() => dispatch(setLogoutData())}
+                onClick={() => {
+                  dispatch(setLogoutData());
+                  dispatch(setRemoveUser());
+                }}
               />
             </div>
           </div>
@@ -106,22 +137,29 @@ const RequiresAuth = () => {
             <nav className="">
               {navData.map((data, i) => (
                 <Link
-                  className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${data.navClass} `}
-                  to=""
+                  className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${
+                    active === data.key
+                      ? "bg-greenPrimary text-white"
+                      : "bg-white text-grayText"
+                  } `}
+                  to={data.path}
                   key={i}
                 >
                   <span className="  group-hover:fill-blackPrimary">
                     {data.navIcon}
-                  </span>{" "}
+                  </span>
                   {data.navName}
                 </Link>
               ))}
             </nav>
           </article>
 
-          <Suspense fallback={<></>}>
-            <Outlet />
-          </Suspense>
+          <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
+            <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+              {activeBoard}
+            </h2>
+            {children}
+          </article>
         </div>
       </>
     );

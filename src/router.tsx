@@ -7,8 +7,15 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
-import UserRoutes from "./modules/dashboard/routes";
+import { AuthenticationRoutes } from "./modules/Auth/routes";
+import { SettingRoutes } from "./modules/settings/routes";
+import { PrivateRoutesPath } from "./modules/Auth/types";
+import Dashboard from "./modules/dashboard";
+import SettingLayout from "./modules/settings/components/SettingLayout";
+import { Loader } from "./components/common/Loader";
+import { CMSRoutes } from "./modules/cms/routes";
+import Marketplace from "./modules/marketplace";
+import InventoryManagement from "./modules/inventory-management";
 
 // ** Types **
 export type RouteObjType = {
@@ -29,7 +36,24 @@ const RequiresAuth = React.lazy(
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+    element: (
+      <Suspense
+        fallback={
+          <>
+            <Loader />
+          </>
+        }
+      >
+        {route.element}
+      </Suspense>
+    ),
+  }));
+};
+
+const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
+  return routes.map((route) => ({
+    ...route,
+    element: <RequiresAuth>{route.element}</RequiresAuth>,
   }));
 };
 
@@ -43,16 +67,28 @@ const RouterComponent = () => {
   ]);
 
   // ** Auth **
-  const routesFortAuthenticatedOnly: RouteObject[] = applySuspense([
+  const routesForAuthenticatedOnly: RouteObject[] = applyRequiresAuthSuspense([
     {
-      element: <RequiresAuth />,
-      children: UserRoutes,
+      path: PrivateRoutesPath.dashboard.view,
+      element: <Dashboard />,
+    },
+    {
+      path: PrivateRoutesPath.marketplace.view,
+      element: <Marketplace />,
+    },
+    {
+      path: PrivateRoutesPath.inventoryManagement.view,
+      element: <InventoryManagement />,
+    },
+    {
+      element: <SettingLayout />,
+      children: SettingRoutes,
     },
   ]);
 
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
-    ...routesFortAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
     ...CMSRoutes,
   ]);
 

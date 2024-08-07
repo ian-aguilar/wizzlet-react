@@ -17,7 +17,7 @@ const Input = <T extends FieldValues>({
   const [isShow, setIsShow] = useState<boolean>(false);
 
   return (
-    <div className="relative">
+    <div className="relative mb-4">
       <Controller
         name={name}
         control={control}
@@ -27,7 +27,7 @@ const Input = <T extends FieldValues>({
             onChange={onChange}
             value={value ? value : ""}
             type={!isShow && type ? type : "text"}
-            className={`bg-inputAuthBg/60 p-3 rounded-md text-grayLightBody w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
+            className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-700 w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
             placeholder={placeholder}
             autoComplete={autoComplete}
           />

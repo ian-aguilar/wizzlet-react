@@ -22,6 +22,7 @@ export interface IButtonProps {
   onClickHandler?: (e: MouseEvent<HTMLElement>) => void;
   isLoading?: boolean;
   loaderClass?: string;
+  disabled?: boolean;
 }
 
 export interface IOtpInputProps {

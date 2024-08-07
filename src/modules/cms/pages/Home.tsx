@@ -1,5 +1,12 @@
+import { Header } from "../common/Header";
+
 const CMSHome = () => {
-  return <div>CMSHome</div>;
+  return (
+    <>
+      <Header />
+      CMSHome
+    </>
+  );
 };
 
 export default CMSHome;

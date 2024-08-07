@@ -13,6 +13,8 @@ export default {
       },
       backgroundImage:{
         authPattern: "url('/images/bgPatternAuth.png');",
+        CMSPageTop: "url('/images/bgCMSPattern.png');",
+        CMSPageTile: "url('/images/bg-dots-tile-CMS.png');",
       },
       fontFamily:{
         jost : "Jost",
@@ -32,6 +34,7 @@ export default {
       },
       boxShadow:{
         headerWeb: " 0px 4px 4px 0px #0000000A",
+        aboutBox: "0px 18.22px 42.51px 0px #0000000D"
       }
     },
   },

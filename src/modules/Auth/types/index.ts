@@ -1,8 +1,23 @@
 export enum RoutesPath {
   SignUp = "/signup",
   Login = "/login",
-  Home = "/",
   ForgotPassword = "/forgot-password",
   Otp = "/otp",
-  ResetPassword = "/auth/reset-password",
+  ResetPassword = "/reset-password",
+  CMSHome = "/",
+  CMSAboutUs = "/aboutus",
+  CMSContact = "/contact",
+  CMSFaqs = "/faqs",
 }
+
+export const PrivateRoutesPath = {
+  dashboard: { view: "/dashboard" },
+  setting: {
+    view: "/setting",
+    profile: { view: "/setting/profile" },
+    labelManager: { view: "/setting/label-manager" },
+    changePassword: { view: "/setting/change-password" },
+  },
+  inventoryManagement: { view: "/inventory-management" },
+  marketplace: { view: "/marketplace" },
+};

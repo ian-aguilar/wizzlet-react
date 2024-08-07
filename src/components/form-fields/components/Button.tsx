@@ -7,6 +7,7 @@ const Button = ({
   onClickHandler,
   isLoading,
   loaderClass,
+  disabled,
 }: IButtonProps) => {
   return (
     <button
@@ -15,15 +16,14 @@ const Button = ({
       } `}
       type={type ? type : "button"}
       onClick={onClickHandler}
+      disabled={isLoading ? true : disabled}
     >
+      {isLoading ? "Please wait" : btnName}
       {isLoading && (
-        <span
-          className={`animate-spin rounded-full w-5 h-5 border-4 border-white/70 border-solid border-t-white/20 ${
-            loaderClass ?? ""
-          } `}
-        />
+        <span className={`inline-flex ml-3 mt-1.5 ${loaderClass ?? ""} `}>
+          <div className="spinnerW"></div>
+        </span>
       )}
-      {btnName}
     </button>
   );
 };

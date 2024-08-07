@@ -10,6 +10,7 @@ import {
   setLogoutData,
 } from "@/redux/slices/authSlice";
 import { useGetLoggedInUserAPI } from "@/modules/Auth/services/auth.service";
+import { setRemoveUser, setUser } from "@/redux/slices/userSlice";
 
 const useAuthGuard = () => {
   // ===================== Hooks =======================
@@ -26,19 +27,15 @@ const useAuthGuard = () => {
 
   const loadUser = async () => {
     if (!token && !isAuthenticated && !isAuthInitialized) {
-      const accessToken = localStorage.getItem("access_token");
+      const { data, error } = await getLoggedInUserAPI({});
 
-      if (accessToken) {
-        const { data, error } = await getLoggedInUserAPI({});
-
-        if (!error && data) {
-          dispatch(setCredentials({ token: accessToken }));
-          dispatch(setAuthInitialized());
-        } else {
-          dispatch(setLogoutData());
-          dispatch(setAuthInitialized());
-        }
+      if (!error && data) {
+        dispatch(setCredentials({ token: token }));
+        dispatch(setUser({ user: data?.data?.user }));
+        dispatch(setAuthInitialized());
       } else {
+        dispatch(setLogoutData());
+        dispatch(setRemoveUser());
         dispatch(setAuthInitialized());
       }
     }
