@@ -52,7 +52,7 @@ const Otp = () => {
           Verify your email{" "}
         </h1>
         <p className="text-grayText text-lg md:text-2xl leading-tight ">
-          Please enter 4 Digit Code sent to
+          Please enter 6 Digit Code sent to
         </p>
         {location?.state?.email && (
           <p className="text-blackPrimary font-bold text-lg pt-2">
@@ -61,7 +61,7 @@ const Otp = () => {
         )}
       </div>
 
-      <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+      <div className=" pt-6 md:pt-9 pb-14">
         <div className="grid grid-cols-12 gap-2">
           <div className="col-span-3">
             <OtpInputField onChangeHandler={changeDataValue} value={otp} />

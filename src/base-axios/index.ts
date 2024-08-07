@@ -12,7 +12,8 @@ export const Axios = axios.create({ baseURL: `${VITE_APP_API_URL}` });
 
 export const setupAxios = (store: Store) => {
   Axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-    const authToken = localStorage.getItem("access_token");
+    const storeData = store.getState();
+    const authToken = storeData.auth.token;
 
     if (authToken) {
       (

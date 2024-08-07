@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 // ** images **
 import MainLogo from "/images/logo.svg";
-import { RoutesPath } from "../types";
+import { PrivateRoutesPath } from "../types";
 
 // ** slices **
 import { getAuth } from "@/redux/slices/authSlice";
@@ -15,7 +15,7 @@ const RequiresUnAuth = () => {
 
   /* Not Logged In */
   if (isAuthenticated) {
-    return <Navigate to={RoutesPath.Home} />;
+    return <Navigate to={PrivateRoutesPath.dashboard.view} />;
   } else {
     // ** Hooks **
     return (

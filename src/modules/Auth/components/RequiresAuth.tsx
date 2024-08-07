@@ -10,9 +10,9 @@ const RequiresAuth = () => {
   const { isAuthenticated } = useSelector(getAuth);
 
   // /* Not Logged In */
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/login" />;
+  // }
 
   return (
     <Suspense fallback={<></>}>

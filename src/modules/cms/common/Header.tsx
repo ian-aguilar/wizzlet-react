@@ -1,4 +1,3 @@
-import React from "react";
 import Logo from "/images/logo.svg";
 import { Link } from "react-router-dom";
 import { HamburgerIcon, RightArrowWhite } from "@/assets/Svg";

@@ -7,6 +7,8 @@ const Button = ({
   onClickHandler,
   isLoading,
   loaderClass,
+  disabled,
+  BtnIconRight,
 }: IButtonProps) => {
   return (
     <button
@@ -15,6 +17,7 @@ const Button = ({
       } `}
       type={type ? type : "button"}
       onClick={onClickHandler}
+      disabled={disabled}
     >
       {isLoading && (
         <span className={` inline-flex mr-3 mt-1.5 ${loaderClass ?? ""} `}>
@@ -22,6 +25,7 @@ const Button = ({
         </span>
       )}
       {btnName}
+      {BtnIconRight}
     </button>
   );
 };

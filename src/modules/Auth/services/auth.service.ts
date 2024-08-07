@@ -74,3 +74,31 @@ export const useForgotPasswordPostAPI = () => {
 
   return { forgotPasswordPostAPI, isLoading, isError, isSuccess };
 };
+
+// ** Validate Token **
+export const useIsValidateTokenAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const isValidateTokenAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/token-validate`, data, config);
+  };
+
+  return { isValidateTokenAPI, isLoading, isError, isSuccess };
+};
+
+// ** Reset password **
+export const useResetPasswordAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const resetPasswordAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/reset-password`, data, config);
+  };
+
+  return { resetPasswordAPI, isLoading, isError, isSuccess };
+};

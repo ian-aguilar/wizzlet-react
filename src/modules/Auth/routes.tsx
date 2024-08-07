@@ -7,6 +7,8 @@ import CMSHome from "../cms/pages/Home";
 import Faqs from "../cms/pages/Faqs";
 import Contact from "../cms/pages/Contact";
 import AboutUs from "../cms/pages/AboutUs";
+import ResetPassword from "./pages/ResetPassword";
+import { RoutesPath } from "./types";
 
 // ** Pages **
 const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
@@ -17,7 +19,6 @@ const ForgotPassword = React.lazy(
 const Registration = React.lazy(
   () => import("@/modules/Auth/pages/Registration")
 );
-const Dashboard = React.lazy(() => import("@/modules/dashboard/pages"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -28,45 +29,42 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
 
 export const AuthenticationRoutes = applySuspense([
   {
-    path: "/login",
+    path: RoutesPath.Login,
     element: <Login />,
   },
   {
-    path: "/otp",
+    path: RoutesPath.Otp,
     element: <Otp />,
   },
   {
-    path: "/forgot-password",
+    path: RoutesPath.ForgotPassword,
     element: <ForgotPassword />,
   },
   {
-    path: "/signup",
+    path: RoutesPath.ResetPassword,
+    element: <ResetPassword />,
+  },
+  {
+    path: RoutesPath.SignUp,
     element: <Registration />,
   },
 ]);
 
 export const CMSRoutes = applySuspense([
   {
-    path: "/home",
+    path: RoutesPath.CMSHome,
     element: <CMSHome />,
   },
   {
-    path: "/aboutus",
+    path: RoutesPath.CMSAboutUs,
     element: <AboutUs />,
   },
   {
-    path: "/faqs",
+    path: RoutesPath.CMSFaqs,
     element: <Faqs />,
   },
   {
-    path: "/contact",
+    path: RoutesPath.CMSContact,
     element: <Contact />,
-  },
-]);
-
-export const nonAuthenticationRoutes = applySuspense([
-  {
-    path: "/",
-    element: <Dashboard />,
   },
 ]);

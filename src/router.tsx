@@ -7,11 +7,11 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import {
-  AuthenticationRoutes,
-  CMSRoutes,
-  nonAuthenticationRoutes,
-} from "./modules/Auth/routes";
+import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
+import { SettingRoutes } from "./modules/settings/routes";
+import { PrivateRoutesPath } from "./modules/Auth/types";
+import Dashboard from "./modules/dashboard";
+import SettingLayout from "./modules/settings/components/SettingLayout";
 
 // ** Types **
 export type RouteObjType = {
@@ -26,13 +26,20 @@ const RequiresUnAuth = React.lazy(
   () => import("@/modules/Auth/components/RequiresUnAuth")
 );
 const RequiresAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresAuth")
+  () => import("@/modules/dashboard/components/RequiresAuth")
 );
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
     element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+  }));
+};
+
+const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
+  return routes.map((route) => ({
+    ...route,
+    element: <RequiresAuth>{route.element}</RequiresAuth>,
   }));
 };
 
@@ -46,16 +53,20 @@ const RouterComponent = () => {
   ]);
 
   // ** Auth **
-  const routesFortAuthenticatedOnly: RouteObject[] = applySuspense([
+  const routesForAuthenticatedOnly: RouteObject[] = applyRequiresAuthSuspense([
     {
-      element: <RequiresAuth />,
-      children: nonAuthenticationRoutes,
+      path: PrivateRoutesPath.dashboard.view,
+      element: <Dashboard />,
+    },
+    {
+      element: <SettingLayout />,
+      children: SettingRoutes,
     },
   ]);
 
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
-    ...routesFortAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
     ...CMSRoutes,
   ]);
 

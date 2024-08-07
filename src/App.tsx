@@ -1,9 +1,9 @@
 import "@/App.css";
 import RouterComponent from "@/router";
-// import useAuthGuard from "./hooks/useAuthGuard";
+import useAuthGuard from "./hooks/useAuthGuard";
 
 function App() {
-  // const { isLoading, isAuthInitialized } = useAuthGuard();
+  const { isLoading, isAuthInitialized } = useAuthGuard();
 
   return (
     <>

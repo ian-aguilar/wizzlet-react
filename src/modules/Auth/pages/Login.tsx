@@ -9,7 +9,7 @@ import { LoginValidationSchema } from "../validation-schema/signupLoginValidatio
 
 // ** types **
 import { ILoginForm } from "../types/login";
-import { RoutesPath } from "../types";
+import { PrivateRoutesPath, RoutesPath } from "../types";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
@@ -18,6 +18,7 @@ import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
 import { setCredentials } from "@/redux/slices/authSlice";
 import { Loader } from "@/components/common/Loader";
+import { setUser } from "@/redux/slices/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -36,10 +37,18 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (!error && data) {
-      localStorage.setItem("access_token", data?.data?.access_token);
+    if (!data?.isVerified) {
+      navigate(RoutesPath.Otp, {
+        state: {
+          email: values.email,
+          previousRoute: RoutesPath.Login,
+        },
+      });
+    }
+    if (!error && data && data?.data?.user?.verified) {
       dispatch(setCredentials({ token: data?.data?.access_token }));
-      navigate(RoutesPath.Home);
+      dispatch(setUser({ user: data?.data?.user }));
+      navigate(PrivateRoutesPath.dashboard.view);
     }
   };
 
@@ -58,7 +67,7 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <Input
               className=""
               placeholder="Email"

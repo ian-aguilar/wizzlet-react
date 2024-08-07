@@ -18,7 +18,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setLogoutData(state: AuthInterface) {
-      localStorage.removeItem("access_token");
       state.token = null;
       state.isAuthenticated = false;
     },
@@ -28,13 +27,10 @@ const authSlice = createSlice({
     },
     setCredentials(state: AuthInterface, action: PayloadAction<AuthInterface>) {
       const { token } = action.payload;
-      console.log("token");
       if (token) {
-        localStorage.setItem("access_token", token);
         state.token = action.payload.token;
         state.isAuthenticated = true;
       } else {
-        localStorage.removeItem("access_token");
         state.token = null;
         state.isAuthenticated = false;
       }
