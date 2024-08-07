@@ -25,7 +25,7 @@ export const TextLabel = <T extends FieldValues>({
 
         <Input
           placeholder={TextPlaceHolder}
-          InputEndIcon={TextEndIcon}
+          inputEndIcon={TextEndIcon}
           control={control}
           type={type}
           name={name}

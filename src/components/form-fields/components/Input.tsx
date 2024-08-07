@@ -7,7 +7,39 @@ import { EyeIconSettings } from "@/assets/Svg";
 const Input = <T extends FieldValues>({
   placeholder,
   className,
-  InputEndIcon,
+  inputEndIcon,
+  control,
+  textLabelName,
+  name,
+  errors,
+  type,
+  autoComplete,
+  withLabel = false,
+}: IInputProps<T>) => {
+  return (
+    <div className="relative mb-2">
+      <label className="pb-1 block">{textLabelName}</label>
+
+      <Temp
+        placeholder={placeholder}
+        inputEndIcon={inputEndIcon}
+        control={control}
+        type={type}
+        name={name}
+        errors={errors}
+        autoComplete={autoComplete}
+        withLabel={withLabel}
+        className={` bg-inputAuthBg/60   p-3 rounded-md text-grayLightBody w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
+      />
+      <span className="errorText text-red-400 text-xs"> </span>
+    </div>
+  );
+};
+
+const Temp = <T extends FieldValues>({
+  placeholder,
+  className,
+  inputEndIcon,
   control,
   name,
   errors,
@@ -15,7 +47,6 @@ const Input = <T extends FieldValues>({
   autoComplete,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
-
   return (
     <div className="relative mb-4">
       <Controller
@@ -34,12 +65,12 @@ const Input = <T extends FieldValues>({
         )}
       />
 
-      {InputEndIcon && (
+      {inputEndIcon && (
         <div
           className="absolute right-4 top-4"
           onClick={() => setIsShow((prev) => !prev)}
         >
-          {!isShow ? InputEndIcon : <EyeIconSettings />}
+          {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}
 

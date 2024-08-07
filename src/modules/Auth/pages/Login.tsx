@@ -18,7 +18,6 @@ import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
 import { setCredentials } from "@/redux/slices/authSlice";
 import { setUser } from "@/redux/slices/userSlice";
-import { Loader } from "@/components/common/Loader";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -37,7 +36,7 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (!data?.isVerified) {
+    if (data?.isVerified === false) {
       navigate(RoutesPath.Otp, {
         state: {
           email: values.email,
@@ -86,7 +85,7 @@ const Login = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
               autoComplete={"new-password"}
             />
 
@@ -99,7 +98,12 @@ const Login = () => {
               </Link>
             </div>
 
-            <Button btnName="Sign in" type="submit" isLoading={loader} />
+            <Button
+              showType="App"
+              btnName="Sign in"
+              type="submit"
+              isLoading={loader}
+            />
           </div>
         </form>
 

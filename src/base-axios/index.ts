@@ -27,7 +27,7 @@ export const setupAxios = (store: Store) => {
       const toast = res?.data?.toast;
       if (toast) {
         store.dispatch(
-          ToastShow({ message: res.data.message, type: res.data.response_type })
+          ToastShow({ message: res.data.message, type: res.data.responseType })
         );
       }
       return res;
@@ -39,7 +39,7 @@ export const setupAxios = (store: Store) => {
         store.dispatch(
           ToastShow({
             message: message,
-            type: e.response.data.response_type,
+            type: e.response.data.responseType,
           })
         );
       }
@@ -51,7 +51,7 @@ export const setupAxios = (store: Store) => {
             store.dispatch(
               ToastShow({
                 message: e.response.message,
-                type: e.response.data.response_type,
+                type: e.response.data.responseType,
               })
             );
           }

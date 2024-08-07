@@ -41,7 +41,7 @@ const ForgotPassword = () => {
 
   return (
     <>
-      {isSuccess ? (
+      {!isSuccess ? (
         <div className="relative z-[99] bg-white py-6 lg:py-12 px-8 lg:px-24 rounded-lg overflow-hidden before:absolute before:w-[350px] before:h-[350px] before:bg-greenPrimary/15 before:blur-[85px] before:-top-[250px] before:left-1/2 before:-translate-x-1/2 before:z-[999]">
           <div className="titleContainer text-center relative z-[9999] ">
             <h1 className=" text-blackPrimary font-bold text-3xl md:text-[2.5rem] leading-normal ">
@@ -67,6 +67,7 @@ const ForgotPassword = () => {
               />
 
               <Button
+                showType="App"
                 btnName="Reset Password"
                 btnClass="mt-9"
                 type="submit"

@@ -1,13 +1,13 @@
 // ** packages **
 import { Link } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
-import { TextLabel } from "@/components/common/TextLabel";
 
 // **  types **
 import { IFormInputs } from "../types";
+import Input from "@/components/form-fields/components/Input";
 
 const Profile = () => {
   const {
@@ -31,106 +31,52 @@ const Profile = () => {
           <div className="SettingsContentBox lg:pr-24 xl:pr-72 ">
             <div className="grid grid-cols-12 lg:gap-4">
               <div className=" col-span-12 lg:col-span-6">
-                {" "}
-                <Controller
-                  name="firstName"
+                <Input
+                  textLabelName="First Name"
                   control={control}
-                  rules={{ required: "First name is required" }} // Add validation rules
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=""
-                      TextLabelName="First Name"
-                      TextPlaceHolder="First Name"
-                      control={control}
-                      errors={errors}
-                      type="text"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
+                  name="firstName"
+                  errors={errors}
+                  type="text"
                 />
               </div>
               <div className=" col-span-12 lg:col-span-6">
-                <Controller
-                  name="lastName"
+                <Input
+                  textLabelName="Last Name"
                   control={control}
-                  rules={{ required: "Last name is required" }} // Add validation rules
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=" "
-                      TextLabelName="Last Name"
-                      TextPlaceHolder="Last Name"
-                      control={control}
-                      errors={errors}
-                      type="text"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
+                  name="lastName"
+                  errors={errors}
+                  type="text"
                 />
               </div>
             </div>
             <div className="grid grid-cols-12 lg:gap-4">
               <div className=" col-span-12 lg:col-span-6">
-                {" "}
-                <Controller
-                  name="organizationName"
+                <Input
+                  textLabelName="Organization Name"
                   control={control}
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=""
-                      TextLabelName="Organization Name"
-                      TextPlaceHolder="Organization Name"
-                      control={control}
-                      errors={errors}
-                      type="text"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
+                  name="organizationName"
+                  errors={errors}
+                  type="text"
                 />
               </div>
               <div className=" col-span-12 lg:col-span-6">
-                <Controller
-                  name="contactNumber"
+                <Input
+                  textLabelName="Contact Number"
                   control={control}
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=""
-                      TextLabelName="Contact Number"
-                      TextPlaceHolder="123456789"
-                      control={control}
-                      errors={errors}
-                      type="number"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
+                  name="contactNumber"
+                  placeholder="1234567890"
+                  errors={errors}
+                  type="number"
                 />
               </div>
             </div>
-            <Controller
-              name="email"
+
+            <Input
+              textLabelName="Email"
               control={control}
-              rules={{
-                required: "Email is required",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Invalid email address",
-                },
-              }}
-              render={({ field }) => (
-                <TextLabel
-                  TextClass=""
-                  TextLabelName="Default Email "
-                  TextPlaceHolder="Default Email "
-                  control={control}
-                  errors={errors}
-                  type="text"
-                  autoComplete="off"
-                  {...field}
-                />
-              )}
+              name="email"
+              errors={errors}
+              type="text"
             />
             <div className="text-sm text-grayText  ">
               Do you want to change email?
@@ -143,6 +89,7 @@ const Profile = () => {
             </div>
             <div className="pt-14">
               <Button
+                showType="App"
                 btnClass=" !w-auto !px-14 "
                 type="submit"
                 btnName="Update"

@@ -101,7 +101,7 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
               autoComplete="new-password"
             />
             <Input
@@ -112,10 +112,11 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
               autoComplete="new-password"
             />
             <Button
+              showType="App"
               btnName="Submit in"
               btnClass="mt-9"
               type="submit"

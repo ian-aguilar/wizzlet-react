@@ -463,7 +463,7 @@ export const CloseIconSvg = () => {
     </svg>
   );
 };
-export const RightArrowWhite = ({ className }: any) => {
+export const RightArrowWhite = ({ className }: { className?: string }) => {
   return (
     <svg
       className={`${className}`}

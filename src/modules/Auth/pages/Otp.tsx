@@ -1,5 +1,5 @@
 // ** Packages **
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // ** icons **
@@ -23,6 +23,12 @@ const Otp = () => {
   const changeDataValue = (e: string) => {
     setOtp(e);
   };
+
+  useEffect(() => {
+    if (location?.state?.email) {
+      navigate(RoutesPath.Login);
+    }
+  }, [location?.state?.email]);
 
   const { verifyPostAPI, isLoading: loader } = useVerifyPostAPI();
 
@@ -48,8 +54,7 @@ const Otp = () => {
     <div className="relative z-[99] bg-white py-6 lg:py-12 px-8 lg:px-24 rounded-lg overflow-hidden before:absolute before:w-[350px] before:h-[350px] before:bg-greenPrimary/15 before:blur-[85px] before:-top-[250px] before:left-1/2 before:-translate-x-1/2 before:z-[999]">
       <div className="titleContainer text-center relative z-[9999] ">
         <h1 className=" text-blackPrimary font-bold text-3xl md:text-[2.5rem] leading-normal ">
-          {" "}
-          Verify your email{" "}
+          Verify your Email
         </h1>
         <p className="text-grayText text-lg md:text-2xl leading-tight ">
           Please enter 6 Digit Code sent to
@@ -69,6 +74,7 @@ const Otp = () => {
         </div>
 
         <Button
+          showType="App"
           btnName="Confirm"
           btnClass="mt-9"
           type="submit"
