@@ -15,7 +15,6 @@ import { ISignupForm } from "../types/signup";
 import { signUpValidationSchema } from "../validation-schema/signupLoginValidation";
 import { ShowPassword } from "@/components/svgIcons";
 import { useRegisterUserApi } from "../services/auth.service";
-import { Loader } from "@/components/common/Loader";
 
 const Registration = () => {
   const navigate = useNavigate();

@@ -3,10 +3,6 @@ import React, { Suspense } from "react";
 
 // **Type **
 import { RouteObjType } from "@/router";
-import CMSHome from "../cms/pages/Home";
-import Faqs from "../cms/pages/Faqs";
-import Contact from "../cms/pages/Contact";
-import AboutUs from "../cms/pages/AboutUs";
 import ResetPassword from "./pages/ResetPassword";
 import { RoutesPath } from "./types";
 

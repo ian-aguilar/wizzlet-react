@@ -25,7 +25,7 @@ const Otp = () => {
   };
 
   useEffect(() => {
-    if (location?.state?.email) {
+    if (!location?.state?.email) {
       navigate(RoutesPath.Login);
     }
   }, [location?.state?.email]);

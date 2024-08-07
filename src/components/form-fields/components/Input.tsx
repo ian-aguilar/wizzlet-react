@@ -20,7 +20,7 @@ const Input = <T extends FieldValues>({
     <div className="relative mb-2">
       <label className="pb-1 block">{textLabelName}</label>
 
-      <Temp
+      <InputField
         placeholder={placeholder}
         inputEndIcon={inputEndIcon}
         control={control}
@@ -36,7 +36,7 @@ const Input = <T extends FieldValues>({
   );
 };
 
-const Temp = <T extends FieldValues>({
+const InputField = <T extends FieldValues>({
   placeholder,
   className,
   inputEndIcon,
