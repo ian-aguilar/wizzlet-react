@@ -16,9 +16,9 @@ const Button = ({
       } `}
       type={type ? type : "button"}
       onClick={onClickHandler}
-      disabled={disabled}
+      disabled={isLoading ? true : disabled}
     >
-      {btnName}
+      {isLoading ? "Please wait" : btnName}
       {isLoading && (
         <span className={`inline-flex ml-3 mt-1.5 ${loaderClass ?? ""} `}>
           <div className="spinnerW"></div>

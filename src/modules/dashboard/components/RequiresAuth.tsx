@@ -21,42 +21,67 @@ import {
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
 import { setRemoveUser } from "@/redux/slices/userSlice";
+import { useEffect, useState } from "react";
 
+enum sidebarList {
+  dashboard = "dashboard",
+  marketplace = "marketplace",
+  user = "user",
+  cms = "cms",
+  setting = "setting",
+}
 const RequiresAuth = ({ children }: any) => {
   const { isAuthenticated } = useSelector(getAuth);
   const dispatch = useDispatch();
   const location = useLocation();
 
+  const [active, setActive] = useState(sidebarList.dashboard);
+  const [activeBoard, setActiveBoard] = useState("Dashboard");
+
+  useEffect(() => {
+    if (location.pathname) {
+      const activeKey = navData.find((el) =>
+        location.pathname.includes(el.key)
+      );
+
+      if (activeKey?.key) setActive(activeKey?.key);
+      if (activeKey?.navName) setActiveBoard(activeKey?.navName);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
+
   const navData = [
     {
       navIcon: <DashboardIcon />,
+      // navIcon: (className) => <DashboardIcon className={className} />,
       navName: "Dashboard",
       navClass: "bg-greenPrimary text-white",
       path: PrivateRoutesPath.dashboard.view,
+      key: sidebarList.dashboard,
     },
     {
       navIcon: <UserMgtIcon />,
       navName: "User Management",
-      navClass: "bg-white text-grayText",
       path: "",
+      key: sidebarList.user,
     },
     {
       navIcon: <MarketPlaceIcon />,
       navName: "Marketplace",
-      navClass: "bg-white text-grayText",
       path: "",
+      key: sidebarList.marketplace,
     },
     {
       navIcon: <CMSMGTIcon />,
       navName: "CMS Management",
-      navClass: "bg-white text-grayText",
       path: "",
+      key: sidebarList.cms,
     },
     {
       navIcon: <SettingsIcon />,
       navName: "Settings",
-      navClass: "bg-white text-grayText",
       path: PrivateRoutesPath.setting.profile.view,
+      key: sidebarList.setting,
     },
   ];
 
@@ -112,13 +137,17 @@ const RequiresAuth = ({ children }: any) => {
             <nav className="">
               {navData.map((data, i) => (
                 <Link
-                  className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${data.navClass} `}
+                  className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${
+                    active === data.key
+                      ? "bg-greenPrimary text-white"
+                      : "bg-white text-grayText"
+                  } `}
                   to={data.path}
                   key={i}
                 >
                   <span className="  group-hover:fill-blackPrimary">
                     {data.navIcon}
-                  </span>{" "}
+                  </span>
                   {data.navName}
                 </Link>
               ))}
@@ -127,7 +156,7 @@ const RequiresAuth = ({ children }: any) => {
 
           <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
             <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-              {location.pathname === "/setting" ? "Settings" : "Dashboard"}
+              {activeBoard}
             </h2>
             {children}
           </article>
