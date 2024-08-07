@@ -4,10 +4,11 @@ import { useForm } from "react-hook-form";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
+import Input from "@/components/form-fields/components/Input";
+import { btnShowType } from "@/components/form-fields/types";
 
 // **  types **
 import { IFormInputs } from "../types";
-import Input from "@/components/form-fields/components/Input";
 
 const Profile = () => {
   const {
@@ -89,7 +90,7 @@ const Profile = () => {
             </div>
             <div className="pt-14">
               <Button
-                showType="App"
+                showType={btnShowType.green}
                 btnClass=" !w-auto !px-14 "
                 type="submit"
                 btnName="Update"

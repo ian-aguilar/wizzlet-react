@@ -17,16 +17,21 @@ export type IInputProps<T extends FieldValues> = {
   withLabel?: boolean;
 };
 
+export enum btnShowType {
+  primary = "primary",
+  green = "green",
+}
 export interface IButtonProps {
   btnName: string;
   type?: "button" | "submit" | "reset";
-  showType: "App" | "cms";
+  showType?: btnShowType;
   btnClass?: string;
   onClickHandler?: (e: MouseEvent<HTMLElement>) => void;
   isLoading?: boolean;
   loaderClass?: string;
   disabled?: boolean;
   btnEndIcon?: ReactNode;
+  BtnIconRight?: string;
 }
 
 export interface IOtpInputProps {

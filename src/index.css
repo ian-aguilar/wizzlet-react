@@ -15,23 +15,6 @@ body {
   @apply bg-grayText;
 }
 
-.otp_input {
-  width: 3rem !important;
-  height: 3rem;
-  margin: 0 0.5rem;
-  font-size: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-  text-align: center;
-  outline: none;
-}
-
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 /* loader design */
 .spinner {
   width: 40px;
@@ -68,3 +51,19 @@ input::-webkit-inner-spin-button {
 }
 
 /* loader design */
+.otp_input {
+  width: 3rem !important;
+  height: 3rem;
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  text-align: center;
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

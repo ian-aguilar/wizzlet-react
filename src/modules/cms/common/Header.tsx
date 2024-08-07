@@ -1,10 +1,14 @@
+import { Link, useNavigate } from "react-router-dom";
+
 import Logo from "/images/logo.svg";
-import { Link } from "react-router-dom";
 import { HamburgerIcon, RightArrowWhite } from "@/assets/Svg";
 import { Button } from "./Button";
 import { RoutesPath } from "@/modules/Auth/types";
+import { btnShowType } from "@/components/form-fields/types";
 
 export const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <header className="border-b shadow-headerWeb">
       <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
@@ -48,10 +52,11 @@ export const Header = () => {
             Log In
           </Link>
           <Button
-            showType="App"
+            showType={btnShowType.primary}
             btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
             btnName="Get Started"
             btnEndIcon={<RightArrowWhite />}
+            onClickHandler={() => navigate(RoutesPath.SignUp)}
           />
         </div>
         <div className="HamburgerIcon  lg:hidden block ">

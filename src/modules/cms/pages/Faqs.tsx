@@ -2,6 +2,7 @@ import Header from "@/components/common/Header";
 import { Footer } from "../common/Footer";
 import { Button } from "../common/Button";
 import { FaqData } from "@/constants";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Faqs = () => {
   return (
@@ -56,13 +57,13 @@ const Faqs = () => {
             </p>
             <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
               <Button
-                showType="cms"
+                showType={btnShowType.green}
                 btnClass=" border-greenPrimary bg-greenPrimary text-white "
                 btnName="Get Importme free"
               />
 
               <Button
-                showType="cms"
+                showType={btnShowType.green}
                 btnClass=" border-greyBorder bg-white  text-blackPrimary  "
                 btnName="Book a demo"
               />

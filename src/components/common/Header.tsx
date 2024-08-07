@@ -13,6 +13,7 @@ import { setRemoveUser } from "@/redux/slices/userSlice";
 import { setLogoutData } from "@/redux/slices/authSlice";
 import { RoutesPath } from "@/modules/Auth/types";
 import Button from "../form-fields/components/Button";
+import { btnShowType } from "../form-fields/types";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
@@ -43,7 +44,25 @@ const Header = ({ type }: { type: string }) => {
               </div>
               <NotificationIcon />
             </div>
-            <div className="rounded-full border border-greyBorder cursor-pointer">
+            <div className="rounded-full border border-greyBorder cursor-pointer relative group transition-all duration-300">
+              <div className="absolute opacity-0 invisible group-hover:visible group-hover:opacity-100 top-14 right-0 bg-white rounded-lg p-1  text-center min-w-[150px] w-[150px]  text-base font-semibold shadow-md ">
+                <Link
+                  to=""
+                  className="block bg-grayLightBody/10 p-2 mb-1 hover:bg-greenPrimary/10 hover:text-greenPrimary hover:brightness-110 rounded-t-lg"
+                >
+                  Account
+                </Link>
+                <Link
+                  to={RoutesPath.Login}
+                  className="block bg-grayLightBody/10 p-2  hover:bg-greenPrimary/10  hover:text-greenPrimary hover:brightness-110  rounded-b-lg"
+                  onClick={() => {
+                    dispatch(setLogoutData());
+                    dispatch(setRemoveUser());
+                  }}
+                >
+                  Logout
+                </Link>
+              </div>
               <img
                 src={ProfilePlaceholder}
                 className="w-14 h-14 min-w-14"
@@ -99,7 +118,7 @@ const Header = ({ type }: { type: string }) => {
                 Log In
               </Link>
               <Button
-                showType="cms"
+                showType={btnShowType.primary}
                 btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
                 btnName="Get Started"
                 btnEndIcon={<RightArrowWhite />}

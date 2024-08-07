@@ -6,6 +6,7 @@ import { RoutesPath } from "../types";
 
 // ** types **
 import Button from "@/components/form-fields/components/Button";
+import { btnShowType } from "@/components/form-fields/types";
 
 export const MailSent = ({ email }: { email: string }) => {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ export const MailSent = ({ email }: { email: string }) => {
 
       <div className="text-center">
         <Button
-          showType="App"
+          showType={btnShowType.primary}
           btnName="Back to login"
           btnClass="mt-9 !px-7  !w-auto !bg-white !border !border-grayLightBody/40 !text-black "
           type="submit"
