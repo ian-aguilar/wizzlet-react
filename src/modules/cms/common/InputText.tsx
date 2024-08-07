@@ -1,5 +1,3 @@
-import React from "react";
-
 export const InputText = ({ inputPlaceholder, inputLabel }: any) => {
   return (
     <div className="w-full mb-8">

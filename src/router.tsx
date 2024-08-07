@@ -7,11 +7,13 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
+import { AuthenticationRoutes } from "./modules/Auth/routes";
 import { SettingRoutes } from "./modules/settings/routes";
 import { PrivateRoutesPath } from "./modules/Auth/types";
 import Dashboard from "./modules/dashboard";
 import SettingLayout from "./modules/settings/components/SettingLayout";
+import { Loader } from "./components/common/Loader";
+import { CMSRoutes } from "./modules/cms/routes";
 
 // ** Types **
 export type RouteObjType = {
@@ -32,7 +34,17 @@ const RequiresAuth = React.lazy(
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+    element: (
+      <Suspense
+        fallback={
+          <>
+            <Loader />
+          </>
+        }
+      >
+        {route.element}
+      </Suspense>
+    ),
   }));
 };
 

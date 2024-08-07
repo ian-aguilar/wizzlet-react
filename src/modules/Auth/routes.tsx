@@ -49,22 +49,3 @@ export const AuthenticationRoutes = applySuspense([
     element: <Registration />,
   },
 ]);
-
-export const CMSRoutes = applySuspense([
-  {
-    path: RoutesPath.CMSHome,
-    element: <CMSHome />,
-  },
-  {
-    path: RoutesPath.CMSAboutUs,
-    element: <AboutUs />,
-  },
-  {
-    path: RoutesPath.CMSFaqs,
-    element: <Faqs />,
-  },
-  {
-    path: RoutesPath.CMSContact,
-    element: <Contact />,
-  },
-]);

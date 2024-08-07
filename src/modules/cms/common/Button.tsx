@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Button = ({ btnName, btnClass, btnEndIcon }: any) => {
   return (
     <button

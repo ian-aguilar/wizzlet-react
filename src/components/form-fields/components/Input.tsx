@@ -17,7 +17,7 @@ const Input = <T extends FieldValues>({
   const [isShow, setIsShow] = useState<boolean>(false);
 
   return (
-    <div className="relative">
+    <div className="relative mb-4">
       <Controller
         name={name}
         control={control}

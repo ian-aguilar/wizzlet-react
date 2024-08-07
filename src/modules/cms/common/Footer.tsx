@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "/images/logo.svg";
+
 export const Footer = () => {
   return (
     <footer className="border-t border-greyBorder">
