@@ -14,6 +14,8 @@ import Dashboard from "./modules/dashboard";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes } from "./modules/cms/routes";
+import Marketplace from "./modules/marketplace";
+import InventoryManagement from "./modules/inventory-management";
 
 // ** Types **
 export type RouteObjType = {
@@ -69,6 +71,14 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.dashboard.view,
       element: <Dashboard />,
+    },
+    {
+      path: PrivateRoutesPath.marketplace.view,
+      element: <Marketplace />,
+    },
+    {
+      path: PrivateRoutesPath.inventoryManagement.view,
+      element: <InventoryManagement />,
     },
     {
       element: <SettingLayout />,
