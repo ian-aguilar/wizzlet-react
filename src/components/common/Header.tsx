@@ -1,5 +1,5 @@
 // ** packages **
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 // ** icons/svg **
@@ -17,6 +17,7 @@ import { btnShowType } from "../form-fields/types";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -67,10 +68,10 @@ const Header = ({ type }: { type: string }) => {
                 src={ProfilePlaceholder}
                 className="w-14 h-14 min-w-14"
                 alt=""
-                onClick={() => {
-                  dispatch(setLogoutData());
-                  dispatch(setRemoveUser());
-                }}
+                // onClick={() => {
+                //   dispatch(setLogoutData());
+                //   dispatch(setRemoveUser());
+                // }}
               />
             </div>
           </div>
@@ -122,6 +123,9 @@ const Header = ({ type }: { type: string }) => {
                 btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
                 btnName="Get Started"
                 btnEndIcon={<RightArrowWhite />}
+                onClickHandler={() => {
+                  navigate(RoutesPath.SignUp);
+                }}
               />
             </div>
             <div className="HamburgerIcon  lg:hidden block ">
