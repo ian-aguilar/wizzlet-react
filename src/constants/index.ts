@@ -21,7 +21,7 @@ export const navData = [
   {
     navIcon: UserMgtIcon,
     navName: "User Management",
-    path: PrivateRoutesPath.inventoryManagement.view,
+    path: PrivateRoutesPath.userManagement.view,
     key: sidebarList.user,
   },
   {

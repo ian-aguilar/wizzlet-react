@@ -15,6 +15,7 @@ export default {
         authPattern: "url('/images/bgPatternAuth.png');",
         CMSPageTop: "url('/images/bgCMSPattern.png');",
         CMSPageTile: "url('/images/bg-dots-tile-CMS.png');",
+        MarketPlaceDB: "url('/images/MarketplaceImgBg.png');",
       },
       fontFamily:{
         jost : "Jost",

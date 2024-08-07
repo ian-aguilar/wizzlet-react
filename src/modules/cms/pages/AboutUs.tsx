@@ -8,6 +8,7 @@ import VisionImg from "/images/VisionImg.png";
 import Header from "@/components/common/Header";
 import Button from "@/components/form-fields/components/Button";
 import { aboutData, serviceData } from "@/constants";
+import { btnShowType } from "@/components/form-fields/types";
 
 const AboutUs = () => {
   return (
@@ -27,7 +28,7 @@ const AboutUs = () => {
               and improve overall productivity."
             </p>
             <Button
-              showType="cms"
+              showType={btnShowType.green}
               btnName="Sign Up Now "
               btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  "
             />
@@ -74,7 +75,7 @@ const AboutUs = () => {
               processes and achieve sustainable growth.
             </p>
             <Button
-              showType="cms"
+              showType={btnShowType.green}
               btnName="Try For Free"
               btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
             />

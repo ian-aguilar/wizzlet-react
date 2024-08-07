@@ -2,6 +2,7 @@ import { Footer } from "../common/Footer";
 import { InputText } from "../common/InputText";
 import { Button } from "../common/Button";
 import Header from "@/components/common/Header";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Contact = () => {
   return (
@@ -50,7 +51,7 @@ const Contact = () => {
             <InputText inputPlaceholder="Enter" inputLabel="Message *" />
             <div className="flex md:justify-end justify-center mt-10  md:mt-16 ">
               <Button
-                showType="cms"
+                showType={btnShowType.green}
                 btnClass=" bg-greenPrimary border-greenPrimary text-white "
                 btnName="Send"
               />

@@ -2,6 +2,7 @@ import { CloseIconSvg } from "@/assets/Svg";
 import { Link } from "react-router-dom";
 
 import Button from "../form-fields/components/Button";
+import { btnShowType } from "../form-fields/types";
 
 export const ModalCommon = () => {
   return (
@@ -28,11 +29,15 @@ export const ModalCommon = () => {
         </div>
         <div className="ModalFooterActions flex justify-end gap-2 p-5">
           <Button
-            showType="App"
+            showType={btnShowType.primary}
             btnClass="!w-auto !px-8 !bg-transparent border border-greyBorder !text-grayText  "
             btnName="Cancel"
           />
-          <Button showType="App" btnClass="!w-auto !px-8" btnName="Change" />
+          <Button
+            showType={btnShowType.primary}
+            btnClass="!w-auto !px-8"
+            btnName="Change"
+          />
         </div>
       </div>
     </div>

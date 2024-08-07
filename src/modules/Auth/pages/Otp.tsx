@@ -14,6 +14,7 @@ import OtpInputField from "@/components/form-fields/components/OtpInputField";
 
 // ** services **
 import { useVerifyPostAPI } from "../services/auth.service";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Otp = () => {
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ const Otp = () => {
         </div>
 
         <Button
-          showType="App"
+          showType={btnShowType.primary}
           btnName="Confirm"
           btnClass="mt-9"
           type="submit"

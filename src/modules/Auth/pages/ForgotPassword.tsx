@@ -14,6 +14,7 @@ import { useForgotPasswordPostAPI } from "../services/auth.service";
 import { LeftArrow } from "@/components/svgIcons";
 import { useState } from "react";
 import { MailSent } from "./MailSent";
+import { btnShowType } from "@/components/form-fields/types";
 
 const ForgotPassword = () => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -67,7 +68,7 @@ const ForgotPassword = () => {
               />
 
               <Button
-                showType="App"
+                showType={btnShowType.green}
                 btnName="Reset Password"
                 btnClass="mt-9"
                 type="submit"

@@ -10,12 +10,13 @@ import React, { Suspense } from "react";
 import { AuthenticationRoutes } from "./modules/Auth/routes";
 import { SettingRoutes } from "./modules/settings/routes";
 import { PrivateRoutesPath } from "./modules/Auth/types";
-import Dashboard from "./modules/dashboard";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes } from "./modules/cms/routes";
 import Marketplace from "./modules/marketplace";
 import InventoryManagement from "./modules/inventory-management";
+import Dashboard from "./modules/dashboard";
+import UserManagement from "./modules/user-management";
 
 // ** Types **
 export type RouteObjType = {
@@ -79,6 +80,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.inventoryManagement.view,
       element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.userManagement.view,
+      element: <UserManagement />,
     },
     {
       element: <SettingLayout />,

@@ -13,6 +13,7 @@ import { setRemoveUser } from "@/redux/slices/userSlice";
 import { setLogoutData } from "@/redux/slices/authSlice";
 import { RoutesPath } from "@/modules/Auth/types";
 import Button from "../form-fields/components/Button";
+import { btnShowType } from "../form-fields/types";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
@@ -99,7 +100,7 @@ const Header = ({ type }: { type: string }) => {
                 Log In
               </Link>
               <Button
-                showType="cms"
+                showType={btnShowType.primary}
                 btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
                 btnName="Get Started"
                 btnEndIcon={<RightArrowWhite />}

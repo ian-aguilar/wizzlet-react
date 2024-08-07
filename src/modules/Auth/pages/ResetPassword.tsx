@@ -23,6 +23,7 @@ import {
 // ** validations **
 import { ResetPasswordValidationSchema } from "../validation-schema/forgotPasswordValidation";
 import Input from "@/components/form-fields/components/Input";
+import { btnShowType } from "@/components/form-fields/types";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -103,7 +104,7 @@ const ResetPassword = () => {
                 type="password"
               />
               <Button
-                showType="App"
+                showType={btnShowType.green}
                 btnClass="mt-6"
                 btnName="Sign in"
                 type="submit"
@@ -125,7 +126,7 @@ const ResetPassword = () => {
 
           <div className="text-center">
             <Button
-              showType="App"
+              showType={btnShowType.green}
               btnName="Forgot Password"
               btnClass="mt-9 !px-7  !w-auto !bg-white !border !border-grayLightBody/40 !text-black "
               type="submit"

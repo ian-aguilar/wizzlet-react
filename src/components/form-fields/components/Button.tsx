@@ -1,4 +1,4 @@
-import { IButtonProps } from "../types";
+import { btnShowType, IButtonProps } from "../types";
 
 const Button = ({
   btnName,
@@ -11,15 +11,27 @@ const Button = ({
   disabled,
   btnEndIcon,
 }: IButtonProps) => {
+  let btnType = "";
+  switch (showType) {
+    case btnShowType.green:
+      btnType = `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
+        btnClass ?? ""
+      }`;
+      break;
+
+    case btnShowType.primary:
+      btnType = `py-3 px-5 border rounded-[10px] text-xl font-medium transition-all duration-300 hover:transition-all hover:duration-300 hover:brightness-110 flex gap-2 items-center ${btnClass}`;
+      break;
+
+    default:
+      btnType = `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
+        btnClass ?? ""
+      }`;
+  }
+
   return (
     <button
-      className={
-        showType === "App"
-          ? `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
-              btnClass ?? ""
-            }`
-          : `py-3 px-5 border rounded-[10px] text-xl font-medium transition-all duration-300 hover:transition-all hover:duration-300 hover:brightness-110 flex gap-2 items-center ${btnClass}`
-      }
+      className={btnType}
       type={type ? type : "button"}
       onClick={onClickHandler}
       disabled={isLoading ? true : disabled}
@@ -30,7 +42,7 @@ const Button = ({
           <div className="spinnerW"></div>
         </span>
       )}
-      {btnEndIcon}
+      {btnEndIcon && btnEndIcon}
     </button>
   );
 };
