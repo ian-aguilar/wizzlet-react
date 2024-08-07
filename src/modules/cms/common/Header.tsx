@@ -48,6 +48,7 @@ export const Header = () => {
             Log In
           </Link>
           <Button
+            showType="App"
             btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
             btnName="Get Started"
             btnEndIcon={<RightArrowWhite />}

@@ -1,9 +1,9 @@
-import { Header } from "../common/Header";
+import Header from "@/components/common/Header";
 
 const CMSHome = () => {
   return (
     <>
-      <Header />
+      <Header type="cms" />
       CMSHome
     </>
   );

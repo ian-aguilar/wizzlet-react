@@ -1,6 +1,6 @@
 import { CloseIconSvg } from "@/assets/Svg";
 import { Link } from "react-router-dom";
-import { TextLabel } from "./TextLabel";
+
 import Button from "../form-fields/components/Button";
 
 export const ModalCommon = () => {
@@ -17,20 +17,22 @@ export const ModalCommon = () => {
           </Link>
         </div>
         <div className="modalBody py-9 px-6">
-          <TextLabel
-            TextClass=" "
-            TextLabelName="Email"
-            name="email"
-            TextPlaceHolder="Email"
-            TextEndIcon=" "
-          />
+          {/* <Input
+            textLabelName="New Password"
+            inputEndIcon={<ShowPassword />}
+            control={control}
+            name="password"
+            errors={errors}
+            type="password"
+          />  */}
         </div>
         <div className="ModalFooterActions flex justify-end gap-2 p-5">
           <Button
+            showType="App"
             btnClass="!w-auto !px-8 !bg-transparent border border-greyBorder !text-grayText  "
             btnName="Cancel"
           />
-          <Button btnClass="!w-auto !px-8" btnName="Change" />
+          <Button showType="App" btnClass="!w-auto !px-8" btnName="Change" />
         </div>
       </div>
     </div>
