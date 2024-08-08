@@ -28,7 +28,7 @@ const Sidebar = () => {
 
       <nav className="">
         {navData.map((data, i) => (
-          <Link
+          <Link 
             className={`group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110 duration-300 transition-all  hover:duration-300 hover:transition-all  ${
               active === data.key
                 ? "bg-greenPrimary text-white"
