@@ -9,7 +9,7 @@ export const emailValidation = Yup.string()
 
 export const passwordValidation = Yup.string()
   .required("Password is required")
-  .min(8, "Minimum 6-digit password needed")
+  .min(8, "Minimum 8-digit password needed")
   .matches(
     /(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$/,
     "Include at least one uppercase letter, special character, and digit in your password"

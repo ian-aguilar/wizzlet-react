@@ -11,3 +11,11 @@ export interface IChangePasswordInputs {
   newPassword: string;
   confirmNewPassword: string;
 }
+
+export interface IModelTest {
+  label: string;
+}
+
+export interface IAddLabelInputs {
+  label: string;
+}

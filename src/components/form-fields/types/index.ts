@@ -35,6 +35,16 @@ export interface IButtonProps {
   BtnIconRight?: string;
 }
 
+export interface ModalCommonProps {
+  heading: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
+  children?: React.ReactNode;
+}
+
 export interface IOtpInputProps {
   onChangeHandler: (otp: string) => void;
   value: string;
