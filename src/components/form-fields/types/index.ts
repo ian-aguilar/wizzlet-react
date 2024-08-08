@@ -24,6 +24,7 @@ export interface IButtonProps {
   loaderClass?: string;
   disabled?: boolean;
   BtnIconRight?:string;
+  BtnIconLeft?:string;
 }
 
 export interface IOtpInputProps {

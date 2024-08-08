@@ -13,6 +13,7 @@ import {
   CMSMGTIcon,
   DashboardIcon,
   HamburgerIcon,
+  LeftArrowIcon,
   MarketPlaceIcon,
   NotificationIcon,
   SettingsIcon,
@@ -118,7 +119,12 @@ const RequiresAuth = ({ children }: any) => {
           </div>
         </header>
         <div className="w-full flex h-[calc(100vh_-_83px)]">
-          <article className="LeftBar min-w-[291px] w-[291px] h-full lg:block hidden p-5">
+          <article className="LeftBar min-w-[291px] w-[291px] h-full lg:block hidden p-5 relative">
+            <div className="absolute -right-3 top-7 ">
+              <div className="border p-1 rounded-full bg-white cursor-pointer">
+                <LeftArrowIcon className="text-grayText" />{" "}
+              </div>
+            </div>
             <div className="bg-[#F7F8FA] py-2 px-4 uppercase w-full text-grayText font-semibold mb-2">
               MENU
             </div>
