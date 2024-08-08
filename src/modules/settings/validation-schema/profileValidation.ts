@@ -1,4 +1,3 @@
-import { emailValidation } from "@/modules/Auth/validation-schema";
 import * as Yup from "yup";
 
 export const profileValidationSchema = Yup.object().shape({
