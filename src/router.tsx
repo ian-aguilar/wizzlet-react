@@ -1,9 +1,5 @@
 // ** Packages **
-import {
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -17,6 +13,7 @@ import Marketplace from "./modules/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
+import Aboutus from "./modules/Admin/Aboutus/Index";
 
 // ** Types **
 export type RouteObjType = {
@@ -27,12 +24,8 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresUnAuth")
-);
-const RequiresAuth = React.lazy(
-  () => import("@/modules/dashboard/components/RequiresAuth")
-);
+const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
+const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -88,6 +81,10 @@ const RouterComponent = () => {
     {
       element: <SettingLayout />,
       children: SettingRoutes,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.aboutus,
+      element: <Aboutus />,
     },
   ]);
 

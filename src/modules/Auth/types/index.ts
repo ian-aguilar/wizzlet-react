@@ -21,4 +21,7 @@ export const PrivateRoutesPath = {
   inventoryManagement: { view: "/inventory-management" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
+  cmsManagement: {
+    aboutus: "/cms-management/aboutus",
+  },
 };
