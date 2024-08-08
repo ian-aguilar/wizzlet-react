@@ -15,6 +15,7 @@ export type IInputProps<T extends FieldValues> = {
   autoComplete?: string;
   textLabelName?: string;
   withLabel?: boolean;
+  isDisabled?: boolean;
 };
 
 export enum btnShowType {
