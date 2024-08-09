@@ -75,6 +75,7 @@ const Profile = () => {
                 <Input
                   textLabelName="First Name"
                   control={control}
+                  placeholder="John"
                   name="firstName"
                   errors={errors}
                   type="text"
@@ -85,6 +86,7 @@ const Profile = () => {
                   textLabelName="Last Name"
                   control={control}
                   name="lastName"
+                  placeholder="Doe"
                   errors={errors}
                   type="text"
                 />
@@ -96,6 +98,7 @@ const Profile = () => {
                   textLabelName="Organization Name"
                   control={control}
                   name="organizationName"
+                  placeholder="xyz"
                   errors={errors}
                   type="text"
                 />
