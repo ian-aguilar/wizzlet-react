@@ -15,6 +15,7 @@ const Input = <T extends FieldValues>({
   type,
   autoComplete,
   withLabel = false,
+  isDisabled,
 }: IInputProps<T>) => {
   return (
     <div className="relative mb-2">
@@ -29,8 +30,8 @@ const Input = <T extends FieldValues>({
         errors={errors}
         autoComplete={autoComplete}
         withLabel={withLabel}
-        className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none  hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 ${className} `}
-        // className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
+        isDisabled={isDisabled}
+        className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
       />
       <span className="errorText text-red-400 text-xs"> </span>
     </div>
@@ -46,6 +47,7 @@ const InputField = <T extends FieldValues>({
   errors,
   type,
   autoComplete,
+  isDisabled,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   return (
@@ -62,6 +64,7 @@ const InputField = <T extends FieldValues>({
             className={`bg-inputAuthBg/60 p-3  rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 ${className}`}
             placeholder={placeholder}
             autoComplete={autoComplete}
+            disabled={isDisabled}
           />
         )}
       />
