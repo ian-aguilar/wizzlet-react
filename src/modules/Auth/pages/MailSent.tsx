@@ -64,7 +64,7 @@ export const MailSent = ({ email }: { email: string }) => {
 
       <div className="text-center">
         <Button
-          showType={btnShowType.primary}
+          showType={btnShowType.green}
           btnName="Back to login"
           btnClass="mt-9 !px-7  !w-auto !bg-white !border !border-grayLightBody/40 !text-black "
           type="submit"
