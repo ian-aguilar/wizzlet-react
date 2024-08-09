@@ -9,7 +9,7 @@ import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes } from "./modules/cms/routes";
-import Marketplace from "./modules/marketplace";
+import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
@@ -36,8 +36,7 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
           <>
             <Loader />
           </>
-        }
-      >
+        }>
         {route.element}
       </Suspense>
     ),
