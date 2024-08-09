@@ -4,10 +4,21 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import React, { Suspense } from "react";
+import React, {Suspense} from "react";
 
 // ** Auth Routes
-import AuthenticationRoutes from "@/modules/Auth/routes";
+import {AuthenticationRoutes} from "./modules/Auth/routes";
+import {SettingRoutes} from "./modules/settings/routes";
+import {PrivateRoutesPath} from "./modules/Auth/types";
+import SettingLayout from "./modules/settings/components/SettingLayout";
+import {Loader} from "./components/common/Loader";
+import {CMSRoutes} from "./modules/cms/routes";
+import Marketplace from "./modules/marketplace/pages/marketplace";
+import InventoryManagement from "./modules/inventory-management";
+import Dashboard from "./modules/dashboard";
+import UserManagement from "./modules/user-management";
+import FaqForm from "./modules/Admin/Faq/components";
+import HomePageForm from "./modules/Admin/Home/components";
 
 // ** Types **
 export type RouteObjType = {
@@ -21,16 +32,36 @@ export type RouteObjType = {
 const RequiresUnAuth = React.lazy(
   () => import("@/modules/Auth/components/RequiresUnAuth")
 );
+const RequiresAuth = React.lazy(
+  () => import("@/modules/dashboard/components/RequiresAuth")
+);
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+    element: (
+      <Suspense
+        fallback={
+          <>
+            <Loader />
+          </>
+        }
+      >
+        {route.element}
+      </Suspense>
+    ),
+  }));
+};
+
+const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
+  return routes.map((route) => ({
+    ...route,
+    element: <RequiresAuth>{route.element}</RequiresAuth>,
   }));
 };
 
 const RouterComponent = () => {
-  // ** Un-Auth
+  // ** Un-Auth **
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresUnAuth />,
@@ -38,7 +69,43 @@ const RouterComponent = () => {
     },
   ]);
 
-  const router = createBrowserRouter([...routesForNotAuthenticatedOnly]);
+  // ** Auth **
+  const routesForAuthenticatedOnly: RouteObject[] = applyRequiresAuthSuspense([
+    {
+      path: PrivateRoutesPath.dashboard.view,
+      element: <Dashboard />,
+    },
+    {
+      path: PrivateRoutesPath.marketplace.view,
+      element: <Marketplace />,
+    },
+    {
+      path: PrivateRoutesPath.inventoryManagement.view,
+      element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.userManagement.view,
+      element: <UserManagement />,
+    },
+    {
+      element: <SettingLayout />,
+      children: SettingRoutes,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.faq,
+      element: <FaqForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.home,
+      element: <HomePageForm />,
+    },
+  ]);
+
+  const router = createBrowserRouter([
+    ...routesForNotAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
+    ...CMSRoutes,
+  ]);
 
   return <RouterProvider router={router} />;
 };

@@ -7,3 +7,63 @@
 body {
   @apply font-jost text-base;
 }
+.scroll-design::-webkit-scrollbar {
+  @apply w-1 h-1;
+}
+
+.scroll-design::-webkit-scrollbar-thumb {
+  @apply bg-grayText;
+}
+
+/* loader design */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/9.6px
+      9.6px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(9, 161, 122, 0.3) 0
+    );
+  animation: spinner-aur408 1s infinite linear;
+}
+
+.spinnerW {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/4px
+      4px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(255, 255, 255, 0.514) 0
+    );
+  animation: spinner-aur408 1s infinite linear;
+}
+
+@keyframes spinner-aur408 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* loader design */
+.otp_input {
+  width: 3rem !important;
+  height: 3rem;
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  text-align: center;
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

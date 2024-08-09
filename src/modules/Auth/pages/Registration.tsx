@@ -15,6 +15,7 @@ import { ISignupForm } from "../types/signup";
 import { signUpValidationSchema } from "../validation-schema/signupLoginValidation";
 import { ShowPassword } from "@/components/svgIcons";
 import { useRegisterUserApi } from "../services/auth.service";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Registration = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <div className="grid grid-cols-12 md:gap-2">
               <div className=" col-span-12 md:col-span-6">
                 <Input
@@ -66,6 +67,7 @@ const Registration = () => {
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
               <div className=" col-span-12 md:col-span-6">
@@ -77,6 +79,7 @@ const Registration = () => {
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
             </div>
@@ -88,6 +91,7 @@ const Registration = () => {
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
@@ -97,7 +101,8 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Input
               className=""
@@ -107,9 +112,11 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Button
+              showType={btnShowType.green}
               btnName="Submit in"
               btnClass="mt-9"
               type="submit"

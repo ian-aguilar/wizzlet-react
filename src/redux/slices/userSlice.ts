@@ -1,40 +1,54 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-export interface IUserInitialRedux {
-  token: null | string;
-  user: any | null;
+interface IUser {
+  full_name: string;
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  verified: boolean;
+  added_by_admin: boolean;
+  status: string;
+  reset_pass_token: string;
+  role: string;
+  last_active_date: string | Date;
+  created_at: string | Date;
+  updated_at: string | Date;
+  deleted_at: string | Date;
 }
 
-const initialState = {
-  token: null,
+export interface userInterface {
+  user?: IUser | null;
+}
+
+const initialState: userInterface = {
   user: null,
 };
-export const userSlice = createSlice({
+
+const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state: IUserInitialRedux, action: PayloadAction<any>) => {
-      state.user = action.payload;
+    setRemoveUser(state: userInterface) {
+      state.user = null;
     },
-    setToken: (
-      state: IUserInitialRedux,
-      action: PayloadAction<string | null>
-    ) => {
-      state.token = action.payload;
-    },
-    removeToken: (state: IUserInitialRedux) => {
-      state.token = null;
+
+    setUser(state: userInterface, action: PayloadAction<userInterface>) {
+      const { user } = action.payload;
+      if (user) {
+        state.user = action.payload.user;
+      } else {
+        state.user = null;
+      }
     },
   },
 });
 
-export const userSelector = (state: { user: IUserInitialRedux }) =>
-  state.user.user;
-export const tokenSelector = (state: { user: IUserInitialRedux }) =>
-  state.user.token;
+export const { reducer } = userSlice;
 
-const { actions, reducer } = userSlice;
+export const getAuth = (state: RootState) => state.user;
 
-export const { setUser, setToken, removeToken } = actions;
+export const { setRemoveUser, setUser } = userSlice.actions;
 
-export default reducer;
+export default userSlice;

@@ -1,6 +1,7 @@
 // ** Packages **
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** validations **
@@ -8,16 +9,20 @@ import { LoginValidationSchema } from "../validation-schema/signupLoginValidatio
 
 // ** types **
 import { ILoginForm } from "../types/login";
-import { RoutesPath } from "../types";
+import { PrivateRoutesPath, RoutesPath } from "../types";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
 import Input from "@/components/form-fields/components/Input";
 import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
+import { setCredentials } from "@/redux/slices/authSlice";
+import { setUser } from "@/redux/slices/userSlice";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loginPostAPI, isLoading: loader } = useLoginPostAPI();
 
   const {
@@ -32,8 +37,18 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (!error && data) {
-      navigate(RoutesPath.Home);
+    if (data?.isVerified === false) {
+      navigate(RoutesPath.Otp, {
+        state: {
+          email: values.email,
+          previousRoute: RoutesPath.Login,
+        },
+      });
+    }
+    if (!error && data && data?.data?.user?.verified) {
+      dispatch(setCredentials({ token: data?.data?.access_token }));
+      dispatch(setUser({ user: data?.data?.user }));
+      navigate(PrivateRoutesPath.dashboard.view);
     }
   };
 
@@ -51,7 +66,7 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <Input
               className=""
               placeholder="Email"
@@ -60,6 +75,7 @@ const Login = () => {
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
@@ -69,7 +85,8 @@ const Login = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete={"new-password"}
             />
 
             <div className="flex gap-2 justify-center items-center">
@@ -81,7 +98,12 @@ const Login = () => {
               </Link>
             </div>
 
-            <Button btnName="Sign in" type="submit" isLoading={loader} />
+            <Button
+              showType={btnShowType.green}
+              btnName="Sign in"
+              type="submit"
+              isLoading={loader}
+            />
           </div>
         </form>
 
