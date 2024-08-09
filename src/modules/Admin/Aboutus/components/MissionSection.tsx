@@ -21,7 +21,6 @@ const MissionSection = () => {
       <div>
         <Input
           placeholder="Enter Title"
-          className=""
           name="missionSection.title"
           textLabelName="Title"
           type="text"
@@ -31,7 +30,6 @@ const MissionSection = () => {
         />
         <Input
           placeholder="Enter Description"
-          className=""
           name="missionSection.description"
           textLabelName="Description"
           type="text"
@@ -41,7 +39,6 @@ const MissionSection = () => {
         />
         <UploadFile
           placeholder="Choose image"
-          className=""
           textLabelName="Choose Image"
           name="missionSection.image"
           autoComplete={""}

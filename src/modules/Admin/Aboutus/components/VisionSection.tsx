@@ -21,7 +21,6 @@ const VisionSection = () => {
       <div>
         <Input
           placeholder="Enter Title"
-          className=""
           name="visionSection.title"
           textLabelName="Title"
           type="text"
@@ -31,7 +30,6 @@ const VisionSection = () => {
         />
         <Input
           placeholder="Enter Description"
-          className=""
           name="visionSection.description"
           textLabelName="Description"
           type="text"
@@ -41,7 +39,6 @@ const VisionSection = () => {
         />
         <Input
           placeholder="Enter Green Button Name"
-          className=""
           name="visionSection.greenButton"
           textLabelName="Green Button"
           type="text"
@@ -51,7 +48,6 @@ const VisionSection = () => {
         />
         <UploadFile
           placeholder="Choose image"
-          className=""
           textLabelName="Choose Image"
           name="visionSection.image"
           autoComplete={""}

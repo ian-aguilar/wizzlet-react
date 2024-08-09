@@ -27,7 +27,6 @@ const ServiceSection = () => {
       <div>
         <Input
           placeholder="Enter Title"
-          className=""
           name="serviceSection.title"
           textLabelName="Title"
           type="text"
@@ -37,7 +36,6 @@ const ServiceSection = () => {
         />
         <Input
           placeholder="Enter Description"
-          className=""
           name="serviceSection.description"
           textLabelName="Description"
           type="text"
@@ -58,7 +56,6 @@ const ServiceSection = () => {
           <div key={field.id} className="flex">
             <UploadFile
               placeholder={`Choose card icon`}
-              className=""
               textLabelName={`Choose card icon`}
               name={`serviceSection.cards.${index}.icon`}
               autoComplete={""}
@@ -66,7 +63,6 @@ const ServiceSection = () => {
             />
             <Input
               placeholder={`Enter card title`}
-              className=""
               name={`serviceSection.cards.${index}.title`}
               textLabelName={`Card title`}
               type="text"
@@ -76,7 +72,6 @@ const ServiceSection = () => {
             />
             <Input
               placeholder={`Enter card description`}
-              className=""
               name={`serviceSection.cards.${index}.description`}
               textLabelName={`Card description`}
               type="text"

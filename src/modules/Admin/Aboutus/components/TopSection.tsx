@@ -27,7 +27,6 @@ const TopSection = () => {
       <div>
         <Input
           placeholder="Enter Heading"
-          className=""
           name="topSection.heading"
           textLabelName="Heading"
           type="text"
@@ -37,7 +36,6 @@ const TopSection = () => {
         />
         <Input
           placeholder="Enter Description"
-          className=""
           name="topSection.description"
           textLabelName="Description"
           type="text"
@@ -47,7 +45,6 @@ const TopSection = () => {
         />
         <Input
           placeholder="Enter Green Button Name"
-          className=""
           name="topSection.greenButton"
           textLabelName="Green Button"
           type="text"
@@ -57,7 +54,6 @@ const TopSection = () => {
         />
         <Input
           placeholder="Enter White Button Name"
-          className=""
           name="topSection.whiteButton"
           textLabelName="White Button"
           type="text"
@@ -78,7 +74,6 @@ const TopSection = () => {
           <div key={field.id} className="flex">
             <UploadFile
               placeholder={`Choose card icon`}
-              className=""
               textLabelName={`Choose card icon`}
               name={`topSection.cards.${index}.icon`}
               autoComplete={""}
@@ -86,7 +81,6 @@ const TopSection = () => {
             />
             <Input
               placeholder={`Enter card title`}
-              className=""
               name={`topSection.cards.${index}.title`}
               textLabelName={`Card title`}
               type="text"
@@ -96,7 +90,6 @@ const TopSection = () => {
             />
             <Input
               placeholder={`Enter card description`}
-              className=""
               name={`topSection.cards.${index}.description`}
               textLabelName={`Card description`}
               type="text"
