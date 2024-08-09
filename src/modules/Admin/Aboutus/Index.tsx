@@ -12,7 +12,7 @@ const Aboutus = () => {
   const methods = useForm<IAboutusForm>({ resolver: yupResolver(AboutusValidation) });
 
   const onSubmit: SubmitHandler<IAboutusForm> = async (values) => {
-    console.log("Valuessssss", values);
+    console.log("Setting aboutus", values);
   };
   return (
     <FormProvider {...methods}>

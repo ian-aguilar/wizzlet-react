@@ -4,7 +4,7 @@ export interface ITopSection {
   greenButton: string;
   whiteButton: string;
   cards?: {
-    icon: string;
+    icon: Object;
     title: string;
     description: string;
   }[];

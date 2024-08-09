@@ -8,6 +8,7 @@ const VisionSection = () => {
     control,
     formState: { errors },
     register,
+    getValues,
   } = useFormContext<IAboutusForm>();
 
   return (
@@ -51,6 +52,7 @@ const VisionSection = () => {
           name="visionSection.image"
           autoComplete={""}
           register={register}
+          errors={errors}
         />
       </div>
     </section>

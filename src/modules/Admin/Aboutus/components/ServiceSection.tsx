@@ -80,7 +80,6 @@ const ServiceSection = () => {
             />
             <span
               onClick={() => {
-                console.log(fields);
                 insert(index + 1, { title: "", icon: "", description: "" });
               }}
             >

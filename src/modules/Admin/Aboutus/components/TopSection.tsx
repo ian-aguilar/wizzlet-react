@@ -10,8 +10,6 @@ const TopSection = () => {
     register,
   } = useFormContext<IAboutusForm>();
 
-  console.log(errors);
-
   const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "topSection.cards",
@@ -102,7 +100,6 @@ const TopSection = () => {
             />
             <span
               onClick={() => {
-                console.log(fields);
                 insert(index + 1, { title: "", icon: "", description: "" });
               }}
             >

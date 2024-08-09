@@ -14,7 +14,6 @@ const UploadFile = <T extends FieldValues>({
   return (
     <div className="relative mb-2">
       <label className="pb-1 block">{textLabelName}</label>
-
       <input
         {...register(name)}
         type="file"
