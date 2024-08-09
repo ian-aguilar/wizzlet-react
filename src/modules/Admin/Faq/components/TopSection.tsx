@@ -1,12 +1,18 @@
+// ** Packages **
 import {useFieldArray, useFormContext} from "react-hook-form";
-import {ITopSectionForm} from "../types";
+
+// ** types **
+import {IForm} from "../types";
+
+// ** common components **
 import Input from "@/components/form-fields/components/Input";
+import {QUESTIONANSWER} from "../constant";
 
 const TopSection = () => {
   const {
     control,
     formState: {errors},
-  } = useFormContext<ITopSectionForm>();
+  } = useFormContext<IForm>();
   const {fields, append, remove, insert} = useFieldArray({
     name: "row",
   });
@@ -14,58 +20,53 @@ const TopSection = () => {
   return (
     <>
       <section>
+        <h2 className="font-bold">Top Section</h2>
         <Input
-          className=""
+          textLabelName="Title"
           placeholder="Title"
-          name="title"
+          name="topSection.title"
           label="Title"
           type="text"
           control={control}
           errors={errors}
-          autoComplete={""}
         />
         <Input
-          className=""
+          textLabelName="Description"
           placeholder="Description"
-          name="description"
+          name="topSection.description"
           label="Description"
           type="text"
           control={control}
           errors={errors}
-          autoComplete={""}
         />
-        <span onClick={() => append({question: "", answer: ""})}>
-          Add Question answer
+        <span onClick={() => append(QUESTIONANSWER)}>
+          <h2 className="font-bold">Question Answer</h2>+ Add Question answer
         </span>
         {fields.map((field, index) => (
           <div key={field.id} className="flex">
             <Input
-              className=""
+              textLabelName="Question"
               placeholder="Enter Question"
-              name={`row.${index}.question` as const}
+              name={`topSection.row.${index}.question` as const}
               label="Question"
               type="text"
               control={control}
               errors={errors}
-              autoComplete={""}
             />
             <Input
-              className=""
+              textLabelName="Answer"
               placeholder="Enter description"
-              name={`row.${index}.answer` as const}
+              name={`topSection.row.${index}.answer` as const}
               label="Answer"
               type="text"
               control={control}
               errors={errors}
-              autoComplete={""}
             />
 
             <span onClick={() => remove(index)} className="me-3">
               delete
             </span>
-            <span onClick={() => insert(index + 1, {question: "", answer: ""})}>
-              Add{" "}
-            </span>
+            <span onClick={() => insert(index + 1, QUESTIONANSWER)}>Add </span>
           </div>
         ))}
       </section>

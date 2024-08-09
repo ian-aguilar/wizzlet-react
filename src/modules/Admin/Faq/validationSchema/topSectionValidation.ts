@@ -1,9 +1,12 @@
+// ** Packages **
 import * as Yup from "yup"
+
+// ** validations **
 import { descriptionValidation, titleValidation } from ".";
 import { BottomSectionValidationSchema } from "./bottonSectionValidation";
 const rowValidation = Yup.object().shape({
-    question: Yup.string().required("question is required"),
-    answer: Yup.string().required("answer is required"),
+    question: Yup.string().trim().required("question is required"),
+    answer: Yup.string().trim().required("answer is required"),
 });
 export const TopSectionValidationSchema = Yup.object().shape({
     row: Yup.array()
@@ -12,12 +15,10 @@ export const TopSectionValidationSchema = Yup.object().shape({
     title: titleValidation,
     description: descriptionValidation,
 });
-export const validationSchema = TopSectionValidationSchema.concat(BottomSectionValidationSchema)
 
 
-// Yup.object().shape({
-//     // topSection: TopSectionValidationSchema,
-//     // bottomSection: BottomSectionValidationSchema
-//     title: titleValidation,
+export const validationSchema = Yup.object().shape({
+    topSection: TopSectionValidationSchema,
+    bottomSection: BottomSectionValidationSchema
 
-// })
+})

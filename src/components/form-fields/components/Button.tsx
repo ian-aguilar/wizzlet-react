@@ -1,4 +1,4 @@
-import { btnShowType, IButtonProps } from "../types";
+import {btnShowType, IButtonProps} from "../types";
 
 const Button = ({
   btnName,
