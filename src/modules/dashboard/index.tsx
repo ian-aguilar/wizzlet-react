@@ -152,7 +152,7 @@ const Dashboard = () => {
       </section> */}
 
       {/* Inventory Management */}
-      <section className="InventoryMgtStripe   w-full bg-white   p-5 ">
+      <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
             <span className="block text-grayText text-base font-normal uppercase pb-4 ">
@@ -203,7 +203,7 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-      <section className=" w-full bg-white  p-5 ">
+      <section className=" w-full bg-white  p-5 mb-5">
         <div className="TopTabsBtns flex justify-between items-center gap-4 flex-wrap ">
           <div className="TopLEftTabs flex  ">
             <div className="activeTab px-7 py-2 flex items-center text-greenPrimary text-lg gap-2 border-b-2 border-greenPrimary cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300  ">
@@ -232,6 +232,91 @@ const Dashboard = () => {
         </div>
       </section>
       {/* Inventory Management */}
+      <section className="ConnectYourMarketplace w-full bg-white  p-5 mb-5">
+        <p className="font-medium text-xl text-blackPrimary pb-7">
+          Connect Your Marketplace
+        </p>
+        <div className="grid grid-cols-12 gap-6 ">
+          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
+            <div>
+              <img
+                src={BrandLogo}
+                className="max-w-[114px] w-full h-auto"
+                alt=""
+              />
+            </div>
+            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
+              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
+              Connected
+            </div>
+          </div>
+          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
+            <div>
+              <img
+                src={BrandLogo2}
+                className="max-w-[114px] w-full h-auto"
+                alt=""
+              />
+            </div>
+            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
+              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
+              Connected
+            </div>
+          </div>
+          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
+            <div>
+              <img
+                src={BrandLogo3}
+                className="max-w-[114px] w-full h-auto"
+                alt=""
+              />
+            </div>
+            <div className="bg-grayText/10 border border-graybg-grayText/50 text-graybg-grayText/80 py-1 px-2 rounded-full flex gap-2 items-center uppercase text-sm">
+              <span className="w-2 min-w-2  h-2 bg-grayText  rounded-full"></span>
+              Not Connected
+            </div>
+          </div>
+          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md relative ">
+            <div className="absolute inset-0 rounded-md bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10 ">
+              Coming Soon
+            </div>
+            <div>
+              <img
+                src={BrandLogo}
+                className="max-w-[114px] w-full h-auto"
+                alt=""
+              />
+            </div>
+            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
+              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
+              Connected
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className=" w-full bg-white  p-5 mb-5">
+        <h3 className="font-medim text-[26px] pb-7 ">Analytics</h3>
+        <div className="grid grid-cols-10 gap-4 mb-5 ">
+          <div className="flex justify-center items-center w-full h-full col-span-8 border ">
+            8
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-2 border ">
+            2
+          </div>
+        </div>
+        <div className="grid grid-cols-11 gap-4 mb-5">
+          <div className="flex justify-center items-center w-full h-full col-span-5 border ">
+            5
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-3 border ">
+            3
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-3 border ">
+            3
+          </div>
+        </div>
+      </section>
     </>
   );
 };

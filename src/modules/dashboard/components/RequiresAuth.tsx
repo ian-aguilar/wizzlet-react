@@ -22,6 +22,7 @@ import {
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
 import { setRemoveUser } from "@/redux/slices/userSlice";
+import { useEffect, useState } from "react";
 
 const RequiresAuth = ({ children }: any) => {
   const { isAuthenticated } = useSelector(getAuth);
@@ -60,6 +61,27 @@ const RequiresAuth = ({ children }: any) => {
       path: PrivateRoutesPath.setting.profile.view,
     },
   ];
+  const [isOpen, setIsOpen] = useState(true);
+
+  const ToggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 990) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Check the screen width on initial render
+    handleResize();
+
+    // Cleanup the event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // /* Not Logged In */
   if (isAuthenticated) {
@@ -70,10 +92,6 @@ const RequiresAuth = ({ children }: any) => {
       <>
         <header className="py-3 px-8 lg:px-14 flex items-center justify-between gap-8 border-b border-greyBorder">
           <div className="flex gap-4 items-center">
-            <Link to="" className="lg:hidden block">
-              <HamburgerIcon />{" "}
-            </Link>
-
             <Link to="">
               <img
                 src={MainLogo}
@@ -119,13 +137,29 @@ const RequiresAuth = ({ children }: any) => {
           </div>
         </header>
         <div className="w-full flex h-[calc(100vh_-_83px)]">
-          <article className="LeftBar min-w-[291px] w-[291px] h-full lg:block hidden p-5 relative">
+          <article
+            className={`sidebar  LeftBar   h-full  block   p-5 relative transition-all duration-300    ${
+              isOpen == true
+                ? "active  min-w-[291px] w-[291px]   "
+                : "  min-w-[91px] w-[91px] "
+            }`}
+          >
             <div className="absolute -right-3 top-7 ">
-              <div className="border p-1 rounded-full bg-white cursor-pointer">
-                <LeftArrowIcon className="text-grayText" />{" "}
+              <div
+                className="border p-1 rounded-full bg-white cursor-pointer"
+                onClick={ToggleSidebar}
+              >
+                <LeftArrowIcon className="text-grayText" />
               </div>
             </div>
-            <div className="bg-[#F7F8FA] py-2 px-4 uppercase w-full text-grayText font-semibold mb-2">
+            <div
+              className=""
+              className={`  bg-[#F7F8FA] uppercase w-full text-grayText font-semibold mb-2  transition-all duration-300 h-[40px]  ${
+                isOpen == true
+                  ? "active  py-2 px-4  text-base   "
+                  : "   py-3 px-2  text-xs    "
+              }`}
+            >
               MENU
             </div>
 
@@ -139,7 +173,16 @@ const RequiresAuth = ({ children }: any) => {
                   <span className="  group-hover:fill-blackPrimary">
                     {data.navIcon}
                   </span>{" "}
-                  {data.navName}
+                  <span
+                    className={`  -translate-x-0  whitespace-nowrap   ${
+                      isOpen == true
+                        ? "active opacity-100  scale-100  transition-all duration-300  "
+                        : " opacity-0   scale-0  transition-all duration-300 "
+                    }`}
+                  >
+                    {" "}
+                    {data.navName}{" "}
+                  </span>
                 </Link>
               ))}
             </nav>
