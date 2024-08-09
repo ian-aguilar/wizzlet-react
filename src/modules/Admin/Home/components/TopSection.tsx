@@ -1,9 +1,14 @@
-import Input from "@/components/form-fields/components/Input";
+// ** Packages **
 import {useFieldArray, useFormContext} from "react-hook-form";
+
+// ** common components **
+import Input from "@/components/form-fields/components/Input";
 import {IForm} from "../types";
-import {FEATURE} from "../constant";
 import UploadFile from "@/components/form-fields/components/UploadFile";
-//subTitle description  greenButton
+
+// ** constants **
+import {FEATURE} from "../constant";
+
 const TopSection = () => {
   const {
     control,

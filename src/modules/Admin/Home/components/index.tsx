@@ -1,5 +1,6 @@
 // ** Packages **
 import {FormProvider, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
 
 // ** common components **
 import TopSection from "./TopSection";
@@ -9,11 +10,13 @@ import Button from "@/components/form-fields/components/Button";
 
 // ** types **
 import {IForm} from "../types";
-import {yupResolver} from "@hookform/resolvers/yup";
+
+// **validations **
 import {validationSchema} from "../validationSchema/topSectionValidation";
+
+// ** constant **
 import {FEATURE} from "../constant";
 
-// ** constants **
 const HomePageForm = () => {
   const methods = useForm<IForm>({
     resolver: yupResolver(validationSchema),
@@ -25,6 +28,7 @@ const HomePageForm = () => {
   });
 
   function onSubmit(data: IForm) {
+    
     console.log(data, "dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
   }
   return (
