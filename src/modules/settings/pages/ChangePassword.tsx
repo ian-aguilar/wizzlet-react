@@ -9,16 +9,36 @@ import { btnShowType } from "@/components/form-fields/types";
 // **  types **
 import { IChangePasswordInputs } from "../types";
 import { EyeCloseIconSettings } from "@/assets/Svg";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { changePasswordValidationSchema } from "../validation-schema/changePasswordValidation";
+import { useChangePasswordPostAPI } from "@/modules/Auth/services/auth.service";
 
 const ChangePassword = () => {
   const {
     control,
     handleSubmit,
+    reset: ResetForm,
     formState: { errors },
-  } = useForm<IChangePasswordInputs>();
+  } = useForm<IChangePasswordInputs>({
+    resolver: yupResolver(changePasswordValidationSchema),
+  });
 
-  const onSubmit = (data: IChangePasswordInputs) => {
-    console.log("setting change password", data);
+  // ================= Custom hooks ====================
+  const { changePasswordPostAPI, isLoading: loader } =
+    useChangePasswordPostAPI();
+
+  const onSubmit = async (payload: IChangePasswordInputs) => {
+    const { data, error } = await changePasswordPostAPI({
+      oldPassword: payload?.oldPassword,
+      newPassword: payload?.newPassword,
+    });
+    if (!error && data) {
+      ResetForm({
+        confirmNewPassword: "",
+        newPassword: "",
+        oldPassword: "",
+      });
+    }
   };
 
   return (
@@ -69,6 +89,7 @@ const ChangePassword = () => {
                 btnClass=" !w-auto !px-14 "
                 type="submit"
                 btnName="Update"
+                isLoading={loader}
               />
             </div>
           </div>

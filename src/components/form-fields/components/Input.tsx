@@ -15,6 +15,7 @@ const Input = <T extends FieldValues>({
   type,
   autoComplete,
   withLabel = false,
+  isDisabled,
 }: IInputProps<T>) => {
   return (
     <div className="relative mb-2">
@@ -29,6 +30,7 @@ const Input = <T extends FieldValues>({
         errors={errors}
         autoComplete={autoComplete}
         withLabel={withLabel}
+        isDisabled={isDisabled}
         className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
       />
       <span className="errorText text-red-400 text-xs"> </span>
@@ -45,6 +47,7 @@ const InputField = <T extends FieldValues>({
   errors,
   type,
   autoComplete,
+  isDisabled,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   return (
@@ -61,6 +64,7 @@ const InputField = <T extends FieldValues>({
             className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
             placeholder={placeholder}
             autoComplete={autoComplete}
+            disabled={isDisabled}
           />
         )}
       />
@@ -68,8 +72,7 @@ const InputField = <T extends FieldValues>({
       {inputEndIcon && (
         <div
           className="absolute right-4 top-4"
-          onClick={() => setIsShow((prev) => !prev)}
-        >
+          onClick={() => setIsShow((prev) => !prev)}>
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}

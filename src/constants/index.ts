@@ -173,3 +173,11 @@ export const FaqData = [
       "Our solution is versatile and can benefit a wide range of businesses, including retail, wholesale, manufacturing, and e-commerce. Whether you have a small business or a large enterprise, our system scales to meet your inventory management needs.",
   },
 ];
+
+export const profileDefaultValue = {
+  firstName: "",
+  lastName: "",
+  organizationName: "",
+  contactNumber: 0,
+  email: "",
+};

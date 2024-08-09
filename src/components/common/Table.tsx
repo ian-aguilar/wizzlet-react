@@ -30,8 +30,8 @@ function Table<T>({
     const { data, totalRecord } = await getData({
       page,
       rowsPerPage,
-      sortField: sort.field,
-      sortDirection: sort.direction,
+      sortField: sort.field || "name",
+      sortDirection: sort.direction || "asc",
       search,
     });
     setData(data);
@@ -70,14 +70,14 @@ function Table<T>({
 
   return (
     <>
-      <input type="text" onChange={setSearchValue} />
+      <input type="text" onChange={setSearchValue} placeholder="Search" />
       <DataTable<T>
         className="dataTable"
         columns={columns}
         data={data}
         progressPending={loading}
-        pagination
-        paginationServer
+        pagination={true}
+        paginationServer={true}
         paginationTotalRows={totalRows}
         onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}

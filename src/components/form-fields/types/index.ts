@@ -15,6 +15,7 @@ export type IInputProps<T extends FieldValues> = {
   autoComplete?: string;
   textLabelName?: string;
   withLabel?: boolean;
+  isDisabled?: boolean;
 };
 
 export enum btnShowType {
@@ -32,6 +33,26 @@ export interface IButtonProps {
   disabled?: boolean;
   btnEndIcon?: ReactNode;
   BtnIconRight?: string;
+}
+
+export interface ModalCommonProps {
+  heading: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
+  children?: React.ReactNode;
+}
+
+export interface ErrorModalCommonProps {
+  heading: string;
+  subText: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
 }
 
 export interface IOtpInputProps {
