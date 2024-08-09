@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+
 import { descriptionValidation, iconValidation, titleValidation } from ".";
 
 export const ServiceSectionValidationSchema = Yup.object().shape({

@@ -1,6 +1,11 @@
-import Input from "@/components/form-fields/components/Input";
+// ** Packages **
 import { useFormContext } from "react-hook-form";
+
+// ** Common components **
+import Input from "@/components/form-fields/components/Input";
 import UploadFile from "@/components/form-fields/components/UploadFile";
+
+// ** Types **
 import { IAboutusForm } from "../types";
 
 const VisionSection = () => {
@@ -8,7 +13,6 @@ const VisionSection = () => {
     control,
     formState: { errors },
     register,
-    getValues,
   } = useFormContext<IAboutusForm>();
 
   return (

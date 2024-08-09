@@ -103,15 +103,13 @@ export const aboutData = [
 export const FaqData = [
   {
     count: "01.",
-    question:
-      "How does your inventory management system help reduce stock outs and overstocking? ",
+    question: "How does your inventory management system help reduce stock outs and overstocking? ",
     answer:
       "Our system provides real-time inventory tracking and automated reordering alerts, ensuring you maintain optimal stock levels  and avoid costly stockouts or overstocking.",
   },
   {
     count: "02.",
-    question:
-      "Is your inventory management system compatible with my existing tools?",
+    question: "Is your inventory management system compatible with my existing tools?",
     answer:
       "Yes, our system integrates seamlessly with various e-commerce platforms, accounting software, shipping carriers, and POS systems. Check out our Integration section for a full list of compatible tools.",
   },
@@ -147,8 +145,7 @@ export const FaqData = [
   },
   {
     count: "08.",
-    question:
-      "How easy is it to set up and use your inventory management system?",
+    question: "How easy is it to set up and use your inventory management system?",
     answer:
       "Our system is designed with user-friendliness in mind. The setup process is straightforward, and our intuitive interface ensures you can start managing your inventory efficiently from day one. We also provide comprehensive onboarding support to get you up and running quickly.",
   },
@@ -167,8 +164,7 @@ export const FaqData = [
   },
   {
     count: "11.",
-    question:
-      "What types of businesses can benefit from your inventory management solution?",
+    question: "What types of businesses can benefit from your inventory management solution?",
     answer:
       "Our solution is versatile and can benefit a wide range of businesses, including retail, wholesale, manufacturing, and e-commerce. Whether you have a small business or a large enterprise, our system scales to meet your inventory management needs.",
   },
@@ -180,4 +176,10 @@ export const profileDefaultValue = {
   organizationName: "",
   contactNumber: 0,
   email: "",
+};
+
+export const aboutusCardDefaultValue = {
+  icon: "",
+  title: "",
+  description: "",
 };

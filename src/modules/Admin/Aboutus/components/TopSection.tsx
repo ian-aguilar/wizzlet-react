@@ -1,7 +1,13 @@
-import Input from "@/components/form-fields/components/Input";
+// ** Packages **
 import { useFieldArray, useFormContext } from "react-hook-form";
+
+// ** Common components **
+import Input from "@/components/form-fields/components/Input";
 import UploadFile from "@/components/form-fields/components/UploadFile";
+
+// ** Types **
 import { IAboutusForm } from "../types";
+import { aboutusCardDefaultValue } from "@/constants";
 
 const TopSection = () => {
   const {
@@ -62,7 +68,7 @@ const TopSection = () => {
       </div>
       <span
         onClick={() => {
-          append({ title: "", description: "", icon: "" });
+          append(aboutusCardDefaultValue);
         }}
       >
         Add Field
@@ -71,28 +77,28 @@ const TopSection = () => {
         {fields.map((field, index) => (
           <div key={field.id} className="flex">
             <UploadFile
-              placeholder={`Choose card ${index + 1} icon`}
+              placeholder={`Choose card icon`}
               className=""
-              textLabelName={`Choose card ${index + 1} icon`}
+              textLabelName={`Choose card icon`}
               name={`topSection.cards.${index}.icon`}
               autoComplete={""}
               register={register}
             />
             <Input
-              placeholder={`Enter card ${index + 1} title`}
+              placeholder={`Enter card title`}
               className=""
               name={`topSection.cards.${index}.title`}
-              textLabelName={`Card ${index + 1} title`}
+              textLabelName={`Card title`}
               type="text"
               control={control}
               errors={errors}
               autoComplete={""}
             />
             <Input
-              placeholder={`Enter card ${index + 1} description`}
+              placeholder={`Enter card description`}
               className=""
               name={`topSection.cards.${index}.description`}
-              textLabelName={`Card ${index + 1} description`}
+              textLabelName={`Card description`}
               type="text"
               control={control}
               errors={errors}
@@ -100,7 +106,7 @@ const TopSection = () => {
             />
             <span
               onClick={() => {
-                insert(index + 1, { title: "", icon: "", description: "" });
+                insert(index + 1, aboutusCardDefaultValue);
               }}
             >
               Add Field

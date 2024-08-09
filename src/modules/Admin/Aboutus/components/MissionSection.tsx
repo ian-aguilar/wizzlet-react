@@ -1,6 +1,11 @@
-import Input from "@/components/form-fields/components/Input";
+// ** Packages **
 import { useFormContext } from "react-hook-form";
+
+// ** Common Components **
+import Input from "@/components/form-fields/components/Input";
 import UploadFile from "@/components/form-fields/components/UploadFile";
+
+// ** Types **
 import { IAboutusForm } from "../types";
 
 const MissionSection = () => {
