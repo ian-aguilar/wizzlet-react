@@ -18,6 +18,7 @@ import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
 import FaqForm from "./modules/Admin/Faq/components";
+import HomePageForm from "./modules/Admin/Home/components";
 
 // ** Types **
 export type RouteObjType = {
@@ -93,6 +94,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.cmsManagement.faq,
       element: <FaqForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.home,
+      element: <HomePageForm />,
     },
   ]);
 
