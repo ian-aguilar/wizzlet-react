@@ -14,6 +14,7 @@ import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
 import Aboutus from "./modules/Admin/Aboutus/Index";
+import Contactus from "./modules/Admin/Contactus/Index";
 
 // ** Types **
 export type RouteObjType = {
@@ -36,7 +37,8 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
           <>
             <Loader />
           </>
-        }>
+        }
+      >
         {route.element}
       </Suspense>
     ),
@@ -84,6 +86,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.cmsManagement.aboutus,
       element: <Aboutus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.contactus,
+      element: <Contactus />,
     },
   ]);
 

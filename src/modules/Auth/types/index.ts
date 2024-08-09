@@ -23,5 +23,6 @@ export const PrivateRoutesPath = {
   marketplace: { view: "/marketplace" },
   cmsManagement: {
     aboutus: "/cms-management/aboutus",
+    contactus: "/cms-management/contactus",
   },
 };
