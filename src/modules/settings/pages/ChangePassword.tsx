@@ -1,23 +1,24 @@
 // ** packages **
-import { Link } from "react-router-dom";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
-import { TextLabel } from "@/components/common/TextLabel";
+import Input from "@/components/form-fields/components/Input";
+import { btnShowType } from "@/components/form-fields/types";
 
 // **  types **
-import { IFormInputs } from "../types";
+import { IChangePasswordInputs } from "../types";
+import { EyeCloseIconSettings } from "@/assets/Svg";
 
 const ChangePassword = () => {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInputs>();
+  } = useForm<IChangePasswordInputs>();
 
-  const onSubmit = (data: IFormInputs) => {
-    console.log("setting sidebar", data);
+  const onSubmit = (data: IChangePasswordInputs) => {
+    console.log("setting change password", data);
   };
 
   return (
@@ -26,84 +27,49 @@ const ChangePassword = () => {
         <h3 className="text-2xl pb-2 text-blackPrimary border-b border-greyBorder  font-medium mb-4">
           Change Password
         </h3>
-        {/* <ModalCommon /> */}
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="SettingsContentBox lg:pr-24 xl:pr-72 ">
-            <div className="grid grid-cols-12 lg:gap-4">
-              <div className=" col-span-12 lg:col-span-6">
-                {" "}
-                <Controller
-                  name="firstName"
-                  control={control}
-                  rules={{ required: "First name is required" }} // Add validation rules
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=""
-                      TextLabelName="First Name"
-                      TextPlaceHolder="First Name"
-                      control={control}
-                      errors={errors}
-                      type="text"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
-                />
-              </div>
-              <div className=" col-span-12 lg:col-span-6">
-                <Controller
-                  name="lastName"
-                  control={control}
-                  rules={{ required: "Last name is required" }} // Add validation rules
-                  render={({ field }) => (
-                    <TextLabel
-                      TextClass=" "
-                      TextLabelName="Last Name"
-                      TextPlaceHolder="Last Name"
-                      control={control}
-                      errors={errors}
-                      type="text"
-                      autoComplete="off"
-                      {...field}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <Controller
-              name="email"
+            <Input
+              className=""
+              textLabelName="Old Password"
+              name="oldPassword"
+              placeholder="*********"
               control={control}
-              rules={{
-                required: "Email is required",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Invalid email address",
-                },
-              }}
-              render={({ field }) => (
-                <TextLabel
-                  TextClass=""
-                  TextLabelName="Default Email "
-                  TextPlaceHolder="Default Email "
-                  control={control}
-                  errors={errors}
-                  type="text"
-                  autoComplete="off"
-                  {...field}
-                />
-              )}
+              errors={errors}
+              type="password"
+              autoComplete="off"
+              inputEndIcon={<EyeCloseIconSettings />}
             />
-            <div className="text-sm text-grayText  ">
-              Do you want to change email?
-              <Link
-                to=""
-                className="font-medium cursor-pointer text-greenPrimary inline-block ml-2 hover:underline hover:underline-offset-2 hover:brightness-110 transition-all duration-300 hover:transition-all hover:duration-300"
-              >
-                Change
-              </Link>
-            </div>
+            <Input
+              className=""
+              textLabelName="New Password"
+              name="newPassword"
+              placeholder="*********"
+              control={control}
+              errors={errors}
+              type="password"
+              autoComplete="off"
+              inputEndIcon={<EyeCloseIconSettings />}
+            />
+            <Input
+              className=""
+              textLabelName="Re-type new password"
+              name="confirmNewPassword"
+              placeholder="*********"
+              control={control}
+              errors={errors}
+              type="password"
+              autoComplete="off"
+              inputEndIcon={<EyeCloseIconSettings />}
+            />
             <div className="pt-14">
-              <Button btnClass=" !w-auto !px-14 " btnName="Update" />
+              <Button
+                showType={btnShowType.green}
+                btnClass=" !w-auto !px-14 "
+                type="submit"
+                btnName="Update"
+              />
             </div>
           </div>
         </form>

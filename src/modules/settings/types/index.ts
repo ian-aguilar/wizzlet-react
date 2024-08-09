@@ -1,5 +1,13 @@
 export interface IFormInputs {
   firstName: string;
   lastName: string;
-  email: string;
+  organizationName: string;
+  contactNumber: number;
+  email?: string;
+}
+
+export interface IChangePasswordInputs {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 }

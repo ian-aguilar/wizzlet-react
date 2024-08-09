@@ -6,10 +6,10 @@ function App() {
   const { isLoading, isAuthInitialized } = useAuthGuard();
 
   return (
-    <>
-      <RouterComponent />
-    </>
-    // <>{isLoading || !isAuthInitialized ? "Loading" : <RouterComponent />}</>
+    // <>
+    //   <RouterComponent />
+    // </>
+    <>{isLoading || !isAuthInitialized ? "Loading" : <RouterComponent />}</>
   );
 }
 

@@ -433,7 +433,7 @@ export const CloseIconSvg = () => {
     </svg>
   );
 };
-export const RightArrowWhite = ({ className }: any) => {
+export const RightArrowWhite = ({ className }: { className?: string }) => {
   return (
     <svg
       className={`${className}`}
@@ -446,18 +446,18 @@ export const RightArrowWhite = ({ className }: any) => {
       <path
         d="M14.4299 5.92969L20.4999 11.9997L14.4299 18.0697"
         stroke="white"
-        stroke-width="1.5"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M3.5 12H20.33"
         stroke="white"
-        stroke-width="1.5"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -492,18 +492,18 @@ export const DownArrowBlack = ({ className }: any) => {
       <path
         d="M18.0703 14.4302L12.0003 20.5002L5.93031 14.4302"
         stroke="#242425"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M12 3.5L12 20.33"
         stroke="#242425"
-        stroke-width="2"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

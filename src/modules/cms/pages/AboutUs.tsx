@@ -1,74 +1,19 @@
-import React from "react";
-import { Header } from "../common/Header";
 import { Footer } from "../common/Footer";
-import { Button } from "../common/Button";
 
 import MissionImg from "/images/MissionImg.png";
 import { Link } from "react-router-dom";
 
 import { RightArrowGreen } from "@/assets/Svg";
 import VisionImg from "/images/VisionImg.png";
-
-const serviceData = [
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking Tracking Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking stockouts or overstocking stockouts or overstocking.",
-  },
-];
-
-const aboutData = [
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "We are a team of seasoned professionals with deep expertise in inventory management, dedicated to delivering innovative solutions.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-  {
-    src: "../images/IconService.png",
-    h3: "Real-Time Inventory Tracking",
-    p: "Monitor your inventory in real-time across all locations, ensuring accurate stock levels and reducing the risk of stockouts or overstocking.",
-  },
-];
+import Header from "@/components/common/Header";
+import Button from "@/components/form-fields/components/Button";
+import { aboutData, serviceData } from "@/constants";
+import { btnShowType } from "@/components/form-fields/types";
 
 const AboutUs = () => {
   return (
     <>
-      <Header />
+      <Header type="cms" />
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-20 text-center">
@@ -83,6 +28,7 @@ const AboutUs = () => {
               and improve overall productivity."
             </p>
             <Button
+              showType={btnShowType.green}
               btnName="Sign Up Now "
               btnClass=" bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  w-auto"
             />
@@ -129,6 +75,7 @@ const AboutUs = () => {
               processes and achieve sustainable growth.
             </p>
             <Button
+              showType={btnShowType.green}
               btnName="Try For Free"
               btnClass="bg-greenPrimary text-white border-greenPrimary mt-8 w-auto"
             />

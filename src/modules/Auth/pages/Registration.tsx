@@ -15,7 +15,7 @@ import { ISignupForm } from "../types/signup";
 import { signUpValidationSchema } from "../validation-schema/signupLoginValidation";
 import { ShowPassword } from "@/components/svgIcons";
 import { useRegisterUserApi } from "../services/auth.service";
-import { Loader } from "@/components/common/Loader";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
               autoComplete="new-password"
             />
             <Input
@@ -112,10 +112,11 @@ const Registration = () => {
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
               autoComplete="new-password"
             />
             <Button
+              showType={btnShowType.green}
               btnName="Submit in"
               btnClass="mt-9"
               type="submit"

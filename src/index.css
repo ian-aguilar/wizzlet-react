@@ -15,14 +15,18 @@ body {
   @apply bg-grayText;
 }
 
-
 /* loader design */
 .spinner {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: radial-gradient(farthest-side,#09a17a 95%,#0000) 50% 0.8px/9.6px 9.6px no-repeat,
-       radial-gradient(farthest-side,#0000 calc(100% - 11.2px),rgba(9,161,122,0.3) 0);
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/9.6px
+      9.6px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(9, 161, 122, 0.3) 0
+    );
   animation: spinner-aur408 1s infinite linear;
 }
 
@@ -30,17 +34,21 @@ body {
   width: 13px;
   height: 13px;
   border-radius: 50%;
-  background: radial-gradient(farthest-side,#09a17a 95%,#0000) 50% 0.8px/4px 4px no-repeat,
-       radial-gradient(farthest-side,#0000 calc(100% - 11.2px),rgba(255, 255, 255, 0.514) 0);
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/4px
+      4px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(255, 255, 255, 0.514) 0
+    );
   animation: spinner-aur408 1s infinite linear;
 }
 
 @keyframes spinner-aur408 {
   to {
-     transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
-
 
 /* loader design */
 .otp_input {

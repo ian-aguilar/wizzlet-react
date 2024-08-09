@@ -9,11 +9,22 @@ import { PrivateRoutesPath } from "../Auth/types";
 import ChangePassword from "./pages/ChangePassword";
 import LabelManager from "./pages/LabelManager";
 import Profile from "./pages/Profile";
+import { Loader } from "@/components/common/Loader";
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+    element: (
+      <Suspense
+        fallback={
+          <>
+            <Loader />
+          </>
+        }
+      >
+        {route.element}
+      </Suspense>
+    ),
   }));
 };
 

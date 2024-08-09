@@ -7,11 +7,16 @@ import {
 import React, { Suspense } from "react";
 
 // ** Auth Routes
-import { AuthenticationRoutes, CMSRoutes } from "./modules/Auth/routes";
+import { AuthenticationRoutes } from "./modules/Auth/routes";
 import { SettingRoutes } from "./modules/settings/routes";
 import { PrivateRoutesPath } from "./modules/Auth/types";
-import Dashboard from "./modules/dashboard";
 import SettingLayout from "./modules/settings/components/SettingLayout";
+import { Loader } from "./components/common/Loader";
+import { CMSRoutes } from "./modules/cms/routes";
+import Marketplace from "./modules/marketplace/pages/marketplace";
+import InventoryManagement from "./modules/inventory-management";
+import Dashboard from "./modules/dashboard";
+import UserManagement from "./modules/user-management";
 
 // ** Types **
 export type RouteObjType = {
@@ -32,7 +37,16 @@ const RequiresAuth = React.lazy(
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <Suspense fallback={<></>}>{route.element}</Suspense>,
+    element: (
+      <Suspense
+        fallback={
+          <>
+            <Loader />
+          </>
+        }>
+        {route.element}
+      </Suspense>
+    ),
   }));
 };
 
@@ -57,6 +71,18 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.dashboard.view,
       element: <Dashboard />,
+    },
+    {
+      path: PrivateRoutesPath.marketplace.view,
+      element: <Marketplace />,
+    },
+    {
+      path: PrivateRoutesPath.inventoryManagement.view,
+      element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.userManagement.view,
+      element: <UserManagement />,
     },
     {
       element: <SettingLayout />,

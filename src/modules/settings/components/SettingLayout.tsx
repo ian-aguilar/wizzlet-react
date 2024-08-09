@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import { Suspense } from "react";
 
 import SettingSidebar from "./SettingSidebar";
+import { Loader } from "@/components/common/Loader";
 
 const SettingLayout = () => {
   return (
@@ -10,7 +11,13 @@ const SettingLayout = () => {
       <div className="SettingsSection block sm:flex sm:h-full">
         <SettingSidebar />
         <div className="w-full px-4 xl:px-20">
-          <Suspense fallback={<></>}>
+          <Suspense
+            fallback={
+              <>
+                <Loader />
+              </>
+            }
+          >
             <Outlet />
           </Suspense>
         </div>

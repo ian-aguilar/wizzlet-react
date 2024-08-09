@@ -3,7 +3,7 @@ import Button from "@/components/form-fields/components/Button";
 import BrandLogo from "/images/Amazon_logo.png";
 import BrandLogo2 from "/images/ebay_logo.png";
 import BrandLogo3 from "/images/Walmart_logo.png";
-import Input from "@/components/form-fields/components/Input";
+// import Input from "@/components/form-fields/components/Input";
 const Dashboard = () => {
   return (
     <>

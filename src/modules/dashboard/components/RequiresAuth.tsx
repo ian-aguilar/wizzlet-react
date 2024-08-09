@@ -1,12 +1,13 @@
 // ** packages **
-import { useDispatch, useSelector } from "react-redux";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+import { ReactNode } from "react";
 
 // ** redux **
-import { getAuth, setLogoutData } from "../../../redux/slices/authSlice";
+import { getAuth } from "../../../redux/slices/authSlice";
 
 // ** types **
-import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
+import { RoutesPath } from "@/modules/Auth/types";
 
 // ** Icons **
 import {
@@ -24,7 +25,7 @@ import ProfilePlaceholder from "/images/profile-placeholder.png";
 import { setRemoveUser } from "@/redux/slices/userSlice";
 import { useEffect, useState } from "react";
 
-const RequiresAuth = ({ children }: any) => {
+const RequiresAuth = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useSelector(getAuth);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -84,10 +85,9 @@ const RequiresAuth = ({ children }: any) => {
   }, []);
 
   // /* Not Logged In */
-  if (isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to={RoutesPath.Login} />;
   } else {
-    // ** Hooks **
     return (
       <>
         <header className="py-3 px-8 lg:px-14 flex items-center justify-between gap-8 border-b border-greyBorder">
@@ -190,7 +190,7 @@ const RequiresAuth = ({ children }: any) => {
 
           <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
             <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-              {location.pathname === "/setting" ? "Settings" : "Dashboard"}
+              Dashboard
             </h2>
             {children}
           </article>
