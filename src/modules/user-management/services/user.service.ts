@@ -1,7 +1,7 @@
 // ** packages **
 
 // ** hooks **
-import { useAxiosGet } from "@/hooks/useAxios";
+import { useAxiosGet, useAxiosPatch } from "@/hooks/useAxios";
 
 const AUTH_API_BASE_PATH = "/user";
 
@@ -15,4 +15,16 @@ export const useGetUserListAPI = () => {
   };
 
   return { getUserListAPI, isLoading, isError, isSuccess };
+};
+
+//  ** Get All User List **
+export const useUserStatusChangeAPI = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPatch();
+
+  const userStatusChangeAPI = async (id: number) => {
+    return callApi(`${AUTH_API_BASE_PATH}/status/${id}`);
+  };
+
+  return { userStatusChangeAPI, isLoading, isError, isSuccess };
 };

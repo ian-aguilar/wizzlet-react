@@ -6,11 +6,18 @@ import DataTable, { SortOrder, TableColumn } from "react-data-table-component";
 // types
 import { ISort, ITableProps } from "@/components/common/types/table";
 
-function Table<T>({ getData, loading, columns }: ITableProps<T>) {
+function Table<T>({
+  getData,
+  loading,
+  columns,
+  limit,
+  page,
+  setLimit,
+  setPage,
+  reload,
+}: ITableProps<T>) {
   const [data, setData] = useState<T[]>([]);
-  const [limit, setLimit] = useState(10);
   const [totalRows, setTotalRows] = useState(0);
-  const [page, setPage] = useState(1);
   const [sort, setSort] = useState<ISort>({});
   const [search, setSearch] = useState<string>();
 
@@ -23,8 +30,8 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
     const { data, totalRecord } = await getData({
       page,
       rowsPerPage,
-      sortField: sort.field || "name",
-      sortDirection: sort.direction || "asc",
+      sortField: sort.field,
+      sortDirection: sort.direction,
       search,
     });
     setData(data);
@@ -59,7 +66,7 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
 
   useEffect(() => {
     fetchData(page, limit, sort, search);
-  }, [page, limit, sort, search]);
+  }, [page, limit, sort, search, reload]);
 
   return (
     <>
@@ -75,6 +82,7 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
         onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}
         progressComponent={<div>Loading</div>}
+        paginationDefaultPage={page} // Set the current page
         // sortIcon={sortIcon}
         onSort={handleSort}
         noDataComponent={<>There are no records to display!!!!</>}

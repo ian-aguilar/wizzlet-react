@@ -1,34 +1,43 @@
+// Packages
+import { useState } from "react";
+
+// Components
 import Table from "@/components/common/Table";
-import { useGetUserListAPI } from "./services/user.service";
+
+// Types
+import { IUserListing } from "./types";
 import {
   TableFetchParams,
   TableFetchResult,
 } from "@/components/common/types/table";
 
-const columns = [
-  {
-    name: "Name",
-    id: "full_name",
-    sortField: "full_name",
-    sortable: true,
-    selector: (row: any) => row.full_name,
-  },
-  {
-    name: "Email",
-    id: "email",
-    sortField: "email",
-    sortable: true,
-    selector: (row: any) => row.email,
-  },
-];
+// Services
+import {
+  useGetUserListAPI,
+  useUserStatusChangeAPI,
+} from "./services/user.service";
 
-interface UserData {
-  email: string;
-  full_name: string;
-}
+// Hooks
+import useUserHeaders from "./hooks/useUserHeaders";
 
 const UserManagement = () => {
   const { getUserListAPI, isLoading } = useGetUserListAPI();
+  const { userStatusChangeAPI } = useUserStatusChangeAPI();
+
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
+  const [reload, setReload] = useState(false);
+
+  const onDelete = (id: number) => {
+    console.log(id, "deleted User Id");
+  };
+
+  const onStatusChange = async (id: number) => {
+    await userStatusChangeAPI(id);
+    setReload((prev) => !prev);
+  };
+
+  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
 
   const getData = async ({
     page,
@@ -36,7 +45,7 @@ const UserManagement = () => {
     sortDirection,
     sortField,
     search,
-  }: TableFetchParams): Promise<TableFetchResult<UserData>> => {
+  }: TableFetchParams): Promise<TableFetchResult<IUserListing>> => {
     const { data } = await getUserListAPI({
       page,
       limit: rowsPerPage,
@@ -51,10 +60,15 @@ const UserManagement = () => {
   return (
     <>
       <div>UserManagement</div>
-      <Table<UserData>
+      <Table<IUserListing>
         getData={getData}
         loading={isLoading}
-        columns={columns}
+        columns={userHeaders}
+        limit={limit}
+        setLimit={setLimit}
+        page={page}
+        setPage={setPage}
+        reload={reload}
       />
     </>
   );
