@@ -19,3 +19,16 @@ export interface IModelTest {
 export interface IAddLabelInputs {
   label: string;
 }
+
+export interface Label {
+  id: number;
+  name: string;
+}
+
+export interface GetDataParams {
+  page: number;
+  rowsPerPage: number;
+  sortField?: string;
+  sortDirection?: string;
+  search?: string;
+}

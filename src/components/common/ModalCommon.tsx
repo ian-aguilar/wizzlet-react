@@ -30,7 +30,6 @@ export const ModalCommon: React.FC<ModalCommonProps> = ({
         <div className="modalBody py-9 px-6">{children}</div>
         <div className="ModalFooterActions flex justify-end gap-2 p-5">
           <Button
-            showType={btnShowType.primary}
             btnClass="!w-auto !px-8 !bg-transparent border border-greyBorder !text-grayText  "
             btnName={cancelButtonText}
             onClickHandler={onCancel}

@@ -6,7 +6,12 @@ import DataTable, { SortOrder, TableColumn } from "react-data-table-component";
 // types
 import { ISort, ITableProps } from "@/components/common/types/table";
 
-function Table<T>({ getData, loading, columns }: ITableProps<T>) {
+function Table<T>({
+  getData,
+  loading,
+  columns,
+  additionalColumns,
+}: ITableProps<T>) {
   const [data, setData] = useState<T[]>([]);
   const [limit, setLimit] = useState(10);
   const [totalRows, setTotalRows] = useState(0);
@@ -23,8 +28,8 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
     const { data, totalRecord } = await getData({
       page,
       rowsPerPage,
-      sortField: sort.field,
-      sortDirection: sort.direction,
+      sortField: sort.field || "name",
+      sortDirection: sort.direction || "asc",
       search,
     });
     setData(data);
@@ -61,16 +66,18 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
     fetchData(page, limit, sort, search);
   }, [page, limit, sort, search]);
 
+  const combinedColumns = [...columns, ...additionalColumns];
+
   return (
     <>
-      <input type="text" onChange={setSearchValue} />
+      <input type="text" onChange={setSearchValue} placeholder="Search" />
       <DataTable<T>
         className="dataTable"
-        columns={columns}
+        columns={combinedColumns}
         data={data}
         progressPending={loading}
-        pagination
-        paginationServer
+        pagination={true}
+        paginationServer={true}
         paginationTotalRows={totalRows}
         onChangeRowsPerPage={handlePerRowsChange}
         onChangePage={handlePageChange}

@@ -45,6 +45,16 @@ export interface ModalCommonProps {
   children?: React.ReactNode;
 }
 
+export interface ErrorModalCommonProps {
+  heading: string;
+  subText: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
+}
+
 export interface IOtpInputProps {
   onChangeHandler: (otp: string) => void;
   value: string;

@@ -3,6 +3,7 @@ import { SortOrder, TableColumn } from "react-data-table-component";
 export interface ITableProps<T> {
   loading: boolean;
   columns: TableColumn<T>[];
+  additionalColumns: TableColumn<T>[];
   getData: (data: TableFetchParams) => Promise<TableFetchResult<T>>;
 }
 
