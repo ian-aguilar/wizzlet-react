@@ -37,7 +37,7 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (data?.isVerified === false) {
+    if (data?.data?.isVerified === false) {
       navigate(RoutesPath.Otp, {
         state: {
           email: values.email,
