@@ -30,8 +30,8 @@ function Table<T>({
     const { data, totalRecord } = await getData({
       page,
       rowsPerPage,
-      sortField: sort.field || "name",
-      sortDirection: sort.direction || "asc",
+      sortField: sort.field,
+      sortDirection: sort.direction,
       search,
     });
     setData(data);

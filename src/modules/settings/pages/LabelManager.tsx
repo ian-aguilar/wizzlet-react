@@ -34,6 +34,8 @@ const LabelManager = () => {
     useFetchLabelDataAPI();
 
   //================= States =======================
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [selectedRow, setSelectedRow] = useState<Label | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -121,7 +123,8 @@ const LabelManager = () => {
         <div className="flex">
           <div className="mr-16">
             <button
-              onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}>
+              onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}
+            >
               <FaEye />
             </button>
           </div>
@@ -167,6 +170,11 @@ const LabelManager = () => {
           getData={handleGetData}
           loading={listingLoader}
           columns={columns}
+          limit={limit}
+          page={page}
+          setLimit={setLimit}
+          setPage={setPage}
+          // reload
         />
 
         {isModalOpen && (
@@ -176,7 +184,8 @@ const LabelManager = () => {
             onConfirm={handleSubmit(onSubmit)}
             cancelButtonText="Cancel"
             isLoading={loader}
-            confirmButtonText="Add">
+            confirmButtonText="Add"
+          >
             <form onSubmit={handleSubmit(onSubmit)}>
               <Input
                 className=""
