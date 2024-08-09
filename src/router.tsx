@@ -15,6 +15,8 @@ import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
 import Aboutus from "./modules/Admin/Aboutus/Index";
 import Contactus from "./modules/Admin/Contactus/Index";
+import FaqForm from "./modules/Admin/Faq/components";
+import HomePageForm from "./modules/Admin/Home/components";
 
 // ** Types **
 export type RouteObjType = {
@@ -90,6 +92,14 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.cmsManagement.contactus,
       element: <Contactus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.faq,
+      element: <FaqForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.home,
+      element: <HomePageForm />,
     },
   ]);
 
