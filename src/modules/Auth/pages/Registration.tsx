@@ -51,7 +51,7 @@ const Registration = () => {
             Welcome{" "}
           </h1>
           <p className="text-grayText text-lg md:text-2xl leading-tight ">
-            Please enter your details to sign up.
+            Please enter your details to signup.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ const Registration = () => {
             />
             <Button
               showType={btnShowType.green}
-              btnName="Submit in"
+              btnName="Signup"
               btnClass="mt-9"
               type="submit"
               isLoading={loader}
@@ -132,7 +132,7 @@ const Registration = () => {
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
               to={RoutesPath.Login}
             >
-              Signin
+              SignIn
             </Link>
           </p>
         </div>
