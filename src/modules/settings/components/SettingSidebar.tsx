@@ -41,7 +41,7 @@ const SettingSidebar = () => {
           key={i}
           className={` flex gap-2 items-center w-full   mb-8 hover:brightness-125 transition-all duration-300  ${data.navClass} `}
         >
-          <span className="text-greenPrimary">{data.navIcon}</span>
+          <span className="text-grayText">{data.navIcon}</span>
           {data.navText}
         </Link>
       ))}

@@ -1,19 +1,18 @@
 // ** packages **
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
 import { ReactNode } from "react";
 
 // ** redux **
-import { getAuth } from "../../../redux/slices/authSlice";
+import { getAuth, setLogoutData } from "../../../redux/slices/authSlice";
 
 // ** types **
-import { RoutesPath } from "@/modules/Auth/types";
+import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 
 // ** Icons **
 import {
   CMSMGTIcon,
   DashboardIcon,
-  HamburgerIcon,
   LeftArrowIcon,
   MarketPlaceIcon,
   NotificationIcon,
@@ -28,7 +27,6 @@ import { useEffect, useState } from "react";
 const RequiresAuth = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useSelector(getAuth);
   const dispatch = useDispatch();
-  const location = useLocation();
 
   const navData = [
     {
@@ -153,7 +151,6 @@ const RequiresAuth = ({ children }: { children: ReactNode }) => {
               </div>
             </div>
             <div
-              className=""
               className={`  bg-[#F7F8FA] uppercase w-full text-grayText font-semibold mb-2  transition-all duration-300 h-[40px]  ${
                 isOpen == true
                   ? "active  py-2 px-4  text-base   "

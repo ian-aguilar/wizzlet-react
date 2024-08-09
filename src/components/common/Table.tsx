@@ -5,6 +5,8 @@ import DataTable, { SortOrder, TableColumn } from "react-data-table-component";
 
 // types
 import { ISort, ITableProps } from "@/components/common/types/table";
+import { TbTableColumn } from "react-icons/tb";
+import { SearchIcon } from "@/assets/Svg";
 
 function Table<T>({ getData, loading, columns }: ITableProps<T>) {
   const [data, setData] = useState<T[]>([]);
@@ -62,24 +64,22 @@ function Table<T>({ getData, loading, columns }: ITableProps<T>) {
   }, [page, limit, sort, search]);
 
   return (
-    <>
-      <input type="text" onChange={setSearchValue} placeholder="Search" />
-      <DataTable<T>
-        className="dataTable"
-        columns={columns}
-        data={data}
-        progressPending={loading}
-        pagination={true}
-        paginationServer={true}
-        paginationTotalRows={totalRows}
-        onChangeRowsPerPage={handlePerRowsChange}
-        onChangePage={handlePageChange}
-        progressComponent={<div>Loading</div>}
-        // sortIcon={sortIcon}
-        onSort={handleSort}
-        noDataComponent={<>There are no records to display!!!!</>}
-      />
-    </>
+    <DataTable<T>
+      // className="dataTableTest"
+      className="dataTable"
+      columns={columns}
+      data={data}
+      progressPending={loading}
+      pagination={true}
+      paginationServer={true}
+      paginationTotalRows={totalRows}
+      onChangeRowsPerPage={handlePerRowsChange}
+      onChangePage={handlePageChange}
+      progressComponent={<div>Loading</div>}
+      // sortIcon={sortIcon}
+      onSort={handleSort}
+      noDataComponent={<>There are no records to display!!!!</>}
+    />
   );
 }
 
