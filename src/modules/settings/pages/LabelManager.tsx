@@ -115,28 +115,21 @@ const LabelManager = () => {
       sortable: false,
       // sortField: "created_by",
     },
-  ];
-
-  const actionColumns: TableColumn<Label>[] = [
     {
       name: "View Item",
       cell: (row: Label) => (
-        <div>
-          <button
-            onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}>
-            <FaEye />
-          </button>
-        </div>
-      ),
-      ignoreRowClick: true,
-    },
-    {
-      name: "Remove",
-      cell: (row: Label) => (
-        <div>
-          <button onClick={() => handleDeleteClick(row)}>
-            <FaTrash />
-          </button>
+        <div className="flex">
+          <div className="mr-16">
+            <button
+              onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}>
+              <FaEye />
+            </button>
+          </div>
+          <div>
+            <button onClick={() => handleDeleteClick(row)}>
+              <FaTrash />
+            </button>
+          </div>
         </div>
       ),
       ignoreRowClick: true,
@@ -174,7 +167,6 @@ const LabelManager = () => {
           getData={handleGetData}
           loading={listingLoader}
           columns={columns}
-          additionalColumns={actionColumns}
         />
 
         {isModalOpen && (
