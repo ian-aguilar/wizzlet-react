@@ -14,7 +14,8 @@ const TopSection = () => {
     formState: {errors},
   } = useFormContext<IForm>();
   const {fields, append, remove, insert} = useFieldArray({
-    name: "row",
+    control,
+    name: "topSection.row",
   });
 
   return (
@@ -23,7 +24,7 @@ const TopSection = () => {
         <h2 className="font-bold">Top Section</h2>
         <Input
           textLabelName="Title"
-          placeholder="Title"
+          placeholder="Enter Title"
           name="topSection.title"
           label="Title"
           type="text"
@@ -32,7 +33,7 @@ const TopSection = () => {
         />
         <Input
           textLabelName="Description"
-          placeholder="Description"
+          placeholder=" Enter Description"
           name="topSection.description"
           label="Description"
           type="text"
@@ -44,6 +45,7 @@ const TopSection = () => {
         </span>
         {fields.map((field, index) => (
           <div key={field.id} className="flex">
+            <p className="me-4">{index + 1}</p>
             <Input
               textLabelName="Question"
               placeholder="Enter Question"

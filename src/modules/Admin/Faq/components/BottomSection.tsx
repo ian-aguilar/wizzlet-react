@@ -19,8 +19,8 @@ const BottomSection = () => {
         <h2 className="font-bold">Bottom Section</h2>
         <Input
           textLabelName="Title"
-          placeholder="Title"
-          name="bottomSection.titleBottom"
+          placeholder="Enter Title"
+          name="bottomSection.title"
           label="Title"
           type="text"
           control={control}
@@ -29,8 +29,8 @@ const BottomSection = () => {
 
         <Input
           textLabelName="Description"
-          placeholder="Description"
-          name="bottomSection.descriptionBottom"
+          placeholder="Enter Description"
+          name="bottomSection.description"
           label="Description"
           type="text"
           control={control}
@@ -38,8 +38,8 @@ const BottomSection = () => {
         />
 
         <Input
-          textLabelName="GreenButton content"
-          placeholder="GreenButton"
+          textLabelName="GreenButton "
+          placeholder="Enter GreenButton Name"
           name="bottomSection.greenButton"
           label="GreenButton"
           type="text"
@@ -49,7 +49,7 @@ const BottomSection = () => {
 
         <Input
           textLabelName="whiteButton content"
-          placeholder="WhiteButton"
+          placeholder="Enter WhiteButton Name"
           name="bottomSection.whiteButton"
           label="WhiteButton"
           type="text"

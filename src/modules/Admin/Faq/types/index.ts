@@ -8,8 +8,8 @@ export interface ITopSectionForm {
     }[]
 }
 export interface IBottomSectionForm {
-    titleBottom: string,
-    descriptionBottom: string,
+    title: string,
+    description: string,
     greenButton: string,
     whiteButton: string
 
