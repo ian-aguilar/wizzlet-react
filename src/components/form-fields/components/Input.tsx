@@ -29,7 +29,8 @@ const Input = <T extends FieldValues>({
         errors={errors}
         autoComplete={autoComplete}
         withLabel={withLabel}
-        className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
+        className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none  hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 ${className} `}
+        // className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
       />
       <span className="errorText text-red-400 text-xs"> </span>
     </div>
@@ -58,7 +59,7 @@ const InputField = <T extends FieldValues>({
             onChange={onChange}
             value={value ? value : ""}
             type={!isShow && type ? type : "text"}
-            className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
+            className={`bg-inputAuthBg/60 p-3  rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 ${className}`}
             placeholder={placeholder}
             autoComplete={autoComplete}
           />
