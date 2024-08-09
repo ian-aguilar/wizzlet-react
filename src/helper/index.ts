@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import { MutableRefObject } from "react";
 import { FieldErrors } from "react-hook-form";
 
@@ -70,4 +71,8 @@ export const focusOnError = (
   if (firstErrorKey && Object.hasOwn(ref?.current, firstErrorKey)) {
     ref?.current?.[firstErrorKey]?.scrollIntoView();
   }
+};
+
+export const dateFormatter = (date: string | Date, withTime = false) => {
+  return moment(date).format("MMM DD,yyyy" + (withTime ? " mm:hh A" : ""));
 };
