@@ -41,7 +41,6 @@ const Profile = () => {
     const { data, error } = await getProfileDataAPI({});
 
     if (!error && data) {
-      console.log("data", data.data);
       ResetForm({
         firstName: data?.data?.first_name,
         lastName: data?.data?.last_name,
