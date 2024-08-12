@@ -28,3 +28,8 @@ export interface User {
   // firstName: string;
   // lastName: string;
 }
+
+export type AddUserFormProps = {
+  onClose: () => void;
+  reload: () => void;
+};

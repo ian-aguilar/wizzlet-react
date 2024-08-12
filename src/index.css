@@ -67,3 +67,39 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+
+/* datatable css */
+
+.dataTable {
+  @apply outline-none;
+}
+
+.dataTable  .rdt_TableHeadRow .rdt_TableCol{
+@apply  !bg-[#f4f5f7] first:rounded-l-md last:rounded-r-md !border-b-4 !border-transparent font-medium text-[17px] ;
+}
+
+
+.dataTable .rdt_TableBody , .dataTable   .rdt_TableRow , .dataTable  .rdt_TableHeadRow   {
+  @apply bg-[#f4f5f7]  !border-b-4    !border-[#f4f5f7]   ;
+}
+
+ .rdt_Pagination {
+ @apply !rounded-md !border-t-0 ;
+}
+
+.dataTable   .rdt_TableRow .rdt_TableCell {
+  @apply  first:!rounded-l-md last:!rounded-r-md text-sm  ;
+  }
+
+  .dataTable   .rdt_TableRow {
+    @apply bg-white hover:!bg-[#f4f5f7]   !rounded-md;
+  }
+
+  /* .rdt_TableCell .flex div {
+    @apply last:text-redAlert first:text-greenPrimary;
+  } */
+
+  .dataTable   .rdt_TableRow .label_table {
+    @apply text-greenPrimary bg-greenPrimary/10 py-1 px-2 rounded-md;
+  }

@@ -37,7 +37,6 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-
     if (data?.data?.isVerified === false) {
       navigate(RoutesPath.Otp, {
         state: {
@@ -46,7 +45,8 @@ const Login = () => {
         },
       });
     }
-    if (!error && data && data?.data?.user?.verified) {
+    console.log(data, "data>>>>>>>>>>>>");
+    if (!error && data?.data?.user) {
       dispatch(setCredentials({ token: data?.data?.access_token }));
       dispatch(setUser({ user: data?.data?.user }));
       navigate(PrivateRoutesPath.dashboard.view);

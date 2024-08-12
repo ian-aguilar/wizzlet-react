@@ -31,8 +31,9 @@ export interface IButtonProps {
   isLoading?: boolean;
   loaderClass?: string;
   disabled?: boolean;
+  BtnIconRight?: ReactNode;
+  BtnIconLeft?: ReactNode;
   btnEndIcon?: ReactNode;
-  BtnIconRight?: string;
 }
 
 export interface ModalCommonProps {

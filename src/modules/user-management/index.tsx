@@ -1,108 +1,40 @@
-// Packages
+// ** Packages **
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import DataTable from "react-data-table-component";
 
-// Components
-import Table from "@/components/common/Table";
+// ** Types **
+import { IUserListing } from "./types";
+import { btnShowType } from "@/components/form-fields/types";
 
-// Types
-import { IUserListing, IUserModel } from "./types";
+// ** Components **
 import {
   TableFetchParams,
   TableFetchResult,
 } from "@/components/common/types/table";
+import AddUser from "./components/add-user";
+import { ModalError } from "@/components/common/ModalError";
 
-// Services
+// ** Services **
 import {
   useGetUserListAPI,
   useUserDeleteAPI,
-  useUserPostAPI,
   useUserStatusChangeAPI,
 } from "./services/user.service";
 
-// Hooks
+// ** Hooks **
+import useTable from "@/hooks/useTable";
 import useUserHeaders from "./hooks/useUserHeaders";
-import { ModalCommon } from "@/components/common/ModalCommon";
-import { addUserValidationSchema } from "./validation-schema/userValidation";
 import Button from "@/components/form-fields/components/Button";
-import { btnShowType } from "@/components/form-fields/types";
-import { ModalError } from "@/components/common/ModalError";
-import AddUser from "./components/add-user";
 
 const UserManagement = () => {
-  const {
-    control,
-    handleSubmit,
-    reset: ResetForm,
-    formState: { errors },
-  } = useForm<IUserModel>({
-    resolver: yupResolver(addUserValidationSchema),
-  });
-
-  const { userStatusChangeAPI } = useUserStatusChangeAPI();
+  //================= States =======================
+  const [addModel, setAddModel] = useState(false);
+  const [itemForDelete, setItemForDelete] = useState<number | null>(null);
 
   // ================= Custom hooks ====================
-  const { userPostAPI, isLoading: loader } = useUserPostAPI();
+  const { getUserListAPI, isLoading } = useGetUserListAPI();
+  const { userStatusChangeAPI } = useUserStatusChangeAPI();
   const { userDeleteAPI } = useUserDeleteAPI();
-  const { getUserListAPI, isLoading: listingLoader } = useGetUserListAPI();
-
-  //================= States =======================
-  const [selectedRow, setSelectedRow] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [reload, setReload] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => {
-    setIsModalOpen(false);
-    ResetForm({
-      firstName: "",
-      lastName: "",
-      email: "",
-    });
-  };
-  const openErrorModal = () => setIsErrorModalOpen(true);
-  const closeErrorModal = () => setIsErrorModalOpen(false);
-
-  const onSubmit = async (payload: IUserModel) => {
-    await userPostAPI({
-      first_name: payload?.firstName,
-      last_name: payload?.lastName,
-      email: payload?.email,
-      // password: "sample@gmail.com",
-    });
-    setIsModalOpen(false);
-    ResetForm({
-      firstName: "",
-      lastName: "",
-      email: "",
-    });
-    setReload((prev) => !prev);
-  };
-
-  const handleRemove = async () => {
-    if (selectedRow) {
-      const { error } = await userDeleteAPI(selectedRow);
-      if (!error) {
-        closeErrorModal();
-        setReload((prev) => !prev);
-      }
-    }
-  };
-  const onDelete = (id: number) => {
-    setSelectedRow(id);
-    openErrorModal();
-  };
-
-  const onStatusChange = async (id: number) => {
-    await userStatusChangeAPI(id);
-    setReload((prev) => !prev);
-  };
-
-  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
 
   const getData = async ({
     page,
@@ -122,6 +54,31 @@ const UserManagement = () => {
       return { data: data?.data?.data, totalRecord: data?.data?.count };
     } else return { data: [], totalRecord: 0 };
   };
+
+  const { setReload, page, limit, onSearch, ...TableProps } =
+    useTable<IUserListing>({
+      getData,
+    });
+
+  const onDelete = (id: number) => setItemForDelete(id);
+
+  const onStatusChange = async (id: number) => {
+    await userStatusChangeAPI(id);
+    setReload((prev) => !prev);
+  };
+
+  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
+
+  const handleRemove = async () => {
+    if (itemForDelete) {
+      const { error } = await userDeleteAPI(itemForDelete);
+      if (!error) {
+        setItemForDelete(null);
+        setReload((prev) => !prev);
+      }
+    }
+  };
+
   return (
     <>
       <div className="pt-14">
@@ -130,42 +87,34 @@ const UserManagement = () => {
           btnClass=" !w-auto !px-14 "
           type="submit"
           btnName="Add New User"
-          onClickHandler={openModal}
+          onClickHandler={() => setAddModel(true)}
         />
 
-        <Table<IUserListing>
-          getData={getData}
-          loading={listingLoader}
+        <input type="text" onChange={onSearch} placeholder="Search" />
+
+        <DataTable<IUserListing>
+          className="dataTable"
           columns={userHeaders}
-          limit={limit}
-          setLimit={setLimit}
-          page={page}
-          setPage={setPage}
-          reload={reload}
+          progressPending={isLoading}
+          progressComponent={<div>Loading</div>}
+          noDataComponent={<>There are no records to display!!!!</>}
+          {...TableProps}
         />
 
-        {isModalOpen && (
-          <ModalCommon
-            heading="Add User"
-            onCancel={closeModal}
-            onConfirm={handleSubmit(onSubmit)}
-            cancelButtonText="Cancel"
-            isLoading={loader}
-            confirmButtonText="Add"
-          >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <AddUser control={control} errors={errors} />
-            </form>
-          </ModalCommon>
+        {addModel && (
+          <AddUser
+            onClose={() => setAddModel(false)}
+            reload={() => setReload((prev) => !prev)}
+          />
         )}
 
-        {isErrorModalOpen && (
+        {itemForDelete && (
           <ModalError
             cancelButtonText="Cancel"
             confirmButtonText="Delete"
             heading="Are you sure?"
             subText="This will delete your user from list"
-            onCancel={closeErrorModal}
+            onCancel={() => setItemForDelete(null)}
             onConfirm={handleRemove}
           />
         )}
