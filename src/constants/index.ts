@@ -100,7 +100,7 @@ export const aboutData = [
   },
 ];
 
-export const FaqData = [
+export const FaqDataQuestionAnswer = [
   {
     count: "01.",
     question:
