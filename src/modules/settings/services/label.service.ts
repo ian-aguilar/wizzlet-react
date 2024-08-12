@@ -19,8 +19,10 @@ export const useAddLabelPostAPI = () => {
 export const useFetchLabelDataAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
 
-  const getLabelListingAPI = async (queryString?: string) => {
-    return callApi(`${AUTH_API_BASE_PATH}/list?${queryString}`);
+  const getLabelListingAPI = async (data: object) => {
+    return callApi(`${AUTH_API_BASE_PATH}/list`, {
+      params: data,
+    });
   };
 
   return { getLabelListingAPI, isLoading, isError, isSuccess };

@@ -17,6 +17,7 @@ import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
+import ImportProducts from "./modules/import-products";
 
 // ** Types **
 export type RouteObjType = {
@@ -43,7 +44,8 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
           <>
             <Loader />
           </>
-        }>
+        }
+      >
         {route.element}
       </Suspense>
     ),
@@ -79,6 +81,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.inventoryManagement.view,
       element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.import.view,
+      element: <ImportProducts />,
     },
     {
       path: PrivateRoutesPath.userManagement.view,

@@ -1,9 +1,3 @@
-// Packages
-import { useState } from "react";
-
-// Components
-import Table from "@/components/common/Table";
-
 // Types
 import { IUserListing } from "./types";
 import {
@@ -19,25 +13,12 @@ import {
 
 // Hooks
 import useUserHeaders from "./hooks/useUserHeaders";
+import DataTable from "react-data-table-component";
+import useTable from "@/hooks/useTable";
 
 const UserManagement = () => {
   const { getUserListAPI, isLoading } = useGetUserListAPI();
   const { userStatusChangeAPI } = useUserStatusChangeAPI();
-
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(1);
-  const [reload, setReload] = useState(false);
-
-  const onDelete = (id: number) => {
-    console.log(id, "deleted User Id");
-  };
-
-  const onStatusChange = async (id: number) => {
-    await userStatusChangeAPI(id);
-    setReload((prev) => !prev);
-  };
-
-  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
 
   const getData = async ({
     page,
@@ -57,18 +38,35 @@ const UserManagement = () => {
       return { data: data?.data?.data, totalRecord: data?.data?.count };
     } else return { data: [], totalRecord: 0 };
   };
+
+  const { setReload, page, limit, onSearch, ...TableProps } =
+    useTable<IUserListing>({
+      getData,
+    });
+
+  const onDelete = (id: number) => {
+    console.log(id, "deleted User Id");
+  };
+
+  const onStatusChange = async (id: number) => {
+    await userStatusChangeAPI(id);
+    setReload((prev) => !prev);
+  };
+
+  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
+
   return (
     <>
       <div>UserManagement</div>
-      <Table<IUserListing>
-        getData={getData}
-        loading={isLoading}
+      <input type="text" onChange={onSearch} placeholder="Search" />
+
+      <DataTable<IUserListing>
+        className="dataTable"
         columns={userHeaders}
-        limit={limit}
-        setLimit={setLimit}
-        page={page}
-        setPage={setPage}
-        reload={reload}
+        progressPending={isLoading}
+        progressComponent={<div>Loading</div>}
+        noDataComponent={<>There are no records to display!!!!</>}
+        {...TableProps}
       />
     </>
   );
