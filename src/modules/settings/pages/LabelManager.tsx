@@ -78,7 +78,6 @@ const LabelManager = () => {
 
   const onAddModelClose = () => {
     setAddModelOpen(false);
-    setReload((prev) => !prev);
   };
 
   const closeDeleteModel = () => setDeleteModel(null);
@@ -137,7 +136,12 @@ const LabelManager = () => {
           />
         </div>
 
-        {addModelOpen && <AddLabel onClose={onAddModelClose} />}
+        {addModelOpen && (
+          <AddLabel
+            onClose={onAddModelClose}
+            reload={() => setReload((prev) => !prev)}
+          />
+        )}
 
         {deleteModel && (
           <ModalError

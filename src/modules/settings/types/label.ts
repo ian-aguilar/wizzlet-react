@@ -13,4 +13,5 @@ export interface IUseLabelHeadersProps {
 
 export interface IAddLabelProps {
   onClose: () => void;
+  reload: () => void;
 }

@@ -15,7 +15,7 @@ import { addLabelValidationSchema } from "../validation-schema/labelValidation";
 // ** Services **
 import { useAddLabelPostAPI } from "../services/label.service";
 
-const AddLabel = ({ onClose }: IAddLabelProps) => {
+const AddLabel = ({ onClose, reload }: IAddLabelProps) => {
   const { addLabelPostAPI, isLoading: loader } = useAddLabelPostAPI();
 
   const {
@@ -30,7 +30,10 @@ const AddLabel = ({ onClose }: IAddLabelProps) => {
     const { error } = await addLabelPostAPI({
       name: payload?.label,
     });
-    if (!error) onClose();
+    if (!error) {
+      reload();
+      onClose();
+    }
   };
 
   return (
