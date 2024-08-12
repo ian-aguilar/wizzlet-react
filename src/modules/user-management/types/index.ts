@@ -15,3 +15,16 @@ export interface IUseUserHeadersProps {
   onDelete: (id: number) => void;
   onStatusChange: (id: number) => void;
 }
+
+export interface IUserModel {
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface User {
+  id: number;
+  // name: string;
+  // firstName: string;
+  // lastName: string;
+}
