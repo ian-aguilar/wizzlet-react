@@ -1,21 +1,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
 interface IUser {
-  full_name: string;
   id: number;
+  role: UserRole;
   email: string;
+  full_name: string;
   first_name: string;
   last_name: string;
-  verified: boolean;
-  added_by_admin: boolean;
-  status: string;
-  reset_pass_token: string;
-  role: string;
-  last_active_date: string | Date;
-  created_at: string | Date;
-  updated_at: string | Date;
-  deleted_at: string | Date;
 }
 
 export interface userInterface {
@@ -47,7 +43,7 @@ const userSlice = createSlice({
 
 export const { reducer } = userSlice;
 
-export const getAuth = (state: RootState) => state.user;
+export const userSelector = (state: RootState) => state.user.user;
 
 export const { setRemoveUser, setUser } = userSlice.actions;
 
