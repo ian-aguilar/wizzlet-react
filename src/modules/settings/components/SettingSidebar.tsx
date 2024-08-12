@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 // ** icons **
 import {
+  LabelSettingIcon,
   SettingsProfileIcon,
   SettingsPWDIcon,
-  UserMgtIcon,
 } from "@/assets/Svg";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
 
@@ -19,7 +19,7 @@ const SettingSidebar = () => {
       path: PrivateRoutesPath.setting.profile.view,
     },
     {
-      navIcon: <UserMgtIcon />,
+      navIcon: <LabelSettingIcon />,
       navText: "Label Manager",
       navClass: "text-grayText font-medium ",
       path: PrivateRoutesPath.setting.labelManager.view,
@@ -40,7 +40,7 @@ const SettingSidebar = () => {
           key={i}
           className={` flex gap-2 items-center w-full   mb-8 hover:brightness-125 transition-all duration-300  ${data.navClass} `}
         >
-          {data.navIcon}
+          <span className="text-grayText">{data.navIcon}</span>
           {data.navText}
         </Link>
       ))}

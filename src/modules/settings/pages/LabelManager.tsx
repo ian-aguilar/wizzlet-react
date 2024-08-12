@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { GetDataParams, IAddLabelInputs, IModelTest, Label } from "../types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { addLabelValidationSchema } from "../validation-schema/labelValidation";
-import { FaTrash, FaEye } from "react-icons/fa";
 import {
   useAddLabelPostAPI,
   useDeleteLabelDataAPI,
@@ -16,6 +15,12 @@ import {
 import Table from "@/components/common/Table";
 import { TableColumn } from "react-data-table-component";
 import { ModalError } from "@/components/common/ModalError";
+import {
+  AddIconBtn,
+  DeleteIcon,
+  EyeIconSettings,
+  SearchIcon,
+} from "@/assets/Svg";
 
 const LabelManager = () => {
   const {
@@ -107,9 +112,9 @@ const LabelManager = () => {
   const columns: TableColumn<Label>[] = [
     {
       name: "Name",
-      selector: (row) => row.name,
       sortable: true,
       sortField: "name",
+      cell: (row: Label) => <div className="label_table">{row.name}</div>,
     },
     {
       name: "Items with the label",
@@ -125,12 +130,12 @@ const LabelManager = () => {
             <button
               onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}
             >
-              <FaEye />
+              <EyeIconSettings className="text-greenPrimary hover:brightness-125 " />
             </button>
           </div>
           <div>
             <button onClick={() => handleDeleteClick(row)}>
-              <FaTrash />
+              <DeleteIcon className="text-redAlert  hover:brightness-125" />
             </button>
           </div>
         </div>
@@ -156,26 +161,50 @@ const LabelManager = () => {
   };
 
   return (
-    <div>
-      <div className="pt-14">
-        <Button
-          showType={btnShowType.green}
-          btnClass=" !w-auto !px-14 "
-          type="submit"
-          btnName="Add New Label"
-          onClickHandler={openModal}
-        />
+    <div className="pb-5">
+      <div className="border-b border-greyBorder pb-2 mb-4 flex justify-between">
+        <h3 className="text-2xl  text-blackPrimary  font-medium">
+          Lebel Manager
+        </h3>
+        <div className=" flex gap-2 ">
+          {/* <input type="text" onChange={setSearchValue} placeholder="Search" /> */}
+          <div className="relative  ">
+            <input
+              className="bg-transparent py-3 px-9 outline-none focus:outline-none border rounded-md"
+              type="text"
+              // onChange={setSearchValue}
+              placeholder="Search"
+            />{" "}
+            <span className="inline-block absolute left-3 top-4">
+              {" "}
+              <SearchIcon />{" "}
+            </span>
+          </div>
+          <Button
+            showType={btnShowType.green}
+            btnClass=" !w-auto !px-4 "
+            BtnIconLeft={
+              <AddIconBtn className="text-white inline-block mr-2" />
+            }
+            type="submit"
+            btnName="Add New Label"
+            onClickHandler={openModal}
+          />
+        </div>
+      </div>
 
-        <Table<Label>
-          getData={handleGetData}
-          loading={listingLoader}
-          columns={columns}
-          limit={limit}
-          page={page}
-          setLimit={setLimit}
-          setPage={setPage}
-          // reload
-        />
+      <div className=" ">
+        <div className="bg-grayLightBody/10 p-5 ">
+          <Table<Label>
+            getData={handleGetData}
+            loading={listingLoader}
+            columns={columns}
+            limit={limit}
+            setLimit={setLimit}
+            page={page}
+            setPage={setPage}
+          />
+        </div>
 
         {isModalOpen && (
           <ModalCommon
