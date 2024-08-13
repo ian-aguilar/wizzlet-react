@@ -50,7 +50,7 @@ const HomePageForm = () => {
     // return;
     console.log(data, "datttttttttttttttttt");
 
-    return;
+    // return;
 
     const formData = new FormData();
     // appendFormData(data, formData);

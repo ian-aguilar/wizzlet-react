@@ -139,7 +139,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     setValue,
     name = "",
     label = "",
-    maxSize = 1,
+    maxSize = 3,
     className = "",
     errorClass = "",
     register,
