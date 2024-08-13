@@ -1,6 +1,9 @@
 import { TableColumn } from "react-data-table-component";
 import { IUseUserHeadersProps, IUserListing } from "../types";
 import { dateFormatter } from "@/helper";
+import { DeleteIcon, EyeIconSettings } from "@/assets/Svg";
+import { InputCheck } from "@/components/common/InputCheck";
+import { InpiutSwitch } from "@/components/common/InpiutSwitch";
 
 const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
   const userHeaders: TableColumn<IUserListing>[] = [
@@ -27,7 +30,8 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
       name: "Status",
       id: "status",
       cell: (row: IUserListing) => (
-        <div onClick={() => onInactive(row.id, row.status)}>{row.status}</div>
+        // <div onClick={() => onStatusChange(row.id)}>{row.status}</div>
+        <InpiutSwitch />
       ),
     },
     {
@@ -45,9 +49,19 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
       name: "Action",
       id: "action",
       cell: (row: IUserListing) => (
-        <div>
-          <span>view</span>
-          <span onClick={() => onDelete(row.id)}>delete</span>
+        <div className="flex gap-4 ">
+          <span className="text-greenPrimary cursor-pointer">
+            {" "}
+            <EyeIconSettings className="inline-block mr-1 text-greenPrimary" />{" "}
+            view
+          </span>
+          <span
+            className="text-redAlert cursor-pointer"
+            onClick={() => onDelete(row.id)}
+          >
+            {" "}
+            <DeleteIcon className="inline-block mr-1 text-redAlert" /> delete
+          </span>
         </div>
       ),
     },

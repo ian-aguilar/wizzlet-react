@@ -30,9 +30,6 @@ const RequiresAuth = ({ children }: { children: ReactNode }) => {
           <Sidebar />
 
           <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
-            <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-              Dashboard
-            </h2>
             {children}
           </article>
         </div>

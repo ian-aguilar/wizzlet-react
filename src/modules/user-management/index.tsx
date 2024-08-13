@@ -26,6 +26,7 @@ import useUserHeaders from "./hooks/useUserHeaders";
 import Button from "@/components/form-fields/components/Button";
 import WarningModal from "@/modules/user-management/components/warningModal";
 import InviteModal from "./components/inviteModal";
+import { AddIconBtn, SearchIcon } from "@/assets/Svg";
 
 const UserManagement = () => {
   //================= States =======================
@@ -109,7 +110,8 @@ const UserManagement = () => {
 
   return (
     <>
-      <div className="pt-14">
+      <div className="flex spa">
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Dashboard</h2>{" "}
         <Button
           showType={btnShowType.green}
           btnClass=" !w-auto !px-14 "
@@ -117,52 +119,65 @@ const UserManagement = () => {
           btnName="Add New User"
           onClickHandler={() => setAddModel(true)}
         />
-
-        <input type="text" onChange={onSearch} placeholder="Search" />
-
-        <DataTable<IUserListing>
-          className="dataTable"
-          columns={userHeaders}
-          progressPending={isLoading}
-          progressComponent={<div>Loading</div>}
-          noDataComponent={<>There are no records to display!!!!</>}
-          {...TableProps}
-        />
-
-        {addModel && <AddUser onClose={handleAddUserClose} />}
-
-        {itemForStatusChange.id && (
-          <WarningModal
-            heading={`Are you sure you want to ${
-              itemForStatusChange.status === "ACTIVE" ? "inactive" : "activate"
-            } this user?`}
-            confirmButtonText={
-              itemForStatusChange.status === "ACTIVE" ? "Inactive" : "Active"
-            }
-            onClose={() => setItemForStatusChange({ id: null, status: null })}
-            onSave={onStatusChange}
-          />
-        )}
-
-        {itemForDelete && (
-          <ErrorModal
-            onClose={() => setItemForDelete(null)}
-            onSave={handleRemove}
-          />
-        )}
-
-        {isInviteModalOpen.status && (
-          <InviteModal
-            onClose={() =>
-              setIsInviteModalOpen({
-                status: false,
-                link: null,
-              })
-            }
-            link={isInviteModalOpen.link}
-          />
-        )}
       </div>
+      <section className=" w-full bg-white  p-5 mb-5 h-[calc(100%_-_40px)]  overflow-y-auto scroll-design  ">
+        <div className="mb-4 flex gap-4 justify-end">
+          <div className="relative">
+            <input
+              className="bg-grayLightBody/10 py-3 px-9 outline-none focus:outline-none border rounded-md"
+              type="text"
+              onChange={onSearch}
+              placeholder="Search"
+            />
+            <span className="inline-block absolute left-3 top-4">
+              <SearchIcon />
+            </span>
+          </div>
+        </div>
+        <div className="bg-grayLightBody/10 p-5 ">
+          <h3 className="font-medium text-2xl mb-6">Users</h3>
+          <div className=" ">
+            <DataTable<IUserListing>
+              className="dataTable"
+              columns={userHeaders}
+              progressPending={isLoading}
+              progressComponent={<div>Loading</div>}
+              noDataComponent={<>There are no records to display!!!!</>}
+              {...TableProps}
+            />
+          </div>
+        </div>
+      </section>
+      {addModel && <AddUser onClose={handleAddUserClose} />}
+      {itemForStatusChange.id && (
+        <WarningModal
+          heading={`Are you sure you want to ${
+            itemForStatusChange.status === "ACTIVE" ? "inactive" : "activate"
+          } this user?`}
+          confirmButtonText={
+            itemForStatusChange.status === "ACTIVE" ? "Inactive" : "Active"
+          }
+          onClose={() => setItemForStatusChange({ id: null, status: null })}
+          onSave={onStatusChange}
+        />
+      )}
+      {itemForDelete && (
+        <ErrorModal
+          onClose={() => setItemForDelete(null)}
+          onSave={handleRemove}
+        />
+      )}
+      {isInviteModalOpen.status && (
+        <InviteModal
+          onClose={() =>
+            setIsInviteModalOpen({
+              status: false,
+              link: null,
+            })
+          }
+          link={isInviteModalOpen.link}
+        />
+      )}
     </>
   );
 };
