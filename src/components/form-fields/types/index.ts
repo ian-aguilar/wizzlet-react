@@ -31,8 +31,8 @@ export interface IButtonProps {
   isLoading?: boolean;
   loaderClass?: string;
   disabled?: boolean;
-  BtnIconRight?:string;
-  BtnIconLeft?:string;
+  BtnIconRight?: ReactNode;
+  BtnIconLeft?: ReactNode;
   btnEndIcon?: ReactNode;
 }
 

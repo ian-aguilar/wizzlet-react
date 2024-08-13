@@ -19,6 +19,7 @@ export const PrivateRoutesPath = {
     changePassword: { view: "/setting/change-password" },
   },
   inventoryManagement: { view: "/inventory-management" },
+  import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
 };

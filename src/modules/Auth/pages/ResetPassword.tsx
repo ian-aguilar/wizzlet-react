@@ -106,7 +106,7 @@ const ResetPassword = () => {
               <Button
                 showType={btnShowType.green}
                 btnClass="mt-6"
-                btnName="Sign in"
+                btnName="Update"
                 type="submit"
                 isLoading={loader}
               />

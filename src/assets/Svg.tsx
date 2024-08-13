@@ -519,8 +519,8 @@ export const CheckIconBtn = ({ className }: any) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M18.8954 5.17803C19.2803 5.51483 19.3152 6.10158 18.9729 6.48156L9.33513 17.1789C8.99098 17.5608 8.40007 17.5851 8.02574 17.2328L2.44871 11.9825C2.10091 11.655 2.06761 11.1094 2.36602 10.7364C2.69528 10.3249 3.30845 10.2682 3.70032 10.6207L8.02734 14.5127C8.40338 14.851 8.98231 14.8207 9.32111 14.4452L17.611 5.25385C17.9464 4.88191 18.5185 4.84819 18.8954 5.17803Z"
       />
     </svg>
@@ -539,33 +539,33 @@ export const AutoSyncIcon = ({ className }: any) => {
     >
       <path
         d="M8.375 11.575L15 15.4125L21.575 11.5999"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M15 22.2124V15.3999"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M13.4498 7.86244L9.44981 10.0874C8.54981 10.5874 7.7998 11.8499 7.7998 12.8874V17.1249C7.7998 18.1624 8.53731 19.4249 9.44981 19.9249L13.4498 22.1499C14.2998 22.6249 15.6998 22.6249 16.5623 22.1499L20.5623 19.9249C21.4623 19.4249 22.2123 18.1624 22.2123 17.1249V12.8749C22.2123 11.8374 21.4748 10.5749 20.5623 10.0749L16.5623 7.84994C15.6998 7.37494 14.2998 7.37494 13.4498 7.86244Z"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M27.5 18.75C27.5 23.5875 23.5875 27.5 18.75 27.5L20.0625 25.3125"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M2.5 11.25C2.5 6.4125 6.4125 2.5 11.25 2.5L9.93752 4.6875"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -583,14 +583,14 @@ export const LabelSettingIcon = ({ className }: any) => {
     >
       <path
         d="M4.51742 16.5751L9.42492 21.4826C11.4399 23.4976 14.7116 23.4976 16.7374 21.4826L21.4933 16.7268C23.5083 14.7118 23.5083 11.4401 21.4933 9.41428L16.5749 4.51761C15.5458 3.48845 14.1266 2.93595 12.6749 3.01178L7.25826 3.27178C5.09159 3.36928 3.36909 5.09178 3.26076 7.24761L3.00076 12.6643C2.93576 14.1268 3.48826 15.5459 4.51742 16.5751Z"
-        stroke-width="1.8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M10.2913 12.9997C11.7871 12.9997 12.9997 11.7871 12.9997 10.2913C12.9997 8.79557 11.7871 7.58301 10.2913 7.58301C8.79557 7.58301 7.58301 8.79557 7.58301 10.2913C7.58301 11.7871 8.79557 12.9997 10.2913 12.9997Z"
-        stroke-width="1.8"
-        stroke-linecap="round"
+        strokeWidth="1.8"
+        strokeLinecap="round"
       />
     </svg>
   );
@@ -608,21 +608,21 @@ export const AddIconBtn = ({ className }: any) => {
     >
       <path
         d="M9.99984 18.3337C14.5832 18.3337 18.3332 14.5837 18.3332 10.0003C18.3332 5.41699 14.5832 1.66699 9.99984 1.66699C5.4165 1.66699 1.6665 5.41699 1.6665 10.0003C1.6665 14.5837 5.4165 18.3337 9.99984 18.3337Z"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6.6665 10H13.3332"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M10 13.3337V6.66699"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -684,10 +684,10 @@ export const LeftArrowIcon = ({ className }: any) => {
     >
       <path
         d="M9.99998 13.2797L5.65331 8.93306C5.13998 8.41973 5.13998 7.57973 5.65331 7.06639L9.99998 2.71973"
-        stroke-width="1.5"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

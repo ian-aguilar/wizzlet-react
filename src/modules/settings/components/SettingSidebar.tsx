@@ -1,37 +1,24 @@
 // ** packages **
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-// ** icons **
-import {
-  LabelSettingIcon,
-  SettingsProfileIcon,
-  SettingsPWDIcon,
-  UserMgtIcon,
-} from "@/assets/Svg";
-import { PrivateRoutesPath } from "@/modules/Auth/types";
+// ** Constants **
+import { settingsNav } from "../constants/sidebar";
+import { SettingSidebarEnum } from "../pages/sidebar";
 
 const SettingSidebar = () => {
-  const settingsNav = [
-    {
-      navIcon: <SettingsProfileIcon />,
-      navText: "Profile",
-      navClass:
-        "text-blackPrimary font-medium relative before:absolute before:top-0  before:bottom-0  before:right-[-2px]  before:w-[3px]  before:h-full  before:bg-greenPrimary  ",
-      path: PrivateRoutesPath.setting.profile.view,
-    },
-    {
-      navIcon: <LabelSettingIcon />,
-      navText: "Label Manager",
-      navClass: "text-grayText font-medium ",
-      path: PrivateRoutesPath.setting.labelManager.view,
-    },
-    {
-      navIcon: <SettingsPWDIcon />,
-      navText: "Change Password",
-      navClass: "  text-grayText font-medium ",
-      path: PrivateRoutesPath.setting.changePassword.view,
-    },
-  ];
+  const [active, setActive] = useState(SettingSidebarEnum.ChangePassword);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname) {
+      const activeKey = settingsNav.find((el) =>
+        location.pathname.includes(el.path)
+      );
+      if (activeKey) setActive(activeKey.name);
+    }
+  }, [location.pathname]);
 
   return (
     <div className="w-[200px] min-w-[200px] border-r border-greyBorder h-full py-2">
@@ -39,9 +26,15 @@ const SettingSidebar = () => {
         <Link
           to={data.path}
           key={i}
-          className={` flex gap-2 items-center w-full   mb-8 hover:brightness-125 transition-all duration-300  ${data.navClass} `}
+          className={` flex gap-2 items-center w-full   mb-8 hover:brightness-125 transition-all duration-300  ${
+            active === data.name
+              ? "text-blackPrimary font-medium relative before:absolute before:top-0  before:bottom-0  before:right-[-2px]  before:w-[3px]  before:h-full  before:bg-greenPrimary"
+              : "text-grayText font-medium"
+          } `}
         >
-          <span className="text-grayText">{data.navIcon}</span>
+          <span className="text-grayText">
+            <data.navIcon />
+          </span>
           {data.navText}
         </Link>
       ))}
