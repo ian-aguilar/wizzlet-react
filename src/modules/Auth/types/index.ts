@@ -26,3 +26,4 @@ export const PrivateRoutesPath = {
     home: "/cms-management/home"
   }
 };
+  

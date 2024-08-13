@@ -17,8 +17,8 @@ import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
-import FaqForm from "./modules/Admin/Faq/components";
-import HomePageForm from "./modules/Admin/Home/components";
+import FaqForm from "./modules/Admin/Faq";
+import HomePageForm from "./modules/Admin/Home";
 
 // ** Types **
 export type RouteObjType = {

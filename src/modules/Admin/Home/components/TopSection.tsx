@@ -93,7 +93,10 @@ const TopSection = () => {
               errors={errors}
             />
 
-            <span onClick={() => remove(index)} className="me-3">
+            <span
+              onClick={() => fields.length > 1 && remove(index)}
+              className="me-3"
+            >
               delete
             </span>
             <span onClick={() => insert(index + 1, FEATURE)}>Add </span>

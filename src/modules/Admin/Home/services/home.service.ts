@@ -4,26 +4,26 @@ import { AxiosRequestConfig } from "axios";
 const API_BASE_PATH = "/cms";
 
 //  ** Get All Marketplace Listing **
-export const usefetchFaqAPI = () => {
+export const usefetchHomeAPI = () => {
     // ** custom Hooks **
     const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
 
-    const getFaqAPI = async () => {
-        return callApi(`${API_BASE_PATH}/faqdata`);
+    const getHomeAPI = async () => {
+        return callApi(`${API_BASE_PATH}/homedata`);
     }
 
-    return { getFaqAPI, isLoading, isError, isSuccess };
+    return { getHomeAPI, isLoading, isError, isSuccess };
 };
 
 
-export const useFaqDataPostAPI = () => {
+export const useHomeDataPostAPI = () => {
     const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-    const faqDataPostAPI = async (
+    const homeDataPostAPI = async (
         data: object,
         config: AxiosRequestConfig<object> = {}
     ) => {
-        return callApi(`${API_BASE_PATH}/faq`, data, config);
+        return callApi(`${API_BASE_PATH}/home`, data, config);
     };
-    return { faqDataPostAPI, isLoading, isError, isSuccess };
+    return { homeDataPostAPI, isLoading, isError, isSuccess };
 }

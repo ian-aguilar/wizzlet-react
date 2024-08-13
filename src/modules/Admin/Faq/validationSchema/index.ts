@@ -1,6 +1,7 @@
 // ** Packages **
 import * as Yup from "yup";
 
+
 // Common validation rules
 export const titleValidation = Yup.string()
     .trim()
@@ -11,4 +12,5 @@ export const descriptionValidation = Yup.string()
     .required("descritption is required");
 
 export const buttonValidation = Yup.string().trim().required("Text required")
+
 

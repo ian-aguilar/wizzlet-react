@@ -52,7 +52,7 @@ const TopSection = () => {
             <Input
               textLabelName="Question"
               placeholder="Enter Question"
-              name={`topSection.row.${index}.question` as const}
+              name={`topSection.row.${index}.question`}
               label="Question"
               type="text"
               control={control}
@@ -61,19 +61,18 @@ const TopSection = () => {
             <Input
               textLabelName="Answer"
               placeholder="Enter description"
-              name={`topSection.row.${index}.answer` as const}
+              name={`topSection.row.${index}.answer`}
               label="Answer"
               type="text"
               control={control}
               errors={errors}
             />
 
-            <span
-              onClick={() => fields.length > 1 && remove(index)}
-              className="me-3"
-            >
-              delete
-            </span>
+            {fields.length > 1 && (
+              <span onClick={() => remove(index)} className="me-3">
+                delete
+              </span>
+            )}
             <span onClick={() => insert(index + 1, QUESTIONANSWER)}>Add </span>
           </div>
         ))}

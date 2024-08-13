@@ -27,10 +27,10 @@ export const imageValidation = Yup
             file as FileList && file[0] as FileList[0] && ["image/jpeg", "image/png"].includes(file[0].type)
         );
     })
-    .test("fileSize", "The file is too large", (value) => {
-        const file = value as FileList
-        return file && file[0] && file[0].size <= 1024 * 1024 * 8;
-    })
+.test("fileSize", "The file is too large", (value) => {
+    const file = value as FileList
+    return file && file[0] && file[0].size <= 1024 * 1024 * 1;
+})
 
 // Yup.mixed()
 // .required()
