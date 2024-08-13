@@ -2,7 +2,7 @@ import { TableColumn } from "react-data-table-component";
 import { IUseUserHeadersProps, IUserListing } from "../types";
 import { dateFormatter } from "@/helper";
 
-const useUserHeaders = ({ onDelete, onStatusChange }: IUseUserHeadersProps) => {
+const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
   const userHeaders: TableColumn<IUserListing>[] = [
     {
       name: "Username",
@@ -27,7 +27,7 @@ const useUserHeaders = ({ onDelete, onStatusChange }: IUseUserHeadersProps) => {
       name: "Status",
       id: "status",
       cell: (row: IUserListing) => (
-        <div onClick={() => onStatusChange(row.id)}>{row.status}</div>
+        <div onClick={() => onInactive(row.id, row.status)}>{row.status}</div>
       ),
     },
     {

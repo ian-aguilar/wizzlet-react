@@ -1,4 +1,3 @@
-// ** Packages **
 import { useState } from "react";
 import DataTable from "react-data-table-component";
 
@@ -12,7 +11,7 @@ import {
   TableFetchResult,
 } from "@/components/common/types/table";
 import AddUser from "./components/add-user";
-import { ModalError } from "@/components/common/ModalError";
+import { ErrorModal } from "@/modules/user-management/components/ModalError";
 
 // ** Services **
 import {
@@ -25,11 +24,21 @@ import {
 import useTable from "@/hooks/useTable";
 import useUserHeaders from "./hooks/useUserHeaders";
 import Button from "@/components/form-fields/components/Button";
+import WarningModal from "@/modules/user-management/components/warningModal";
+import InviteModal from "./components/inviteModal";
 
 const UserManagement = () => {
   //================= States =======================
   const [addModel, setAddModel] = useState(false);
   const [itemForDelete, setItemForDelete] = useState<number | null>(null);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState<{
+    status: boolean | null;
+    link: string | null | undefined;
+  }>({ status: null, link: null });
+  const [itemForStatusChange, setItemForStatusChange] = useState<{
+    id: number | null;
+    status: string | null;
+  }>({ id: null, status: null });
 
   // ================= Custom hooks ====================
   const { getUserListAPI, isLoading } = useGetUserListAPI();
@@ -55,19 +64,27 @@ const UserManagement = () => {
     } else return { data: [], totalRecord: 0 };
   };
 
-  const { setReload, page, limit, onSearch, ...TableProps } =
-    useTable<IUserListing>({
-      getData,
-    });
+  const { setReload, onSearch, ...TableProps } = useTable<IUserListing>({
+    getData,
+  });
 
   const onDelete = (id: number) => setItemForDelete(id);
 
-  const onStatusChange = async (id: number) => {
-    await userStatusChangeAPI(id);
-    setReload((prev) => !prev);
+  const onInactive = (id: number, status: string) => {
+    setItemForStatusChange({ id, status });
   };
 
-  const { userHeaders } = useUserHeaders({ onDelete, onStatusChange });
+  const onStatusChange = async () => {
+    if (itemForStatusChange.id) {
+      const { error } = await userStatusChangeAPI(itemForStatusChange.id);
+      if (!error) {
+        setItemForStatusChange({ id: null, status: null });
+        setReload((prev) => !prev);
+      }
+    }
+  };
+
+  const { userHeaders } = useUserHeaders({ onDelete, onInactive });
 
   const handleRemove = async () => {
     if (itemForDelete) {
@@ -76,6 +93,17 @@ const UserManagement = () => {
         setItemForDelete(null);
         setReload((prev) => !prev);
       }
+    }
+  };
+
+  const handleAddUserClose = (reload?: boolean, link?: string) => {
+    setAddModel(false);
+    if (reload) {
+      setReload((prev) => !prev);
+      setIsInviteModalOpen({
+        status: true,
+        link: link,
+      });
     }
   };
 
@@ -101,21 +129,37 @@ const UserManagement = () => {
           {...TableProps}
         />
 
-        {addModel && (
-          <AddUser
-            onClose={() => setAddModel(false)}
-            reload={() => setReload((prev) => !prev)}
+        {addModel && <AddUser onClose={handleAddUserClose} />}
+
+        {itemForStatusChange.id && (
+          <WarningModal
+            heading={`Are you sure you want to ${
+              itemForStatusChange.status === "ACTIVE" ? "inactive" : "activate"
+            } this user?`}
+            confirmButtonText={
+              itemForStatusChange.status === "ACTIVE" ? "Inactive" : "Active"
+            }
+            onClose={() => setItemForStatusChange({ id: null, status: null })}
+            onSave={onStatusChange}
           />
         )}
 
         {itemForDelete && (
-          <ModalError
-            cancelButtonText="Cancel"
-            confirmButtonText="Delete"
-            heading="Are you sure?"
-            subText="This will delete your user from list"
-            onCancel={() => setItemForDelete(null)}
-            onConfirm={handleRemove}
+          <ErrorModal
+            onClose={() => setItemForDelete(null)}
+            onSave={handleRemove}
+          />
+        )}
+
+        {isInviteModalOpen.status && (
+          <InviteModal
+            onClose={() =>
+              setIsInviteModalOpen({
+                status: false,
+                link: null,
+              })
+            }
+            link={isInviteModalOpen.link}
           />
         )}
       </div>

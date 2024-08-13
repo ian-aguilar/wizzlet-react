@@ -4,7 +4,6 @@ import DataTable from "react-data-table-component";
 
 // ** Components **
 import AddLabel from "../components/AddLabel";
-import { ModalError } from "@/components/common/ModalError";
 import { btnShowType } from "@/components/form-fields/types";
 import Button from "@/components/form-fields/components/Button";
 
@@ -24,6 +23,7 @@ import {
 
 // ** Icons **
 import { AddIconBtn, SearchIcon } from "@/assets/Svg";
+import { ErrorModal } from "@/modules/user-management/components/ModalError";
 
 const LabelManager = () => {
   //================= States =======================
@@ -65,16 +65,10 @@ const LabelManager = () => {
       totalRecord: totalCount,
     };
   };
-  const {
-    setReload,
-    page,
-    limit,
-    onSearch,
-    resetTableToInitial,
-    ...TableProps
-  } = useTable<Label>({
-    getData,
-  });
+  const { setReload, onSearch, resetTableToInitial, ...TableProps } =
+    useTable<Label>({
+      getData,
+    });
 
   const onAddModelClose = () => {
     setAddModelOpen(false);
@@ -144,14 +138,7 @@ const LabelManager = () => {
         )}
 
         {deleteModel && (
-          <ModalError
-            cancelButtonText="Cancel"
-            confirmButtonText="Delete"
-            heading="Are you sure?"
-            subText="This will delete your user from list"
-            onCancel={closeDeleteModel}
-            onConfirm={handleRemove}
-          />
+          <ErrorModal onClose={closeDeleteModel} onSave={handleRemove} />
         )}
       </div>
     </div>
