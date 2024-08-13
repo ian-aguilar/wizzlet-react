@@ -1,13 +1,100 @@
-import { AutoSyncIcon, CheckIconBtn, DownArrowBlack } from "@/assets/Svg";
+import {
+  AutoSyncIcon,
+  CheckIconBtn,
+  DownArrowBlack,
+  ListedIcon,
+  SalesIcon,
+  SoldIcon,
+} from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
 import BrandLogo from "/images/Amazon_logo.png";
 import BrandLogo2 from "/images/ebay_logo.png";
 import BrandLogo3 from "/images/Walmart_logo.png";
+import Graph1 from "/images/revenueProfit.png";
+import Graph2 from "/images/PieChart.png";
 // import Input from "@/components/form-fields/components/Input";
 const Dashboard = () => {
   return (
     <>
-      {/* <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
+      <section className=" w-full bg-white  p-5 mb-5">
+        <h3 className="font-medim text-[26px] pb-7 ">Analytics</h3>
+        <div className="grid grid-cols-12 gap-4 mb-5 ">
+          <div className="flex justify-center items-center w-full h-full col-span-9 border p-5 relative rounded-md ">
+            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+              Coming Soon
+            </div>
+            <img src={Graph1} className="w-full max-w-full " alt="" />
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-3 border p-5 relative  rounded-md ">
+            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+              Coming Soon
+            </div>
+            <img src={Graph2} className="w-full max-w-full " alt="" />
+          </div>
+        </div>
+        <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">
+          <div className=" col-span-12 xl:col-span-4 xl:pr-5  ">
+            <div className="flex justify-between items-center pb-4 ">
+              <p className="text-grayText text-base">Number of Sold Items</p>
+              <div>
+                <SoldIcon />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-3xl font-bold ">90,420</p>
+              <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
+                {" "}
+                +20%{" "}
+              </div>
+            </div>
+          </div>
+          <div className=" col-span-12 xl:col-span-4 xl:border-l xl:border-r xl:border-t-0 xl:border-b-0 border-t border-b xl:px-5 xl:my-0 my-5 xl:py-0 py-5">
+            {" "}
+            <div className="flex justify-between items-center pb-4 ">
+              <p className="text-grayText text-base">Number of Listed Items</p>
+              <div>
+                <ListedIcon />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-3xl font-bold ">21,500</p>
+              <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
+                {" "}
+                +20%{" "}
+              </div>
+            </div>{" "}
+          </div>
+          <div className=" col-span-12 xl:col-span-4 xl:pl-5">
+            {" "}
+            <div className="flex justify-between items-center pb-4 ">
+              <p className="text-grayText text-base">Average Sale Price</p>
+              <div>
+                <SalesIcon />
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-3xl font-bold ">$11,840</p>
+              <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
+                {" "}
+                +20%{" "}
+              </div>
+            </div>{" "}
+          </div>
+        </div>
+        <div className="grid grid-cols-11 gap-4 mb-5">
+          <div className="flex justify-center items-center w-full h-full col-span-5 border  rounded-md  ">
+            5
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-3 border  rounded-md  ">
+            3
+          </div>
+          <div className="flex justify-center items-center w-full h-full col-span-3 border  rounded-md  ">
+            3
+          </div>
+        </div>
+      </section>
+
+      <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
         <div className="py-24 px-20 bg-grayLightBody/10 sm:bg-MarketPlaceDB bg-right bg-no-repeat mb-14">
           <h3 className=" text-5xl md:text-[58px] font-bold text-grayText/50 pb-6 bg-cover ">
             No Marketplace Connected
@@ -149,7 +236,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Inventory Management */}
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
@@ -291,29 +378,6 @@ const Dashboard = () => {
               <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
               Connected
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className=" w-full bg-white  p-5 mb-5">
-        <h3 className="font-medim text-[26px] pb-7 ">Analytics</h3>
-        <div className="grid grid-cols-10 gap-4 mb-5 ">
-          <div className="flex justify-center items-center w-full h-full col-span-8 border ">
-            8
-          </div>
-          <div className="flex justify-center items-center w-full h-full col-span-2 border ">
-            2
-          </div>
-        </div>
-        <div className="grid grid-cols-11 gap-4 mb-5">
-          <div className="flex justify-center items-center w-full h-full col-span-5 border ">
-            5
-          </div>
-          <div className="flex justify-center items-center w-full h-full col-span-3 border ">
-            3
-          </div>
-          <div className="flex justify-center items-center w-full h-full col-span-3 border ">
-            3
           </div>
         </div>
       </section>
