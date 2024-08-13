@@ -17,6 +17,7 @@ import Aboutus from "./modules/Admin/Aboutus/Index";
 import Contactus from "./modules/Admin/Contactus/Index";
 import FaqForm from "./modules/Admin/Faq/components";
 import HomePageForm from "./modules/Admin/Home/components";
+import ImportProducts from "./modules/import-products";
 
 // ** Types **
 export type RouteObjType = {
@@ -76,6 +77,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.inventoryManagement.view,
       element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.import.view,
+      element: <ImportProducts />,
     },
     {
       path: PrivateRoutesPath.userManagement.view,

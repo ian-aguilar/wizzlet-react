@@ -1,6 +1,5 @@
 // ** types **
 import { PrivateRoutesPath } from "@/modules/Auth/types";
-import { sidebarList } from "@/modules/dashboard/types";
 
 import {
   CMSMGTIcon,
@@ -13,6 +12,7 @@ import {
 import VisionImg from "/images/VisionImg.png";
 import MissionImg from "/images/MissionImg.png";
 import { ICard } from "@/modules/Admin/Aboutus/types";
+import { sidebarList } from "@/components/sidebar/types";
 
 export const navData = [
   {

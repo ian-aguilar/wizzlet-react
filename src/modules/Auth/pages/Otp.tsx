@@ -75,7 +75,7 @@ const Otp = () => {
         </div>
 
         <Button
-          showType={btnShowType.primary}
+          showType={btnShowType.green}
           btnName="Confirm"
           btnClass="mt-9"
           type="submit"

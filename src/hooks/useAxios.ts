@@ -132,7 +132,7 @@ export const useAxiosPut = (): [
 export const useAxiosPatch = (): [
   (
     url: string,
-    data: object,
+    data?: object,
     config?: AxiosRequestConfig<object>
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
@@ -144,7 +144,7 @@ export const useAxiosPatch = (): [
 
   const putRequest = async (
     url: string,
-    data: object,
+    data?: object,
     config: AxiosRequestConfig<object> = {}
   ) => {
     try {
