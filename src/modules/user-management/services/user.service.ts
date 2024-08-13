@@ -27,7 +27,7 @@ export const useUserStatusChangeAPI = () => {
   // ** custom Hooks **
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPatch();
 
-  const userStatusChangeAPI = async (id: number) => {
+  const userStatusChangeAPI = async (id: number | null) => {
     return callApi(`${AUTH_API_BASE_PATH}/status/${id}`);
   };
 

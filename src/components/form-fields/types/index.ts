@@ -21,6 +21,7 @@ export type IInputProps<T extends FieldValues> = {
 export enum btnShowType {
   primary = "primary",
   green = "green",
+  red = "red",
 }
 export interface IButtonProps {
   btnName: string;
@@ -46,17 +47,38 @@ export interface ModalCommonProps {
   children?: React.ReactNode;
 }
 
-export interface ErrorModalCommonProps {
+export interface BaseModalCommonProps {
   heading: string;
   subText: string;
+  keyWord?: string;
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm?: () => void;
   cancelButtonText: string;
   confirmButtonText: string;
   isLoading?: boolean;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  showType: btnShowType;
 }
 
 export interface IOtpInputProps {
   onChangeHandler: (otp: string) => void;
   value: string;
+}
+
+export interface inviteModalProps {
+  link: string | undefined | null;
+  onClose: () => void;
+}
+
+export interface errorModalProps {
+  onClose: () => void;
+  onSave?: () => void;
+}
+
+export interface warningModalProps {
+  onClose: () => void;
+  onSave?: () => void;
+  heading: string;
+  confirmButtonText: string;
 }

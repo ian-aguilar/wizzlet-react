@@ -1,4 +1,3 @@
-// Packages
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
@@ -6,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "@/components/form-fields/components/Input";
 import { ModalCommon } from "@/components/common/ModalCommon";
 
-// types
+// Types
 import { AddUserFormProps, IUserModel } from "../types";
 
 // Services
@@ -15,7 +14,7 @@ import { useUserPostAPI } from "../services/user.service";
 // Validation
 import { addUserValidationSchema } from "../validation-schema/userValidation";
 
-const AddUser = ({ onClose, reload }: AddUserFormProps) => {
+const AddUser = ({ onClose }: AddUserFormProps) => {
   const {
     control,
     handleSubmit,
@@ -28,7 +27,7 @@ const AddUser = ({ onClose, reload }: AddUserFormProps) => {
   const { userPostAPI, isLoading: loader } = useUserPostAPI();
 
   const onSubmit = async (payload: IUserModel) => {
-    const { error } = await userPostAPI({
+    const { data, error } = await userPostAPI({
       first_name: payload?.firstName,
       last_name: payload?.lastName,
       email: payload?.email,
@@ -36,8 +35,7 @@ const AddUser = ({ onClose, reload }: AddUserFormProps) => {
     });
 
     if (!error) {
-      reload();
-      onClose();
+      onClose(true, data?.data?.inviteLink);
     }
   };
 
@@ -45,12 +43,11 @@ const AddUser = ({ onClose, reload }: AddUserFormProps) => {
     <>
       <ModalCommon
         heading="Add User"
-        onCancel={onClose}
+        onCancel={() => onClose()}
         onConfirm={handleSubmit(onSubmit)}
         cancelButtonText="Cancel"
         isLoading={loader}
-        confirmButtonText="Add"
-      >
+        confirmButtonText="Add">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             placeholder="First Name"
