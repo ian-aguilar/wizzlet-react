@@ -1,8 +1,8 @@
 export type IServiceSection = {
   title: string;
   description: string;
-  cards?: {
-    icon: Object;
+  cards: {
+    icon: FileList | "";
     title: string;
     description: string;
   }[];

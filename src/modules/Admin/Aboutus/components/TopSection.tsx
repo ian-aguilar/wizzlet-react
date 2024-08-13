@@ -8,6 +8,7 @@ import UploadFile from "@/components/form-fields/components/UploadFile";
 // ** Types **
 import { IAboutusForm } from "../types";
 import { aboutusCardDefaultValue } from "@/constants";
+import { useEffect } from "react";
 
 const TopSection = () => {
   const {
@@ -20,6 +21,12 @@ const TopSection = () => {
     control,
     name: "topSection.cards",
   });
+
+  useEffect(() => {
+    if (fields.length == 0) {
+      append(aboutusCardDefaultValue);
+    }
+  }, []);
 
   return (
     <section>
@@ -104,13 +111,15 @@ const TopSection = () => {
             >
               Add Field
             </span>
-            <span
-              onClick={() => {
-                remove(index);
-              }}
-            >
-              Remove Field
-            </span>
+            {index > 0 && (
+              <span
+                onClick={() => {
+                  remove(index);
+                }}
+              >
+                Remove Field
+              </span>
+            )}
           </div>
         ))}
       </div>

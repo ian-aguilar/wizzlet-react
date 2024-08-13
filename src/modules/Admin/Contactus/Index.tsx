@@ -11,6 +11,7 @@ import { IContactusForm } from "./types";
 //** Validations **
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ContactusValidation } from "./validation-schema/contactUsValidationSchema";
+import { useCreateContactUsAPI } from "../services/cms.service";
 
 const Contactus = () => {
   const {
@@ -21,8 +22,16 @@ const Contactus = () => {
     resolver: yupResolver(ContactusValidation),
   });
 
+  const { createContactUsAPI } = useCreateContactUsAPI();
+
   const onSubmit: SubmitHandler<IContactusForm> = async (values) => {
-    console.log("Setting contactus", values);
+    const data = new FormData();
+
+    data.append("title", values.title);
+    data.append("description", values.description);
+    data.append("greenButton", values.greenButton);
+
+    await createContactUsAPI(data);
   };
 
   return (

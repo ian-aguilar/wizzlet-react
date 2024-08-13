@@ -10,6 +10,9 @@ import { ContactData } from "@/constants";
 import Button from "@/components/form-fields/components/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ContactusValidation } from "../validation-schema/contactUsValidation";
+import { useEffect, useState } from "react";
+import { IContactusForm } from "@/modules/Admin/Contactus/types";
+import { useGetContactusAPI, usePostContactusAPI } from "../services/cms.service";
 
 const Contact = () => {
   const {
@@ -20,8 +23,40 @@ const Contact = () => {
     resolver: yupResolver(ContactusValidation),
   });
 
-  const onSubmit: SubmitHandler<IContactUs> = (values) => {
-    console.log("Setting contact us details", values);
+  const [contactus, setContactus] = useState<IContactusForm>();
+
+  const { getContactusAPI } = useGetContactusAPI();
+  const { postContactusAPI } = usePostContactusAPI();
+
+  const fetchContactusData = async () => {
+    const { data, error } = await getContactusAPI({});
+
+    if (!error && data) {
+      setContactus(data.data.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchContactusData();
+  }, []);
+
+  const onSubmit: SubmitHandler<IContactUs> = async (values) => {
+    const data = new FormData();
+
+    data.append("firstName", values.firstName);
+    data.append("lastName", values.lastName);
+    data.append("email", values.email);
+    if (values.phoneNo) {
+      data.append("phoneNumber", values.phoneNo);
+    }
+    if (values.companyName) {
+      data.append("companyName", values.companyName);
+    }
+    if (values.message) {
+      data.append("message", values.message);
+    }
+
+    await postContactusAPI(data);
   };
   return (
     <>
@@ -29,9 +64,9 @@ const Contact = () => {
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-40 text-center">
-            <h1 className=" text-5xl md:text-6xl font-bold">{ContactData.title}</h1>
+            <h1 className=" text-5xl md:text-6xl font-bold">{contactus?.title}</h1>
             <p className=" font-normal text-xl text-grayText  px-2 sm:px-8 lg:px-40  pt-6">
-              {ContactData.description}
+              {contactus?.description}
             </p>
           </div>
 
@@ -116,7 +151,7 @@ const Contact = () => {
                 <Button
                   showType={btnShowType.green}
                   btnClass="bg-greenPrimary border-greenPrimary text-white"
-                  btnName={ContactData.greenButton}
+                  btnName={contactus?.greenButton as string}
                   type="submit"
                 />
               </div>

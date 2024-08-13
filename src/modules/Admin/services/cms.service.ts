@@ -1,5 +1,3 @@
-import { AxiosRequestConfig } from "axios";
-
 // ** hooks **
 import { useAxiosPost } from "@/hooks/useAxios";
 
@@ -15,4 +13,16 @@ export const useCreateAboutUsAPI = () => {
   };
 
   return { createAboutUsAPI, isLoading, isError, isSuccess };
+};
+
+export const useCreateContactUsAPI = () => {
+  const [postRequest, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const createContactUsAPI = async (data: object) => {
+    return postRequest(`${CMS_API_BASE_PATH}/contactus`, data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  };
+
+  return { createContactUsAPI, isLoading, isError, isSuccess };
 };

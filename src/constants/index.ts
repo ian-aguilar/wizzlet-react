@@ -12,6 +12,7 @@ import {
 
 import VisionImg from "/images/VisionImg.png";
 import MissionImg from "/images/MissionImg.png";
+import { ICard } from "@/modules/Admin/Aboutus/types";
 
 export const navData = [
   {
@@ -227,7 +228,7 @@ export const profileDefaultValue = {
   email: "",
 };
 
-export const aboutusCardDefaultValue = {
+export const aboutusCardDefaultValue: ICard = {
   icon: "",
   title: "",
   description: "",

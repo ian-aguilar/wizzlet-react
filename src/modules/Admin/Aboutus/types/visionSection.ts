@@ -2,5 +2,5 @@ export interface IVisionSection {
   title: string;
   description: string;
   greenButton: string;
-  image: Object;
+  image: FileList | "";
 }

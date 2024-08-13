@@ -33,16 +33,27 @@ const Aboutus = () => {
     data.append("topSection[whiteButton]", values["topSection"].whiteButton);
 
     values.topSection.cards?.forEach((value, index) => {
-      data.append(`topSection[cards][${index}][${value.title}]`, value.title);
-      data.append(`topSection[cards][${index}][${value.description}]`, value.description);
+      data.append(`topSection[cards][${index}][title]`, value.title);
+      data.append(`topSection[cards][${index}][description]`, value.description);
+      data.append(`topSection[cards][${index}][icon]`, value.icon[0]);
     });
 
     data.append("visionSection[title]", values["visionSection"].title);
     data.append("visionSection[description]", values["visionSection"].description);
     data.append("visionSection[greenButton]", values["visionSection"].greenButton);
+    data.append("visionSection[image]", values["visionSection"]["image"][0]);
 
     data.append("missionSection[title]", values["missionSection"].title);
     data.append("missionSection[description]", values["missionSection"].description);
+    data.append("missionSection[image]", values["missionSection"]["image"][0]);
+
+    data.append("serviceSection[title]", values["serviceSection"].title);
+    data.append("serviceSection[description]", values["serviceSection"].description);
+    values.serviceSection.cards?.forEach((value, index) => {
+      data.append(`serviceSection[cards][${index}][title]`, value.title);
+      data.append(`serviceSection[cards][${index}][description]`, value.description);
+      data.append(`serviceSection[cards][${index}][icon]`, value.icon[0]);
+    });
 
     await createAboutUsAPI(data);
   };

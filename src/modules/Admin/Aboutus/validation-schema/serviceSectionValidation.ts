@@ -5,11 +5,13 @@ import { descriptionValidation, iconValidation, titleValidation } from ".";
 export const ServiceSectionValidationSchema = Yup.object().shape({
   title: titleValidation,
   description: descriptionValidation,
-  cards: Yup.array().of(
-    Yup.object().shape({
-      icon: iconValidation,
-      title: titleValidation,
-      description: descriptionValidation,
-    })
-  ),
+  cards: Yup.array()
+    .required()
+    .of(
+      Yup.object().shape({
+        icon: iconValidation,
+        title: titleValidation,
+        description: descriptionValidation,
+      })
+    ),
 });

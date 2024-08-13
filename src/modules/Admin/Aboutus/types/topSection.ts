@@ -3,8 +3,8 @@ export interface ITopSection {
   description: string;
   greenButton: string;
   whiteButton: string;
-  cards?: {
-    icon: Object;
+  cards: {
+    icon: FileList | "";
     title: string;
     description: string;
   }[];

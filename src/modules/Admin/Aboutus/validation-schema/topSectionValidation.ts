@@ -7,11 +7,13 @@ export const TopSectionValidationSchema = Yup.object().shape({
   description: descriptionValidation,
   greenButton: buttonValidation,
   whiteButton: buttonValidation,
-  cards: Yup.array().of(
-    Yup.object().shape({
-      icon: iconValidation,
-      title: titleValidation,
-      description: descriptionValidation,
-    })
-  ),
+  cards: Yup.array()
+    .required()
+    .of(
+      Yup.object().shape({
+        icon: iconValidation,
+        title: titleValidation,
+        description: descriptionValidation,
+      })
+    ),
 });

@@ -9,3 +9,9 @@ export interface IAboutusForm {
   missionSection: IMissionSection;
   serviceSection: IServiceSection;
 }
+
+export type ICard = {
+  icon: "" | FileList;
+  title: string;
+  description: string;
+};

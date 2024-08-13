@@ -7,37 +7,64 @@ import Header from "@/components/common/Header";
 import Button from "@/components/form-fields/components/Button";
 import { aboutData } from "@/constants";
 import { btnShowType } from "@/components/form-fields/types";
+import { useEffect, useState } from "react";
+import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
+import { useGetAboutusAPI } from "../services/cms.service";
+import { VITE_APP_API_URL } from "@/config";
 
 const AboutUs = () => {
+  const [aboutus, setAboutus] = useState<IAboutusForm>();
+
+  const { getAboutusAPI } = useGetAboutusAPI();
+
+  useEffect(() => {
+    fetchAboutusData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchAboutusData = async () => {
+    const { data, error } = await getAboutusAPI({});
+
+    if (!error && data) {
+      setAboutus(data?.data?.data);
+    }
+  };
+
   return (
     <>
       <Header type="cms" />
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-20 text-center">
-            <h1 className=" text-5xl md:text-6xl font-bold">{aboutData.topSection.heading}</h1>
+            <h1 className=" text-5xl md:text-6xl font-bold">{aboutus?.topSection.heading}</h1>
             <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
-              {aboutData.topSection.description}
+              {aboutus?.topSection.description}
             </p>
             <Button
               showType={btnShowType.green}
-              btnName={aboutData.topSection.greenButton}
+              btnName={aboutus?.topSection.greenButton as string}
               btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  "
             />
           </div>
           <div className="grid grid-cols-12 sm:gap-x-7 gap-y-7 mb-10  md:mb-36">
-            {aboutData.topSection.cards.map((data, i) => (
+            {aboutus?.topSection.cards.map((data, i) => (
               <div
                 className=" col-span-12 sm:col-span-6 p-9 border border-greyBorder/50 shadow-aboutBox rounded-xl"
                 key={i}
               >
                 <div className="flex md:flex-nowrap flex-wrap gap-5">
                   <div className="border border-dashed border-blackPrimary/50 inline-block p-1 w-12 h-12 min-w-12">
-                    <img src={data.src} className="w-full h-full" alt="" />
+                    <img
+                      src={(VITE_APP_API_URL + data.icon) as string}
+                      className="w-full h-full"
+                      alt=""
+                    />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[26px] text-blackPrimary mb-2">{data.h3}</h3>
-                    <p className="font-normal text-xl text-grayText ">{data.p}</p>
+                    <h3 className="font-semibold text-[26px] text-blackPrimary mb-2">
+                      {data.title}
+                    </h3>
+                    <p className="font-normal text-xl text-grayText ">{data.description}</p>
                   </div>
                 </div>
               </div>
@@ -50,21 +77,21 @@ const AboutUs = () => {
         <div className="container md:py-24 py-10 block lg:flex justify-between items-center ">
           <div className="lg:w-[40%] mb-6">
             <h2 className=" text-4xl md:text-5xl font-bold text-blackPrimary  leading-tight pb-5">
-              {aboutData.visionSection.title}
+              {aboutus?.visionSection.title}
             </h2>
             <p className="text-grayText font-normal text-xl   ">
-              {aboutData.visionSection.description}
+              {aboutus?.visionSection.description}
             </p>
             <Button
               showType={btnShowType.green}
-              btnName={aboutData.visionSection.greenButton}
+              btnName={aboutus?.visionSection.greenButton as string}
               btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
             />
           </div>
           <div className="lg:w-[45%]">
             <div className="relative z-10 before:z-0 before:absolute  before:w-full  before:h-full  before:right-[-7px] before:bottom-[-7px]  before:bg-greenPrimary  before:rounded-md ">
               <img
-                src={aboutData.visionSection.image}
+                src={(VITE_APP_API_URL + aboutus?.visionSection.image) as string}
                 className="w-full h-auto rounded-md relative z-10"
                 alt=""
               />
@@ -76,14 +103,14 @@ const AboutUs = () => {
       <section className="ourMissionSection pt-10 md:pt-24 pb-10 md:pb-24 sm:px-0 px-4 ">
         <div className="container bg-grayText/5 border-greyBorder/50 border rounded-2xl py-14 md:py-24  px-4 md:px-32 text-center">
           <h2 className=" text-4xl md:text-5xl font-bold text-blackPrimary ">
-            {aboutData.missionSection.title}
+            {aboutus?.missionSection.title}
           </h2>
           <p className="text-xl font-normal text-grayText pt-6">
-            {aboutData.missionSection.description}
+            {aboutus?.missionSection.description}
           </p>
           <img
             className="w-full h-auto rounded-md mt-10 md:mt-12"
-            src={aboutData.missionSection.image}
+            src={(VITE_APP_API_URL + aboutus?.missionSection.image) as string}
             alt=""
           />
         </div>
@@ -93,26 +120,30 @@ const AboutUs = () => {
         <div className="container">
           <div className="titleContainer text-center px-4 md:px-40 mb-10 md:mb-16">
             <h2 className=" text-5xl md:text-[56px] font-bold text-blackPrimary leading-tight pb-6">
-              {aboutData.serviceSection.title}
+              {aboutus?.serviceSection.title}
             </h2>
             <p className="font-normal text-xl text-grayText">
-              {aboutData.serviceSection.description}
+              {aboutus?.serviceSection.description}
             </p>
           </div>
 
           <div className="grid grid-cols-12 sm:gap-x-7 gap-y-7">
-            {aboutData.serviceSection.cards.map((data, i) => (
+            {aboutus?.serviceSection.cards.map((data, i) => (
               <div
                 className=" col-span-12 sm:col-span-6 md:col-span-4 p-8 border border-greyBorder rounded-xl flex flex-col "
                 key={i}
               >
                 <div className="border border-dashed border-blackPrimary/50 inline-block p-1 w-10 h-10">
-                  <img src={data.src} className="w-full h-full" alt="" />
+                  <img
+                    src={(VITE_APP_API_URL + data.icon) as string}
+                    className="w-full h-full"
+                    alt=""
+                  />
                 </div>
                 <h3 className="font-bold text-[22px] text-blackPrimary pt-5 line-clamp-1">
-                  {data.h3}
+                  {data.title}
                 </h3>
-                <p className="text-grayText mb-11 pt-2 line-clamp-3 ">{data.p}</p>
+                <p className="text-grayText mb-11 pt-2 line-clamp-3 ">{data.description}</p>
                 {/* <Link
                   to=""
                   className="  group font-bold text-lg text-greenPrimary gap-2 inline-flex hover:brightness-110 transition-all duration-300 hover:transition-all hover:duration-300 items-center mt-auto  "
