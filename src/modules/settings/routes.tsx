@@ -10,6 +10,7 @@ import ChangePassword from "./pages/ChangePassword";
 import LabelManager from "./pages/LabelManager";
 import Profile from "./pages/Profile";
 import { Loader } from "@/components/common/Loader";
+import FileUploadCommonComponentTest from "./pages/uploadFileTest";
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -20,8 +21,7 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
           <>
             <Loader />
           </>
-        }
-      >
+        }>
         {route.element}
       </Suspense>
     ),
@@ -40,5 +40,9 @@ export const SettingRoutes = applySuspense([
   {
     path: PrivateRoutesPath.setting.changePassword.view,
     element: <ChangePassword />,
+  },
+  {
+    path: PrivateRoutesPath.setting.upload.view,
+    element: <FileUploadCommonComponentTest />,
   },
 ]);
