@@ -30,7 +30,7 @@ const AboutUs = () => {
             <Button
               showType={btnShowType.green}
               btnName="Sign Up Now "
-              btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  "
+              btnClass=" bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  w-auto"
             />
           </div>
 
@@ -77,7 +77,7 @@ const AboutUs = () => {
             <Button
               showType={btnShowType.green}
               btnName="Try For Free"
-              btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
+              btnClass="bg-greenPrimary text-white border-greenPrimary mt-8 w-auto"
             />
           </div>
           <div className="lg:w-[45%]">

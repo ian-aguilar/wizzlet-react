@@ -61,7 +61,7 @@ const InputField = <T extends FieldValues>({
             onChange={onChange}
             value={value ? value : ""}
             type={!isShow && type ? type : "text"}
-            className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary font-normal text-base mb-4 transition-all duration-300 ${className}`}
+            className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 ${className}`}
             placeholder={placeholder}
             autoComplete={autoComplete}
             disabled={isDisabled}
@@ -72,7 +72,8 @@ const InputField = <T extends FieldValues>({
       {inputEndIcon && (
         <div
           className="absolute right-4 top-4"
-          onClick={() => setIsShow((prev) => !prev)}>
+          onClick={() => setIsShow((prev) => !prev)}
+        >
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}

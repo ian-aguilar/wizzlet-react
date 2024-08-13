@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getAuth,
   setAuthInitialized,
-  setCredentials,
   setLogoutData,
 } from "@/redux/slices/authSlice";
 import { useGetLoggedInUserAPI } from "@/modules/Auth/services/auth.service";
@@ -26,13 +25,10 @@ const useAuthGuard = () => {
   }, []);
 
   const loadUser = async () => {
-    if (!token && !isAuthenticated && !isAuthInitialized) {
+    if (token) {
       const { data, error } = await getLoggedInUserAPI({});
-
-      if (!error && data) {
-        dispatch(setCredentials({ token: token }));
-        dispatch(setUser({ user: data?.data?.user }));
-        dispatch(setAuthInitialized());
+      if (!error && data?.data) {
+        dispatch(setUser({ user: data?.data }));
       } else {
         dispatch(setLogoutData());
         dispatch(setRemoveUser());

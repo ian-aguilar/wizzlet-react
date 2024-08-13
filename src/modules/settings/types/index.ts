@@ -12,23 +12,4 @@ export interface IChangePasswordInputs {
   confirmNewPassword: string;
 }
 
-export interface IModelTest {
-  label: string;
-}
 
-export interface IAddLabelInputs {
-  label: string;
-}
-
-export interface Label {
-  id: number;
-  name: string;
-}
-
-export interface GetDataParams {
-  page: number;
-  rowsPerPage: number;
-  sortField?: string;
-  sortDirection?: string;
-  search?: string;
-}

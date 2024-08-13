@@ -9,9 +9,12 @@ import { getAuth } from "../../../redux/slices/authSlice";
 // ** types **
 import { RoutesPath } from "@/modules/Auth/types";
 
-// import MainLogo from "/images/logo.svg";
+// ** Components **
+import Sidebar from "@/components/sidebar";
+
+// ** Icons **
+
 import Header from "@/components/common/Header";
-import Sidebar from "./Sidebar";
 
 const RequiresAuth = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useSelector(getAuth);
