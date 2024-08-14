@@ -21,13 +21,15 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     onFocus,
     setError,
     clearErrors,
+    defaultValue = [], // Add a defaultValue prop for URLs
   } = fieldProps;
 
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [urls, setUrls] = useState<string[]>(defaultValue); // State to manage URLs
 
   useEffect(() => {
-    setValue?.(name, attachments);
-  }, [attachments]);
+    setValue?.(name, [...urls, ...attachments]); // Include both URLs and files in the value
+  }, [attachments, urls]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -66,10 +68,15 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         });
       }
     }
+    e.target.value = "";
   };
 
-  const deleteAttachment = (id: number) => {
-    setAttachments((prev) => prev.filter((_val, index) => id !== index));
+  const deleteAttachment = (id: number, isUrl: boolean) => {
+    if (isUrl) {
+      setUrls((prev) => prev.filter((_val, index) => id !== index));
+    } else {
+      setAttachments((prev) => prev.filter((_val, index) => id !== index));
+    }
     clearErrors?.(name);
   };
 
@@ -122,6 +129,33 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       />
 
       <div className="attachments__up__wrapper mt-[17px]">
+        {urls.map((url, index) => (
+          <div
+            className="attachments__box flex items-center mb-[10px] last:mb-0"
+            key={`url-${index}`}>
+            <div className="attachments__details flex items-center">
+              <img
+                src={url}
+                alt={`attachment-url-${index + 1}`}
+                className="attachment-img"
+              />
+            </div>
+
+            <div className="attachments__details flex items-center w-[calc(100%_-_125px)] pr-[10px]">
+              <span className="attachments__name whitespace-pre overflow-hidden text-ellipsis text-[14px] font-Biotif__Medium text-textDark">
+                {url.split("/").pop()}
+              </span>
+            </div>
+            <button
+              className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
+              name="Delete"
+              title="Delete"
+              onClick={() => deleteAttachment(index, true)}>
+              ✕
+            </button>
+          </div>
+        ))}
+
         {attachments.map((file, index) => {
           const fileSize = fileSizeGenerator(file.size);
           return (
@@ -150,7 +184,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
                 name="Delete"
                 title="Delete"
-                onClick={() => deleteAttachment(index)}>
+                onClick={() => deleteAttachment(index, false)}>
                 ✕
               </button>
             </div>

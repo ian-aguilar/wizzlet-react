@@ -1,21 +1,23 @@
 // ** Packages **
-import {useFieldArray, useFormContext} from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import {IForm} from "../types";
-import UploadFile from "@/components/form-fields/components/UploadFile";
+import { IForm } from "../types";
 
 // ** constants **
-import {FEATURE} from "../constant";
+import { FEATURE } from "../constant";
+import FileField from "@/components/form-fields/components/FileField";
 
 const TopSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
     register,
+    setError,
+    clearErrors,
   } = useFormContext<IForm>();
-  const {append, remove, insert, fields} = useFieldArray({
+  const { append, remove, insert, fields } = useFieldArray({
     name: "topSection.feature",
     control,
   });
@@ -65,14 +67,16 @@ const TopSection = () => {
         {fields.map((field, index) => (
           <div key={field.id} className="flex">
             <p className="me-4">{index + 1}</p>
-            <UploadFile
-              textLabelName="Upload Feature Image"
-              placeholder="Upload Photo"
+            <FileField
               name={`topSection.feature.${index}.image` as const}
               label="Upload Photo"
               control={control}
               errors={errors}
+              maxSize={1}
+              allowedFormat={["image/png", "image/jpeg"]}
               register={register}
+              setError={setError}
+              clearErrors={clearErrors}
             />
             <Input
               textLabelName="Heading"
@@ -95,8 +99,7 @@ const TopSection = () => {
 
             <span
               onClick={() => fields.length > 1 && remove(index)}
-              className="me-3"
-            >
+              className="me-3">
               delete
             </span>
             <span onClick={() => insert(index + 1, FEATURE)}>Add </span>

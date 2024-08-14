@@ -1,7 +1,7 @@
 // ** Packages **
-import {useEffect} from "react";
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { useEffect } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** common components **
 import TopSection from "./components/TopSection";
@@ -10,20 +10,20 @@ import MiddleSection from "./components/MiddleSection";
 import Button from "@/components/form-fields/components/Button";
 
 // ** types **
-import {IForm} from "./types";
+import { IForm } from "./types";
 
 // **validations **
-import {validationSchema} from "./validationSchema/topSectionValidation";
+import { validationSchema } from "./validationSchema/topSectionValidation";
 
 // ** constant **
-import {FEATURE} from "./constant";
+import { FEATURE } from "./constant";
 
 // **services **
-import {useHomeDataPostAPI, usefetchHomeAPI} from "./services/home.service";
+import { useHomeDataPostAPI, usefetchHomeAPI } from "./services/home.service";
 
 const HomePageForm = () => {
-  const {getHomeAPI} = usefetchHomeAPI();
-  const {homeDataPostAPI} = useHomeDataPostAPI();
+  const { getHomeAPI } = usefetchHomeAPI();
+  const { homeDataPostAPI } = useHomeDataPostAPI();
   const methods = useForm<IForm>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -34,7 +34,7 @@ const HomePageForm = () => {
   });
 
   const getFaqData = async () => {
-    const {data, error} = await getHomeAPI();
+    const { data, error } = await getHomeAPI();
     console.log(data, "home response");
     if (!error && data) {
       // setIsUpdate(true);

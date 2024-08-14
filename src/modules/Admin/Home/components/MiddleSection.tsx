@@ -52,6 +52,9 @@ const MiddleSection = () => {
           register={register}
           setError={setError}
           clearErrors={clearErrors}
+          defaultValue={[
+            "http://localhost:8000/uploads/knife.jpeg_1723201269898.jpeg",
+          ]}
         />
       </section>
     </>

@@ -3,15 +3,17 @@ import { useFormContext } from "react-hook-form";
 
 // ** Common Components **
 import Input from "@/components/form-fields/components/Input";
-import UploadFile from "@/components/form-fields/components/UploadFile";
 
 // ** Types **
 import { IAboutusForm } from "../types";
+import FileField from "@/components/form-fields/components/FileField";
 
 const MissionSection = () => {
   const {
     control,
     formState: { errors },
+    setError,
+    clearErrors,
     register,
   } = useFormContext<IAboutusForm>();
 
@@ -37,12 +39,17 @@ const MissionSection = () => {
           errors={errors}
           autoComplete={""}
         />
-        <UploadFile
-          placeholder="Choose image"
-          textLabelName="Choose Image"
-          name="missionSection.image"
-          autoComplete={""}
+
+        <FileField
+          name={`missionSection.image` as const}
+          label="Choose Image"
+          control={control}
+          errors={errors}
+          maxSize={1}
+          allowedFormat={["image/png", "image/jpeg"]}
           register={register}
+          setError={setError}
+          clearErrors={clearErrors}
         />
       </div>
     </section>
