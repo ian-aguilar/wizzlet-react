@@ -14,6 +14,7 @@ const MiddleSection = () => {
     formState: { errors },
     register,
     getValues,
+    clearErrors,
     setError,
   } = useFormContext<IForm>();
   console.log("IMAAAGE", getValues());
@@ -50,6 +51,7 @@ const MiddleSection = () => {
           allowedFormat={["image/png", "image/jpeg"]}
           register={register}
           setError={setError}
+          clearErrors={clearErrors}
         />
       </section>
     </>

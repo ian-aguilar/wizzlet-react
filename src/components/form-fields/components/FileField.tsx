@@ -51,7 +51,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
       if (filteredFiles.length) {
         setAttachments((prev) => [...prev, ...filteredFiles]);
-        clearErrors?.(name);
       }
 
       if (errorMsgArr.length && setError) {

@@ -3,7 +3,6 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** Common components **
 import Input from "@/components/form-fields/components/Input";
-import UploadFile from "@/components/form-fields/components/UploadFile";
 
 // ** Types **
 import { IAboutusForm } from "../types";
@@ -17,6 +16,7 @@ const TopSection = () => {
     formState: { errors },
     register,
     setError,
+    clearErrors,
   } = useFormContext<IAboutusForm>();
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -89,6 +89,7 @@ const TopSection = () => {
               allowedFormat={["image/png", "image/jpeg"]}
               register={register}
               setError={setError}
+              clearErrors={clearErrors}
             />
             <Input
               placeholder={`Enter card title`}
