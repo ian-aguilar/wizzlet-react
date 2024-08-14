@@ -24,6 +24,7 @@ const Contact = () => {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<IContactUs>({
     resolver: yupResolver(ContactusValidation),
   });
@@ -61,7 +62,11 @@ const Contact = () => {
       data.append("message", values.message);
     }
 
-    await postContactusAPI(data);
+    const response = await postContactusAPI(data);
+
+    if (response?.data && !response?.error) {
+      reset({});
+    }
   };
   return (
     <>

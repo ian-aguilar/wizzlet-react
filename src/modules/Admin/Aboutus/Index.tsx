@@ -55,7 +55,11 @@ const Aboutus = () => {
       data.append(`serviceSection[cards][${index}][icon]`, value.icon[0]);
     });
 
-    await createAboutUsAPI(data);
+    const response = await createAboutUsAPI(data);
+
+    if (response?.data && !response?.error) {
+      methods.reset({});
+    }
   };
   return (
     <FormProvider {...methods}>
