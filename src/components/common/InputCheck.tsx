@@ -1,5 +1,3 @@
-import React from "react";
-
 export const InputCheck = () => {
   return (
     <div className="flex items-start  ">
