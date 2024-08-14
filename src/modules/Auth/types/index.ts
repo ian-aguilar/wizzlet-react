@@ -4,6 +4,7 @@ export enum RoutesPath {
   ForgotPassword = "/forgot-password",
   Otp = "/otp",
   ResetPassword = "/reset-password",
+  SetPassword = "/set-password",
   CMSHome = "/",
   CMSAboutUs = "/aboutus",
   CMSContact = "/contact",

@@ -26,7 +26,7 @@ import useUserHeaders from "./hooks/useUserHeaders";
 import Button from "@/components/form-fields/components/Button";
 import WarningModal from "@/modules/user-management/components/warningModal";
 import InviteModal from "./components/inviteModal";
-import { PlusIcon, SearchIcon } from "@/assets/Svg";
+import { AddIconBtn, SearchIcon } from "@/assets/Svg";
 
 const UserManagement = () => {
   //================= States =======================
@@ -117,11 +117,11 @@ const UserManagement = () => {
 
         <Button
           showType={btnShowType.green}
-          btnClass="!w-auto !px-14"
+          btnClass=" !w-auto !px-4 "
+          BtnIconLeft={<AddIconBtn className="text-white inline-block mr-2" />}
           type="submit"
           btnName="Add New User"
           onClickHandler={() => setAddModel(true)}
-          BtnIconLeft={<PlusIcon className={"mr-2"} />}
         />
       </div>
 

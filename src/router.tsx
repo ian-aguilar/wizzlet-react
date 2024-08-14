@@ -15,7 +15,7 @@ import { Loader } from "./components/common/Loader";
 import { CMSRoutes } from "./modules/cms/routes";
 import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
-import Dashboard from "./modules/dashboard";
+import Dashboard from "./modules/dashboard/index-temp";
 import UserManagement from "./modules/user-management";
 import ImportProducts from "./modules/import-products";
 
@@ -64,7 +64,7 @@ const RouterComponent = () => {
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresUnAuth />,
-      children: AuthenticationRoutes,
+      children: [...AuthenticationRoutes, ...CMSRoutes],
     },
   ]);
 
@@ -99,7 +99,7 @@ const RouterComponent = () => {
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
     ...routesForAuthenticatedOnly,
-    ...CMSRoutes,
+    // ...CMSRoutes,
   ]);
 
   return <RouterProvider router={router} />;
