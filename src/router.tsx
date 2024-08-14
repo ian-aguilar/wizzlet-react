@@ -15,10 +15,10 @@ import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
 import Aboutus from "./modules/Admin/Aboutus/Index";
 import Contactus from "./modules/Admin/Contactus/Index";
-import FaqForm from "./modules/Admin/Faq/components";
-import HomePageForm from "./modules/Admin/Home/components";
 import ImportProducts from "./modules/import-products";
 import ContactusManagement from "./modules/contact-us-management";
+import FaqForm from "./modules/Admin/Faq";
+import HomePageForm from "./modules/Admin/Home";
 
 // ** Types **
 export type RouteObjType = {

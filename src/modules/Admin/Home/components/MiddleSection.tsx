@@ -7,13 +7,17 @@ import {IForm} from "../types";
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
 import UploadFile from "@/components/form-fields/components/UploadFile";
+import FileField from "@/components/form-fields/components/FileField";
 
 const MiddleSection = () => {
   const {
     control,
     formState: {errors},
     register,
+    getValues,
+    setError,
   } = useFormContext<IForm>();
+  console.log("IMAAAGE", getValues());
   return (
     <>
       {" "}
@@ -37,14 +41,15 @@ const MiddleSection = () => {
           control={control}
           errors={errors}
         />
-        <UploadFile
-          textLabelName="Upload Feature Image"
-          placeholder="Upload Photo"
+
+        <FileField
           name={`middleSection.image` as const}
-          label="Upload Photo"
+          label="Upload"
           control={control}
           errors={errors}
+          // maxSize={8}
           register={register}
+          setError={setError}
         />
       </section>
     </>
