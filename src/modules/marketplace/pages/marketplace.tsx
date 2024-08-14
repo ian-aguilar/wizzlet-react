@@ -1,12 +1,13 @@
 import { DownArrowBlack } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
-import BrandLogo from "/images/Amazon_logo.png";
+// import BrandLogo from "/images/Amazon_logo.png";
 // import BrandLogo2 from "/images/ebay_logo.png";
 // import BrandLogo3 from "/images/Walmart_logo.png";
 import { useEffect, useState } from "react";
 import { useMarketplaceListingAPI } from "../services/marketplace.service";
 import { IMarketplace } from "../types";
+import { VITE_APP_API_URL } from "@/config";
 
 const Marketplace = () => {
   //================== States =========================
@@ -52,7 +53,8 @@ const Marketplace = () => {
               key={item?.id}
               className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
                 item?.coming_soon ? "relative" : ""
-              }`}>
+              }`}
+            >
               {item?.coming_soon ? (
                 <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
                   Coming Soon
@@ -61,7 +63,7 @@ const Marketplace = () => {
               <div className="flex flex-wrap justify-between items-start gap-4 ">
                 <div>
                   <img
-                    src={BrandLogo}
+                    src={VITE_APP_API_URL + item.logo}
                     className="max-w-[150px]  w-full h-auto"
                     alt=""
                   />
