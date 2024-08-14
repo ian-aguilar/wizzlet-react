@@ -12,7 +12,7 @@ import { SettingRoutes } from "./modules/settings/routes";
 import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
-import { CMSRoutes } from "./modules/cms/routes";
+import { CMSRoutes, RequiresUnAuthForCMS } from "./modules/cms/routes";
 import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard/index-temp";
@@ -38,17 +38,7 @@ const RequiresAuth = React.lazy(
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: (
-      <Suspense
-        fallback={
-          <>
-            <Loader />
-          </>
-        }
-      >
-        {route.element}
-      </Suspense>
-    ),
+    element: <Suspense fallback={<Loader />}>{route.element}</Suspense>,
   }));
 };
 
@@ -64,7 +54,7 @@ const RouterComponent = () => {
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresUnAuth />,
-      children: [...AuthenticationRoutes, ...CMSRoutes],
+      children: [...AuthenticationRoutes],
     },
   ]);
 
@@ -96,10 +86,18 @@ const RouterComponent = () => {
     },
   ]);
 
+  // ** CMS **
+  const routesForCMS: RouteObject[] = applySuspense([
+    {
+      element: <RequiresUnAuthForCMS />,
+      children: [...CMSRoutes],
+    },
+  ]);
+
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
     ...routesForAuthenticatedOnly,
-    // ...CMSRoutes,
+    ...routesForCMS,
   ]);
 
   return <RouterProvider router={router} />;
