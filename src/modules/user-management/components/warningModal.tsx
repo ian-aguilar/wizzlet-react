@@ -19,7 +19,7 @@ const WarningModal: React.FC<warningModalProps> = ({
       confirmButtonText={confirmButtonText}
       heading={heading}
       subText="This will Update User status active or Inactive"
-      icon={<InfoIcon className="w-16 h-16 text-redAlert mx-auto " />}
+      icon={<InfoIcon className="w-16 h-16 text-redAlert mx-auto" />}
       onCancel={onClose}
       onConfirm={onSave}
       showType={btnShowType.green}

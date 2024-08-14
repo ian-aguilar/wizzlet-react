@@ -26,7 +26,7 @@ import useUserHeaders from "./hooks/useUserHeaders";
 import Button from "@/components/form-fields/components/Button";
 import WarningModal from "@/modules/user-management/components/warningModal";
 import InviteModal from "./components/inviteModal";
-import { AddIconBtn, SearchIcon } from "@/assets/Svg";
+import { PlusIcon, SearchIcon } from "@/assets/Svg";
 
 const UserManagement = () => {
   //================= States =======================
@@ -110,16 +110,21 @@ const UserManagement = () => {
 
   return (
     <>
-      <div className="flex spa">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Dashboard</h2>{" "}
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+          User Management
+        </h2>
+
         <Button
           showType={btnShowType.green}
-          btnClass=" !w-auto !px-14 "
+          btnClass="!w-auto !px-14"
           type="submit"
           btnName="Add New User"
           onClickHandler={() => setAddModel(true)}
+          BtnIconLeft={<PlusIcon className={"mr-2"} />}
         />
       </div>
+
       <section className=" w-full bg-white  p-5 mb-5 h-[calc(100%_-_40px)]  overflow-y-auto scroll-design  ">
         <div className="mb-4 flex gap-4 justify-end">
           <div className="relative">
@@ -127,7 +132,7 @@ const UserManagement = () => {
               className="bg-grayLightBody/10 py-3 px-9 outline-none focus:outline-none border rounded-md"
               type="text"
               onChange={onSearch}
-              placeholder="Search"
+              placeholder="Search by name, email..."
             />
             <span className="inline-block absolute left-3 top-4">
               <SearchIcon />
@@ -152,10 +157,10 @@ const UserManagement = () => {
       {itemForStatusChange.id && (
         <WarningModal
           heading={`Are you sure you want to ${
-            itemForStatusChange.status === "ACTIVE" ? "inactive" : "activate"
+            itemForStatusChange.status === "ACTIVE" ? "activate" : "inactivate"
           } this user?`}
           confirmButtonText={
-            itemForStatusChange.status === "ACTIVE" ? "Inactive" : "Active"
+            itemForStatusChange.status === "ACTIVE" ? "Active" : "Inactive"
           }
           onClose={() => setItemForStatusChange({ id: null, status: null })}
           onSave={onStatusChange}
