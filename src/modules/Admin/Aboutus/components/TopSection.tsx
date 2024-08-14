@@ -3,18 +3,20 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** Common components **
 import Input from "@/components/form-fields/components/Input";
-import UploadFile from "@/components/form-fields/components/UploadFile";
 
 // ** Types **
 import { IAboutusForm } from "../types";
 import { aboutusCardDefaultValue } from "@/constants";
 import { useEffect } from "react";
+import FileField from "@/components/form-fields/components/FileField";
 
 const TopSection = () => {
   const {
     control,
     formState: { errors },
     register,
+    setError,
+    clearErrors,
   } = useFormContext<IAboutusForm>();
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -72,19 +74,22 @@ const TopSection = () => {
       <span
         onClick={() => {
           append(aboutusCardDefaultValue);
-        }}
-      >
+        }}>
         Add Field
       </span>
       <div>
         {fields.map((field, index) => (
           <div key={field.id} className="flex">
-            <UploadFile
-              placeholder={`Choose card icon`}
-              textLabelName={`Choose card icon`}
-              name={`topSection.cards.${index}.icon`}
-              autoComplete={""}
+            <FileField
+              name={`topSection.cards.${index}.icon` as const}
+              label="Choose card icon"
+              control={control}
+              errors={errors}
+              maxSize={1}
+              allowedFormat={["image/png", "image/jpeg"]}
               register={register}
+              setError={setError}
+              clearErrors={clearErrors}
             />
             <Input
               placeholder={`Enter card title`}
@@ -107,16 +112,14 @@ const TopSection = () => {
             <span
               onClick={() => {
                 insert(index + 1, aboutusCardDefaultValue);
-              }}
-            >
+              }}>
               Add Field
             </span>
             {index > 0 && (
               <span
                 onClick={() => {
                   remove(index);
-                }}
-              >
+                }}>
                 Remove Field
               </span>
             )}
