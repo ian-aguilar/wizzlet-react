@@ -1,5 +1,12 @@
+import { ATTACHMENT_FILE_TYPES } from "@/constants";
 import { MouseEvent, ReactNode } from "react";
-import { Control, FieldErrors, FieldValues, Path, UseFormRegister } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+} from "react-hook-form";
 
 export type FormControlProp<T extends FieldValues = FieldValues> = Control<T>;
 
@@ -81,6 +88,33 @@ export interface IOtpInputProps {
   value: string;
 }
 
+export interface FilePropsType<T extends FieldValues> {
+  id?: string;
+  errors: FieldErrors<T>;
+  value?: string;
+  control: Control<T>;
+  setValue?: (name: Path<T>, attachment: any) => void;
+  name: any;
+  label: string;
+  register: UseFormRegister<T>;
+  maxSize?: number;
+  className?: string;
+  errorClass?: string;
+  required?: boolean;
+  disabled?: boolean;
+  allowedFormat?: string[];
+  onBlur?: () => void;
+  onFocus?: () => void;
+  setError?: (
+    name: Path<T>,
+    error: {
+      type: string;
+      message: string;
+    }
+  ) => void;
+  clearErrors?: (name: Path<T>) => void;
+  defaultValue?: string[];
+}
 export interface inviteModalProps {
   link: string | undefined | null;
   onClose: () => void;

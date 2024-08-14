@@ -1,20 +1,20 @@
 // ** Packages **
-import {useFormContext} from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 // ** types **
-import {IForm} from "../types";
+import { IForm } from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import UploadFile from "@/components/form-fields/components/UploadFile";
 import FileField from "@/components/form-fields/components/FileField";
 
 const MiddleSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
     register,
     getValues,
+    clearErrors,
     setError,
   } = useFormContext<IForm>();
   console.log("IMAAAGE", getValues());
@@ -47,9 +47,14 @@ const MiddleSection = () => {
           label="Upload"
           control={control}
           errors={errors}
-          // maxSize={8}
+          maxSize={1}
+          allowedFormat={["image/png", "image/jpeg"]}
           register={register}
           setError={setError}
+          clearErrors={clearErrors}
+          defaultValue={[
+            "http://localhost:8000/uploads/knife.jpeg_1723201269898.jpeg",
+          ]}
         />
       </section>
     </>

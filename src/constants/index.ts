@@ -304,6 +304,25 @@ export const profileDefaultValue = {
   email: "",
 };
 
+export enum ATTACHMENT_FILE_TYPES {
+  PNG = "image/png",
+  JPG = "image/jpg",
+  JPEG = "image/jpeg",
+  GIF = "image/gif",
+  MP3 = "audio/mp3",
+  OGG = "audio/ogg",
+  MPEG = "audio/mpeg",
+  MP4 = "video/mp4",
+  WEBM = "video/webm",
+  OGG_VIDEO = "video/ogg",
+  PLAIN_TEXT = "text/plain",
+  PDF = "application/pdf",
+  XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  XLS = "application/vnd.ms-excel",
+  XLSM = "application/vnd.ms-excel.sheet.macroEnabled.12",
+  DOC = "application/msword",
+  DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+}
 export const aboutusCardDefaultValue: ICard = {
   icon: "",
   title: "",
