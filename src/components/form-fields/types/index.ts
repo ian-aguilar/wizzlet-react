@@ -89,6 +89,7 @@ export interface inviteModalProps {
 export interface errorModalProps {
   onClose: () => void;
   onSave?: () => void;
+  isLoading?: boolean;
 }
 
 export interface warningModalProps {
@@ -97,3 +98,16 @@ export interface warningModalProps {
   heading: string;
   confirmButtonText: string;
 }
+
+export type ITextAreaProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  control?: FormControlProp<T>;
+  label?: string;
+  errors?: FieldErrors;
+  placeholder?: string;
+  autoComplete?: string;
+  textLabelName?: string;
+  withLabel?: boolean;
+  isDisabled?: boolean;
+};

@@ -18,6 +18,7 @@ import Contactus from "./modules/Admin/Contactus/Index";
 import FaqForm from "./modules/Admin/Faq/components";
 import HomePageForm from "./modules/Admin/Home/components";
 import ImportProducts from "./modules/import-products";
+import ContactusManagement from "./modules/contact-us-management";
 
 // ** Types **
 export type RouteObjType = {
@@ -105,6 +106,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.cmsManagement.home,
       element: <HomePageForm />,
+    },
+    {
+      path: PrivateRoutesPath.contactusManagement.view,
+      element: <ContactusManagement />,
     },
   ]);
 

@@ -29,4 +29,5 @@ export const PrivateRoutesPath = {
     faq: "/cms-management/faq",
     home: "/cms-management/home",
   },
+  contactusManagement: { view: "/contactus-management" },
 };

@@ -1,16 +1,18 @@
+// ** Packages **
+import { useEffect, useState } from "react";
 import { Footer } from "../common/Footer";
 
-import { Link } from "react-router-dom";
-
-import { RightArrowGreen } from "@/assets/Svg";
+// ** Common **
 import Header from "@/components/common/Header";
 import Button from "@/components/form-fields/components/Button";
-import { aboutData } from "@/constants";
 import { btnShowType } from "@/components/form-fields/types";
-import { useEffect, useState } from "react";
-import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
-import { useGetAboutusAPI } from "../services/cms.service";
 import { VITE_APP_API_URL } from "@/config";
+
+// ** Types **
+import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
+
+// ** Services **
+import { useGetAboutusAPI } from "../services/cms.service";
 
 const AboutUs = () => {
   const [aboutus, setAboutus] = useState<IAboutusForm>();
@@ -26,7 +28,7 @@ const AboutUs = () => {
     const { data, error } = await getAboutusAPI({});
 
     if (!error && data) {
-      setAboutus(data?.data?.data);
+      setAboutus(data?.data);
     }
   };
 

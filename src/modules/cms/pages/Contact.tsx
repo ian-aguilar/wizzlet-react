@@ -1,17 +1,22 @@
-import { Footer } from "../common/Footer";
-// import { InputText } from "../common/InputText";
-// import { Button } from "../common/Button";
-import Header from "@/components/common/Header";
-import { btnShowType } from "@/components/form-fields/types";
-import { SubmitHandler, useForm } from "react-hook-form";
-import Input from "@/components/form-fields/components/Input";
-import { IContactUs } from "../types/contactus";
-import { ContactData } from "@/constants";
-import Button from "@/components/form-fields/components/Button";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ContactusValidation } from "../validation-schema/contactUsValidation";
+// ** Packages **
 import { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+// ** Common **
+import Button from "@/components/form-fields/components/Button";
+import Input from "@/components/form-fields/components/Input";
+import { Footer } from "../common/Footer";
+import Header from "@/components/common/Header";
+import TextArea from "@/components/form-fields/components/TextArea";
+
+// ** Validation **
+import { btnShowType } from "@/components/form-fields/types";
+import { IContactUs } from "../types/contactus";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { IContactusForm } from "@/modules/Admin/Contactus/types";
+import { ContactusValidation } from "../validation-schema/contactUsValidation";
+
+// ** Services **
 import { useGetContactusAPI, usePostContactusAPI } from "../services/cms.service";
 
 const Contact = () => {
@@ -32,7 +37,7 @@ const Contact = () => {
     const { data, error } = await getContactusAPI({});
 
     if (!error && data) {
-      setContactus(data.data.data);
+      setContactus(data?.data);
     }
   };
 
@@ -43,14 +48,14 @@ const Contact = () => {
   const onSubmit: SubmitHandler<IContactUs> = async (values) => {
     const data = new FormData();
 
-    data.append("firstName", values.firstName);
-    data.append("lastName", values.lastName);
+    data.append("first_name", values.firstName);
+    data.append("last_name", values.lastName);
     data.append("email", values.email);
     if (values.phoneNo) {
-      data.append("phoneNumber", values.phoneNo);
+      data.append("phone_number", values.phoneNo);
     }
     if (values.companyName) {
-      data.append("companyName", values.companyName);
+      data.append("company_name", values.companyName);
     }
     if (values.message) {
       data.append("message", values.message);
@@ -83,7 +88,6 @@ const Contact = () => {
                     errors={errors}
                     autoComplete={""}
                   />
-                  {/* <InputText inputPlaceholder="Enter" inputLabel="Enter First Name *" /> */}
                 </div>
                 <div className=" col-span-12 md:col-span-6">
                   <Input
@@ -95,7 +99,6 @@ const Contact = () => {
                     errors={errors}
                     autoComplete={""}
                   />
-                  {/* <InputText inputPlaceholder="Enter" inputLabel="Enter Last Name *" /> */}
                 </div>
                 <div className=" col-span-12 md:col-span-6">
                   <Input
@@ -107,7 +110,6 @@ const Contact = () => {
                     errors={errors}
                     autoComplete={""}
                   />
-                  {/* <InputText inputPlaceholder="Enter" inputLabel="Enter Email Address *" /> */}
                 </div>
                 <div className=" col-span-12 md:col-span-6">
                   <Input
@@ -119,7 +121,6 @@ const Contact = () => {
                     errors={errors}
                     autoComplete={""}
                   />
-                  {/* <InputText inputPlaceholder="Enter" inputLabel="Enter Phone Number *" /> */}
                 </div>
               </div>
               <Input
@@ -131,23 +132,15 @@ const Contact = () => {
                 errors={errors}
                 autoComplete={""}
               />
-              {/* <InputText inputPlaceholder="Enter" inputLabel="Company Name *" /> */}
-              <Input
+              <TextArea
                 placeholder="Enter Message"
                 name="message"
                 textLabelName="Message"
-                type="text"
                 control={control}
                 errors={errors}
                 autoComplete={""}
               />
-              {/* <InputText inputPlaceholder="Enter" inputLabel="Message *" /> */}
               <div className="flex md:justify-end justify-center mt-10  md:mt-16 ">
-                {/* <Button
-                showType={btnShowType.green}
-                btnClass=" bg-greenPrimary border-greenPrimary text-white "
-                btnName={ContactData.greenButton}
-                /> */}
                 <Button
                   showType={btnShowType.green}
                   btnClass="bg-greenPrimary border-greenPrimary text-white"
