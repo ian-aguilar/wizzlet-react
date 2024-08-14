@@ -23,3 +23,9 @@ export interface FileUploadProps {
   maxVideoSizeInMB: number;
   onFileSelect: (file: File | null) => void;
 }
+
+export interface InputSwitchProps {
+  id: number;
+  status: string;
+  onToggle: (id: number, status: string) => void;
+}

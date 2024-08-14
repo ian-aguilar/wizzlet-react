@@ -15,7 +15,7 @@ const Button = ({
   let btnType = "";
   switch (showType) {
     case btnShowType.green:
-      btnType = `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
+      btnType = `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full flex rounded transition-all duration-300 ${
         btnClass ?? ""
       }`;
       break;
