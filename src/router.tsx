@@ -1,5 +1,9 @@
 // ** Packages **
-import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouteObject,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -15,9 +19,9 @@ import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
 import Aboutus from "./modules/Admin/Aboutus/Index";
 import Contactus from "./modules/Admin/Contactus/Index";
-import FaqForm from "./modules/Admin/Faq/components";
-import HomePageForm from "./modules/Admin/Home/components";
 import ImportProducts from "./modules/import-products";
+import FaqForm from "./modules/Admin/Faq";
+import HomePageForm from "./modules/Admin/Home";
 
 // ** Types **
 export type RouteObjType = {
@@ -28,8 +32,12 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
-const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
+const RequiresUnAuth = React.lazy(
+  () => import("@/modules/Auth/components/RequiresUnAuth")
+);
+const RequiresAuth = React.lazy(
+  () => import("@/modules/dashboard/components/RequiresAuth")
+);
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({

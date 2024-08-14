@@ -6,13 +6,15 @@ import { btnShowType } from "@/components/form-fields/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Input from "@/components/form-fields/components/Input";
 import { IContactUs } from "../types/contactus";
-import { ContactData } from "@/constants";
 import Button from "@/components/form-fields/components/Button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ContactusValidation } from "../validation-schema/contactUsValidation";
 import { useEffect, useState } from "react";
 import { IContactusForm } from "@/modules/Admin/Contactus/types";
-import { useGetContactusAPI, usePostContactusAPI } from "../services/cms.service";
+import {
+  useGetContactusAPI,
+  usePostContactusAPI,
+} from "../services/cms.service";
 
 const Contact = () => {
   const {
@@ -64,7 +66,9 @@ const Contact = () => {
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-40 text-center">
-            <h1 className=" text-5xl md:text-6xl font-bold">{contactus?.title}</h1>
+            <h1 className=" text-5xl md:text-6xl font-bold">
+              {contactus?.title}
+            </h1>
             <p className=" font-normal text-xl text-grayText  px-2 sm:px-8 lg:px-40  pt-6">
               {contactus?.description}
             </p>
