@@ -43,6 +43,7 @@ export type IFileUploadProps<T extends FieldValues> = {
 export enum btnShowType {
   primary = "primary",
   green = "green",
+  red = "red",
 }
 export interface IButtonProps {
   btnName: string;
@@ -53,8 +54,33 @@ export interface IButtonProps {
   isLoading?: boolean;
   loaderClass?: string;
   disabled?: boolean;
+  BtnIconRight?: ReactNode;
+  BtnIconLeft?: ReactNode;
   btnEndIcon?: ReactNode;
-  BtnIconRight?: string;
+}
+
+export interface ModalCommonProps {
+  heading: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
+  children?: React.ReactNode;
+}
+
+export interface BaseModalCommonProps {
+  heading: string;
+  subText: string;
+  keyWord?: string;
+  onCancel: () => void;
+  onConfirm?: () => void;
+  cancelButtonText: string;
+  confirmButtonText: string;
+  isLoading?: boolean;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+  showType: btnShowType;
 }
 
 export interface IOtpInputProps {
@@ -87,4 +113,20 @@ export interface FilePropsType<T extends FieldValues> {
     }
   ) => void;
   clearErrors?: (name: Path<T>) => void;
+}
+export interface inviteModalProps {
+  link: string | undefined | null;
+  onClose: () => void;
+}
+
+export interface errorModalProps {
+  onClose: () => void;
+  onSave?: () => void;
+}
+
+export interface warningModalProps {
+  onClose: () => void;
+  onSave?: () => void;
+  heading: string;
+  confirmButtonText: string;
 }

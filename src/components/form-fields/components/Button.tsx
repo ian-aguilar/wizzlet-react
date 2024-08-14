@@ -9,12 +9,19 @@ const Button = ({
   isLoading,
   loaderClass,
   disabled,
+  BtnIconLeft,
   btnEndIcon,
 }: IButtonProps) => {
   let btnType = "";
   switch (showType) {
     case btnShowType.green:
       btnType = `text-white bg-greenPrimary hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
+        btnClass ?? ""
+      }`;
+      break;
+
+    case btnShowType.red:
+      btnType = `text-white bg-redAlert hover:brightness-110 px-3 py-[10px] font-normal text-base w-full rounded transition-all duration-300 ${
         btnClass ?? ""
       }`;
       break;
@@ -34,9 +41,9 @@ const Button = ({
       className={btnType}
       type={type ? type : "button"}
       onClick={onClickHandler}
-      disabled={isLoading ? true : disabled}
-    >
-      {isLoading ? "Please wait" : btnName}
+      disabled={isLoading ? true : disabled}>
+      {BtnIconLeft}
+      {btnName}
       {isLoading && (
         <span className={`inline-flex ml-3 mt-1.5 ${loaderClass ?? ""} `}>
           <div className="spinnerW"></div>

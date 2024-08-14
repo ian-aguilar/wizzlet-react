@@ -1,16 +1,16 @@
 import Header from "@/components/common/Header";
-import {Footer} from "../common/Footer";
-import {Button} from "../common/Button";
+import { Footer } from "../common/Footer";
+import { Button } from "../common/Button";
 
-import {btnShowType} from "@/components/form-fields/types";
-import {useEffect, useState} from "react";
-import {IForm} from "@/modules/Admin/Faq/types";
-import {usefetchFaqAPI} from "../../Admin/Faq/services/faq.service";
+import { btnShowType } from "@/components/form-fields/types";
+import { useEffect, useState } from "react";
+import { IForm } from "@/modules/Admin/Faq/types";
+import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
-  const {getFaqAPI} = usefetchFaqAPI();
+  const { getFaqAPI } = usefetchFaqAPI();
   const getFaqData = async () => {
-    const {data, error} = await getFaqAPI();
+    const { data, error } = await getFaqAPI();
     console.log(data, "faq response");
     if (!error && data) {
       setFaqData(data.data);

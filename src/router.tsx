@@ -4,19 +4,22 @@ import {
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
-import React, {Suspense} from "react";
+import React, { Suspense } from "react";
 
 // ** Auth Routes
-import {AuthenticationRoutes} from "./modules/Auth/routes";
-import {SettingRoutes} from "./modules/settings/routes";
-import {PrivateRoutesPath} from "./modules/Auth/types";
+import { AuthenticationRoutes } from "./modules/Auth/routes";
+import { SettingRoutes } from "./modules/settings/routes";
+import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
-import {Loader} from "./components/common/Loader";
-import {CMSRoutes} from "./modules/cms/routes";
+import { Loader } from "./components/common/Loader";
+import { CMSRoutes } from "./modules/cms/routes";
 import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard";
 import UserManagement from "./modules/user-management";
+import Aboutus from "./modules/Admin/Aboutus/Index";
+import Contactus from "./modules/Admin/Contactus/Index";
+import ImportProducts from "./modules/import-products";
 import FaqForm from "./modules/Admin/Faq";
 import HomePageForm from "./modules/Admin/Home";
 
@@ -84,12 +87,24 @@ const RouterComponent = () => {
       element: <InventoryManagement />,
     },
     {
+      path: PrivateRoutesPath.import.view,
+      element: <ImportProducts />,
+    },
+    {
       path: PrivateRoutesPath.userManagement.view,
       element: <UserManagement />,
     },
     {
       element: <SettingLayout />,
       children: SettingRoutes,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.aboutus,
+      element: <Aboutus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.contactus,
+      element: <Contactus />,
     },
     {
       path: PrivateRoutesPath.cmsManagement.faq,

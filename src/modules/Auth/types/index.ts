@@ -17,13 +17,17 @@ export const PrivateRoutesPath = {
     profile: { view: "/setting/profile" },
     labelManager: { view: "/setting/label-manager" },
     changePassword: { view: "/setting/change-password" },
+    upload: { view: "/setting/upload" },
   },
   inventoryManagement: { view: "/inventory-management" },
+  import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
   cmsManagement: {
+    aboutus: "/cms-management/aboutus",
+    contactus: "/cms-management/contactus",
     faq: "/cms-management/faq",
-    home: "/cms-management/home"
-  }
+    home: "/cms-management/home",
+  },
 };
   

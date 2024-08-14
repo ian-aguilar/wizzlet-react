@@ -7,7 +7,7 @@ export const InputText = ({ inputPlaceholder, inputLabel }: any) => {
         type="text"
         placeholder={inputPlaceholder}
       />
-      <span className="text-red-500 text-xs"></span>
+      <span className="text-red-600 font-medium text-sm"></span>
     </div>
   );
 };

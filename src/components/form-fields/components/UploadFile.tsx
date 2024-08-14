@@ -1,6 +1,6 @@
-import {FieldValues} from "react-hook-form";
-import {IFileUploadProps} from "../types";
-import {ErrorMessage} from "@hookform/error-message";
+import { FieldValues } from "react-hook-form";
+import { IFileUploadProps } from "../types";
+import { ErrorMessage } from "@hookform/error-message";
 
 const UploadFile = <T extends FieldValues>({
   placeholder,
@@ -25,9 +25,7 @@ const UploadFile = <T extends FieldValues>({
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({message}) => (
-          <span className="errorText text-red-400 text-xs">{message}</span>
-        )}
+        render={({ message }) => <span className="errorText text-red-400 text-xs">{message}</span>}
       />
     </div>
   );
