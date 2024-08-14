@@ -972,3 +972,38 @@ export const SalesIcon = ({ className }: any) => {
     </svg>
   );
 };
+export const CameraBgIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="44"
+      height="45"
+      viewBox="0 0 44 45"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect y="0.5" width="44" height="44" rx="22" fill="white" />
+      <path
+        d="M16.7602 32.5H27.2402C30.0002 32.5 31.1002 30.81 31.2302 28.75L31.7502 20.49C31.8902 18.33 30.1702 16.5 28.0002 16.5C27.3902 16.5 26.8302 16.15 26.5502 15.61L25.8302 14.16C25.3702 13.25 24.1702 12.5 23.1502 12.5H20.8602C19.8302 12.5 18.6302 13.25 18.1702 14.16L17.4502 15.61C17.1702 16.15 16.6102 16.5 16.0002 16.5C13.8302 16.5 12.1102 18.33 12.2502 20.49L12.7702 28.75C12.8902 30.81 14.0002 32.5 16.7602 32.5Z"
+        stroke="#09A17A"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M20.5 18.5H23.5"
+        stroke="#09A17A"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M22 28.5C23.79 28.5 25.25 27.04 25.25 25.25C25.25 23.46 23.79 22 22 22C20.21 22 18.75 23.46 18.75 25.25C18.75 27.04 20.21 28.5 22 28.5Z"
+        stroke="#09A17A"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};

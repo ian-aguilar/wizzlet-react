@@ -20,6 +20,7 @@ import { FEATURE } from "./constant";
 
 // **services **
 import { useHomeDataPostAPI, usefetchHomeAPI } from "./services/home.service";
+import { Link } from "react-router-dom";
 
 const HomePageForm = () => {
   const { getHomeAPI } = usefetchHomeAPI();
@@ -104,15 +105,33 @@ const HomePageForm = () => {
   };
   return (
     <>
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
-          <TopSection />
-          <MiddleSection />
-          <BottomSection />
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-4xl font-bold ">Home Page</h2>
+          <span className="text-blackPrimary">
+            {" "}
+            <Link to="" className="text-grayText text-sm">
+              {" "}
+              CMS Management{" "}
+            </Link>{" "}
+            / Home Page{" "}
+          </span>
+        </div>
+        <div>
+          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+        </div>
+      </div>
+      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <TopSection />
+            <MiddleSection />
+            <BottomSection />
 
-          <Button btnName="submit" type="submit"></Button>
-        </form>
-      </FormProvider>
+            {/* <Button btnName="submit" type="submit"></Button> */}
+          </form>
+        </FormProvider>
+      </section>
     </>
   );
 };

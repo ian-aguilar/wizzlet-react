@@ -132,7 +132,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         {urls.map((url, index) => (
           <div
             className="attachments__box flex items-center mb-[10px] last:mb-0"
-            key={`url-${index}`}>
+            key={`url-${index}`}
+          >
             <div className="attachments__details flex items-center">
               <img
                 src={url}
@@ -150,7 +151,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
               name="Delete"
               title="Delete"
-              onClick={() => deleteAttachment(index, true)}>
+              onClick={() => deleteAttachment(index, true)}
+            >
               ✕
             </button>
           </div>
@@ -161,7 +163,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
           return (
             <div
               className="attachments__box flex items-center mb-[10px] last:mb-0"
-              key={index}>
+              key={index}
+            >
               <div className="attachments__details flex items-center">
                 {file ? (
                   <img
@@ -184,7 +187,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
                 name="Delete"
                 title="Delete"
-                onClick={() => deleteAttachment(index, false)}>
+                onClick={() => deleteAttachment(index, false)}
+              >
                 ✕
               </button>
             </div>
