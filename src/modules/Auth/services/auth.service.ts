@@ -102,3 +102,17 @@ export const useResetPasswordAPI = () => {
 
   return { resetPasswordAPI, isLoading, isError, isSuccess };
 };
+
+// ** change password **
+export const useChangePasswordPostAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const changePasswordPostAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/change-password`, data, config);
+  };
+
+  return { changePasswordPostAPI, isLoading, isError, isSuccess };
+};
