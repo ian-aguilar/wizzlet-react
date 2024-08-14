@@ -1,8 +1,8 @@
-import { Footer } from "../common/Footer";
-import { InputText } from "../common/InputText";
-import { Button } from "../common/Button";
+import {Footer} from "../common/Footer";
+import {InputText} from "../common/InputText";
+import {Button} from "../common/Button";
 import Header from "@/components/common/Header";
-import { btnShowType } from "@/components/form-fields/types";
+import {btnShowType} from "@/components/form-fields/types";
 
 const Contact = () => {
   return (

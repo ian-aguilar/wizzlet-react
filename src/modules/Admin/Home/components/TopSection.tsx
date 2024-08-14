@@ -1,9 +1,14 @@
-import Input from "@/components/form-fields/components/Input";
+// ** Packages **
 import {useFieldArray, useFormContext} from "react-hook-form";
+
+// ** common components **
+import Input from "@/components/form-fields/components/Input";
 import {IForm} from "../types";
-import {FEATURE} from "../constant";
 import UploadFile from "@/components/form-fields/components/UploadFile";
-//subTitle description  greenButton
+
+// ** constants **
+import {FEATURE} from "../constant";
+
 const TopSection = () => {
   const {
     control,
@@ -88,7 +93,10 @@ const TopSection = () => {
               errors={errors}
             />
 
-            <span onClick={() => remove(index)} className="me-3">
+            <span
+              onClick={() => fields.length > 1 && remove(index)}
+              className="me-3"
+            >
               delete
             </span>
             <span onClick={() => insert(index + 1, FEATURE)}>Add </span>

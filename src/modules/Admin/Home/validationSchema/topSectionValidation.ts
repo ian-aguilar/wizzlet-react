@@ -2,13 +2,13 @@
 import * as Yup from "yup"
 
 // ** validations **
-import { buttonValidation, descriptionValidation, imageValidation, titleValidation } from ".";
+import { buttonValidation, createimageValidation, descriptionValidation, titleValidation } from ".";
 import { BottomSectionValidationSchema } from "./bottomSectionValidation";
 import { MiddleSectionValidationSchema } from "./middleSectionValidation";
 const featureValidation = Yup.object().shape({
     title: Yup.string().trim().required("title is required"),
     description: Yup.string().trim().required("description is required"),
-    image: imageValidation
+    image: createimageValidation(4)
 });
 export const TopSectionValidationSchema = Yup.object().shape({
     feature: Yup.array()
