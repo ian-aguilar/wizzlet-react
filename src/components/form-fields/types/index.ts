@@ -93,7 +93,7 @@ export interface FilePropsType<T extends FieldValues> {
   errors: FieldErrors<T>;
   value?: string;
   control: Control<T>;
-  setValue?: (name: Path<T>, attachment: File[]) => void;
+  setValue?: (name: Path<T>, attachment: any) => void;
   name: any;
   label: string;
   register: UseFormRegister<T>;
@@ -113,6 +113,7 @@ export interface FilePropsType<T extends FieldValues> {
     }
   ) => void;
   clearErrors?: (name: Path<T>) => void;
+  defaultValue?: string[];
 }
 export interface inviteModalProps {
   link: string | undefined | null;
