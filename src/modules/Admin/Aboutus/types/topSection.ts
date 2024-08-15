@@ -9,3 +9,7 @@ export interface ITopSection {
     description: string;
   }[];
 }
+
+export interface ITopSectionProps {
+  topSection?: ITopSection;
+}

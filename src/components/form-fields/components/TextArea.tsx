@@ -25,7 +25,7 @@ const TextArea = <T extends FieldValues>({
         autoComplete={autoComplete}
         withLabel={withLabel}
         isDisabled={isDisabled}
-        className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
+        className="bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300"
       />
       <span className="errorText text-red-400 text-xs"> </span>
     </div>
@@ -55,6 +55,7 @@ const TextAreaField = <T extends FieldValues>({
             placeholder={placeholder}
             autoComplete={autoComplete}
             disabled={isDisabled}
+            rows={4}
           />
         )}
       />
