@@ -7,3 +7,7 @@ export type IServiceSection = {
     description: string;
   }[];
 };
+
+export interface IServiceSectionProps {
+  serviceSection?: IServiceSection;
+}

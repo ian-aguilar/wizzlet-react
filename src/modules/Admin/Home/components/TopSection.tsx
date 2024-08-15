@@ -22,6 +22,7 @@ const TopSection = () => {
     clearErrors,
     setValue,
     getValues,
+    watch
   } = useFormContext<IForm>();
   const {append, remove, insert, fields} = useFieldArray({
     name: "topSection.feature",
@@ -113,12 +114,13 @@ const TopSection = () => {
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
-                    defaultValue={[
-                      (VITE_APP_API_URL +
-                        getValues(
-                          `topSection.feature.${index}.image`
-                        )) as string,
-                    ]}
+                    watch={watch}
+                    // defaultValue={[
+                    //   (VITE_APP_API_URL +
+                    //     getValues(
+                    //       `topSection.feature.${index}.image`
+                    //     )) as string,
+                    // ]}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">

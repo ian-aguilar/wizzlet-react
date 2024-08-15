@@ -19,6 +19,7 @@ const MiddleSection = () => {
     clearErrors,
     setError,
     setValue,
+    watch,
   } = useFormContext<IForm>();
   console.log("IMAAAGE", getValues());
   return (
@@ -42,12 +43,13 @@ const MiddleSection = () => {
                 setError={setError}
                 setValue={setValue}
                 clearErrors={clearErrors}
-                defaultValue={[
-                  (getValues("middleSection.image") as string)
-                    ? VITE_APP_API_URL +
-                      (getValues("middleSection.image") as string)
-                    : "",
-                ]}
+                watch={watch}
+                // defaultValue={[
+                //   (getValues("middleSection.image") as string)
+                //     ? VITE_APP_API_URL +
+                //       (getValues("middleSection.image") as string)
+                //     : "",
+                // ]}
               />
             </div>
             <div className=" col-span-6   ">

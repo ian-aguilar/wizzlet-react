@@ -1,9 +1,5 @@
 // ** Packages **
-import {
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -20,6 +16,7 @@ import UserManagement from "./modules/user-management";
 import Aboutus from "./modules/Admin/Aboutus/Index";
 import Contactus from "./modules/Admin/Contactus/Index";
 import ImportProducts from "./modules/import-products";
+import ContactusManagement from "./modules/contact-us-management";
 import FaqForm from "./modules/Admin/Faq";
 import HomePageForm from "./modules/Admin/Home";
 
@@ -32,12 +29,8 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresUnAuth")
-);
-const RequiresAuth = React.lazy(
-  () => import("@/modules/dashboard/components/RequiresAuth")
-);
+const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
+const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -113,6 +106,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.cmsManagement.home,
       element: <HomePageForm />,
+    },
+    {
+      path: PrivateRoutesPath.contactusManagement.view,
+      element: <ContactusManagement />,
     },
   ]);
 

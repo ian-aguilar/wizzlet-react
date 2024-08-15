@@ -19,6 +19,7 @@ const Contactus = () => {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<IContactusForm>({
     resolver: yupResolver(ContactusValidation),
   });
@@ -26,13 +27,17 @@ const Contactus = () => {
   const { createContactUsAPI } = useCreateContactUsAPI();
 
   const onSubmit: SubmitHandler<IContactusForm> = async (values) => {
-    const data = new FormData();
+    const data1 = new FormData();
+    console.log(values);
+    data1.append("title", values.title);
+    data1.append("description", values.description);
+    data1.append("greenButton", values.greenButton);
 
-    data.append("title", values.title);
-    data.append("description", values.description);
-    data.append("greenButton", values.greenButton);
+    const response = await createContactUsAPI(data1);
 
-    await createContactUsAPI(data);
+    if (response?.data && !response?.error) {
+      reset({});
+    }
   };
 
   return (
