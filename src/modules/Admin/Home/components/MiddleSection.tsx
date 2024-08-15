@@ -1,22 +1,24 @@
 // ** Packages **
-import { useFormContext } from "react-hook-form";
+import {useFormContext} from "react-hook-form";
 
 // ** types **
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
 import FileField from "@/components/form-fields/components/FileField";
-import { TextArea } from "@/components/common/TextArea";
+import TextArea from "@/components/form-fields/components/TextArea";
+import {VITE_APP_API_URL} from "@/config";
 
 const MiddleSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
     register,
     getValues,
     clearErrors,
     setError,
+    setValue,
   } = useFormContext<IForm>();
   console.log("IMAAAGE", getValues());
   return (
@@ -30,15 +32,22 @@ const MiddleSection = () => {
           <div className="grid grid-cols-12  w-full  gap-4  p-4">
             <div className=" col-span-6    relative     ">
               <FileField
-                name={`middleSection.image` as const}
+                name={`middleSection.image`}
                 label="Upload"
                 control={control}
                 errors={errors}
-                maxSize={1}
+                maxSize={8}
                 allowedFormat={["image/png", "image/jpeg"]}
                 register={register}
                 setError={setError}
+                setValue={setValue}
                 clearErrors={clearErrors}
+                defaultValue={[
+                  (getValues("middleSection.image") as string)
+                    ? VITE_APP_API_URL +
+                      (getValues("middleSection.image") as string)
+                    : "",
+                ]}
               />
             </div>
             <div className=" col-span-6   ">
@@ -61,7 +70,17 @@ const MiddleSection = () => {
             errors={errors}
           /> */}
 
-              <TextArea textareaLabel="Description" />
+              <TextArea
+                textLabelName="Description"
+                placeholder=" Enter Description"
+                name="middleSection.description"
+                label="Description"
+                type="text"
+                control={control}
+                errors={errors}
+              />
+
+              {/* <TextArea textareaLabel="Description" /> */}
             </div>
           </div>
         </div>

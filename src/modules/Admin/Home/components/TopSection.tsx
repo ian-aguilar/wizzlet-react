@@ -1,26 +1,29 @@
 // ** Packages **
-import { useFieldArray, useFormContext } from "react-hook-form";
+import {useFieldArray, useFormContext} from "react-hook-form";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** constants **
-import { FEATURE } from "../constant";
+import {FEATURE} from "../constant";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
-import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-import { TextArea } from "@/components/common/TextArea";
+import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import TextArea from "@/components/form-fields/components/TextArea";
+import {VITE_APP_API_URL} from "@/config";
 
 const TopSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
     register,
     setError,
     clearErrors,
+    setValue,
+    getValues,
   } = useFormContext<IForm>();
-  const { append, remove, insert, fields } = useFieldArray({
+  const {append, remove, insert, fields} = useFieldArray({
     name: "topSection.feature",
     control,
   });
@@ -48,8 +51,15 @@ const TopSection = () => {
         control={control}
         errors={errors}
       /> */}
-
-        <TextArea textareaLabel="Description" />
+        <TextArea
+          textLabelName="Description"
+          placeholder=" Enter Description"
+          name="topSection.description"
+          label="Description"
+          control={control}
+          errors={errors}
+        />
+        {/* <TextArea textareaLabel="Description" /> */}
 
         <Input
           textLabelName="SubTitle"
@@ -98,10 +108,17 @@ const TopSection = () => {
                     control={control}
                     errors={errors}
                     maxSize={1}
+                    setValue={setValue}
                     allowedFormat={["image/png", "image/jpeg"]}
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
+                    defaultValue={[
+                      (VITE_APP_API_URL +
+                        getValues(
+                          `topSection.feature.${index}.image`
+                        )) as string,
+                    ]}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">
@@ -125,14 +142,24 @@ const TopSection = () => {
                       control={control}
                       errors={errors}
                     /> */}
-                  <TextArea textareaLabel="Description" />
+                  <TextArea
+                    textLabelName="Description"
+                    placeholder="Enter description"
+                    name={`topSection.feature.${index}.description` as const}
+                    label="Description"
+                    control={control}
+                    errors={errors}
+                  />
+                  {/* <TextArea textareaLabel="Description" /> */}
                   <div className="absolute flex gap-2 top-2 right-2">
-                    <span
-                      onClick={() => fields.length > 1 && remove(index)}
-                      className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-                    >
-                      <DeleteIcon className="text-redAlert " />
-                    </span>
+                    {index >= 1 && (
+                      <span
+                        onClick={() => fields.length > 1 && remove(index)}
+                        className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+                      >
+                        <DeleteIcon className="text-redAlert " />
+                      </span>
+                    )}
                     <span
                       onClick={() => insert(index + 1, FEATURE)}
                       className="flex justify-center items-center w-8 h-8  border bg-greenPrimary/10 border-greenPrimary rounded-md cursor-pointer  hover:brightness-125 transition-all duration-300  "

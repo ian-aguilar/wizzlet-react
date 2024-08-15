@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Controller, FieldValues } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
+import {useEffect, useState} from "react";
+import {Controller, FieldValues} from "react-hook-form";
+import {ErrorMessage} from "@hookform/error-message";
 // ** Helper Functions and Types **
-import { FilePropsType } from "../types";
-import { checkFileFormat, fileSizeGenerator } from "@/utils";
-import { CameraBgIcon, CloseIconSvg } from "@/assets/Svg";
+import {FilePropsType} from "../types";
+import {checkFileFormat, fileSizeGenerator} from "@/utils";
+import {CameraBgIcon, CloseIconSvg} from "@/assets/Svg";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   const {
@@ -90,7 +90,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, name: fieldName } }) => (
+                render={({field: {onChange, name: fieldName}}) => (
                   <input
                     id={id}
                     multiple
@@ -133,14 +133,18 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({ message }) => (
+        render={({message}) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
           </span>
         )}
       />
 
-      <div className="attachments__up__wrapper     p-6 absolute w-full h-full z-[9]  border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md ">
+      <div
+        className={`attachments__up__wrapper p-6 absolute w-full h-full  ${
+          urls.length > 0 || attachments.length > 0 ? "z-[11]" : "z-[9]"
+        }  border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
+      >
         {urls.map((url, index) => (
           <div
             className="attachments__box flex flex-col h-full "
