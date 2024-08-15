@@ -17,9 +17,12 @@ import { IAboutusForm } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AboutusValidation } from "./validation-schema/aboutUsValidation";
 import { useCreateAboutUsAPI } from "../services/cms.service";
+import { Link } from "react-router-dom";
 
 const Aboutus = () => {
-  const methods = useForm<IAboutusForm>({ resolver: yupResolver(AboutusValidation) });
+  const methods = useForm<IAboutusForm>({
+    resolver: yupResolver(AboutusValidation),
+  });
   // const methods = useForm<IAboutusForm>();
 
   const { createAboutUsAPI } = useCreateAboutUsAPI();
@@ -34,24 +37,42 @@ const Aboutus = () => {
 
     values.topSection.cards?.forEach((value, index) => {
       data.append(`topSection[cards][${index}][title]`, value.title);
-      data.append(`topSection[cards][${index}][description]`, value.description);
+      data.append(
+        `topSection[cards][${index}][description]`,
+        value.description
+      );
       data.append(`topSection[cards][${index}][icon]`, value.icon[0]);
     });
 
     data.append("visionSection[title]", values["visionSection"].title);
-    data.append("visionSection[description]", values["visionSection"].description);
-    data.append("visionSection[greenButton]", values["visionSection"].greenButton);
+    data.append(
+      "visionSection[description]",
+      values["visionSection"].description
+    );
+    data.append(
+      "visionSection[greenButton]",
+      values["visionSection"].greenButton
+    );
     data.append("visionSection[image]", values["visionSection"]["image"][0]);
 
     data.append("missionSection[title]", values["missionSection"].title);
-    data.append("missionSection[description]", values["missionSection"].description);
+    data.append(
+      "missionSection[description]",
+      values["missionSection"].description
+    );
     data.append("missionSection[image]", values["missionSection"]["image"][0]);
 
     data.append("serviceSection[title]", values["serviceSection"].title);
-    data.append("serviceSection[description]", values["serviceSection"].description);
+    data.append(
+      "serviceSection[description]",
+      values["serviceSection"].description
+    );
     values.serviceSection.cards?.forEach((value, index) => {
       data.append(`serviceSection[cards][${index}][title]`, value.title);
-      data.append(`serviceSection[cards][${index}][description]`, value.description);
+      data.append(
+        `serviceSection[cards][${index}][description]`,
+        value.description
+      );
       data.append(`serviceSection[cards][${index}][icon]`, value.icon[0]);
     });
 
@@ -62,15 +83,35 @@ const Aboutus = () => {
     }
   };
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Button btnName="Update" type="submit" />
-        <TopSection />
-        <VisionSection />
-        <MissionSection />
-        <ServiceSection />
-      </form>
-    </FormProvider>
+    <>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-4xl font-bold ">About Page</h2>
+          <span className="text-blackPrimary">
+            {" "}
+            <Link to="" className="text-grayText text-sm">
+              {" "}
+              CMS Management{" "}
+            </Link>{" "}
+            / Home Page{" "}
+          </span>
+        </div>
+        <div>
+          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+        </div>
+      </div>
+      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            {/* <Button btnName="Update" type="" /> */}
+            <TopSection />
+            <VisionSection />
+            <MissionSection />
+            <ServiceSection />
+          </form>
+        </FormProvider>
+      </section>
+    </>
   );
 };
 

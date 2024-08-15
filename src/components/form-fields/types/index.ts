@@ -37,6 +37,7 @@ export type IFileUploadProps<T extends FieldValues> = {
   autoComplete?: string;
   textLabelName?: string;
   withLabel?: boolean;
+  MainClass?:string;
   register: UseFormRegister<T>;
 };
 
