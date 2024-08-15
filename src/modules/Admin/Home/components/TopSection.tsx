@@ -85,10 +85,13 @@ const TopSection = () => {
 
         <div className="grid grid-cols-12  w-full xl:gap-4">
           {fields.map((field, index) => (
-            <div className="col-span-12 xl:col-span-6 border p-4  relative ">
-              <p className="mb-4"> Upload Feature Image {index + 1} </p>
-              <div key={field.id} className="grid grid-cols-12  w-full gap-4">
-                <div className=" col-span-6 relative ">
+            <div className="col-span-12 xl:col-span-6 border p-5 relative ">
+              {/* <p className="mb"> Upload Feature Image {index + 1} </p> */}
+              <div
+                key={field.id}
+                className="grid grid-cols-12 h-full w-full gap-4  "
+              >
+                <div className=" col-span-6 relative flex flex-col h-full ">
                   <FileField
                     name={`topSection.feature.${index}.image` as const}
                     label="Upload Photo"
@@ -101,7 +104,7 @@ const TopSection = () => {
                     clearErrors={clearErrors}
                   />
                 </div>
-                <div className="col-span-6">
+                <div className="col-span-6 flex flex-col h-full">
                   <Input
                     textLabelName="Heading"
                     placeholder="Enter title"
