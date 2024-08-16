@@ -31,16 +31,6 @@ const BottomSection = () => {
             control={control}
             errors={errors}
           />
-
-          {/* <Input
-            textLabelName="Description"
-            placeholder="Enter Description"
-            name="bottomSection.description"
-            label="Description"
-            type="text"
-            control={control}
-            errors={errors}
-          /> */}
           <TextArea
             textLabelName="Description"
             placeholder="Enter Description"
@@ -49,7 +39,6 @@ const BottomSection = () => {
             control={control}
             errors={errors}
           />
-          {/* <TextArea textareaLabel="Description" /> */}
 
           <div className="grid grid-cols-12 lg:gap-4">
             <div className=" col-span-12 lg:col-span-6">

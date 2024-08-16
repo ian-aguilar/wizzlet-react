@@ -11,7 +11,6 @@ import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
 import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
 import TextArea from "@/components/form-fields/components/TextArea";
-import {VITE_APP_API_URL} from "@/config";
 
 const TopSection = () => {
   const {
@@ -21,8 +20,7 @@ const TopSection = () => {
     setError,
     clearErrors,
     setValue,
-    getValues,
-    watch
+    watch,
   } = useFormContext<IForm>();
   const {append, remove, insert, fields} = useFieldArray({
     name: "topSection.feature",
@@ -43,15 +41,6 @@ const TopSection = () => {
           control={control}
           errors={errors}
         />
-        {/* <Input
-        textLabelName="Description"
-        placeholder=" Enter Description"
-        name="topSection.description"
-        label="Description"
-        type="text"
-        control={control}
-        errors={errors}
-      /> */}
         <TextArea
           textLabelName="Description"
           placeholder=" Enter Description"
@@ -60,8 +49,6 @@ const TopSection = () => {
           control={control}
           errors={errors}
         />
-        {/* <TextArea textareaLabel="Description" /> */}
-
         <Input
           textLabelName="SubTitle"
           placeholder=" Enter subtitle"
@@ -97,7 +84,6 @@ const TopSection = () => {
         <div className="grid grid-cols-12  w-full xl:gap-4">
           {fields.map((field, index) => (
             <div className="col-span-12 xl:col-span-6 border p-5 relative ">
-              {/* <p className="mb"> Upload Feature Image {index + 1} </p> */}
               <div
                 key={field.id}
                 className="grid grid-cols-12 h-full w-full gap-4  "
@@ -108,19 +94,13 @@ const TopSection = () => {
                     label="Upload Photo"
                     control={control}
                     errors={errors}
-                    maxSize={1}
+                    maxSize={8}
                     setValue={setValue}
                     allowedFormat={["image/png", "image/jpeg"]}
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
                     watch={watch}
-                    // defaultValue={[
-                    //   (VITE_APP_API_URL +
-                    //     getValues(
-                    //       `topSection.feature.${index}.image`
-                    //     )) as string,
-                    // ]}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">
@@ -133,17 +113,6 @@ const TopSection = () => {
                     control={control}
                     errors={errors}
                   />{" "}
-                  {/* <Input
-                      textLabelName="Description"
-                      placeholder="Enter description"
-                      name={
-                        `topSection.feature.${index}.description` as const
-                      }
-                      label="Description"
-                      type="text"
-                      control={control}
-                      errors={errors}
-                    /> */}
                   <TextArea
                     textLabelName="Description"
                     placeholder="Enter description"
@@ -152,7 +121,6 @@ const TopSection = () => {
                     control={control}
                     errors={errors}
                   />
-                  {/* <TextArea textareaLabel="Description" /> */}
                   <div className="absolute flex gap-2 top-2 right-2">
                     {index >= 1 && (
                       <span

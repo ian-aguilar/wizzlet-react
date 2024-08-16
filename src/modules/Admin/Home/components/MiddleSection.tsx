@@ -8,20 +8,18 @@ import {IForm} from "../types";
 import Input from "@/components/form-fields/components/Input";
 import FileField from "@/components/form-fields/components/FileField";
 import TextArea from "@/components/form-fields/components/TextArea";
-import {VITE_APP_API_URL} from "@/config";
 
 const MiddleSection = () => {
   const {
     control,
     formState: {errors},
     register,
-    getValues,
     clearErrors,
     setError,
     setValue,
     watch,
   } = useFormContext<IForm>();
-  console.log("IMAAAGE", getValues());
+
   return (
     <>
       {" "}
@@ -44,12 +42,6 @@ const MiddleSection = () => {
                 setValue={setValue}
                 clearErrors={clearErrors}
                 watch={watch}
-                // defaultValue={[
-                //   (getValues("middleSection.image") as string)
-                //     ? VITE_APP_API_URL +
-                //       (getValues("middleSection.image") as string)
-                //     : "",
-                // ]}
               />
             </div>
             <div className=" col-span-6   ">
@@ -62,15 +54,6 @@ const MiddleSection = () => {
                 control={control}
                 errors={errors}
               />
-              {/* <Input
-            textLabelName="Description"
-            placeholder=" Enter Description"
-            name="middleSection.description"
-            label="Description"
-            type="text"
-            control={control}
-            errors={errors}
-          /> */}
 
               <TextArea
                 textLabelName="Description"
@@ -81,8 +64,6 @@ const MiddleSection = () => {
                 control={control}
                 errors={errors}
               />
-
-              {/* <TextArea textareaLabel="Description" /> */}
             </div>
           </div>
         </div>

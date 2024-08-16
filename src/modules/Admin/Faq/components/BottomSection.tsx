@@ -6,7 +6,6 @@ import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-// import { TextArea } from "@/components/common/TextArea";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 const BottomSection = () => {
@@ -31,16 +30,6 @@ const BottomSection = () => {
             control={control}
             errors={errors}
           />
-
-          {/* <Input
-            textLabelName="Description"
-            placeholder="Enter Description"
-            name="bottomSection.description"
-            label="Description"
-            type="text"
-            control={control}
-            errors={errors}
-          /> */}
           <TextArea
             textLabelName="Description"
             placeholder="Enter Description"
