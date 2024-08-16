@@ -42,7 +42,7 @@ const BottomSection = () => {
           <div className="grid grid-cols-12 lg:gap-4 ">
             <div className=" col-span-12 lg:col-span-6 ">
               <Input
-                textLabelName="GreenButton "
+                textLabelName="Green Button"
                 placeholder="Enter GreenButton Name"
                 name="bottomSection.greenButton"
                 label="GreenButton"
@@ -53,7 +53,7 @@ const BottomSection = () => {
             </div>
             <div className=" col-span-12 lg:col-span-6">
               <Input
-                textLabelName="whiteButton content"
+                textLabelName="White Button"
                 placeholder="Enter WhiteButton Name"
                 name="bottomSection.whiteButton"
                 label="WhiteButton"

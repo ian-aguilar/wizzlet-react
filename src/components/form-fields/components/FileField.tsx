@@ -54,7 +54,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       });
 
       if (filteredFiles.length) {
-        console.log({name, dad: [...defaultValue, ...filteredFiles]});
+        // console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
         setValue(name, [...defaultValue, ...filteredFiles] as any);
 
@@ -125,7 +125,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                   Drag and drop Images files to upload
                 </p>
                 <p className="text-[14px] text-grayText text-center ">
-                  max 1 photos and 8mb file size limit
+                  Max 1 photo with size limit of 8mb
                 </p>
                 {/* <span className="btn__text">Upload File</span> */}
               </div>
@@ -170,7 +170,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               </div>
 
               <div className="attachments__details text-center ">
-                <span className="attachments__name whitespace-pre overflow-hidden  ">
+                <span className="attachments__name whitespace-normal break-words overflow-hidden  ">
                   {isUrl ? value.split("/").pop() : (value as File).name}
                 </span>
               </div>
