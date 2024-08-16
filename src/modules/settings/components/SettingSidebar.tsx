@@ -39,7 +39,11 @@ const SettingSidebar = () => {
                 : "text-grayText font-medium"
             } `}
           >
-            <span className="text-grayText">
+            <span
+              className={
+                active === data.name ? "text-greenPrimary" : "text-grayText"
+              }
+            >
               <data.navIcon />
             </span>
             {data.navText}

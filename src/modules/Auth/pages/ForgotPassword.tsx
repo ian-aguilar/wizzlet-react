@@ -60,7 +60,6 @@ const ForgotPassword = () => {
                 className=""
                 placeholder="Enter Registered Email Address"
                 name="email"
-                label="Email"
                 type="text"
                 control={control}
                 errors={errors}

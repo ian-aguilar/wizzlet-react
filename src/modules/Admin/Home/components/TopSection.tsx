@@ -1,28 +1,28 @@
 // ** Packages **
-import {useFieldArray, useFormContext} from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import {IForm} from "../types";
+import { IForm } from "../types";
 
 // ** constants **
-import {FEATURE} from "../constant";
+import { FEATURE } from "../constant";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
-import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
     register,
     setError,
     clearErrors,
     setValue,
     watch,
   } = useFormContext<IForm>();
-  const {append, remove, insert, fields} = useFieldArray({
+  const { append, remove, insert, fields } = useFieldArray({
     name: "topSection.feature",
     control,
   });
@@ -36,7 +36,6 @@ const TopSection = () => {
           textLabelName="Title"
           placeholder="Enter Title"
           name="topSection.title"
-          label="Title"
           type="text"
           control={control}
           errors={errors}
@@ -45,24 +44,21 @@ const TopSection = () => {
           textLabelName="Description"
           placeholder=" Enter Description"
           name="topSection.description"
-          label="Description"
           control={control}
           errors={errors}
         />
         <Input
-          textLabelName="SubTitle"
+          textLabelName="Sub Title"
           placeholder=" Enter subtitle"
           name="topSection.subtitle"
-          label="Subtitle"
           type="text"
           control={control}
           errors={errors}
         />
         <Input
-          textLabelName="GreenButton "
+          textLabelName="Green Button"
           placeholder="Enter GreenButton Name"
           name="topSection.greenButton"
-          label="GreenButton"
           type="text"
           control={control}
           errors={errors}
@@ -108,7 +104,6 @@ const TopSection = () => {
                     textLabelName="Heading"
                     placeholder="Enter title"
                     name={`topSection.feature.${index}.title` as const}
-                    label="Heading"
                     type="text"
                     control={control}
                     errors={errors}
@@ -117,7 +112,6 @@ const TopSection = () => {
                     textLabelName="Description"
                     placeholder="Enter description"
                     name={`topSection.feature.${index}.description` as const}
-                    label="Description"
                     control={control}
                     errors={errors}
                   />

@@ -16,7 +16,6 @@ export type IInputProps<T extends FieldValues> = {
   className?: string;
   inputEndIcon?: ReactNode;
   control?: FormControlProp<T>;
-  label?: string;
   errors?: FieldErrors;
   placeholder?: string;
   type?: string;
@@ -45,6 +44,7 @@ export type IFileUploadProps<T extends FieldValues> = {
 export enum btnShowType {
   primary = "primary",
   green = "green",
+  greenRound = "greenRound",
   red = "red",
 }
 export interface IButtonProps {

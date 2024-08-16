@@ -72,7 +72,6 @@ const Login = () => {
               className=""
               placeholder="Email"
               name="email"
-              label="Email"
               type="text"
               control={control}
               errors={errors}
@@ -82,7 +81,6 @@ const Login = () => {
               className=""
               placeholder="**********"
               name="password"
-              label="Password"
               type="password"
               control={control}
               errors={errors}

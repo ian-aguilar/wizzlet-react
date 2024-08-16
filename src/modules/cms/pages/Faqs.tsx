@@ -1,12 +1,18 @@
-import { Button } from "../common/Button";
-
 import { btnShowType } from "@/components/form-fields/types";
 import { useEffect, useState } from "react";
 import { IForm } from "@/modules/Admin/Faq/types";
 import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
 import { Loader } from "@/components/common/Loader";
+import Button from "@/components/form-fields/components/Button";
+import { Button as Button2 } from "../common/Button";
+import { useNavigate } from "react-router-dom";
+import { RoutesPath } from "@/modules/Auth/types";
+
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
+
+  const navigate = useNavigate();
+
   const { getFaqAPI, isLoading } = usefetchFaqAPI();
   const getFaqData = async () => {
     const { data, error } = await getFaqAPI();
@@ -74,18 +80,22 @@ const Faqs = () => {
                 </p>
                 <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
                   <Button
-                    showType={btnShowType.green}
-                    btnClass=" border-greenPrimary bg-greenPrimary text-white "
-                    // btnName="Get Importme free"
+                    showType={btnShowType.greenRound}
                     btnName={faqData.bottomSection.greenButton}
+                    btnClass="border-greenPrimary bg-greenPrimary text-white"
+                    onClickHandler={() => navigate(RoutesPath.SignUp)}
                   />
-
-                  <Button
+                  {/* <Button2
+                    showType={btnShowType.green}
+                    btnName={faqData.bottomSection.greenButton}
+                    btnClass="border-greenPrimary bg-greenPrimary text-white"
+                  /> */}
+                  {/* <Button
                     showType={btnShowType.green}
                     btnClass=" border-greyBorder bg-white  text-blackPrimary  "
                     // btnName="Book a demo"
                     btnName={faqData.bottomSection.whiteButton}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>

@@ -49,7 +49,6 @@ const MiddleSection = () => {
                 textLabelName="Title"
                 placeholder="Enter Title"
                 name="middleSection.title"
-                label="Title"
                 type="text"
                 control={control}
                 errors={errors}
@@ -59,7 +58,6 @@ const MiddleSection = () => {
                 textLabelName="Description"
                 placeholder=" Enter Description"
                 name="middleSection.description"
-                label="Description"
                 type="text"
                 control={control}
                 errors={errors}
