@@ -6,12 +6,8 @@ import { IUserListing } from "./types";
 import { btnShowType } from "@/components/form-fields/types";
 
 // ** Components **
-import {
-  TableFetchParams,
-  TableFetchResult,
-} from "@/components/common/types/table";
+import { TableFetchParams, TableFetchResult } from "@/components/common/types/table";
 import AddUser from "./components/add-user";
-import { ErrorModal } from "@/modules/user-management/components/ModalError";
 
 // ** Services **
 import {
@@ -27,6 +23,7 @@ import Button from "@/components/form-fields/components/Button";
 import WarningModal from "@/modules/user-management/components/warningModal";
 import InviteModal from "./components/inviteModal";
 import { AddIconBtn, SearchIcon } from "@/assets/Svg";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 const UserManagement = () => {
   //================= States =======================
@@ -111,9 +108,7 @@ const UserManagement = () => {
   return (
     <>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-          User Management
-        </h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">User Management</h2>
 
         <Button
           showType={btnShowType.green}
@@ -159,9 +154,7 @@ const UserManagement = () => {
           heading={`Are you sure you want to ${
             itemForStatusChange.status === "ACTIVE" ? "activate" : "inactivate"
           } this user?`}
-          confirmButtonText={
-            itemForStatusChange.status === "ACTIVE" ? "Active" : "Inactive"
-          }
+          confirmButtonText={itemForStatusChange.status === "ACTIVE" ? "Active" : "Inactive"}
           onClose={() => setItemForStatusChange({ id: null, status: null })}
           onSave={onStatusChange}
         />
@@ -170,6 +163,8 @@ const UserManagement = () => {
         <ErrorModal
           onClose={() => setItemForDelete(null)}
           onSave={handleRemove}
+          heading="Are you sure?"
+          subText="This will delete your user from the list."
         />
       )}
       {isInviteModalOpen.status && (
