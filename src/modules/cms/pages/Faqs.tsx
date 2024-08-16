@@ -1,4 +1,3 @@
-import { Footer } from "../common/Footer";
 import { Button } from "../common/Button";
 
 import { btnShowType } from "@/components/form-fields/types";
@@ -46,7 +45,9 @@ const Faqs = () => {
                       <div className="font-bold text-greenPrimary text-[26px] min-w-9 w-9">
                         {i < 10 ? `0${i + 1}` : i + 1}
                       </div>
-                      <div className="font-medium text-2xl text-blackPrimary">{data.question}</div>
+                      <div className="font-medium text-2xl text-blackPrimary">
+                        {data.question}
+                      </div>
                     </div>
                     <span className="md:w-[56%] font-normal text-grayText text-lg md:pl-0 pl-11 block">
                       {data.answer}

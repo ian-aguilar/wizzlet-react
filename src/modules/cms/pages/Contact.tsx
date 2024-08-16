@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 // ** Common **
 import Button from "@/components/form-fields/components/Button";
 import Input from "@/components/form-fields/components/Input";
-import { Footer } from "../common/Footer";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 // ** Validation **
@@ -16,7 +15,10 @@ import { IContactusForm } from "@/modules/Admin/Contactus/types";
 import { ContactusValidation } from "../validation-schema/contactUsValidation";
 
 // ** Services **
-import { useGetContactusAPI, usePostContactusAPI } from "../services/cms.service";
+import {
+  useGetContactusAPI,
+  usePostContactusAPI,
+} from "../services/cms.service";
 import { Loader } from "@/components/common/Loader";
 
 const Contact = () => {
@@ -74,7 +76,9 @@ const Contact = () => {
         {!dataLoading ? (
           <div className="container">
             <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-40 text-center">
-              <h1 className=" text-5xl md:text-6xl font-bold">{contactus?.title}</h1>
+              <h1 className=" text-5xl md:text-6xl font-bold">
+                {contactus?.title}
+              </h1>
               <p className=" font-normal text-xl text-grayText  px-2 sm:px-8 lg:px-40  pt-6">
                 {contactus?.description}
               </p>
