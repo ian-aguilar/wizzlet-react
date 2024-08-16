@@ -1,36 +1,37 @@
 //** Packages **
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import {SubmitHandler, useForm} from "react-hook-form";
+import {useEffect} from "react";
+import {Link} from "react-router-dom";
 
 //** Common Components **
 import Input from "@/components/form-fields/components/Input";
 import Button from "@/components/form-fields/components/Button";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 //** Types **
-import { IContactusForm } from "./types";
+import {IContactusForm} from "./types";
 
 //** Validations **
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ContactusValidation } from "./validation-schema/contactUsValidationSchema";
-import { useCreateContactUsAPI } from "../services/cms.service";
-import { useGetContactusAPI } from "@/modules/cms/services/cms.service";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {ContactusValidation} from "./validation-schema/contactUsValidationSchema";
+import {useCreateContactUsAPI} from "../services/cms.service";
+import {useGetContactusAPI} from "@/modules/cms/services/cms.service";
 
 const Contactus = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
     handleSubmit,
     reset,
   } = useForm<IContactusForm>({
     resolver: yupResolver(ContactusValidation),
   });
 
-  const { createContactUsAPI } = useCreateContactUsAPI();
-  const { getContactusAPI } = useGetContactusAPI();
+  const {createContactUsAPI} = useCreateContactUsAPI();
+  const {getContactusAPI} = useGetContactusAPI();
 
   const fetchContactusData = async () => {
-    const { data, error } = await getContactusAPI();
+    const {data, error} = await getContactusAPI();
 
     if (data && !error) {
       reset(data?.data);
@@ -80,7 +81,7 @@ const Contactus = () => {
             errors={errors}
             autoComplete={""}
           />
-          <Input
+          <TextArea
             placeholder="Enter Description"
             name="description"
             textLabelName="Description"

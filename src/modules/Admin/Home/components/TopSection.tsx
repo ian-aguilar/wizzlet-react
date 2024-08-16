@@ -50,7 +50,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="SubTitle"
+          textLabelName="Subtitle"
           placeholder=" Enter subtitle"
           name="topSection.subtitle"
           label="Subtitle"
@@ -59,7 +59,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="GreenButton "
+          textLabelName="Green Button "
           placeholder="Enter GreenButton Name"
           name="topSection.greenButton"
           label="GreenButton"

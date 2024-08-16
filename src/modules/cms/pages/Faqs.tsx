@@ -43,7 +43,7 @@ const Faqs = () => {
                   >
                     <div className="flex gap-3 items-start md:w-[42%]">
                       <div className="font-bold text-greenPrimary text-[26px] min-w-9 w-9">
-                        {i < 10 ? `0${i + 1}` : i + 1}
+                        {i < 9 ? `0${i + 1}` : i + 1}
                       </div>
                       <div className="font-medium text-2xl text-blackPrimary">
                         {data.question}
