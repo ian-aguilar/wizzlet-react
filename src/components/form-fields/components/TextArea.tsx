@@ -4,7 +4,6 @@ import { Controller, FieldValues } from "react-hook-form";
 
 const TextArea = <T extends FieldValues>({
   placeholder,
-  className,
   control,
   textLabelName,
   name,

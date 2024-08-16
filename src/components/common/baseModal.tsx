@@ -20,7 +20,7 @@ export const BaseModal: React.FC<BaseModalCommonProps> = ({
         <div className="ModalBody text-center px-5 py-3">
           {icon && icon}
 
-          <h2 className="text-3xl font-bold pb-2 ">{heading}</h2>
+          <h2 className="text-3xl font-bold pb-2 mb-2 mt-2">{heading}</h2>
           <p className="text-base text-grayText">{subText}</p>
           <p className="text-base text-green-700">{keyWord}</p>
         </div>

@@ -1,5 +1,5 @@
 // ** Packages **
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import ItemDetails from "./components/ItemDetails";
 import Category from "./components/Category";
 import PackageDetails from "./components/PackageDetails";

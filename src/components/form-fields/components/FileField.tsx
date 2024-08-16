@@ -3,8 +3,8 @@ import { Controller, FieldValues } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 // ** Helper Functions and Types **
 import { FilePropsType } from "../types";
-import { checkFileFormat, fileSizeGenerator } from "@/utils";
-import { CameraBgIcon, CloseIconSvg } from "@/assets/Svg";
+import { checkFileFormat } from "@/utils";
+import { CameraBgIcon } from "@/assets/Svg";
 import { VITE_APP_API_URL } from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
@@ -77,7 +77,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   };
 
   const deleteAttachment = (id: number) => {
-    setValue(name, [...defaultValue.filter((_: any, index: number) => id !== index)] as any);
+    setValue(name, [
+      ...defaultValue.filter((_: any, index: number) => id !== index),
+    ] as any);
     clearErrors?.(name);
   };
 
@@ -114,7 +116,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 <div>
                   <CameraBgIcon className=" inline-block mx-auto  !w-20 !h-20 !min-w-20 mb-4" />
                 </div>
-                <h3 className="text-2xl text-blackPrimary font-bold ">Upload Photo</h3>
+                <h3 className="text-2xl text-blackPrimary font-bold ">
+                  Upload Photo
+                </h3>
                 <p className="text-base text-blackPrimary  text-center">
                   Drag and drop Images files to upload
                 </p>
@@ -132,7 +136,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         errors={errors}
         name={name}
         render={({ message }) => (
-          <span className={`errorText-file text-red-400 text-s text-center z-[11] ${errorClass}`}>
+          <span
+            className={`errorText-file text-red-400 text-s text-center z-[11] ${errorClass}`}
+          >
             {message}
           </span>
         )}
@@ -153,7 +159,11 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
             >
               <div className="attachments__details flex items-center">
                 <img
-                  src={isUrl ? VITE_APP_API_URL + value : URL.createObjectURL(value)}
+                  src={
+                    isUrl
+                      ? VITE_APP_API_URL + value
+                      : URL.createObjectURL(value)
+                  }
                   alt={`attachment-url-${index + 1}`}
                   className="attachment-img"
                 />

@@ -1,12 +1,5 @@
-import Header from "@/components/common/Header";
-
 const CMSHome = () => {
-  return (
-    <>
-      <Header type="cms" />
-      CMSHome
-    </>
-  );
+  return <>CMSHome</>;
 };
 
 export default CMSHome;

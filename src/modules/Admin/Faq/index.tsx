@@ -25,7 +25,7 @@ import { appendFormData } from "./helper/helper";
 import { Link } from "react-router-dom";
 
 const FaqForm = () => {
-  const { faqDataPostAPI, isLoading } = useFaqDataPostAPI();
+  const { faqDataPostAPI } = useFaqDataPostAPI();
 
   const { getFaqAPI } = usefetchFaqAPI();
   const getFaqData = async () => {

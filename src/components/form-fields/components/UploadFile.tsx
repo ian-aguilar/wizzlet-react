@@ -10,7 +10,7 @@ const UploadFile = <T extends FieldValues>({
   name,
   errors,
   autoComplete,
-  MainClass,
+  // MainClass,
   register,
 }: IFileUploadProps<T>) => {
   return (

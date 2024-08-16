@@ -14,7 +14,6 @@ const MiddleSection = () => {
     control,
     formState: { errors },
     register,
-    getValues,
     clearErrors,
     setError,
     setValue,
