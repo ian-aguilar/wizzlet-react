@@ -129,6 +129,8 @@ export interface errorModalProps {
   onClose: () => void;
   onSave?: () => void;
   isLoading?: boolean;
+  heading: string;
+  subText: string;
 }
 
 export interface warningModalProps {

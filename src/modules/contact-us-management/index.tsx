@@ -6,12 +6,12 @@ import { useState } from "react";
 import { useGetContactusListAPI, useRemoveContactUsAPI } from "./services/contactus.service";
 import useTable from "@/hooks/useTable";
 import useContactusHeaders from "./hooks/useContactusHeaders";
-import { ErrorModal } from "./components/ErrorModal";
 
 // ** Common **
 import { SearchIcon } from "@/assets/Svg";
 import { TableFetchParams, TableFetchResult } from "@/components/common/types/table";
 import { IContactUsListing } from "./types";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 const ContactusManagement = () => {
   const [itemForDelete, setItemForDelete] = useState<number | null>(null);
@@ -98,6 +98,8 @@ const ContactusManagement = () => {
           onClose={() => setItemForDelete(null)}
           onSave={handleRemove}
           isLoading={removeIsLoading}
+          heading="Are you sure?"
+          subText="This will delete this request from contact us."
         />
       )}
     </>

@@ -10,12 +10,11 @@ import { btnShowType } from "@/components/form-fields/types";
 import { IFormInputs } from "../types";
 import { profileDefaultValue } from "@/constants";
 import { useEffect } from "react";
-import {
-  useFetchProfileDataAPI,
-  useProfileDataPostAPI,
-} from "../services/profile.service";
+import { useFetchProfileDataAPI, useProfileDataPostAPI } from "../services/profile.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { profileValidationSchema } from "../validation-schema/profileValidation";
+import { useSelector } from "react-redux";
+import { UserRole, userSelector } from "@/redux/slices/userSlice";
 
 const Profile = () => {
   const {
@@ -31,6 +30,8 @@ const Profile = () => {
   // ================= Custom hooks ====================
   const { getProfileDataAPI } = useFetchProfileDataAPI();
   const { profileDataPostAPI, isLoading: loader } = useProfileDataPostAPI();
+
+  const user = useSelector(userSelector);
 
   useEffect(() => {
     fetchProfileData();
@@ -91,28 +92,30 @@ const Profile = () => {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-12 lg:gap-4">
-              <div className=" col-span-12 lg:col-span-6">
-                <Input
-                  textLabelName="Organization Name"
-                  control={control}
-                  name="organizationName"
-                  placeholder="xyz"
-                  errors={errors}
-                  type="text"
-                />
+            {user?.role === UserRole.USER && (
+              <div className="grid grid-cols-12 lg:gap-4">
+                <div className=" col-span-12 lg:col-span-6">
+                  <Input
+                    textLabelName="Organization Name"
+                    control={control}
+                    name="organizationName"
+                    placeholder="xyz"
+                    errors={errors}
+                    type="text"
+                  />
+                </div>
+                <div className=" col-span-12 lg:col-span-6">
+                  <Input
+                    textLabelName="Contact Number"
+                    control={control}
+                    name="contactNumber"
+                    placeholder="1234567890"
+                    errors={errors}
+                    type="number"
+                  />
+                </div>
               </div>
-              <div className=" col-span-12 lg:col-span-6">
-                <Input
-                  textLabelName="Contact Number"
-                  control={control}
-                  name="contactNumber"
-                  placeholder="1234567890"
-                  errors={errors}
-                  type="number"
-                />
-              </div>
-            </div>
+            )}
 
             <Input
               textLabelName="Email"
