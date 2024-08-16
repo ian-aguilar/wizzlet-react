@@ -1,7 +1,7 @@
 // ** Packages **
-import {useEffect} from "react";
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { useEffect } from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** common components **
 import TopSection from "./components/TopSection";
@@ -10,21 +10,22 @@ import MiddleSection from "./components/MiddleSection";
 import Button from "@/components/form-fields/components/Button";
 
 // ** types **
-import {IForm} from "./types";
+import { IForm } from "./types";
 
 // **validations **
-import {validationSchema} from "./validationSchema/topSectionValidation";
+import { validationSchema } from "./validationSchema/topSectionValidation";
 
 // ** constant **
-import {FEATURE} from "./constant";
+import { FEATURE } from "./constant";
 
 // **services **
-import {useHomeDataPostAPI, usefetchHomeAPI} from "./services/home.service";
-import {Link} from "react-router-dom";
+import { useHomeDataPostAPI, usefetchHomeAPI } from "./services/home.service";
+import { Link } from "react-router-dom";
+import { Loader } from "@/components/common/Loader";
 
 const HomePageForm = () => {
-  const {getHomeAPI} = usefetchHomeAPI();
-  const {homeDataPostAPI} = useHomeDataPostAPI();
+  const { getHomeAPI, isLoading: dataLoading } = usefetchHomeAPI();
+  const { homeDataPostAPI, isLoading: updateLoading } = useHomeDataPostAPI();
   const methods = useForm<IForm>({
     resolver: yupResolver(validationSchema),
 
@@ -36,7 +37,7 @@ const HomePageForm = () => {
   });
 
   const getFaqData = async () => {
-    const {data, error} = await getHomeAPI();
+    const { data, error } = await getHomeAPI();
     if (!error && data) {
       methods.reset(data.data);
     }
@@ -58,37 +59,19 @@ const HomePageForm = () => {
         formData.append(`topSection[feature][${index}][image]`, item.image[0]);
       }
       formData.append(`topSection[feature][${index}][title]`, item.title);
-      formData.append(
-        `topSection[feature][${index}][description]`,
-        item.description
-      );
+      formData.append(`topSection[feature][${index}][description]`, item.description);
     });
     formData.append("middleSection[title]", data.middleSection.title);
-    formData.append(
-      "middleSection[description]",
-      data.middleSection.description
-    );
+    formData.append("middleSection[description]", data.middleSection.description);
     if (typeof data.middleSection.image == "string") {
       formData.append("middleSection[image]", data.middleSection.image);
     } else {
-      formData.append(
-        "middleSection[image]",
-        (data.middleSection.image as FileList)[0]
-      );
+      formData.append("middleSection[image]", (data.middleSection.image as FileList)[0]);
     }
     formData.append("bottomSection[title]", data.bottomSection.title);
-    formData.append(
-      "bottomSection[description]",
-      data.bottomSection.description
-    );
-    formData.append(
-      "bottomSection[greenButton]",
-      data.bottomSection.greenButton
-    );
-    formData.append(
-      "bottomSection[whiteButton]",
-      data.bottomSection.whiteButton
-    );
+    formData.append("bottomSection[description]", data.bottomSection.description);
+    formData.append("bottomSection[greenButton]", data.bottomSection.greenButton);
+    formData.append("bottomSection[whiteButton]", data.bottomSection.whiteButton);
     await homeDataPostAPI(formData);
   };
   return (
@@ -112,13 +95,21 @@ const HomePageForm = () => {
                 btnName="Update"
                 type="submit"
                 btnClass="!w-auto"
+                isLoading={updateLoading}
               ></Button>
             </div>
           </div>
-          <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
-            <TopSection />
-            <MiddleSection />
-            <BottomSection />
+          <section className="h-[calc(100vh_-_200px)] w-full bg-white overflow-y-auto scroll-design p-5">
+            {!dataLoading ? (
+              <>
+                {" "}
+                <TopSection />
+                <MiddleSection />
+                <BottomSection />
+              </>
+            ) : (
+              <Loader />
+            )}
           </section>
         </form>
       </FormProvider>

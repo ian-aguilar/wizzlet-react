@@ -10,6 +10,7 @@ import Header from "@/components/common/Header";
 import { useSelector } from "react-redux";
 import { getAuth } from "@/redux/slices/authSlice";
 import { Navigate, Outlet } from "react-router-dom";
+import { Footer } from "./common/Footer";
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -32,6 +33,7 @@ export const RequiresUnAuthForCMS = () => {
         <Suspense fallback={<Loader />}>
           <Outlet />
         </Suspense>
+        <Footer />
       </>
     );
   }

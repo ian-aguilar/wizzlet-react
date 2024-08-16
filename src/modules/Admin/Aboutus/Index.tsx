@@ -20,6 +20,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AboutusValidation } from "./validation-schema/aboutUsValidation";
 import { useCreateAboutUsAPI } from "../services/cms.service";
 import { useGetAboutusAPI } from "@/modules/cms/services/cms.service";
+import { Loader } from "@/components/common/Loader";
 
 const Aboutus = () => {
   const methods = useForm<IAboutusForm>({
@@ -27,8 +28,8 @@ const Aboutus = () => {
   });
   // const methods = useForm<IAboutusForm>();
 
-  const { createAboutUsAPI } = useCreateAboutUsAPI();
-  const { getAboutusAPI } = useGetAboutusAPI();
+  const { createAboutUsAPI, isLoading: updateLoading } = useCreateAboutUsAPI();
+  const { getAboutusAPI, isLoading: dataLoading } = useGetAboutusAPI();
 
   const fetchAboutusData = async () => {
     const { data, error } = await getAboutusAPI({});
@@ -103,19 +104,30 @@ const Aboutus = () => {
                   {" "}
                   CMS Management{" "}
                 </Link>{" "}
-                / Aboutus Page{" "}
+                / About Us Page{" "}
               </span>
             </div>
             <div>
-              <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+              <Button
+                btnName="Update"
+                type="submit"
+                btnClass="!w-auto"
+                isLoading={updateLoading}
+              ></Button>
             </div>
           </div>
           <section className="h-[calc(100vh_-_200px)] w-full bg-white overflow-y-auto scroll-design p-5">
             {/* <Button btnName="Update" type="" /> */}
-            <TopSection />
-            <VisionSection />
-            <MissionSection />
-            <ServiceSection />
+            {!dataLoading ? (
+              <>
+                <TopSection />
+                <VisionSection />
+                <MissionSection />
+                <ServiceSection />
+              </>
+            ) : (
+              <Loader />
+            )}
           </section>
         </form>
       </FormProvider>

@@ -1,15 +1,15 @@
-import {Footer} from "../common/Footer";
-import {Button} from "../common/Button";
+import { Button } from "../common/Button";
 
-import {btnShowType} from "@/components/form-fields/types";
-import {useEffect, useState} from "react";
-import {IForm} from "@/modules/Admin/Faq/types";
-import {usefetchFaqAPI} from "../../Admin/Faq/services/faq.service";
+import { btnShowType } from "@/components/form-fields/types";
+import { useEffect, useState } from "react";
+import { IForm } from "@/modules/Admin/Faq/types";
+import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
+import { Loader } from "@/components/common/Loader";
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
-  const {getFaqAPI} = usefetchFaqAPI();
+  const { getFaqAPI, isLoading } = usefetchFaqAPI();
   const getFaqData = async () => {
-    const {data, error} = await getFaqAPI();
+    const { data, error } = await getFaqAPI();
     if (!error && data) {
       setFaqData(data.data);
     }
@@ -19,7 +19,7 @@ const Faqs = () => {
   }, []);
   return (
     <>
-      {faqData ? (
+      {!isLoading && faqData ? (
         <>
           <section className="bg-CMSPageTop bg-repeat-x">
             <div className="container">
@@ -92,9 +92,8 @@ const Faqs = () => {
           </section>
         </>
       ) : (
-        ""
+        <Loader />
       )}
-      <Footer />
     </>
   );
 };

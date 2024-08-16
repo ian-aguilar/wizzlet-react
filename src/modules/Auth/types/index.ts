@@ -25,11 +25,10 @@ export const PrivateRoutesPath = {
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
   cmsManagement: {
-    aboutus: "/cms-management/aboutus",
-    contactus: "/cms-management/contactus",
+    aboutus: "/cms-management/about-us",
+    contactus: "/cms-management/contact-us",
     faq: "/cms-management/faq",
     home: "/cms-management/home",
   },
   contactusManagement: { view: "/contactus-management" },
 };
-  
