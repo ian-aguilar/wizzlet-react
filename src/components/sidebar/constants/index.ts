@@ -11,7 +11,6 @@ import {
 // ** Types **
 import { sidebarList } from "../types";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
-import path from "path";
 
 export const cmsSidebarComponents = [
   {
