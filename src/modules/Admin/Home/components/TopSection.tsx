@@ -20,6 +20,7 @@ const TopSection = () => {
     setError,
     clearErrors,
     setValue,
+    watch,
   } = useFormContext<IForm>();
   const { append, remove, insert, fields } = useFieldArray({
     name: "topSection.feature",
@@ -107,6 +108,8 @@ const TopSection = () => {
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
+                    setValue={setValue}
+                    watch={watch}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">

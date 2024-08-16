@@ -1,5 +1,7 @@
 //** Packages **
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 //** Common Components **
 import Input from "@/components/form-fields/components/Input";
@@ -12,7 +14,7 @@ import { IContactusForm } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ContactusValidation } from "./validation-schema/contactUsValidationSchema";
 import { useCreateContactUsAPI } from "../services/cms.service";
-import { Link } from "react-router-dom";
+import { useGetContactusAPI } from "@/modules/cms/services/cms.service";
 
 const Contactus = () => {
   const {
@@ -25,41 +27,49 @@ const Contactus = () => {
   });
 
   const { createContactUsAPI } = useCreateContactUsAPI();
+  const { getContactusAPI } = useGetContactusAPI();
+
+  const fetchContactusData = async () => {
+    const { data, error } = await getContactusAPI();
+
+    if (data && !error) {
+      reset(data?.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchContactusData();
+  }, []);
 
   const onSubmit: SubmitHandler<IContactusForm> = async (values) => {
     const data1 = new FormData();
-    console.log(values);
     data1.append("title", values.title);
     data1.append("description", values.description);
     data1.append("greenButton", values.greenButton);
 
-    const response = await createContactUsAPI(data1);
-
-    if (response?.data && !response?.error) {
-      reset({});
-    }
+    await createContactUsAPI(data1);
   };
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-4xl font-bold ">Home Page</h2>
-          <span className="text-blackPrimary">
-            {" "}
-            <Link to="" className="text-grayText text-sm">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-4xl font-bold ">Contact Us Page</h2>
+            <span className="text-blackPrimary">
               {" "}
-              CMS Management{" "}
-            </Link>{" "}
-            / Home Page{" "}
-          </span>
+              <Link to="" className="text-grayText text-sm">
+                {" "}
+                CMS Management{" "}
+              </Link>{" "}
+              / Contact Us Page{" "}
+            </span>
+          </div>
+          <div>
+            <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+          </div>
         </div>
-        <div>
-          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
-        </div>
-      </div>
-      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
           {/* <Button btnName="Update" type="submit" /> */}
           <Input
             placeholder="Enter Title"
@@ -88,8 +98,8 @@ const Contactus = () => {
             errors={errors}
             autoComplete={""}
           />
-        </form>
-      </section>
+        </section>
+      </form>
     </>
   );
 };

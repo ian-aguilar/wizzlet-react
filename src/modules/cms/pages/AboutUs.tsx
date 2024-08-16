@@ -1,15 +1,17 @@
 // ** Packages **
 import { useEffect, useState } from "react";
-import { Footer } from "../common/Footer";
+import { useNavigate } from "react-router-dom";
 
 // ** Common **
 import Header from "@/components/common/Header";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { VITE_APP_API_URL } from "@/config";
+import { Footer } from "../common/Footer";
 
 // ** Types **
 import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
+import { RoutesPath } from "@/modules/Auth/types";
 
 // ** Services **
 import { useGetAboutusAPI } from "../services/cms.service";
@@ -18,6 +20,7 @@ const AboutUs = () => {
   const [aboutus, setAboutus] = useState<IAboutusForm>();
 
   const { getAboutusAPI } = useGetAboutusAPI();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAboutusData();
@@ -45,7 +48,8 @@ const AboutUs = () => {
             <Button
               showType={btnShowType.green}
               btnName={aboutus?.topSection.greenButton as string}
-              btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  "
+              btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 "
+              onClickHandler={() => navigate(RoutesPath.SignUp)}
             />
           </div>
           <div className="grid grid-cols-12 sm:gap-x-7 gap-y-7 mb-10  md:mb-36">
@@ -88,6 +92,7 @@ const AboutUs = () => {
               showType={btnShowType.green}
               btnName={aboutus?.visionSection.greenButton as string}
               btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
+              onClickHandler={() => navigate(RoutesPath.SignUp)}
             />
           </div>
           <div className="lg:w-[45%]">

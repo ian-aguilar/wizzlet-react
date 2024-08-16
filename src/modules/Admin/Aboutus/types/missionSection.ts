@@ -3,7 +3,3 @@ export interface IMissionSection {
   description: string;
   image: FileList | "";
 }
-
-export interface IMissionSectionProps {
-  missionSection?: IMissionSection;
-}

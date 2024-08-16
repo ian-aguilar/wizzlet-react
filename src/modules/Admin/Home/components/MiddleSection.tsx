@@ -18,8 +18,8 @@ const MiddleSection = () => {
     clearErrors,
     setError,
     setValue,
+    watch,
   } = useFormContext<IForm>();
-  console.log("IMAAAGE", getValues());
   return (
     <>
       {" "}
@@ -40,6 +40,8 @@ const MiddleSection = () => {
                 register={register}
                 setError={setError}
                 clearErrors={clearErrors}
+                setValue={setValue}
+                watch={watch}
               />
             </div>
             <div className=" col-span-6   ">

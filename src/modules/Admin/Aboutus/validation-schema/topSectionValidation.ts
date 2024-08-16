@@ -6,7 +6,6 @@ export const TopSectionValidationSchema = Yup.object().shape({
   heading: Yup.string().trim().required("Top Section Heading is required"),
   description: descriptionValidation,
   greenButton: buttonValidation,
-  whiteButton: buttonValidation,
   cards: Yup.array()
     .required()
     .of(

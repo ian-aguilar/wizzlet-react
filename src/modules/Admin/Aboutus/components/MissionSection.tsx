@@ -7,11 +7,9 @@ import Input from "@/components/form-fields/components/Input";
 // ** Types **
 import { IAboutusForm } from "../types";
 import FileField from "@/components/form-fields/components/FileField";
-import { IMissionSectionProps } from "../types/missionSection";
-import { VITE_APP_API_URL } from "@/config";
 import TextArea from "@/components/form-fields/components/TextArea";
 
-const MissionSection = ({ missionSection }: IMissionSectionProps) => {
+const MissionSection = () => {
   const {
     control,
     formState: { errors },

@@ -29,7 +29,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
   const defaultValue: any = Array.isArray(watch(name))
     ? watch(name)
-    : typeof watch(name) === "string"
+    : typeof watch(name) === "string" && watch(name).trim() !== ""
     ? [watch(name)]
     : [];
 
@@ -53,9 +53,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         filteredFiles.push(file);
       });
 
-      // console.log({ defaultValue, filteredFiles });
       if (filteredFiles.length) {
-        console.log({ name, dad: [...defaultValue, ...filteredFiles] });
         // setValue(name, ["xyz"] as any);
         setValue(name, [...defaultValue, ...filteredFiles] as any);
 
@@ -134,7 +132,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         errors={errors}
         name={name}
         render={({ message }) => (
-          <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>{message}</span>
+          <span className={`errorText-file text-red-400 text-s text-center z-[11] ${errorClass}`}>
+            {message}
+          </span>
         )}
       />
 
