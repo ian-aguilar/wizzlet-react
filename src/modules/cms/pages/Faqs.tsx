@@ -4,7 +4,6 @@ import { IForm } from "@/modules/Admin/Faq/types";
 import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
 import { Loader } from "@/components/common/Loader";
 import Button from "@/components/form-fields/components/Button";
-import { Button as Button2 } from "../common/Button";
 import { useNavigate } from "react-router-dom";
 import { RoutesPath } from "@/modules/Auth/types";
 
