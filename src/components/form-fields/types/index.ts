@@ -1,5 +1,13 @@
 import { MouseEvent, ReactNode } from "react";
-import { Control, FieldErrors, FieldValues, Path } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  FieldValues,
+  Path,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+} from "react-hook-form";
 
 export type FormControlProp<T extends FieldValues = FieldValues> = Control<T>;
 
@@ -16,6 +24,22 @@ export type IInputProps<T extends FieldValues> = {
   textLabelName?: string;
   withLabel?: boolean;
   isDisabled?: boolean;
+};
+
+export type IFileUploadProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  inputEndIcon?: ReactNode;
+  control?: FormControlProp<T>;
+  label?: string;
+  errors?: FieldErrors;
+  placeholder?: string;
+  type?: string;
+  autoComplete?: string;
+  textLabelName?: string;
+  withLabel?: boolean;
+  MainClass?: string;
+  register: UseFormRegister<T>;
 };
 
 export enum btnShowType {
@@ -66,6 +90,36 @@ export interface IOtpInputProps {
   value: string;
 }
 
+export interface FilePropsType<T extends FieldValues> {
+  id?: string;
+  errors: FieldErrors<T>;
+  value?: string;
+  control: Control<T>;
+  setValue: UseFormSetValue<T>;
+  // setValue: (name: Path<T>, attachment: any) => void;
+
+  name: any;
+  label: string;
+  register: UseFormRegister<T>;
+  maxSize?: number;
+  className?: string;
+  errorClass?: string;
+  required?: boolean;
+  disabled?: boolean;
+  allowedFormat?: string[];
+  onBlur?: () => void;
+  onFocus?: () => void;
+  setError?: (
+    name: Path<T>,
+    error: {
+      type: string;
+      message: string;
+    }
+  ) => void;
+  clearErrors?: (name: Path<T>) => void;
+  // defaultValue?: string[];
+  watch: UseFormWatch<T>;
+}
 export interface inviteModalProps {
   link: string | undefined | null;
   onClose: () => void;
@@ -74,6 +128,7 @@ export interface inviteModalProps {
 export interface errorModalProps {
   onClose: () => void;
   onSave?: () => void;
+  isLoading?: boolean;
 }
 
 export interface warningModalProps {
@@ -82,3 +137,16 @@ export interface warningModalProps {
   heading: string;
   confirmButtonText: string;
 }
+
+export type ITextAreaProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  control?: FormControlProp<T>;
+  label?: string;
+  errors?: FieldErrors;
+  placeholder?: string;
+  autoComplete?: string;
+  textLabelName?: string;
+  withLabel?: boolean;
+  isDisabled?: boolean;
+};

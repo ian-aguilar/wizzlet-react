@@ -1,9 +1,5 @@
 // ** Packages **
-import {
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -17,7 +13,12 @@ import Marketplace from "./modules/marketplace/pages/marketplace";
 import InventoryManagement from "./modules/inventory-management";
 import Dashboard from "./modules/dashboard/index-temp";
 import UserManagement from "./modules/user-management";
+import Aboutus from "./modules/Admin/Aboutus/Index";
+import Contactus from "./modules/Admin/Contactus/Index";
 import ImportProducts from "./modules/import-products";
+import ContactusManagement from "./modules/contact-us-management";
+import FaqForm from "./modules/Admin/Faq";
+import HomePageForm from "./modules/Admin/Home";
 
 // ** Types **
 export type RouteObjType = {
@@ -28,12 +29,8 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresUnAuth")
-);
-const RequiresAuth = React.lazy(
-  () => import("@/modules/dashboard/components/RequiresAuth")
-);
+const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
+const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -83,6 +80,26 @@ const RouterComponent = () => {
     {
       element: <SettingLayout />,
       children: SettingRoutes,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.aboutus,
+      element: <Aboutus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.contactus,
+      element: <Contactus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.faq,
+      element: <FaqForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.home,
+      element: <HomePageForm />,
+    },
+    {
+      path: PrivateRoutesPath.contactusManagement.view,
+      element: <ContactusManagement />,
     },
   ]);
 
