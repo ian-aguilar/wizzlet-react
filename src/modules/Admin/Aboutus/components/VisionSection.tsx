@@ -7,7 +7,7 @@ import Input from "@/components/form-fields/components/Input";
 // ** Types **
 import { IAboutusForm } from "../types";
 import FileField from "@/components/form-fields/components/FileField";
-import { TextArea } from "@/components/common/TextArea";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const VisionSection = () => {
   const {
@@ -16,6 +16,8 @@ const VisionSection = () => {
     register,
     setError,
     clearErrors,
+    setValue,
+    watch,
   } = useFormContext<IAboutusForm>();
 
   return (
@@ -36,6 +38,12 @@ const VisionSection = () => {
               register={register}
               setError={setError}
               clearErrors={clearErrors}
+              setValue={setValue}
+              // defaultValue={Array.isArray(visionSectionData?.image) ? visionSectionData.image : []}
+              watch={watch}
+              // defaultValue={[
+              //   visionSection?.image ? ((VITE_APP_API_URL + visionSection?.image) as string) : "",
+              // ]}
             />{" "}
           </div>
           <div className=" col-span-6   ">
@@ -49,15 +57,22 @@ const VisionSection = () => {
               autoComplete={""}
             />
             {/* <Input
-          placeholder="Enter Description"
-          name="visionSection.description"
-          textLabelName="Description"
-          type="text"
-          control={control}
-          errors={errors}
-          autoComplete={""}
-        /> */}
-            <TextArea textareaLabel="Description" />
+              placeholder="Enter Description"
+              name="visionSection.description"
+              textLabelName="Description"
+              type="text"
+              control={control}
+              errors={errors}
+              autoComplete={""}
+            /> */}
+            <TextArea
+              textLabelName="Description"
+              placeholder="Enter Description"
+              name="visionSection.description"
+              control={control}
+              errors={errors}
+              autoComplete={""}
+            />
             <Input
               placeholder="Enter Green Button Name"
               name="visionSection.greenButton"

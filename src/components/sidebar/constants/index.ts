@@ -2,6 +2,7 @@
 import {
   CMSMGTIcon,
   DashboardIcon,
+  HamburgerIcon,
   MarketPlaceIcon,
   SettingsIcon,
   UserMgtIcon,
@@ -55,6 +56,12 @@ export const adminSidebar = [
     navName: "User Management",
     path: PrivateRoutesPath.userManagement.view,
     key: sidebarList.user,
+  },
+  {
+    navIcon: HamburgerIcon,
+    navName: "Contactus Management",
+    path: PrivateRoutesPath.contactusManagement.view,
+    key: sidebarList.contactus,
   },
   {
     navIcon: MarketPlaceIcon,

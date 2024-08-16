@@ -6,7 +6,7 @@ import { IForm } from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import { TextArea } from "@/components/common/TextArea";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const BottomSection = () => {
   const {
@@ -41,7 +41,14 @@ const BottomSection = () => {
             control={control}
             errors={errors}
           /> */}
-          <TextArea textareaLabel="Description" />
+          <TextArea
+            textLabelName="Description"
+            placeholder="Enter Description"
+            name="bottomSection.description"
+            label="Description"
+            control={control}
+            errors={errors}
+          />
 
           <div className="grid grid-cols-12 lg:gap-4">
             <div className=" col-span-12 lg:col-span-6">

@@ -1,5 +1,7 @@
 //** Packages **
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 //** Common Components **
 import Input from "@/components/form-fields/components/Input";
@@ -12,59 +14,93 @@ import { IContactusForm } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ContactusValidation } from "./validation-schema/contactUsValidationSchema";
 import { useCreateContactUsAPI } from "../services/cms.service";
+import { useGetContactusAPI } from "@/modules/cms/services/cms.service";
 
 const Contactus = () => {
   const {
     control,
     formState: { errors },
     handleSubmit,
+    reset,
   } = useForm<IContactusForm>({
     resolver: yupResolver(ContactusValidation),
   });
 
   const { createContactUsAPI } = useCreateContactUsAPI();
+  const { getContactusAPI } = useGetContactusAPI();
+
+  const fetchContactusData = async () => {
+    const { data, error } = await getContactusAPI();
+
+    if (data && !error) {
+      reset(data?.data);
+    }
+  };
+
+  useEffect(() => {
+    fetchContactusData();
+  }, []);
 
   const onSubmit: SubmitHandler<IContactusForm> = async (values) => {
-    const data = new FormData();
+    const data1 = new FormData();
+    data1.append("title", values.title);
+    data1.append("description", values.description);
+    data1.append("greenButton", values.greenButton);
 
-    data.append("title", values.title);
-    data.append("description", values.description);
-    data.append("greenButton", values.greenButton);
-
-    await createContactUsAPI(data);
+    await createContactUsAPI(data1);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Button btnName="Update" type="submit" />
-      <Input
-        placeholder="Enter Title"
-        name="title"
-        textLabelName="Title"
-        type="text"
-        control={control}
-        errors={errors}
-        autoComplete={""}
-      />
-      <Input
-        placeholder="Enter Description"
-        name="description"
-        textLabelName="Description"
-        type="text"
-        control={control}
-        errors={errors}
-        autoComplete={""}
-      />
-      <Input
-        placeholder="Enter Green Button Name"
-        name="greenButton"
-        textLabelName="Green Button"
-        type="text"
-        control={control}
-        errors={errors}
-        autoComplete={""}
-      />
-    </form>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-4xl font-bold ">Contact Us Page</h2>
+            <span className="text-blackPrimary">
+              {" "}
+              <Link to="" className="text-grayText text-sm">
+                {" "}
+                CMS Management{" "}
+              </Link>{" "}
+              / Contact Us Page{" "}
+            </span>
+          </div>
+          <div>
+            <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+          </div>
+        </div>
+        <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
+          {/* <Button btnName="Update" type="submit" /> */}
+          <Input
+            placeholder="Enter Title"
+            name="title"
+            textLabelName="Title"
+            type="text"
+            control={control}
+            errors={errors}
+            autoComplete={""}
+          />
+          <Input
+            placeholder="Enter Description"
+            name="description"
+            textLabelName="Description"
+            type="text"
+            control={control}
+            errors={errors}
+            autoComplete={""}
+          />
+          <Input
+            placeholder="Enter Green Button Name"
+            name="greenButton"
+            textLabelName="Green Button"
+            type="text"
+            control={control}
+            errors={errors}
+            autoComplete={""}
+          />
+        </section>
+      </form>
+    </>
   );
 };
 

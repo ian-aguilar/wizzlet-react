@@ -7,6 +7,7 @@ import Input from "@/components/form-fields/components/Input";
 // ** Types **
 import { IAboutusForm } from "../types";
 import FileField from "@/components/form-fields/components/FileField";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const MissionSection = () => {
   const {
@@ -15,8 +16,9 @@ const MissionSection = () => {
     setError,
     clearErrors,
     register,
+    setValue,
+    watch,
   } = useFormContext<IAboutusForm>();
-
   return (
     <section>
       <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
@@ -35,6 +37,11 @@ const MissionSection = () => {
               register={register}
               setError={setError}
               clearErrors={clearErrors}
+              setValue={setValue}
+              // defaultValue={[
+              //   missionSection?.image ? ((VITE_APP_API_URL + missionSection?.image) as string) : "",
+              // ]}
+              watch={watch}
             />
           </div>
           <div className=" col-span-6   ">
@@ -47,11 +54,10 @@ const MissionSection = () => {
               errors={errors}
               autoComplete={""}
             />
-            <Input
+            <TextArea
               placeholder="Enter Description"
               name="missionSection.description"
               textLabelName="Description"
-              type="text"
               control={control}
               errors={errors}
               autoComplete={""}

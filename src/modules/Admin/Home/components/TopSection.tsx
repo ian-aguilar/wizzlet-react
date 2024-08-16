@@ -10,7 +10,7 @@ import { FEATURE } from "../constant";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
 import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-import { TextArea } from "@/components/common/TextArea";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
@@ -19,6 +19,8 @@ const TopSection = () => {
     register,
     setError,
     clearErrors,
+    setValue,
+    watch,
   } = useFormContext<IForm>();
   const { append, remove, insert, fields } = useFieldArray({
     name: "topSection.feature",
@@ -49,7 +51,14 @@ const TopSection = () => {
         errors={errors}
       /> */}
 
-        <TextArea textareaLabel="Description" />
+        <TextArea
+          textLabelName="Description"
+          placeholder=" Enter Description"
+          name="topSection.description"
+          label="Description"
+          control={control}
+          errors={errors}
+        />
 
         <Input
           textLabelName="SubTitle"
@@ -87,10 +96,7 @@ const TopSection = () => {
           {fields.map((field, index) => (
             <div className="col-span-12 xl:col-span-6 border p-5 relative ">
               {/* <p className="mb"> Upload Feature Image {index + 1} </p> */}
-              <div
-                key={field.id}
-                className="grid grid-cols-12 h-full w-full gap-4  "
-              >
+              <div key={field.id} className="grid grid-cols-12 h-full w-full gap-4  ">
                 <div className=" col-span-6 relative flex flex-col h-full ">
                   <FileField
                     name={`topSection.feature.${index}.image` as const}
@@ -102,6 +108,8 @@ const TopSection = () => {
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
+                    setValue={setValue}
+                    watch={watch}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">
@@ -125,7 +133,14 @@ const TopSection = () => {
                       control={control}
                       errors={errors}
                     /> */}
-                  <TextArea textareaLabel="Description" />
+                  <TextArea
+                    textLabelName="Description"
+                    placeholder="Enter description"
+                    name={`topSection.feature.${index}.description` as const}
+                    label="Description"
+                    control={control}
+                    errors={errors}
+                  />
                   <div className="absolute flex gap-2 top-2 right-2">
                     <span
                       onClick={() => fields.length > 1 && remove(index)}

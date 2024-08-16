@@ -10,8 +10,8 @@ import { aboutusCardDefaultValue } from "@/constants";
 import { useEffect } from "react";
 import FileField from "@/components/form-fields/components/FileField";
 import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-import { TextArea } from "@/components/common/TextArea";
 import Button from "@/components/form-fields/components/Button";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
@@ -20,6 +20,8 @@ const TopSection = () => {
     register,
     setError,
     clearErrors,
+    setValue,
+    watch,
   } = useFormContext<IAboutusForm>();
 
   const { fields, append, remove, insert } = useFieldArray({
@@ -48,39 +50,25 @@ const TopSection = () => {
           errors={errors}
           autoComplete={""}
         />
-        <Input
+        <TextArea
           placeholder="Enter Description"
           name="topSection.description"
           textLabelName="Description"
-          type="text"
           control={control}
           errors={errors}
           autoComplete={""}
         />
 
-        <div className="grid grid-cols-12  lg:gap-4 ">
-          <div className=" col-span-12 lg:col-span-6">
-            <Input
-              placeholder="Enter Green Button Name"
-              name="topSection.greenButton"
-              textLabelName="Green Button"
-              type="text"
-              control={control}
-              errors={errors}
-              autoComplete={""}
-            />
-          </div>
-          <div className=" col-span-12 lg:col-span-6">
-            <Input
-              placeholder="Enter White Button Name"
-              name="topSection.whiteButton"
-              textLabelName="White Button"
-              type="text"
-              control={control}
-              errors={errors}
-              autoComplete={""}
-            />
-          </div>
+        <div className=" col-span-12 lg:col-span-6">
+          <Input
+            placeholder="Enter Green Button Name"
+            name="topSection.greenButton"
+            textLabelName="Green Button"
+            type="text"
+            control={control}
+            errors={errors}
+            autoComplete={""}
+          />
         </div>
         <span
           onClick={() => {
@@ -95,11 +83,8 @@ const TopSection = () => {
         </span>
         <div className="grid grid-cols-12  w-full xl:gap-4">
           {fields.map((field, index) => (
-            <div className="col-span-12 xl:col-span-6 border p-5 relative ">
-              <div
-                key={field.id}
-                className="grid grid-cols-12 h-full w-full gap-4  "
-              >
+            <div className="col-span-12 xl:col-span-6 border p-5 relative " key={field.id}>
+              <div className="grid grid-cols-12 h-full w-full gap-4  ">
                 <div className=" col-span-6 relative flex flex-col h-full ">
                   <FileField
                     name={`topSection.cards.${index}.icon` as const}
@@ -111,6 +96,13 @@ const TopSection = () => {
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
+                    setValue={setValue}
+                    // defaultValue={[
+                    //   topSection?.cards[index].icon
+                    //     ? ((VITE_APP_API_URL + topSection?.cards[index].icon) as string)
+                    //     : "",
+                    // ]}
+                    watch={watch}
                   />
                 </div>
                 <div className=" col-span-6  flex flex-col h-full ">
@@ -132,18 +124,27 @@ const TopSection = () => {
                   errors={errors}
                   autoComplete={""}
                 /> */}
-                  <TextArea textareaLabel="Description" />
+                  <TextArea
+                    placeholder={`Enter card description`}
+                    name={`topSection.cards.${index}.description`}
+                    textLabelName={`Card description`}
+                    control={control}
+                    errors={errors}
+                    autoComplete={""}
+                  />
                 </div>
 
                 <div className="absolute flex gap-2 top-2 right-2">
-                  <span
-                    onClick={() => {
-                      remove(index);
-                    }}
-                    className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-                  >
-                    <DeleteIcon className="text-redAlert " />
-                  </span>
+                  {index > 0 && (
+                    <span
+                      onClick={() => {
+                        remove(index);
+                      }}
+                      className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+                    >
+                      <DeleteIcon className="text-redAlert " />
+                    </span>
+                  )}
                   <span
                     onClick={() => {
                       insert(index + 1, aboutusCardDefaultValue);

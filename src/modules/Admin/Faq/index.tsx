@@ -1,13 +1,13 @@
 // ** Packages **
-import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
-import {yupResolver} from "@hookform/resolvers/yup";
-import {useEffect} from "react";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 
 // ** types **
-import {IForm} from "./types";
+import { IForm } from "./types";
 
 // ** validations **
-import {validationSchema} from "./validationSchema/topSectionValidation";
+import { validationSchema } from "./validationSchema/topSectionValidation";
 
 // ** common components **
 import TopSection from "./components/TopSection";
@@ -15,20 +15,21 @@ import BottomSection from "./components/BottomSection";
 import Button from "@/components/form-fields/components/Button";
 
 // ** constant
-import {QUESTIONANSWER} from "./constant";
+import { QUESTIONANSWER } from "./constant";
 
 // ** services
-import {useFaqDataPostAPI, usefetchFaqAPI} from "./services/faq.service";
+import { useFaqDataPostAPI, usefetchFaqAPI } from "./services/faq.service";
 
 // ** helper function **
-import {appendFormData} from "./helper/helper";
+import { appendFormData } from "./helper/helper";
+import { Link } from "react-router-dom";
 
 const FaqForm = () => {
-  const {faqDataPostAPI, isLoading} = useFaqDataPostAPI();
+  const { faqDataPostAPI, isLoading } = useFaqDataPostAPI();
 
-  const {getFaqAPI} = usefetchFaqAPI();
+  const { getFaqAPI } = usefetchFaqAPI();
   const getFaqData = async () => {
-    const {data, error} = await getFaqAPI();
+    const { data, error } = await getFaqAPI();
     if (!error && data) {
       methods.reset(data.data);
     }
@@ -52,13 +53,32 @@ const FaqForm = () => {
     await faqDataPostAPI(formData);
   };
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <TopSection />
-        <BottomSection />
-        <Button btnName={"submit"} type="submit" isLoading={isLoading}></Button>
-      </form>
-    </FormProvider>
+    <>
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-4xl font-bold ">FAQ's Page</h2>
+          <span className="text-blackPrimary">
+            {" "}
+            <Link to="" className="text-grayText text-sm">
+              {" "}
+              CMS Management{" "}
+            </Link>{" "}
+            / Faq{" "}
+          </span>
+        </div>
+        <div>
+          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
+        </div>
+      </div>
+      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <TopSection />
+            <BottomSection />
+          </form>
+        </FormProvider>
+      </section>
+    </>
   );
 };
 export default FaqForm;
