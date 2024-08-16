@@ -16,8 +16,6 @@ export const createimageValidation = () => {
     return Yup
         .mixed<FileList | string>()
         .required("image is required").test("required", "you nedd  to provide file ", (value) => {
-            console.log(value);
-
             if (value.length > 0) {
                 return true
             }

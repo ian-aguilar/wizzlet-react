@@ -51,7 +51,7 @@ const BottomSection = () => {
             </div>
             <div className=" col-span-12 lg:col-span-6">
               <Input
-                textLabelName="whiteButton content"
+                textLabelName="White Button"
                 placeholder="Enter WhiteButton Name"
                 name="bottomSection.whiteButton"
                 type="text"
