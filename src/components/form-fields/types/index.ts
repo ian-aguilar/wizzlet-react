@@ -1,4 +1,3 @@
-import { ATTACHMENT_FILE_TYPES } from "@/constants";
 import { MouseEvent, ReactNode } from "react";
 import {
   Control,

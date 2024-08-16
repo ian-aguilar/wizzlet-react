@@ -1,5 +1,7 @@
 // ** Packages **
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 // ** Section Components **
 import TopSection from "./components/TopSection";
@@ -17,17 +19,13 @@ import { IAboutusForm } from "./types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AboutusValidation } from "./validation-schema/aboutUsValidation";
 import { useCreateAboutUsAPI } from "../services/cms.service";
-import { Link } from "react-router-dom";
 import { useGetAboutusAPI } from "@/modules/cms/services/cms.service";
-import { useEffect, useState } from "react";
 
 const Aboutus = () => {
   const methods = useForm<IAboutusForm>({
     resolver: yupResolver(AboutusValidation),
   });
   // const methods = useForm<IAboutusForm>();
-
-  const [aboutus, setAboutus] = useState<IAboutusForm>();
 
   const { createAboutUsAPI } = useCreateAboutUsAPI();
   const { getAboutusAPI } = useGetAboutusAPI();
@@ -36,13 +34,7 @@ const Aboutus = () => {
     const { data, error } = await getAboutusAPI({});
 
     if (!error && data) {
-      setAboutus(data?.data);
-
-      const temp = {
-        ...data.data,
-      };
-
-      methods.reset(temp);
+      methods.reset(data?.data);
     }
   };
 
@@ -50,15 +42,11 @@ const Aboutus = () => {
     fetchAboutusData();
   }, []);
 
-  // console.log(methods.getValues());
-
   const onSubmit: SubmitHandler<IAboutusForm> = async (values) => {
     const data = new FormData();
-    console.log("Valuesssss", values);
     data.append("topSection[heading]", values["topSection"].heading);
     data.append("topSection[description]", values["topSection"].description);
     data.append("topSection[greenButton]", values["topSection"].greenButton);
-    data.append("topSection[whiteButton]", values["topSection"].whiteButton);
 
     values.topSection.cards?.forEach((value, index) => {
       data.append(`topSection[cards][${index}][title]`, value.title);
@@ -78,18 +66,25 @@ const Aboutus = () => {
     } else {
       data.append("visionSection[image]", values["visionSection"]["image"][0]);
     }
-    data.append("visionSection[image]", values["visionSection"]["image"][0]);
 
     data.append("missionSection[title]", values["missionSection"].title);
     data.append("missionSection[description]", values["missionSection"].description);
-    data.append("missionSection[image]", values["missionSection"]["image"][0]);
+    if (typeof values["missionSection"]["image"] == "string") {
+      data.append("missionSection[image]", values["missionSection"]["image"]);
+    } else {
+      data.append("missionSection[image]", values["missionSection"]["image"][0]);
+    }
 
     data.append("serviceSection[title]", values["serviceSection"].title);
     data.append("serviceSection[description]", values["serviceSection"].description);
     values.serviceSection.cards?.forEach((value, index) => {
       data.append(`serviceSection[cards][${index}][title]`, value.title);
       data.append(`serviceSection[cards][${index}][description]`, value.description);
-      data.append(`serviceSection[cards][${index}][icon]`, value.icon[0]);
+      if (typeof value.icon == "string") {
+        data.append(`serviceSection[cards][${index}][icon]`, value.icon);
+      } else {
+        data.append(`serviceSection[cards][${index}][icon]`, value.icon[0]);
+      }
     });
 
     await createAboutUsAPI(data);
@@ -115,12 +110,12 @@ const Aboutus = () => {
               <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
             </div>
           </div>
-          <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
+          <section className="h-[calc(100vh_-_200px)] w-full bg-white overflow-y-auto scroll-design p-5">
             {/* <Button btnName="Update" type="" /> */}
-            <TopSection topSection={aboutus?.topSection} />
-            <VisionSection visionSection={aboutus?.visionSection} />
-            <MissionSection missionSection={aboutus?.missionSection} />
-            <ServiceSection serviceSection={aboutus?.serviceSection} />
+            <TopSection />
+            <VisionSection />
+            <MissionSection />
+            <ServiceSection />
           </section>
         </form>
       </FormProvider>

@@ -11,11 +11,9 @@ import { useEffect } from "react";
 import FileField from "@/components/form-fields/components/FileField";
 import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
-import { ITopSectionProps } from "../types/topSection";
 import TextArea from "@/components/form-fields/components/TextArea";
-import { VITE_APP_API_URL } from "@/config";
 
-const TopSection = ({ topSection }: ITopSectionProps) => {
+const TopSection = () => {
   const {
     control,
     formState: { errors },
@@ -61,29 +59,16 @@ const TopSection = ({ topSection }: ITopSectionProps) => {
           autoComplete={""}
         />
 
-        <div className="grid grid-cols-12  lg:gap-4 ">
-          <div className=" col-span-12 lg:col-span-6">
-            <Input
-              placeholder="Enter Green Button Name"
-              name="topSection.greenButton"
-              textLabelName="Green Button"
-              type="text"
-              control={control}
-              errors={errors}
-              autoComplete={""}
-            />
-          </div>
-          <div className=" col-span-12 lg:col-span-6">
-            <Input
-              placeholder="Enter White Button Name"
-              name="topSection.whiteButton"
-              textLabelName="White Button"
-              type="text"
-              control={control}
-              errors={errors}
-              autoComplete={""}
-            />
-          </div>
+        <div className=" col-span-12 lg:col-span-6">
+          <Input
+            placeholder="Enter Green Button Name"
+            name="topSection.greenButton"
+            textLabelName="Green Button"
+            type="text"
+            control={control}
+            errors={errors}
+            autoComplete={""}
+          />
         </div>
         <span
           onClick={() => {

@@ -3,13 +3,13 @@ import RouterComponent from "@/router";
 import useAuthGuard from "./hooks/useAuthGuard";
 
 function App() {
-  const { isLoading, isAuthInitialized } = useAuthGuard();
+  const { isLoading } = useAuthGuard();
 
   return (
     // <>
     //   <RouterComponent />
     // </>
-    <>{isLoading || !isAuthInitialized ? "Loading" : <RouterComponent />}</>
+    <>{isLoading ? "Loading" : <RouterComponent />}</>
   );
 }
 

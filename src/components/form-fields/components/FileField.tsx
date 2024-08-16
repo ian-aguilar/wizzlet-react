@@ -3,8 +3,8 @@ import {Controller, FieldValues} from "react-hook-form";
 import {ErrorMessage} from "@hookform/error-message";
 // ** Helper Functions and Types **
 import {FilePropsType} from "../types";
-import {checkFileFormat, fileSizeGenerator} from "@/utils";
-import {CameraBgIcon, CloseIconSvg} from "@/assets/Svg";
+import {checkFileFormat} from "@/utils";
+import {CameraBgIcon} from "@/assets/Svg";
 import {VITE_APP_API_URL} from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
@@ -29,7 +29,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
   const defaultValue: any = Array.isArray(watch(name))
     ? watch(name)
-    : typeof watch(name) === "string"
+    : typeof watch(name) === "string" && watch(name).trim() !== ""
     ? [watch(name)]
     : [];
 
@@ -53,7 +53,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         filteredFiles.push(file);
       });
 
-      // console.log({ defaultValue, filteredFiles });
       if (filteredFiles.length) {
         console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
@@ -139,9 +138,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         errors={errors}
         name={name}
         render={({message}) => (
-          <span
-            className={`errorText-file text-red-400 text-s z-[11] ${errorClass}`}
-          >
+          <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
           </span>
         )}

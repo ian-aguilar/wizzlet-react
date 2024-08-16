@@ -8,6 +8,7 @@ import {
 // ** Types **
 import { PrivateRoutesPath } from "@/modules/Auth/types";
 import { SettingSidebarEnum } from "../pages/sidebar";
+import { UserRole } from "@/redux/slices/userSlice";
 
 export const settingsNav = [
   {
@@ -21,6 +22,7 @@ export const settingsNav = [
     navText: "Label Manager",
     path: PrivateRoutesPath.setting.labelManager.view,
     name: SettingSidebarEnum.LabelManager,
+    role: UserRole.USER,
   },
   {
     navIcon: SettingsPWDIcon,

@@ -1,15 +1,15 @@
 // ** Packages **
 import { useEffect, useState } from "react";
-import { Footer } from "../common/Footer";
+import { useNavigate } from "react-router-dom";
 
-// ** Common **
-import Header from "@/components/common/Header";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { VITE_APP_API_URL } from "@/config";
+import { Footer } from "../common/Footer";
 
 // ** Types **
 import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
+import { RoutesPath } from "@/modules/Auth/types";
 
 // ** Services **
 import { useGetAboutusAPI } from "../services/cms.service";
@@ -18,6 +18,7 @@ const AboutUs = () => {
   const [aboutus, setAboutus] = useState<IAboutusForm>();
 
   const { getAboutusAPI } = useGetAboutusAPI();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchAboutusData();
@@ -34,18 +35,20 @@ const AboutUs = () => {
 
   return (
     <>
-      <Header type="cms" />
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-20 text-center">
-            <h1 className=" text-5xl md:text-6xl font-bold">{aboutus?.topSection.heading}</h1>
+            <h1 className=" text-5xl md:text-6xl font-bold">
+              {aboutus?.topSection.heading}
+            </h1>
             <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
               {aboutus?.topSection.description}
             </p>
             <Button
               showType={btnShowType.green}
               btnName={aboutus?.topSection.greenButton as string}
-              btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16  "
+              btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 "
+              onClickHandler={() => navigate(RoutesPath.SignUp)}
             />
           </div>
           <div className="grid grid-cols-12 sm:gap-x-7 gap-y-7 mb-10  md:mb-36">
@@ -66,7 +69,9 @@ const AboutUs = () => {
                     <h3 className="font-semibold text-[26px] text-blackPrimary mb-2">
                       {data.title}
                     </h3>
-                    <p className="font-normal text-xl text-grayText ">{data.description}</p>
+                    <p className="font-normal text-xl text-grayText ">
+                      {data.description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -88,12 +93,15 @@ const AboutUs = () => {
               showType={btnShowType.green}
               btnName={aboutus?.visionSection.greenButton as string}
               btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
+              onClickHandler={() => navigate(RoutesPath.SignUp)}
             />
           </div>
           <div className="lg:w-[45%]">
             <div className="relative z-10 before:z-0 before:absolute  before:w-full  before:h-full  before:right-[-7px] before:bottom-[-7px]  before:bg-greenPrimary  before:rounded-md ">
               <img
-                src={(VITE_APP_API_URL + aboutus?.visionSection.image) as string}
+                src={
+                  (VITE_APP_API_URL + aboutus?.visionSection.image) as string
+                }
                 className="w-full h-auto rounded-md relative z-10"
                 alt=""
               />
@@ -145,7 +153,9 @@ const AboutUs = () => {
                 <h3 className="font-bold text-[22px] text-blackPrimary pt-5 line-clamp-1">
                   {data.title}
                 </h3>
-                <p className="text-grayText mb-11 pt-2 line-clamp-3 ">{data.description}</p>
+                <p className="text-grayText mb-11 pt-2 line-clamp-3 ">
+                  {data.description}
+                </p>
                 {/* <Link
                   to=""
                   className="  group font-bold text-lg text-greenPrimary gap-2 inline-flex hover:brightness-110 transition-all duration-300 hover:transition-all hover:duration-300 items-center mt-auto  "

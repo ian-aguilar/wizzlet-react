@@ -71,7 +71,6 @@ export const useAxiosPost = (): [
       setIsSuccess(false);
       setIsLoading(true);
       setIsError(false);
-      console.log("DAAAATA", data);
       const response = await Axios.post(url, data, { ...config });
       setIsLoading(false);
       setIsSuccess(true);

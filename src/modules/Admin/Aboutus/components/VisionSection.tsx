@@ -8,10 +8,8 @@ import Input from "@/components/form-fields/components/Input";
 import { IAboutusForm } from "../types";
 import FileField from "@/components/form-fields/components/FileField";
 import TextArea from "@/components/form-fields/components/TextArea";
-import { IVisionSectionProps } from "../types/visionSection";
-import { VITE_APP_API_URL } from "@/config";
 
-const VisionSection = ({ visionSection }: IVisionSectionProps) => {
+const VisionSection = () => {
   const {
     control,
     formState: { errors },
@@ -21,15 +19,6 @@ const VisionSection = ({ visionSection }: IVisionSectionProps) => {
     setValue,
     watch,
   } = useFormContext<IAboutusForm>();
-
-  const visionSectionData = watch("visionSection");
-
-  // console.log(
-  //   "VISSSIONNN",
-  //   visionSection?.image ? ((VITE_APP_API_URL + visionSection?.image) as string) : ""
-  // );
-
-  console.log(visionSectionData?.image, "visionSectionData?.image>>>>>>>>");
 
   return (
     <section>

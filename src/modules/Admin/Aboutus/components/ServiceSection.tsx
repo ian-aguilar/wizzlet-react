@@ -12,10 +12,8 @@ import FileField from "@/components/form-fields/components/FileField";
 import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
 import TextArea from "@/components/form-fields/components/TextArea";
-import { IServiceSectionProps } from "../types/serviceSection";
-import { VITE_APP_API_URL } from "@/config";
 
-const ServiceSection = ({ serviceSection }: IServiceSectionProps) => {
+const ServiceSection = () => {
   const {
     control,
     formState: { errors },
@@ -126,14 +124,16 @@ const ServiceSection = ({ serviceSection }: IServiceSectionProps) => {
                 </div>
 
                 <div className="absolute flex gap-2 top-2 right-2">
-                  <span
-                    onClick={() => {
-                      remove(index);
-                    }}
-                    className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-                  >
-                    <DeleteIcon className="text-redAlert " />
-                  </span>
+                  {index > 0 && (
+                    <span
+                      onClick={() => {
+                        remove(index);
+                      }}
+                      className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+                    >
+                      <DeleteIcon className="text-redAlert " />
+                    </span>
+                  )}
                   <span
                     onClick={() => {
                       insert(index + 1, aboutusCardDefaultValue);

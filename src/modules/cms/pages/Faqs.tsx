@@ -1,4 +1,3 @@
-import Header from "@/components/common/Header";
 import {Footer} from "../common/Footer";
 import {Button} from "../common/Button";
 
@@ -20,7 +19,6 @@ const Faqs = () => {
   }, []);
   return (
     <>
-      <Header type="cms" />
       {faqData ? (
         <>
           <section className="bg-CMSPageTop bg-repeat-x">
