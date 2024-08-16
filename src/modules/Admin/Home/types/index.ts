@@ -7,14 +7,14 @@ export interface ITopSectionForm {
     feature: {
         title: string,
         description: string,
-        image: Object
+        image: FileList | string
     }[]
 }
 
 export interface IMiddleSection {
     title: string,
     description: string,
-    image: Object,
+    image: FileList | string,
 }
 export interface IBottomSectionForm {
     title: string,

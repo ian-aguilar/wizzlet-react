@@ -1,8 +1,8 @@
 // ** Packages **
-import { useFormContext } from "react-hook-form";
+import {useFormContext} from "react-hook-form";
 
 // ** types **
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
@@ -12,13 +12,14 @@ import TextArea from "@/components/form-fields/components/TextArea";
 const MiddleSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
     register,
     clearErrors,
     setError,
     setValue,
     watch,
   } = useFormContext<IForm>();
+
   return (
     <>
       {" "}
@@ -30,16 +31,16 @@ const MiddleSection = () => {
           <div className="grid grid-cols-12  w-full  gap-4  p-4">
             <div className=" col-span-6    relative     ">
               <FileField
-                name={`middleSection.image` as const}
+                name={`middleSection.image`}
                 label="Upload"
                 control={control}
                 errors={errors}
-                maxSize={1}
+                maxSize={8}
                 allowedFormat={["image/png", "image/jpeg"]}
                 register={register}
                 setError={setError}
-                clearErrors={clearErrors}
                 setValue={setValue}
+                clearErrors={clearErrors}
                 watch={watch}
               />
             </div>
@@ -53,21 +54,13 @@ const MiddleSection = () => {
                 control={control}
                 errors={errors}
               />
-              {/* <Input
-            textLabelName="Description"
-            placeholder=" Enter Description"
-            name="middleSection.description"
-            label="Description"
-            type="text"
-            control={control}
-            errors={errors}
-          /> */}
 
               <TextArea
                 textLabelName="Description"
                 placeholder=" Enter Description"
                 name="middleSection.description"
                 label="Description"
+                type="text"
                 control={control}
                 errors={errors}
               />

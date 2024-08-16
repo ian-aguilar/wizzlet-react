@@ -12,55 +12,34 @@ export const descriptionValidation = Yup.string()
 
 export const buttonValidation = Yup.string().trim().required("Text required")
 
-// Yup
-//     .mixed()
-//     .required().
-//     test("required", "image is required", (file) => {
-//         if ((file as FileList).length > 0) {
-//             return true;
-//         }
-//         return false
-//     })
-//     .test("fileFormat", "Unsupported Format", (value) => {
-//         const file = value as FileList
-//         return (
-//             file as FileList && file[0] as FileList[0] && ["image/jpeg", "image/png"].includes(file[0].type)
-//         );
-//     })
-//     .test("fileSize", "The file is too large", (value) => {
-//         const file = value as FileList
-//         return file && file[0] && file[0].size <= 1024 * 1024 * 1;
-//     })
-
-
-export const createimageValidation = (limit: number) => {
+export const createimageValidation = () => {
     return Yup
-        .mixed()
-        .required().
-        test("required", "image is required", (file) => {
-            if ((file as FileList).length > 0) {
-                return true;
+        .mixed<FileList | string>()
+        .required("image is required").test("required", "you nedd  to provide file ", (value) => {
+            console.log(value);
+
+            if (value.length > 0) {
+                return true
             }
             return false
-        })
-        .test("fileFormat", "Unsupported Format", (value) => {
-            console.log(value, "valuyeeeeeeeeee");
 
+        })
+        .test("fileFormat", "Only image/png, image/jpeg formats are allowed", (value) => {
+            if (typeof value == "string") {
+                return true
+            }
             const file = value as FileList
             return (
-                file as FileList && file[0] as FileList[0] && ["image/jpeg", "image/png", "image/jpg"].includes(file[0].type)
+                file as FileList && file[0] as FileList[0] && ["image/png", "image/jpeg"].includes(file[0].type)
             );
         })
-        .test("fileSize", "The file is too large", (value) => {
+        .test("fileSize", "File size is too large, it must be less than 8 MB.", (value) => {
+            if (typeof value == "string") {
+                return true
+            }
             const file = value as FileList
-            return file && file[0] && file[0].size <= 1024 * 1024 * limit;
+            return file && file[0] && file[0].size <= 1024 * 1024 * 8;
         })
-}
-// export const imageValidation = createimageValidation(4)
 
-// Yup.mixed()
-// .required()
-// .test("required", "You need to provide a file", (file) => {
-//   if ((file as FileList).length > 0) return true;
-//   return false;
-// });
+
+}

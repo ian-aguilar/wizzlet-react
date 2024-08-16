@@ -1,24 +1,24 @@
 // ** Packages **
-import { useFieldArray, useFormContext } from "react-hook-form";
+import {useFieldArray, useFormContext} from "react-hook-form";
 
 // ** types **
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
 
 // ** constants **
-import { QUESTIONANSWER } from "../constant";
-import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
+import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
+import {QUESTIONANSWER} from "../constant";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
   } = useFormContext<IForm>();
-  const { fields, append, remove, insert } = useFieldArray({
+  const {fields, append, remove, insert} = useFieldArray({
     control,
     name: "topSection.row",
   });
@@ -38,15 +38,6 @@ const TopSection = () => {
           control={control}
           errors={errors}
         />
-        {/* <Input
-          textLabelName="Description"
-          placeholder=" Enter Description"
-          name="topSection.description"
-          label="Description"
-          type="text"
-          control={control}
-          errors={errors}
-        /> */}
         <TextArea
           textLabelName="Description"
           placeholder=" Enter Description"
@@ -73,7 +64,6 @@ const TopSection = () => {
         </span>
         {fields.map((field, index) => (
           <div key={field.id} className=" grid grid-cols-12  gap-x-4 ">
-            {/* <p className="me-4">{index + 1}</p> */}
             <div className=" col-span-12 lg:col-span-3">
               <Input
                 textLabelName="Question"

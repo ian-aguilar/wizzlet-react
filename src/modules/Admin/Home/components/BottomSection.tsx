@@ -1,8 +1,8 @@
 // ** Packages **
-import { useFormContext } from "react-hook-form";
+import {useFormContext} from "react-hook-form";
 
 // ** types **
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
@@ -11,7 +11,7 @@ import TextArea from "@/components/form-fields/components/TextArea";
 const BottomSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
   } = useFormContext<IForm>();
 
   return (
@@ -31,16 +31,6 @@ const BottomSection = () => {
             control={control}
             errors={errors}
           />
-
-          {/* <Input
-            textLabelName="Description"
-            placeholder="Enter Description"
-            name="bottomSection.description"
-            label="Description"
-            type="text"
-            control={control}
-            errors={errors}
-          /> */}
           <TextArea
             textLabelName="Description"
             placeholder="Enter Description"

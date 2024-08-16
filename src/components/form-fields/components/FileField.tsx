@@ -1,11 +1,11 @@
 // import { useEffect, useState } from "react";
-import { Controller, FieldValues } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
+import {Controller, FieldValues} from "react-hook-form";
+import {ErrorMessage} from "@hookform/error-message";
 // ** Helper Functions and Types **
-import { FilePropsType } from "../types";
-import { checkFileFormat } from "@/utils";
-import { CameraBgIcon } from "@/assets/Svg";
-import { VITE_APP_API_URL } from "@/config";
+import {FilePropsType} from "../types";
+import {checkFileFormat} from "@/utils";
+import {CameraBgIcon} from "@/assets/Svg";
+import {VITE_APP_API_URL} from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   const {
@@ -54,6 +54,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       });
 
       if (filteredFiles.length) {
+        console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
         setValue(name, [...defaultValue, ...filteredFiles] as any);
 
@@ -65,12 +66,13 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
           type: "custom",
           message: errorMsgArr.join(", "),
         });
-      }
-      if (largeErrorMsgArr.length && setError) {
+      } else if (largeErrorMsgArr.length && setError) {
         setError(name, {
           type: "custom",
           message: `File size is too large, it must be less than ${maxSize} MB.`,
         });
+      } else {
+        clearErrors?.(name);
       }
     }
     e.target.value = "";
@@ -92,7 +94,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               <Controller
                 name={name}
                 control={control}
-                render={({ field: { name: fieldName } }) => (
+                render={({field: {name: fieldName}}) => (
                   <input
                     id={id}
                     multiple
@@ -135,17 +137,15 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({ message }) => (
-          <span
-            className={`errorText-file text-red-400 text-s text-center z-[11] ${errorClass}`}
-          >
+        render={({message}) => (
+          <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
           </span>
         )}
       />
 
       <div
-        className={`attachments__up__wrapper p-6 absolute w-full h-full ${
+        className={`attachments__up__wrapper p-6 absolute w-full h-full relative ${
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
         } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
       >
@@ -154,10 +154,10 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
           return (
             <div
-              className="attachments__box flex items-center mb-[10px] last:mb-0"
+              className="attachments__box flex flex-col h-[95%] "
               key={`url-${index}`}
             >
-              <div className="attachments__details flex items-center">
+              <div className="attachments__details flex items-center h-full">
                 <img
                   src={
                     isUrl
@@ -165,7 +165,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                       : URL.createObjectURL(value)
                   }
                   alt={`attachment-url-${index + 1}`}
-                  className="attachment-img"
+                  className="attachment-img !w-auto !max-h-full object-contain mx-auto"
                 />
               </div>
 
@@ -175,7 +175,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 </span>
               </div>
               <button
-                className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
+                className="action__btn__SD absolute top-3 right-3 block z-10 "
                 name="Delete"
                 title="Delete"
                 onClick={() => deleteAttachment(index)}
