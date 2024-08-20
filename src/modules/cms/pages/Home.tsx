@@ -1,15 +1,12 @@
-import Header from "@/components/common/Header";
-import { Footer } from "../common/Footer";
 import { Button } from "../common/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Link } from "react-router-dom";
-import { RightArrowGreen, RightArrowLongIcon, RightIcon } from "@/assets/Svg";
+import { RightArrowLongIcon } from "@/assets/Svg";
 import worksImg from "/images/howWorks.png";
 import ImportImg from "/images/ImportExport_img.png";
 import InventoryImg from "/images/InventoryMgt_img.png";
 import UsersImg from "/images/UserFriendly_img.png";
 import IntegrationImg from "/images/integrationImg.png";
-import ModalNav from "../common/ModalNav";
 
 const CMSHome = () => {
   return (
