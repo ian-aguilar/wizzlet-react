@@ -1,20 +1,27 @@
-import { btnShowType } from "@/components/form-fields/types";
-import { useEffect, useState } from "react";
-import { IForm } from "@/modules/Admin/Faq/types";
-import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
-import { Loader } from "@/components/common/Loader";
+// ** Packages **
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+
+// ** Types **
+import {IForm} from "@/modules/Admin/Faq/types";
+import {btnShowType} from "@/components/form-fields/types";
+import {RoutesPath} from "@/modules/Auth/types";
+
+// **common components
 import Button from "@/components/form-fields/components/Button";
-import { useNavigate } from "react-router-dom";
-import { RoutesPath } from "@/modules/Auth/types";
+import {Loader} from "@/components/common/Loader";
+
+// ** Services **
+import {usefetchFaqAPI} from "../../Admin/Faq/services/faq.service";
 
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
 
   const navigate = useNavigate();
 
-  const { getFaqAPI, isLoading } = usefetchFaqAPI();
+  const {getFaqAPI, isLoading} = usefetchFaqAPI();
   const getFaqData = async () => {
-    const { data, error } = await getFaqAPI();
+    const {data, error} = await getFaqAPI();
     if (!error && data) {
       setFaqData(data.data);
     }
@@ -30,12 +37,9 @@ const Faqs = () => {
             <div className="container">
               <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-40 text-center">
                 <h1 className=" text-5xl md:text-6xl font-bold">
-                  {/* Frequently asked questions */}
                   {faqData.topSection.title}
                 </h1>
                 <p className=" font-normal text-xl text-grayText  px-2 sm:px-4 lg:px-40  pt-6">
-                  {/* Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua. */}
                   {faqData.topSection.description}
                 </p>
               </div>
@@ -67,14 +71,9 @@ const Faqs = () => {
             <div className="container">
               <div className="bg-CMSPageTile rounded-2xl sm:px-10 lg:px-56  py-7 lg:py-20 text-center border border-greyBorder/50 ">
                 <h2 className=" text-5xl md:text-[56px] font-bold text-blackPrimary leading-tight ">
-                  {/* Take Control of Your Inventory Today */}
                   {faqData.bottomSection.title}
                 </h2>
                 <p className="  px-7 md:px-20 text-grayText text-xl font-normal pt-6 ">
-                  {/* Experience the efficiency and precision of our inventory
-                  management solution. Join thousands of satisfied customers who
-                  have transformed their business operations with our intuitive,
-                  powerful, and integrated system. */}
                   {faqData.bottomSection.description}
                 </p>
                 <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
@@ -84,17 +83,6 @@ const Faqs = () => {
                     btnClass="border-greenPrimary bg-greenPrimary text-white"
                     onClickHandler={() => navigate(RoutesPath.SignUp)}
                   />
-                  {/* <Button2
-                    showType={btnShowType.green}
-                    btnName={faqData.bottomSection.greenButton}
-                    btnClass="border-greenPrimary bg-greenPrimary text-white"
-                  /> */}
-                  {/* <Button
-                    showType={btnShowType.green}
-                    btnClass=" border-greyBorder bg-white  text-blackPrimary  "
-                    // btnName="Book a demo"
-                    btnName={faqData.bottomSection.whiteButton}
-                  /> */}
                 </div>
               </div>
             </div>

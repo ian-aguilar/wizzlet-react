@@ -3,7 +3,7 @@ import { AxiosRequestConfig } from "axios";
 
 const API_BASE_PATH = "/cms";
 
-//  ** Get All Marketplace Listing **
+//  ** Get All home page data  **
 export const usefetchHomeAPI = () => {
     // ** custom Hooks **
     const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();

@@ -1,16 +1,18 @@
 // ** Packages **
 import {useFieldArray, useFormContext} from "react-hook-form";
 
-// ** common components **
-import Input from "@/components/form-fields/components/Input";
+// **types
 import {IForm} from "../types";
 
-// ** constants **
-import {FEATURE} from "../constant";
+// ** common components **
+import Input from "@/components/form-fields/components/Input";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
 import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
 import TextArea from "@/components/form-fields/components/TextArea";
+
+// **constant
+import {FEATURE} from "../constant";
 
 const TopSection = () => {
   const {
@@ -48,7 +50,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="Sub Title"
+          textLabelName="Subtitle"
           placeholder=" Enter subtitle"
           name="topSection.subtitle"
           type="text"
@@ -103,7 +105,7 @@ const TopSection = () => {
                   <Input
                     textLabelName="Heading"
                     placeholder="Enter title"
-                    name={`topSection.feature.${index}.title` as const}
+                    name={`topSection.feature.${index}.title`}
                     type="text"
                     control={control}
                     errors={errors}
@@ -111,14 +113,14 @@ const TopSection = () => {
                   <TextArea
                     textLabelName="Description"
                     placeholder="Enter description"
-                    name={`topSection.feature.${index}.description` as const}
+                    name={`topSection.feature.${index}.description`}
                     control={control}
                     errors={errors}
                   />
                   <div className="absolute flex gap-2 top-2 right-2">
-                    {index >= 1 && (
+                    {fields.length > 1 && (
                       <span
-                        onClick={() => fields.length > 1 && remove(index)}
+                        onClick={() => remove(index)}
                         className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
                       >
                         <DeleteIcon className="text-redAlert " />
