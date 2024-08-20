@@ -6,12 +6,12 @@ import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
+import Button from "@/components/form-fields/components/Button";
+import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 // ** constants **
-import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
-import Button from "@/components/form-fields/components/Button";
 import {QUESTIONANSWER} from "../constant";
-import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {

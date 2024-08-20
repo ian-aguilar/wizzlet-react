@@ -46,7 +46,7 @@ const CMSHome = () => {
                   className="text-xl inline-flex gap-4 py-4 px-5 border border-dashed border-[#7062FE]/80 bg-[#7062FE]/5 rounded-md mb-8 items-center"
                   to=""
                 >
-                  Importme’s New Features are Coming. Click here to know more{" "}
+                  {homeData.topSection.subtitle}
                   <RightArrowLongIcon className="!text-black w-5 min-w-5" />
                 </Link>
 
@@ -58,9 +58,7 @@ const CMSHome = () => {
                 </p>
                 <Button
                   showType={btnShowType.greenRound}
-                  onClickHandler={() => {
-                    navigate(RoutesPath.SignUp);
-                  }}
+                  onClickHandler={() => navigate(RoutesPath.SignUp)}
                   btnName={homeData.topSection.greenButton}
                   btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto  "
                 />
@@ -104,6 +102,7 @@ const CMSHome = () => {
                   {homeData.middleSection.title}
                 </h2>
                 <p className="text-grayText text-xl font-normal">
+                  {" "}
                   {homeData.middleSection.description}
                 </p>
               </div>
@@ -131,9 +130,7 @@ const CMSHome = () => {
                     showType={btnShowType.greenRound}
                     btnClass=" border-greenPrimary bg-greenPrimary text-white "
                     btnName={homeData.bottomSection.greenButton}
-                    onClickHandler={() => {
-                      navigate(RoutesPath.SignUp);
-                    }}
+                    onClickHandler={() => navigate(RoutesPath.SignUp)}
                   />
                 </div>
               </div>

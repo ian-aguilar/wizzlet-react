@@ -1,15 +1,18 @@
 // ** Packages **
 import {useFieldArray, useFormContext} from "react-hook-form";
 
+// **types
+import {IForm} from "../types";
+
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import {IForm} from "../types";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
 import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
 import TextArea from "@/components/form-fields/components/TextArea";
-import { FEATURE } from "../constant";
 
+// **constant
+import {FEATURE} from "../constant";
 
 const TopSection = () => {
   const {
