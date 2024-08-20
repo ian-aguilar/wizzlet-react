@@ -45,7 +45,6 @@ const BottomSection = () => {
                 textLabelName="Green Button"
                 placeholder="Enter GreenButton Name"
                 name="bottomSection.greenButton"
-                label="GreenButton"
                 type="text"
                 control={control}
                 errors={errors}
@@ -56,7 +55,6 @@ const BottomSection = () => {
                 textLabelName="White Button"
                 placeholder="Enter WhiteButton Name"
                 name="bottomSection.whiteButton"
-                label="WhiteButton"
                 type="text"
                 control={control}
                 errors={errors}

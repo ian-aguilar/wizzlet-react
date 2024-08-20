@@ -33,7 +33,6 @@ const TopSection = () => {
           textLabelName="Title"
           placeholder="Enter Title"
           name="topSection.title"
-          label="Title"
           type="text"
           control={control}
           errors={errors}
@@ -42,7 +41,6 @@ const TopSection = () => {
           textLabelName="Description"
           placeholder=" Enter Description"
           name="topSection.description"
-          label="Description"
           control={control}
           errors={errors}
         />
@@ -58,7 +56,6 @@ const TopSection = () => {
           <Button
             btnClass="!w-auto mb-4"
             btnName={" Question answer"}
-            type="submit"
             BtnIconLeft={<AddIconBtn className=" inline-block mr-2  " />}
           ></Button>
         </span>
@@ -69,7 +66,6 @@ const TopSection = () => {
                 textLabelName="Question"
                 placeholder="Enter Question"
                 name={`topSection.row.${index}.question`}
-                label="Question"
                 type="text"
                 control={control}
                 errors={errors}
@@ -80,7 +76,6 @@ const TopSection = () => {
                 textLabelName="Answer"
                 placeholder="Enter description"
                 name={`topSection.row.${index}.answer`}
-                label="Answer"
                 type="text"
                 control={control}
                 errors={errors}
