@@ -151,7 +151,7 @@ const Contact = () => {
                 />
                 <div className="flex md:justify-end justify-center mt-10  md:mt-16 ">
                   <Button
-                    showType={btnShowType.green}
+                    showType={btnShowType.greenRound}
                     btnClass="bg-greenPrimary border-greenPrimary text-white"
                     btnName={contactus?.greenButton as string}
                     type="submit"

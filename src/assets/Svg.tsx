@@ -273,25 +273,23 @@ export const SettingsProfileIcon = () => {
       height="26"
       viewBox="0 0 26 26"
       fill="none"
+      stroke="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
         d="M22.8365 9.29634V16.7063C22.8365 17.9196 22.1865 19.0463 21.1357 19.6638L14.7007 23.3797C13.6498 23.9863 12.3498 23.9863 11.2882 23.3797L4.85318 19.6638C3.80234 19.0572 3.15234 17.9305 3.15234 16.7063V9.29634C3.15234 8.08301 3.80234 6.95629 4.85318 6.33879L11.2882 2.62297C12.339 2.0163 13.639 2.0163 14.7007 2.62297L21.1357 6.33879C22.1865 6.95629 22.8365 8.07217 22.8365 9.29634Z"
-        stroke="#09A17A"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M13.0007 11.9155C14.3948 11.9155 15.5249 10.7854 15.5249 9.39131C15.5249 7.99725 14.3948 6.86719 13.0007 6.86719C11.6067 6.86719 10.4766 7.99725 10.4766 9.39131C10.4766 10.7854 11.6067 11.9155 13.0007 11.9155Z"
-        stroke="#09A17A"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M17.3337 18.0472C17.3337 16.0972 15.3945 14.5156 13.0003 14.5156C10.6062 14.5156 8.66699 16.0972 8.66699 18.0472"
-        stroke="#09A17A"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -465,17 +463,14 @@ export const RightArrowWhite = ({ className }: { className?: string }) => {
 export const RightArrowGreen = ({ className }: any) => {
   return (
     <svg
-      className={`${className}`}
+      className={` text-[#09A17A] ${className}`}
       width="13"
       height="13"
       viewBox="0 0 13 13"
-      fill="none"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M5.89111 1.58203L6.49268 0.980469C6.76611 0.734375 7.17627 0.734375 7.42236 0.980469L12.7544 6.28516C13.0005 6.55859 13.0005 6.96875 12.7544 7.21484L7.42236 12.5469C7.17627 12.793 6.76611 12.793 6.49268 12.5469L5.89111 11.9453C5.64502 11.6719 5.64502 11.2617 5.89111 10.9883L9.19971 7.84375H1.35205C0.969238 7.84375 0.695801 7.57031 0.695801 7.1875V6.3125C0.695801 5.95703 0.969238 5.65625 1.35205 5.65625H9.19971L5.89111 2.53906C5.64502 2.26562 5.61768 1.85547 5.89111 1.58203Z"
-        fill="#09A17A"
-      />
+      <path d="M5.89111 1.58203L6.49268 0.980469C6.76611 0.734375 7.17627 0.734375 7.42236 0.980469L12.7544 6.28516C13.0005 6.55859 13.0005 6.96875 12.7544 7.21484L7.42236 12.5469C7.17627 12.793 6.76611 12.793 6.49268 12.5469L5.89111 11.9453C5.64502 11.6719 5.64502 11.2617 5.89111 10.9883L9.19971 7.84375H1.35205C0.969238 7.84375 0.695801 7.57031 0.695801 7.1875V6.3125C0.695801 5.95703 0.969238 5.65625 1.35205 5.65625H9.19971L5.89111 2.53906C5.64502 2.26562 5.61768 1.85547 5.89111 1.58203Z" />
     </svg>
   );
 };
@@ -1001,6 +996,34 @@ export const CameraBgIcon = ({ className }: any) => {
         d="M22 28.5C23.79 28.5 25.25 27.04 25.25 25.25C25.25 23.46 23.79 22 22 22C20.21 22 18.75 23.46 18.75 25.25C18.75 27.04 20.21 28.5 22 28.5Z"
         stroke="#09A17A"
         stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+export const RightArrowLongIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="25"
+      height="25"
+      viewBox="0 0 25 25"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M14.9297 6.42969L20.9997 12.4997L14.9297 18.5697"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 12.5H20.83"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
         stroke-linecap="round"
         stroke-linejoin="round"
       />

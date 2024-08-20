@@ -1,24 +1,24 @@
 // ** Packages **
-import {useFieldArray, useFormContext} from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** types **
-import {IForm} from "../types";
+import { IForm } from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
 
 // ** constants **
-import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
-import {QUESTIONANSWER} from "../constant";
+import { QUESTIONANSWER } from "../constant";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
   } = useFormContext<IForm>();
-  const {fields, append, remove, insert} = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "topSection.row",
   });

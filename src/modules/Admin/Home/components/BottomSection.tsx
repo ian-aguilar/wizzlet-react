@@ -1,8 +1,8 @@
 // ** Packages **
-import {useFormContext} from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 // ** types **
-import {IForm} from "../types";
+import { IForm } from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
@@ -11,7 +11,7 @@ import TextArea from "@/components/form-fields/components/TextArea";
 const BottomSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
   } = useFormContext<IForm>();
 
   return (
@@ -41,7 +41,7 @@ const BottomSection = () => {
           <div className="grid grid-cols-12 lg:gap-4">
             <div className=" col-span-12 lg:col-span-6">
               <Input
-                textLabelName="Green Button "
+                textLabelName="Green Button"
                 placeholder="Enter GreenButton Name"
                 name="bottomSection.greenButton"
                 type="text"

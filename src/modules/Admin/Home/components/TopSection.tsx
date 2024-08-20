@@ -48,7 +48,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="Subtitle"
+          textLabelName="Sub Title"
           placeholder=" Enter subtitle"
           name="topSection.subtitle"
           type="text"
@@ -56,7 +56,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="Green Button "
+          textLabelName="Green Button"
           placeholder="Enter GreenButton Name"
           name="topSection.greenButton"
           type="text"
@@ -103,7 +103,7 @@ const TopSection = () => {
                   <Input
                     textLabelName="Heading"
                     placeholder="Enter title"
-                    name={`topSection.feature.${index}.title`}
+                    name={`topSection.feature.${index}.title` as const}
                     type="text"
                     control={control}
                     errors={errors}
@@ -111,7 +111,7 @@ const TopSection = () => {
                   <TextArea
                     textLabelName="Description"
                     placeholder="Enter description"
-                    name={`topSection.feature.${index}.description`}
+                    name={`topSection.feature.${index}.description` as const}
                     control={control}
                     errors={errors}
                   />

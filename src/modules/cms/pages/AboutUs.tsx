@@ -47,9 +47,9 @@ const AboutUs = () => {
                   {aboutus?.topSection.description}
                 </p>
                 <Button
-                  showType={btnShowType.green}
+                  showType={btnShowType.greenRound}
                   btnName={aboutus?.topSection.greenButton as string}
-                  btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 "
+                  btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto"
                   onClickHandler={() => navigate(RoutesPath.SignUp)}
                 />
               </div>
@@ -92,9 +92,9 @@ const AboutUs = () => {
                   {aboutus?.visionSection.description}
                 </p>
                 <Button
-                  showType={btnShowType.green}
+                  showType={btnShowType.greenRound}
                   btnName={aboutus?.visionSection.greenButton as string}
-                  btnClass="bg-greenPrimary text-white border-greenPrimary mt-8"
+                  btnClass="bg-greenPrimary text-white border-greenPrimary mt-8 !w-auto"
                   onClickHandler={() => navigate(RoutesPath.SignUp)}
                 />
               </div>
