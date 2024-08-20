@@ -53,7 +53,6 @@ const BottomSection = () => {
                 textLabelName="White Button"
                 placeholder="Enter WhiteButton Name"
                 name="bottomSection.whiteButton"
-                label="WhiteButton"
                 type="text"
                 control={control}
                 errors={errors}
