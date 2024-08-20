@@ -83,7 +83,7 @@ export const adminSidebar = [
   },
   {
     navIcon: HamburgerIcon,
-    navName: "Contact Us Management",
+    navName: "Inquiry Management",
     path: PrivateRoutesPath.contactusManagement.view,
     key: sidebarList.contactus,
   },

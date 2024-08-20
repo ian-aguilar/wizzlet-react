@@ -49,9 +49,8 @@ const AddLabel = ({ onClose, reload }: IAddLabelProps) => {
         <Input
           className=""
           placeholder="Enter Label"
-          textLabelName="Add Label"
+          textLabelName="Label"
           name="label"
-          label="Label"
           type="text"
           control={control}
           errors={errors}

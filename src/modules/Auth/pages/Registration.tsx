@@ -63,7 +63,6 @@ const Registration = () => {
                   className=""
                   placeholder="First Name"
                   name="firstName"
-                  label="First Name"
                   type="text"
                   control={control}
                   errors={errors}
@@ -75,7 +74,6 @@ const Registration = () => {
                   className=""
                   placeholder="Last Name"
                   name="lastName"
-                  label="Last Name"
                   type="text"
                   control={control}
                   errors={errors}
@@ -87,7 +85,6 @@ const Registration = () => {
               className=""
               placeholder="Email"
               name="email"
-              label="Email"
               type="text"
               control={control}
               errors={errors}
@@ -97,7 +94,6 @@ const Registration = () => {
               className=""
               placeholder="**********"
               name="password"
-              label="Password"
               type="password"
               control={control}
               errors={errors}
@@ -108,7 +104,6 @@ const Registration = () => {
               className=""
               placeholder="**********"
               name="confirmPassword"
-              label="Confirm Password"
               type="password"
               control={control}
               errors={errors}

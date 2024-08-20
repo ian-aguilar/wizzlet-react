@@ -47,13 +47,13 @@ const AddUser = ({ onClose }: AddUserFormProps) => {
         onConfirm={handleSubmit(onSubmit)}
         cancelButtonText="Cancel"
         isLoading={loader}
-        confirmButtonText="Add">
+        confirmButtonText="Add"
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <Input
             placeholder="First Name"
             textLabelName="First Name"
             name="firstName"
-            label="First Name"
             type="text"
             control={control}
             errors={errors}
@@ -62,7 +62,6 @@ const AddUser = ({ onClose }: AddUserFormProps) => {
             placeholder="Last Name"
             textLabelName="Last Name"
             name="lastName"
-            label="Last Name"
             type="text"
             control={control}
             errors={errors}
@@ -71,7 +70,6 @@ const AddUser = ({ onClose }: AddUserFormProps) => {
             placeholder="Email"
             textLabelName="Email"
             name="email"
-            label="Email"
             type="text"
             control={control}
             errors={errors}

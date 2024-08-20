@@ -1,24 +1,24 @@
 // ** Packages **
-import {useFieldArray, useFormContext} from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 // ** types **
-import {IForm} from "../types";
+import { IForm } from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
 
 // ** constants **
-import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
-import {QUESTIONANSWER} from "../constant";
+import { QUESTIONANSWER } from "../constant";
 import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
     control,
-    formState: {errors},
+    formState: { errors },
   } = useFormContext<IForm>();
-  const {fields, append, remove, insert} = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control,
     name: "topSection.row",
   });
@@ -33,7 +33,6 @@ const TopSection = () => {
           textLabelName="Title"
           placeholder="Enter Title"
           name="topSection.title"
-          label="Title"
           type="text"
           control={control}
           errors={errors}
@@ -42,7 +41,6 @@ const TopSection = () => {
           textLabelName="Description"
           placeholder=" Enter Description"
           name="topSection.description"
-          label="Description"
           control={control}
           errors={errors}
         />
@@ -69,7 +67,6 @@ const TopSection = () => {
                 textLabelName="Question"
                 placeholder="Enter Question"
                 name={`topSection.row.${index}.question`}
-                label="Question"
                 type="text"
                 control={control}
                 errors={errors}
@@ -80,7 +77,6 @@ const TopSection = () => {
                 textLabelName="Answer"
                 placeholder="Enter description"
                 name={`topSection.row.${index}.answer`}
-                label="Answer"
                 type="text"
                 control={control}
                 errors={errors}
