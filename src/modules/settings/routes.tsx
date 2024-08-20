@@ -1,16 +1,16 @@
 // ** packages **
 import { RouteObjType } from "@/router";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 
 // ** types **
 import { PrivateRoutesPath } from "../Auth/types";
 
 // ** common components **
-import ChangePassword from "./pages/ChangePassword";
-import LabelManager from "./pages/LabelManager";
-import Profile from "./pages/Profile";
 import { Loader } from "@/components/common/Loader";
-import FileUploadCommonComponentTest from "./pages/uploadFileTest";
+
+const ChangePassword = React.lazy(() => import("./pages/ChangePassword"));
+const LabelManager = React.lazy(() => import("./pages/LabelManager"));
+const Profile = React.lazy(() => import("./pages/Profile"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -21,7 +21,8 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
           <>
             <Loader />
           </>
-        }>
+        }
+      >
         {route.element}
       </Suspense>
     ),
@@ -40,9 +41,5 @@ export const SettingRoutes = applySuspense([
   {
     path: PrivateRoutesPath.setting.changePassword.view,
     element: <ChangePassword />,
-  },
-  {
-    path: PrivateRoutesPath.setting.upload.view,
-    element: <FileUploadCommonComponentTest />,
   },
 ]);

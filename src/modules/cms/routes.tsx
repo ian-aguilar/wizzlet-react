@@ -1,16 +1,17 @@
 import { Loader } from "@/components/common/Loader";
 import { RouteObjType } from "@/router";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import { PrivateRoutesPath, RoutesPath } from "../Auth/types";
-import CMSHome from "./pages/Home";
-import AboutUs from "./pages/AboutUs";
-import Faqs from "./pages/Faqs";
-import Contact from "./pages/Contact";
-import Header from "@/components/common/Header";
 import { useSelector } from "react-redux";
 import { getAuth } from "@/redux/slices/authSlice";
 import { Navigate, Outlet } from "react-router-dom";
 import { Footer } from "./common/Footer";
+
+const CMSHome = React.lazy(() => import("./pages/Home"));
+const AboutUs = React.lazy(() => import("./pages/AboutUs"));
+const Faqs = React.lazy(() => import("./pages/Faqs"));
+const Contact = React.lazy(() => import("./pages/Contact"));
+const Header = React.lazy(() => import("@/components/common/Header"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
