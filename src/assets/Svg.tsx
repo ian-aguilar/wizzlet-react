@@ -465,17 +465,14 @@ export const RightArrowWhite = ({ className }: { className?: string }) => {
 export const RightArrowGreen = ({ className }: any) => {
   return (
     <svg
-      className={`${className}`}
+      className={` text-[#09A17A] ${className}`}
       width="13"
       height="13"
       viewBox="0 0 13 13"
-      fill="none"
+      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        d="M5.89111 1.58203L6.49268 0.980469C6.76611 0.734375 7.17627 0.734375 7.42236 0.980469L12.7544 6.28516C13.0005 6.55859 13.0005 6.96875 12.7544 7.21484L7.42236 12.5469C7.17627 12.793 6.76611 12.793 6.49268 12.5469L5.89111 11.9453C5.64502 11.6719 5.64502 11.2617 5.89111 10.9883L9.19971 7.84375H1.35205C0.969238 7.84375 0.695801 7.57031 0.695801 7.1875V6.3125C0.695801 5.95703 0.969238 5.65625 1.35205 5.65625H9.19971L5.89111 2.53906C5.64502 2.26562 5.61768 1.85547 5.89111 1.58203Z"
-        fill="#09A17A"
-      />
+      <path d="M5.89111 1.58203L6.49268 0.980469C6.76611 0.734375 7.17627 0.734375 7.42236 0.980469L12.7544 6.28516C13.0005 6.55859 13.0005 6.96875 12.7544 7.21484L7.42236 12.5469C7.17627 12.793 6.76611 12.793 6.49268 12.5469L5.89111 11.9453C5.64502 11.6719 5.64502 11.2617 5.89111 10.9883L9.19971 7.84375H1.35205C0.969238 7.84375 0.695801 7.57031 0.695801 7.1875V6.3125C0.695801 5.95703 0.969238 5.65625 1.35205 5.65625H9.19971L5.89111 2.53906C5.64502 2.26562 5.61768 1.85547 5.89111 1.58203Z" />
     </svg>
   );
 };
@@ -1001,6 +998,34 @@ export const CameraBgIcon = ({ className }: any) => {
         d="M22 28.5C23.79 28.5 25.25 27.04 25.25 25.25C25.25 23.46 23.79 22 22 22C20.21 22 18.75 23.46 18.75 25.25C18.75 27.04 20.21 28.5 22 28.5Z"
         stroke="#09A17A"
         stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+export const RightArrowLongIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="25"
+      height="25"
+      viewBox="0 0 25 25"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M14.9297 6.42969L20.9997 12.4997L14.9297 18.5697"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M4 12.5H20.83"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
         stroke-linecap="round"
         stroke-linejoin="round"
       />
