@@ -1,26 +1,28 @@
 // ** Packages **
-import { useFieldArray, useFormContext } from "react-hook-form";
+import {useFieldArray, useFormContext} from "react-hook-form";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** constants **
-import { FEATURE } from "../constant";
+import {FEATURE} from "../constant";
 import FileField from "@/components/form-fields/components/FileField";
 import Button from "@/components/form-fields/components/Button";
-import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-import { TextArea } from "@/components/common/TextArea";
+import {AddIconBtn, DeleteIcon} from "@/assets/Svg";
+import TextArea from "@/components/form-fields/components/TextArea";
 
 const TopSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
     register,
     setError,
     clearErrors,
+    setValue,
+    watch,
   } = useFormContext<IForm>();
-  const { append, remove, insert, fields } = useFieldArray({
+  const {append, remove, insert, fields} = useFieldArray({
     name: "topSection.feature",
     control,
   });
@@ -39,20 +41,16 @@ const TopSection = () => {
           control={control}
           errors={errors}
         />
-        {/* <Input
-        textLabelName="Description"
-        placeholder=" Enter Description"
-        name="topSection.description"
-        label="Description"
-        type="text"
-        control={control}
-        errors={errors}
-      /> */}
-
-        <TextArea textareaLabel="Description" />
-
+        <TextArea
+          textLabelName="Description"
+          placeholder=" Enter Description"
+          name="topSection.description"
+          label="Description"
+          control={control}
+          errors={errors}
+        />
         <Input
-          textLabelName="SubTitle"
+          textLabelName="Subtitle"
           placeholder=" Enter subtitle"
           name="topSection.subtitle"
           label="Subtitle"
@@ -61,7 +59,7 @@ const TopSection = () => {
           errors={errors}
         />
         <Input
-          textLabelName="GreenButton "
+          textLabelName="Green Button "
           placeholder="Enter GreenButton Name"
           name="topSection.greenButton"
           label="GreenButton"
@@ -86,7 +84,6 @@ const TopSection = () => {
         <div className="grid grid-cols-12  w-full xl:gap-4">
           {fields.map((field, index) => (
             <div className="col-span-12 xl:col-span-6 border p-5 relative ">
-              {/* <p className="mb"> Upload Feature Image {index + 1} </p> */}
               <div
                 key={field.id}
                 className="grid grid-cols-12 h-full w-full gap-4  "
@@ -97,11 +94,13 @@ const TopSection = () => {
                     label="Upload Photo"
                     control={control}
                     errors={errors}
-                    maxSize={1}
+                    maxSize={8}
+                    setValue={setValue}
                     allowedFormat={["image/png", "image/jpeg"]}
                     register={register}
                     setError={setError}
                     clearErrors={clearErrors}
+                    watch={watch}
                   />
                 </div>
                 <div className="col-span-6 flex flex-col h-full">
@@ -114,25 +113,23 @@ const TopSection = () => {
                     control={control}
                     errors={errors}
                   />{" "}
-                  {/* <Input
-                      textLabelName="Description"
-                      placeholder="Enter description"
-                      name={
-                        `topSection.feature.${index}.description` as const
-                      }
-                      label="Description"
-                      type="text"
-                      control={control}
-                      errors={errors}
-                    /> */}
-                  <TextArea textareaLabel="Description" />
+                  <TextArea
+                    textLabelName="Description"
+                    placeholder="Enter description"
+                    name={`topSection.feature.${index}.description` as const}
+                    label="Description"
+                    control={control}
+                    errors={errors}
+                  />
                   <div className="absolute flex gap-2 top-2 right-2">
-                    <span
-                      onClick={() => fields.length > 1 && remove(index)}
-                      className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-                    >
-                      <DeleteIcon className="text-redAlert " />
-                    </span>
+                    {index >= 1 && (
+                      <span
+                        onClick={() => fields.length > 1 && remove(index)}
+                        className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+                      >
+                        <DeleteIcon className="text-redAlert " />
+                      </span>
+                    )}
                     <span
                       onClick={() => insert(index + 1, FEATURE)}
                       className="flex justify-center items-center w-8 h-8  border bg-greenPrimary/10 border-greenPrimary rounded-md cursor-pointer  hover:brightness-125 transition-all duration-300  "

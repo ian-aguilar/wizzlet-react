@@ -102,11 +102,7 @@ export const useAxiosPut = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const putRequest = async (
-    url: string,
-    data: object,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const putRequest = async (url: string, data: object, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);
@@ -184,11 +180,7 @@ export const useTempAxiosPatch = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const putRequest = async (
-    url: string,
-    data: object,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const putRequest = async (url: string, data: object, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);
@@ -212,10 +204,7 @@ export const useTempAxiosPatch = (): [
 };
 
 export const useAxiosDelete = (): [
-  (
-    url: string,
-    config?: AxiosRequestConfig<object>
-  ) => Promise<{ data?: any; error?: any }>,
+  (url: string, config?: AxiosRequestConfig<object>) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
   // ** State **
@@ -223,10 +212,7 @@ export const useAxiosDelete = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const deleteRequest = async (
-    url: string,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const deleteRequest = async (url: string, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);

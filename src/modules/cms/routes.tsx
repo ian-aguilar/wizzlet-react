@@ -1,27 +1,42 @@
 import { Loader } from "@/components/common/Loader";
 import { RouteObjType } from "@/router";
 import { Suspense } from "react";
-import { RoutesPath } from "../Auth/types";
+import { PrivateRoutesPath, RoutesPath } from "../Auth/types";
 import CMSHome from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Faqs from "./pages/Faqs";
 import Contact from "./pages/Contact";
+import Header from "@/components/common/Header";
+import { useSelector } from "react-redux";
+import { getAuth } from "@/redux/slices/authSlice";
+import { Navigate, Outlet } from "react-router-dom";
+import { Footer } from "./common/Footer";
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: (
-      <Suspense
-        fallback={
-          <>
-            <Loader />
-          </>
-        }
-      >
-        {route.element}
-      </Suspense>
-    ),
+    element: <Suspense fallback={<Loader />}>{route.element}</Suspense>,
   }));
+};
+
+export const RequiresUnAuthForCMS = () => {
+  const { isAuthenticated } = useSelector(getAuth);
+
+  /* Not Logged In */
+  if (isAuthenticated) {
+    return <Navigate to={PrivateRoutesPath.dashboard.view} />;
+  } else {
+    // ** Hooks **
+    return (
+      <>
+        <Header type="cms" />
+        <Suspense fallback={<Loader />}>
+          <Outlet />
+        </Suspense>
+        <Footer />
+      </>
+    );
+  }
 };
 
 export const CMSRoutes = applySuspense([

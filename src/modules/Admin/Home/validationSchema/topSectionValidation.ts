@@ -8,7 +8,7 @@ import { MiddleSectionValidationSchema } from "./middleSectionValidation";
 const featureValidation = Yup.object().shape({
     title: Yup.string().trim().required("title is required"),
     description: Yup.string().trim().required("description is required"),
-    image: createimageValidation(4)
+    image: createimageValidation()
 });
 export const TopSectionValidationSchema = Yup.object().shape({
     feature: Yup.array()
@@ -25,5 +25,4 @@ export const validationSchema = Yup.object().shape({
     topSection: TopSectionValidationSchema,
     middleSection: MiddleSectionValidationSchema,
     bottomSection: BottomSectionValidationSchema,
-
 })

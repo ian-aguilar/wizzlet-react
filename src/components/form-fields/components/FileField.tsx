@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { Controller, FieldValues } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
+// import { useEffect, useState } from "react";
+import {Controller, FieldValues} from "react-hook-form";
+import {ErrorMessage} from "@hookform/error-message";
 // ** Helper Functions and Types **
-import { FilePropsType } from "../types";
-import { checkFileFormat, fileSizeGenerator } from "@/utils";
-import { CameraBgIcon, CloseIconSvg } from "@/assets/Svg";
+import {FilePropsType} from "../types";
+import {checkFileFormat} from "@/utils";
+import {CameraBgIcon} from "@/assets/Svg";
+import {VITE_APP_API_URL} from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   const {
@@ -22,15 +23,15 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     onFocus,
     setError,
     clearErrors,
-    defaultValue = [], // Add a defaultValue prop for URLs
+    // defaultValue = [], // Add a defaultValue prop for URLs
+    watch,
   } = fieldProps;
 
-  const [attachments, setAttachments] = useState<File[]>([]);
-  const [urls, setUrls] = useState<string[]>(defaultValue); // State to manage URLs
-
-  useEffect(() => {
-    setValue?.(name, [...urls, ...attachments]); // Include both URLs and files in the value
-  }, [attachments, urls]);
+  const defaultValue: any = Array.isArray(watch(name))
+    ? watch(name)
+    : typeof watch(name) === "string" && watch(name).trim() !== ""
+    ? [watch(name)]
+    : [];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
@@ -53,7 +54,11 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       });
 
       if (filteredFiles.length) {
-        setAttachments((prev) => [...prev, ...filteredFiles]);
+        // console.log({name, dad: [...defaultValue, ...filteredFiles]});
+        // setValue(name, ["xyz"] as any);
+        setValue(name, [...defaultValue, ...filteredFiles] as any);
+
+        // setAttachments((prev) => [...prev, ...filteredFiles]);
       }
 
       if (errorMsgArr.length && setError) {
@@ -61,23 +66,22 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
           type: "custom",
           message: errorMsgArr.join(", "),
         });
-      }
-      if (largeErrorMsgArr.length && setError) {
+      } else if (largeErrorMsgArr.length && setError) {
         setError(name, {
           type: "custom",
           message: `File size is too large, it must be less than ${maxSize} MB.`,
         });
+      } else {
+        clearErrors?.(name);
       }
     }
     e.target.value = "";
   };
 
-  const deleteAttachment = (id: number, isUrl: boolean) => {
-    if (isUrl) {
-      setUrls((prev) => prev.filter((_val, index) => id !== index));
-    } else {
-      setAttachments((prev) => prev.filter((_val, index) => id !== index));
-    }
+  const deleteAttachment = (id: number) => {
+    setValue(name, [
+      ...defaultValue.filter((_: any, index: number) => id !== index),
+    ] as any);
     clearErrors?.(name);
   };
 
@@ -90,7 +94,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               <Controller
                 name={name}
                 control={control}
-                render={({ field: { onChange, name: fieldName } }) => (
+                render={({field: {name: fieldName}}) => (
                   <input
                     id={id}
                     multiple
@@ -102,7 +106,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                     disabled={disabled}
                     onChange={(e) => {
                       handleFileSelect(e);
-                      onChange(e.target.files);
+                      // onChange(e.target.files);
                     }}
                     className={`cursor-pointer absolute top-0 left-0 w-full h-full z-[3] opacity-0 ${className}`}
                   />
@@ -121,7 +125,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                   Drag and drop Images files to upload
                 </p>
                 <p className="text-[14px] text-grayText text-center ">
-                  max 1 photos and 8mb file size limit
+                  Max 1 photo with size limit of 8mb
                 </p>
                 {/* <span className="btn__text">Upload File</span> */}
               </div>
@@ -133,25 +137,62 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({ message }) => (
+        render={({message}) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
           </span>
         )}
       />
 
-      <div className="attachments__up__wrapper     p-6 absolute w-full h-full z-[9]  border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md ">
-        {urls.map((url, index) => (
+      <div
+        className={`attachments__up__wrapper p-6 absolute w-full h-full relative ${
+          defaultValue.length > 0 ? "z-[11]" : "z-[9]"
+        } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
+      >
+        {defaultValue.map((value: any, index: number) => {
+          const isUrl = typeof value === "string";
+
+          return (
+            <div
+              className="attachments__box flex flex-col h-[95%] "
+              key={`url-${index}`}
+            >
+              <div className="attachments__details flex items-center h-full">
+                <img
+                  src={
+                    isUrl
+                      ? VITE_APP_API_URL + value
+                      : URL.createObjectURL(value)
+                  }
+                  alt={`attachment-url-${index + 1}`}
+                  className="attachment-img !w-auto !max-h-full object-contain mx-auto"
+                />
+              </div>
+
+              <div className="attachments__details text-center ">
+                <span className="attachments__name whitespace-normal break-words overflow-hidden  ">
+                  {isUrl ? value.split("/").pop() : (value as File).name}
+                </span>
+              </div>
+              <button
+                className="action__btn__SD absolute top-3 right-3 block z-10 "
+                name="Delete"
+                title="Delete"
+                onClick={() => deleteAttachment(index)}
+              >
+                ✕
+              </button>
+            </div>
+          );
+        })}
+
+        {/* {urls.map((url, index) => (
           <div
-            className="attachments__box flex flex-col h-full "
+            className="attachments__box flex items-center mb-[10px] last:mb-0"
             key={`url-${index}`}
           >
-            <div className="attachments__details ">
-              <img
-                src={url}
-                alt={`attachment-url-${index + 1}`}
-                className="attachment-img "
-              />
+            <div className="attachments__details flex items-center">
+              <img src={url} alt={`attachment-url-${index + 1}`} className="attachment-img" />
             </div>
 
             <div className="attachments__details text-center ">
@@ -173,11 +214,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
         {attachments.map((file, index) => {
           const fileSize = fileSizeGenerator(file.size);
           return (
-            <div
-              className="attachments__box flex flex-col items-center mb-[10px] h-full last:mb-0 "
-              key={index}
-            >
-              <div className="attachments__details w-full h-[80%]">
+            <div className="attachments__box flex items-center mb-[10px] last:mb-0" key={index}>
+              <div className="attachments__details flex items-center">
                 {file ? (
                   <img
                     src={URL.createObjectURL(file)}
@@ -201,11 +239,11 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 title="Delete"
                 onClick={() => deleteAttachment(index, false)}
               >
-                <CloseIconSvg />
+                ✕
               </button>
             </div>
           );
-        })}
+        })} */}
       </div>
     </div>
   );

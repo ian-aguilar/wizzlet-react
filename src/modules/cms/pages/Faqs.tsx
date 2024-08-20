@@ -1,17 +1,15 @@
-import Header from "@/components/common/Header";
-import { Footer } from "../common/Footer";
 import { Button } from "../common/Button";
 
 import { btnShowType } from "@/components/form-fields/types";
 import { useEffect, useState } from "react";
 import { IForm } from "@/modules/Admin/Faq/types";
 import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
+import { Loader } from "@/components/common/Loader";
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
-  const { getFaqAPI } = usefetchFaqAPI();
+  const { getFaqAPI, isLoading } = usefetchFaqAPI();
   const getFaqData = async () => {
     const { data, error } = await getFaqAPI();
-    console.log(data, "faq response");
     if (!error && data) {
       setFaqData(data.data);
     }
@@ -21,8 +19,7 @@ const Faqs = () => {
   }, []);
   return (
     <>
-      <Header type="cms" />
-      {faqData ? (
+      {!isLoading && faqData ? (
         <>
           <section className="bg-CMSPageTop bg-repeat-x">
             <div className="container">
@@ -46,7 +43,7 @@ const Faqs = () => {
                   >
                     <div className="flex gap-3 items-start md:w-[42%]">
                       <div className="font-bold text-greenPrimary text-[26px] min-w-9 w-9">
-                        {i < 10 ? `0${i + 1}` : i + 1}
+                        {i < 9 ? `0${i + 1}` : i + 1}
                       </div>
                       <div className="font-medium text-2xl text-blackPrimary">
                         {data.question}
@@ -95,9 +92,8 @@ const Faqs = () => {
           </section>
         </>
       ) : (
-        ""
+        <Loader />
       )}
-      <Footer />
     </>
   );
 };

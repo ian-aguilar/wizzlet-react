@@ -1,4 +1,3 @@
-import { ATTACHMENT_FILE_TYPES } from "@/constants";
 import { MouseEvent, ReactNode } from "react";
 import {
   Control,
@@ -6,6 +5,8 @@ import {
   FieldValues,
   Path,
   UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
 } from "react-hook-form";
 
 export type FormControlProp<T extends FieldValues = FieldValues> = Control<T>;
@@ -37,7 +38,7 @@ export type IFileUploadProps<T extends FieldValues> = {
   autoComplete?: string;
   textLabelName?: string;
   withLabel?: boolean;
-  MainClass?:string;
+  MainClass?: string;
   register: UseFormRegister<T>;
 };
 
@@ -94,7 +95,9 @@ export interface FilePropsType<T extends FieldValues> {
   errors: FieldErrors<T>;
   value?: string;
   control: Control<T>;
-  setValue?: (name: Path<T>, attachment: any) => void;
+  setValue: UseFormSetValue<T>;
+  // setValue: (name: Path<T>, attachment: any) => void;
+
   name: any;
   label: string;
   register: UseFormRegister<T>;
@@ -114,7 +117,8 @@ export interface FilePropsType<T extends FieldValues> {
     }
   ) => void;
   clearErrors?: (name: Path<T>) => void;
-  defaultValue?: string[];
+  // defaultValue?: string[];
+  watch: UseFormWatch<T>;
 }
 export interface inviteModalProps {
   link: string | undefined | null;
@@ -124,6 +128,9 @@ export interface inviteModalProps {
 export interface errorModalProps {
   onClose: () => void;
   onSave?: () => void;
+  isLoading?: boolean;
+  heading: string;
+  subText: string;
 }
 
 export interface warningModalProps {
@@ -132,3 +139,16 @@ export interface warningModalProps {
   heading: string;
   confirmButtonText: string;
 }
+
+export type ITextAreaProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  control?: FormControlProp<T>;
+  label?: string;
+  errors?: FieldErrors;
+  placeholder?: string;
+  autoComplete?: string;
+  textLabelName?: string;
+  withLabel?: boolean;
+  isDisabled?: boolean;
+};

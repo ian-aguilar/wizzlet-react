@@ -4,6 +4,7 @@ export enum RoutesPath {
   ForgotPassword = "/forgot-password",
   Otp = "/otp",
   ResetPassword = "/reset-password",
+  SetPassword = "/set-password",
   CMSHome = "/",
   CMSAboutUs = "/aboutus",
   CMSContact = "/contact",
@@ -24,10 +25,10 @@ export const PrivateRoutesPath = {
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
   cmsManagement: {
-    aboutus: "/cms-management/aboutus",
-    contactus: "/cms-management/contactus",
+    aboutus: "/cms-management/about-us",
+    contactus: "/cms-management/contact-us",
     faq: "/cms-management/faq",
     home: "/cms-management/home",
   },
+  contactusManagement: { view: "/contactus-management" },
 };
-  

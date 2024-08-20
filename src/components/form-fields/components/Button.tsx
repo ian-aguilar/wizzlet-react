@@ -41,7 +41,8 @@ const Button = ({
       className={btnType}
       type={type ? type : "button"}
       onClick={onClickHandler}
-      disabled={isLoading ? true : disabled}>
+      disabled={isLoading ? true : disabled}
+    >
       {BtnIconLeft}
       {btnName}
       {isLoading && (

@@ -37,6 +37,10 @@ export const AuthenticationRoutes = applySuspense([
     element: <ResetPassword />,
   },
   {
+    path: RoutesPath.SetPassword,
+    element: <ResetPassword />,
+  },
+  {
     path: RoutesPath.SignUp,
     element: <Registration />,
   },

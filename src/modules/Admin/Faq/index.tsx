@@ -23,11 +23,12 @@ import { useFaqDataPostAPI, usefetchFaqAPI } from "./services/faq.service";
 // ** helper function **
 import { appendFormData } from "./helper/helper";
 import { Link } from "react-router-dom";
+import { Loader } from "@/components/common/Loader";
 
 const FaqForm = () => {
-  const { faqDataPostAPI, isLoading } = useFaqDataPostAPI();
+  const { faqDataPostAPI, isLoading: updateLoading } = useFaqDataPostAPI();
 
-  const { getFaqAPI } = usefetchFaqAPI();
+  const { getFaqAPI, isLoading: dataLoading } = usefetchFaqAPI();
   const getFaqData = async () => {
     const { data, error } = await getFaqAPI();
     if (!error && data) {
@@ -54,30 +55,41 @@ const FaqForm = () => {
   };
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-4xl font-bold ">FAQ's Page</h2>
-          <span className="text-blackPrimary">
-            {" "}
-            <Link to="" className="text-grayText text-sm">
-              {" "}
-              CMS Management{" "}
-            </Link>{" "}
-            / Faq{" "}
-          </span>
-        </div>
-        <div>
-          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
-        </div>
-      </div>
-      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <TopSection />
-            <BottomSection />
-          </form>
-        </FormProvider>
-      </section>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-4xl font-bold ">FAQ's Page</h2>
+              <span className="text-blackPrimary">
+                {" "}
+                <Link to="" className="text-grayText text-sm">
+                  {" "}
+                  CMS Management{" "}
+                </Link>{" "}
+                / Faq PageCMS Management{" "}
+              </span>
+            </div>
+            <div>
+              <Button
+                btnName="Update"
+                type="submit"
+                btnClass="!w-auto"
+                isLoading={updateLoading}
+              ></Button>
+            </div>
+          </div>
+          <section className="h-[calc(100vh_-_200px)] w-full bg-white overflow-y-auto scroll-design p-5">
+            {!dataLoading ? (
+              <>
+                <TopSection />
+                <BottomSection />
+              </>
+            ) : (
+              <Loader />
+            )}
+          </section>
+        </form>
+      </FormProvider>
     </>
   );
 };

@@ -21,12 +21,14 @@ import { FEATURE } from "./constant";
 // **services **
 import { useHomeDataPostAPI, usefetchHomeAPI } from "./services/home.service";
 import { Link } from "react-router-dom";
+import { Loader } from "@/components/common/Loader";
 
 const HomePageForm = () => {
-  const { getHomeAPI } = usefetchHomeAPI();
-  const { homeDataPostAPI } = useHomeDataPostAPI();
+  const { getHomeAPI, isLoading: dataLoading } = usefetchHomeAPI();
+  const { homeDataPostAPI, isLoading: updateLoading } = useHomeDataPostAPI();
   const methods = useForm<IForm>({
     resolver: yupResolver(validationSchema),
+
     defaultValues: {
       topSection: {
         feature: [FEATURE],
@@ -36,9 +38,7 @@ const HomePageForm = () => {
 
   const getFaqData = async () => {
     const { data, error } = await getHomeAPI();
-    console.log(data, "home response");
     if (!error && data) {
-      // setIsUpdate(true);
       methods.reset(data.data);
     }
   };
@@ -47,91 +47,72 @@ const HomePageForm = () => {
   }, []);
 
   const onSubmit: SubmitHandler<IForm> = async (data) => {
-    // console.log(data.topSection.feature[0].image[0] instanceof File, "image");
-    // return;
-    console.log(data, "datttttttttttttttttt");
-
-    // return;
-
     const formData = new FormData();
-    // appendFormData(data, formData);
     formData.append("topSection[title]", data.topSection.title);
     formData.append("topSection[description]", data.topSection.description);
     formData.append("topSection[subtitle]", data.topSection.subtitle);
     formData.append("topSection[greenButton]", data.topSection.greenButton);
     data.topSection.feature.forEach((item: any, index) => {
-      formData.append(`topSection[feature][${index}][image]`, item.image[0]);
+      if (typeof item.image == "string") {
+        formData.append(`topSection[feature][${index}][image]`, item.image);
+      } else {
+        formData.append(`topSection[feature][${index}][image]`, item.image[0]);
+      }
       formData.append(`topSection[feature][${index}][title]`, item.title);
-      formData.append(
-        `topSection[feature][${index}][description]`,
-        item.description
-      );
+      formData.append(`topSection[feature][${index}][description]`, item.description);
     });
     formData.append("middleSection[title]", data.middleSection.title);
-    formData.append(
-      "middleSection[description]",
-      data.middleSection.description
-    );
-
-    console.log("image  middlesection", data.middleSection.image);
-
-    formData.append(
-      "middleSection[image]",
-      (data.middleSection.image as FileList)[0]
-    );
+    formData.append("middleSection[description]", data.middleSection.description);
+    if (typeof data.middleSection.image == "string") {
+      formData.append("middleSection[image]", data.middleSection.image);
+    } else {
+      formData.append("middleSection[image]", (data.middleSection.image as FileList)[0]);
+    }
     formData.append("bottomSection[title]", data.bottomSection.title);
-    formData.append(
-      "bottomSection[description]",
-      data.bottomSection.description
-    );
-    formData.append(
-      "bottomSection[greenButton]",
-      data.bottomSection.greenButton
-    );
-    formData.append(
-      "bottomSection[whiteButton]",
-      data.bottomSection.whiteButton
-    );
-
-    // appendFormData(data, formData);
-    console.log(formData, "formdataaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    formData.append("bottomSection[description]", data.bottomSection.description);
+    formData.append("bottomSection[greenButton]", data.bottomSection.greenButton);
+    formData.append("bottomSection[whiteButton]", data.bottomSection.whiteButton);
     await homeDataPostAPI(formData);
-    // await axios.post("http://localhost:8000/cms/home", formData, {
-    //   withCredentials: true,
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
   };
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-4xl font-bold ">Home Page</h2>
-          <span className="text-blackPrimary">
-            {" "}
-            <Link to="" className="text-grayText text-sm">
-              {" "}
-              CMS Management{" "}
-            </Link>{" "}
-            / Home Page{" "}
-          </span>
-        </div>
-        <div>
-          <Button btnName="Update" type="submit" btnClass="!w-auto"></Button>
-        </div>
-      </div>
-      <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
-        <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <TopSection />
-            <MiddleSection />
-            <BottomSection />
-
-            {/* <Button btnName="submit" type="submit"></Button> */}
-          </form>
-        </FormProvider>
-      </section>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-4xl font-bold ">Home Page</h2>
+              <span className="text-blackPrimary">
+                {" "}
+                <Link to="" className="text-grayText text-sm">
+                  {" "}
+                  CMS Management{" "}
+                </Link>{" "}
+                / Home Page{" "}
+              </span>
+            </div>
+            <div>
+              <Button
+                btnName="Update"
+                type="submit"
+                btnClass="!w-auto"
+                isLoading={updateLoading}
+              ></Button>
+            </div>
+          </div>
+          <section className="h-[calc(100vh_-_200px)] w-full bg-white overflow-y-auto scroll-design p-5">
+            {!dataLoading ? (
+              <>
+                {" "}
+                <TopSection />
+                <MiddleSection />
+                <BottomSection />
+              </>
+            ) : (
+              <Loader />
+            )}
+          </section>
+        </form>
+      </FormProvider>
     </>
   );
 };
