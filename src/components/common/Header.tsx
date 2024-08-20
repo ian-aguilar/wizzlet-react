@@ -14,10 +14,27 @@ import { setLogoutData } from "@/redux/slices/authSlice";
 import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 import Button from "../form-fields/components/Button";
 import { btnShowType } from "../form-fields/types";
+import { useEffect, useState } from "react";
+import ModalNav from "@/modules/cms/common/ModalNav";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [isSidebar, setIsSidebar] = useState(false);
+
+  const handleWindowSizeChange = () => {
+    if (window.innerWidth > 768) {
+      setIsSidebar(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
 
   return (
     <>
@@ -49,9 +66,7 @@ const Header = ({ type }: { type: string }) => {
               <div className="absolute opacity-0 invisible group-hover:visible group-hover:opacity-100 top-14 right-0 bg-white rounded-lg p-1  text-center min-w-[150px] w-[150px]  text-base font-semibold shadow-md ">
                 <span
                   className="block bg-grayLightBody/10 p-2 mb-1 hover:bg-greenPrimary/10 hover:text-greenPrimary hover:brightness-110 rounded-t-lg"
-                  onClick={() =>
-                    navigate(PrivateRoutesPath.setting.profile.view)
-                  }
+                  onClick={() => navigate(PrivateRoutesPath.setting.profile.view)}
                 >
                   Account
                 </span>
@@ -65,74 +80,70 @@ const Header = ({ type }: { type: string }) => {
                   Logout
                 </span>
               </div>
-              <img
-                src={ProfilePlaceholder}
-                className="w-14 h-14 min-w-14"
-                alt=""
-              />
+              <img src={ProfilePlaceholder} className="w-14 h-14 min-w-14" alt="" />
             </div>
           </div>
         </header>
       ) : (
-        <header className="border-b shadow-headerWeb">
-          <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
-            <Link
-              to={RoutesPath.CMSHome}
-              className="max-w-[177px] min-w-[177px] w-[177px]"
-            >
-              <img src={Logo} alt="" className="w-full h-auto" />
-            </Link>
-            <nav className=" hidden lg:flex gap-11 items-center">
-              <Link
-                to={RoutesPath.CMSHome}
-                className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-              >
-                Home
+        <>
+          {isSidebar && <ModalNav closeSidebar={() => setIsSidebar(false)} />}
+          <header className="border-b shadow-headerWeb">
+            <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
+              <Link to={RoutesPath.CMSHome} className="max-w-[177px] min-w-[177px] w-[177px]">
+                <img src={Logo} alt="" className="w-full h-auto" />
               </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSAboutUs}
-              >
-                About
-              </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSFaqs}
-              >
-                FAQ
-              </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSContact}
-              >
-                Contact Us
-              </Link>
-            </nav>
-            <div className=" hidden lg:flex ">
-              <Link
-                to={RoutesPath.Login}
-                className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
-              >
-                Log In
-              </Link>
-              <Button
-                showType={btnShowType.primary}
-                btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
-                btnName="Get Started"
-                btnEndIcon={<RightArrowWhite />}
-                onClickHandler={() => {
-                  navigate(RoutesPath.SignUp);
-                }}
-              />
+              <nav className=" hidden lg:flex gap-11 items-center">
+                <Link
+                  to={RoutesPath.CMSHome}
+                  className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                >
+                  Home
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSAboutUs}
+                >
+                  About
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSFaqs}
+                >
+                  FAQ
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSContact}
+                >
+                  Contact Us
+                </Link>
+              </nav>
+              <div className=" hidden lg:flex ">
+                <Link
+                  to={RoutesPath.Login}
+                  className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
+                >
+                  Log In
+                </Link>
+                <Button
+                  showType={btnShowType.primary}
+                  btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
+                  btnName="Get Started"
+                  btnEndIcon={<RightArrowWhite />}
+                  onClickHandler={() => {
+                    navigate(RoutesPath.SignUp);
+                  }}
+                />
+              </div>
+              <div className="HamburgerIcon  lg:hidden block" onClick={() => setIsSidebar(true)}>
+                <Link to="" className="inline-block ">
+                  {" "}
+                  <HamburgerIcon />{" "}
+                </Link>
+              </div>
             </div>
-            <div className="HamburgerIcon  lg:hidden block ">
-              <Link to="" className="inline-block ">
-                {" "}
-                <HamburgerIcon />{" "}
-              </Link>
-            </div>
-          </div>
-        </header>
+          </header>
+        </>
       )}
     </>
   );

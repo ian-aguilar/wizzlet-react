@@ -14,8 +14,7 @@ import ModalNav from "../common/ModalNav";
 const CMSHome = () => {
   return (
     <>
-      <ModalNav />
-      <Header type="cms" />
+      {/* <ModalNav /> */}
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
           <div className="MainTitle pt-7 sm:pt-12 md:pt-24 pb-10 md:pb-20 px-8 lg:px-20 text-center">
@@ -28,12 +27,11 @@ const CMSHome = () => {
             </Link>
 
             <h1 className=" text-5xl md:text-6xl font-bold">
-              Expand your customer base by <br /> cross-listing for free using{" "}
-              <br /> Importme
+              Expand your customer base by <br /> cross-listing for free using <br /> Importme
             </h1>
             <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor <br /> incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor <br />{" "}
+              incididunt ut labore et dolore magna aliqua.
             </p>
             <Button
               showType={btnShowType.green}
@@ -52,16 +50,12 @@ const CMSHome = () => {
                   Multi-Marketplace Integration
                 </h3>
                 <p className="font-normal text-xl text-grayText ">
-                  Connect and manage your products across various <br />{" "}
-                  marketplaces like Amazon, eBay, Etsy, Shopify, and more.
+                  Connect and manage your products across various <br /> marketplaces like Amazon,
+                  eBay, Etsy, Shopify, and more.
                 </p>
               </div>
               <div className="px-5 mt-auto">
-                <img
-                  src={IntegrationImg}
-                  className="w-full max-w-full h-auto"
-                  alt=""
-                />
+                <img src={IntegrationImg} className="w-full max-w-full h-auto" alt="" />
               </div>
             </div>
             <div className=" col-span-12 md:col-span-5 bg-grayLightBody/10  rounded-2xl flex flex-col  ">
@@ -70,16 +64,11 @@ const CMSHome = () => {
                   Bulk Import and Export
                 </h3>
                 <p className="font-normal text-xl text-grayText ">
-                  Effortlessly import or export large volumes of products with
-                  just a few clicks.
+                  Effortlessly import or export large volumes of products with just a few clicks.
                 </p>
               </div>
               <div className="px-5 mt-auto">
-                <img
-                  src={ImportImg}
-                  className="w-full max-w-full h-auto"
-                  alt=""
-                />
+                <img src={ImportImg} className="w-full max-w-full h-auto" alt="" />
               </div>
             </div>
             <div className=" col-span-12 md:col-span-5 bg-grayLightBody/10  rounded-2xl flex flex-col   ">
@@ -88,16 +77,12 @@ const CMSHome = () => {
                   User-Friendly Dashboard
                 </h3>
                 <p className="font-normal text-xl text-grayText ">
-                  Navigate through an intuitive dashboard that provides a
-                  comprehensive view of your sales and inventory.
+                  Navigate through an intuitive dashboard that provides a comprehensive view of your
+                  sales and inventory.
                 </p>
               </div>
               <div className="px-5 mt-auto">
-                <img
-                  src={UsersImg}
-                  className="w-full max-w-full h-auto"
-                  alt=""
-                />
+                <img src={UsersImg} className="w-full max-w-full h-auto" alt="" />
               </div>
             </div>
             <div className=" col-span-12 md:col-span-7  bg-grayLightBody/10 rounded-2xl  flex flex-col  ">
@@ -106,16 +91,12 @@ const CMSHome = () => {
                   Real-Time Inventory Management
                 </h3>
                 <p className="font-normal text-xl text-grayText ">
-                  Automatically update inventory levels across all <br />{" "}
-                  connected platforms in real-time.
+                  Automatically update inventory levels across all <br /> connected platforms in
+                  real-time.
                 </p>
               </div>
               <div className="px-5 mt-auto">
-                <img
-                  src={InventoryImg}
-                  className="w-full max-w-full h-auto"
-                  alt=""
-                />
+                <img src={InventoryImg} className="w-full max-w-full h-auto" alt="" />
               </div>
             </div>
           </div>
@@ -130,16 +111,12 @@ const CMSHome = () => {
             </h2>
             <p className="text-grayText text-xl font-normal">
               {" "}
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor <br /> incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor <br />{" "}
+              incididunt ut labore et dolore magna aliqua.
             </p>
           </div>
           <div className=" pt-10 sm:pt-20">
-            <img
-              src={worksImg}
-              className="w-full max-w-full h-auto bg-cover"
-              alt=""
-            />
+            <img src={worksImg} className="w-full max-w-full h-auto bg-cover" alt="" />
           </div>
         </div>
       </section>
@@ -156,10 +133,9 @@ const CMSHome = () => {
                   management solution. Join thousands of satisfied customers who
                   have transformed their business operations with our intuitive,
                   powerful, and integrated system. */}
-              Experience the efficiency and precision of our inventory
-              management solution. Join thousands of satisfied customers who
-              have transformed their business operations with our intuitive,
-              powerful, and integrated system.
+              Experience the efficiency and precision of our inventory management solution. Join
+              thousands of satisfied customers who have transformed their business operations with
+              our intuitive, powerful, and integrated system.
             </p>
             <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
               <Button
@@ -181,7 +157,6 @@ const CMSHome = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 };
