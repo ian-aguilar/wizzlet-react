@@ -46,7 +46,7 @@ const CMSHome = () => {
                   className="text-xl inline-flex gap-4 py-4 px-5 border border-dashed border-[#7062FE]/80 bg-[#7062FE]/5 rounded-md mb-8 items-center"
                   to=""
                 >
-                  {homeData.topSection.subtitle}
+                  Importme’s New Features are Coming. Click here to know more{" "}
                   <RightArrowLongIcon className="!text-black w-5 min-w-5" />
                 </Link>
 
