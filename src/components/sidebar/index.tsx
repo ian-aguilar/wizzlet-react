@@ -70,13 +70,13 @@ const Sidebar = () => {
           MENU
         </div>
 
-        <nav className="">
+        <nav className="max-h-[calc(100vh_-_155px)] overflow-y-auto scroll-design  overflow-x-hidden">
           {sidebarColumn.map((data, i) => (
             <>
               {data.components ? (
                 <>
                   <div
-                    className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110   duration-300 transition-all  hover:duration-300 hover:transition-all ${
+                    className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110   duration-300 transition-all  hover:duration-300 hover:transition-all cursor-pointer  ${
                       active === data.key ? "bg-greenPrimary text-white" : "bg-white text-grayText"
                     } `}
                     key={i}
@@ -108,12 +108,18 @@ const Sidebar = () => {
                   </div>
                   {isToggle &&
                     data.components?.map((item) => (
-                      <div className="relative ml-10 mt-6 pl-4 before:border-l  before:border-grayLightBody/40 before:absolute before:w-[1px] before:h-full before:-top-[24px] before:-left-1 ">
+                      <div
+                        className={` ${
+                          isToggle
+                            ? "relative ml-10 mt-1 pl-4 before:border-l  before:border-grayLightBody/40 before:absolute before:w-[1px] before:h-full before:-top-[24px] before:-left-1 delay-300"
+                            : " h-0 invisible "
+                        } `}
+                      >
                         <Link
-                          className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110   duration-300 transition-all  hover:duration-300 hover:transition-all ${
+                          className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110  delay-300  duration-300 transition-all  hover:duration-300 hover:transition-all ${
                             location.pathname.includes(item.key)
-                              ? "relative mb-2 text-black border border-transparent bg-grayLightBody/20 rounded-md  block px-2 py-2 before:absolute before:-left-5 before:w-3 before:h-[1px] before:border-b before:top-4 before:border-grayLightBody/40"
-                              : "relative mb-2 text-grayText  border before:border-grayLightBody/40 rounded-md  block px-2 py-2 before:absolute before:-left-5 before:w-3 before:h-[1px] before:border-b before:top-4 "
+                              ? "relative mb-1 text-black border border-transparent bg-grayLightBody/20 rounded-md  block px-2 py-2 before:absolute before:-left-5 before:w-3 before:h-[1px] before:border-b before:top-4 before:border-grayLightBody/40"
+                              : "relative mb-1 text-grayText  border before:border-grayLightBody/40 rounded-md  block px-2 py-2 before:absolute before:-left-5 before:w-3 before:h-[1px] before:border-b before:top-4 "
                           } `}
                           to={item.path}
                           key={i}

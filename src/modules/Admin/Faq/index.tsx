@@ -1,13 +1,13 @@
 // ** Packages **
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect } from "react";
+import {FormProvider, SubmitHandler, useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {useEffect} from "react";
 
 // ** types **
-import { IForm } from "./types";
+import {IForm} from "./types";
 
 // ** validations **
-import { validationSchema } from "./validationSchema/topSectionValidation";
+import {validationSchema} from "./validationSchema/topSectionValidation";
 
 // ** common components **
 import TopSection from "./components/TopSection";
@@ -15,22 +15,22 @@ import BottomSection from "./components/BottomSection";
 import Button from "@/components/form-fields/components/Button";
 
 // ** constant
-import { QUESTIONANSWER } from "./constant";
+import {QUESTIONANSWER} from "./constant";
 
 // ** services
-import { useFaqDataPostAPI, usefetchFaqAPI } from "./services/faq.service";
+import {useFaqDataPostAPI, usefetchFaqAPI} from "./services/faq.service";
 
 // ** helper function **
-import { appendFormData } from "./helper/helper";
-import { Link } from "react-router-dom";
-import { Loader } from "@/components/common/Loader";
+import {appendFormData} from "./helper/helper";
+import {Link} from "react-router-dom";
+import {Loader} from "@/components/common/Loader";
 
 const FaqForm = () => {
-  const { faqDataPostAPI, isLoading: updateLoading } = useFaqDataPostAPI();
+  const {faqDataPostAPI, isLoading: updateLoading} = useFaqDataPostAPI();
 
-  const { getFaqAPI, isLoading: dataLoading } = usefetchFaqAPI();
+  const {getFaqAPI, isLoading: dataLoading} = usefetchFaqAPI();
   const getFaqData = async () => {
-    const { data, error } = await getFaqAPI();
+    const {data, error} = await getFaqAPI();
     if (!error && data) {
       methods.reset(data.data);
     }
@@ -66,7 +66,7 @@ const FaqForm = () => {
                   {" "}
                   CMS Management{" "}
                 </Link>{" "}
-                / Faq PageCMS Management{" "}
+                / Faq Page{" "}
               </span>
             </div>
             <div>

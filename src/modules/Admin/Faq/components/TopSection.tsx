@@ -56,7 +56,6 @@ const TopSection = () => {
           <Button
             btnClass="!w-auto mb-4"
             btnName={" Question answer"}
-            type="submit"
             BtnIconLeft={<AddIconBtn className=" inline-block mr-2  " />}
           ></Button>
         </span>
