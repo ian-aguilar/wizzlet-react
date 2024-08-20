@@ -69,10 +69,31 @@ const CMSHome = () => {
             <div className="container">
               <div className="grid grid-cols-12 md:gap-x-4 gap-y-4  ">
                 {homeData.topSection.feature.map((data, i) => (
+                  // <div
+                  //   className={`col-span-12 md:col-span-${
+                  //     i == 0 || i == 3 ? "7" : "5"
+                  //   } bg-grayLightBody/10  rounded-2xl flex flex-col  `}
+                  // >
+                  //   <div className="titleHolder p-10  text-center  md:text-left ">
+                  //     <h3 className="font-bold text-[28px] text-blackPrimary pb-4  leading-relaxed  ">
+                  //       {data.title}
+                  //     </h3>
+                  //     <p className="font-normal text-xl text-grayText ">
+                  //       {data.description}
+                  //     </p>
+                  //   </div>
+                  //   <div className="px-5 mt-auto">
+                  //     <img
+                  //       src={VITE_APP_API_URL + data.image}
+                  //       className="w-full max-w-full h-auto"
+                  //       alt=""
+                  //     />
+                  //   </div>
+                  // </div>
                   <div
-                    className={`col-span-12 md:col-span-${
-                      i == 0 || i == 3 ? 7 : 5
-                    } bg-grayLightBody/10  rounded-2xl flex flex-col  `}
+                    className={`col-span-12 bg-grayLightBody/10  rounded-2xl flex flex-col ${
+                      i == 0 || i == 3 ? "md:col-span-7" : "md:col-span-5"
+                    }`}
                   >
                     <div className="titleHolder p-10  text-center  md:text-left ">
                       <h3 className="font-bold text-[28px] text-blackPrimary pb-4  leading-relaxed  ">
