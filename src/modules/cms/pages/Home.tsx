@@ -9,10 +9,12 @@ import ImportImg from "/images/ImportExport_img.png";
 import InventoryImg from "/images/InventoryMgt_img.png";
 import UsersImg from "/images/UserFriendly_img.png";
 import IntegrationImg from "/images/integrationImg.png";
+import ModalNav from "../common/ModalNav";
 
 const CMSHome = () => {
   return (
     <>
+      <ModalNav />
       <Header type="cms" />
       <section className="bg-CMSPageTop bg-repeat-x">
         <div className="container">
@@ -22,7 +24,7 @@ const CMSHome = () => {
               to=""
             >
               Importme’s New Features are Coming. Click here to know more{" "}
-              <RightArrowLongIcon className="!text-black w-5 min-w-5" />
+              <RightArrowLongIcon className=" !text-black w-5 min-w-5" />
             </Link>
 
             <h1 className=" text-5xl md:text-6xl font-bold">
