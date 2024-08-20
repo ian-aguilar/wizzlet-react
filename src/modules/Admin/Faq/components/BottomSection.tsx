@@ -1,8 +1,8 @@
 // ** Packages **
-import { useFormContext } from "react-hook-form";
+import {useFormContext} from "react-hook-form";
 
 // ** types **
-import { IForm } from "../types";
+import {IForm} from "../types";
 
 // ** common components **
 import Input from "@/components/form-fields/components/Input";
@@ -11,7 +11,7 @@ import TextArea from "@/components/form-fields/components/TextArea";
 const BottomSection = () => {
   const {
     control,
-    formState: { errors },
+    formState: {errors},
   } = useFormContext<IForm>();
 
   return (
@@ -48,16 +48,6 @@ const BottomSection = () => {
                 errors={errors}
               />
             </div>
-            {/* <div className=" col-span-12 lg:col-span-6">
-              <Input
-                textLabelName="White Button"
-                placeholder="Enter WhiteButton Name"
-                name="bottomSection.whiteButton"
-                type="text"
-                control={control}
-                errors={errors}
-              />
-            </div> */}
           </div>
         </div>
       </section>
