@@ -57,7 +57,11 @@ const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
 const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <RequiresAuth>{route.element}</RequiresAuth>,
+    element: (
+      <Suspense fallback={<Loader />}>
+        <RequiresAuth>{route.element}</RequiresAuth>
+      </Suspense>
+    ),
   }));
 };
 

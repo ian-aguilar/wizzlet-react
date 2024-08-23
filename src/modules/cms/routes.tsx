@@ -30,11 +30,11 @@ export const RequiresUnAuthForCMS = () => {
     // ** Hooks **
     return (
       <>
-        <Header type="cms" />
         <Suspense fallback={<Loader />}>
+          <Header type="cms" />
           <Outlet />
+          <Footer />
         </Suspense>
-        <Footer />
       </>
     );
   }
