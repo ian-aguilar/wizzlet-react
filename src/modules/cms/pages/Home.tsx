@@ -1,31 +1,31 @@
 // ** Packages **
-import {useEffect, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // **common components
-import {Loader} from "@/components/common/Loader";
+import { Loader } from "@/components/common/Loader";
 import Button from "@/components/form-fields/components/Button";
-import {RightArrowLongIcon} from "@/assets/Svg";
+import { RightArrowLongIcon } from "@/assets/Svg";
 
 // ** Types **
-import {btnShowType} from "@/components/form-fields/types";
-import {IForm} from "@/modules/Admin/Home/types";
-import {RoutesPath} from "@/modules/Auth/types";
+import { btnShowType } from "@/components/form-fields/types";
+import { IForm } from "@/modules/Admin/Home/types";
+import { RoutesPath } from "@/modules/Auth/types";
 
 // ** Services **
-import {usefetchHomeAPI} from "@/modules/Admin/Home/services/home.service";
+import { usefetchHomeAPI } from "@/modules/Admin/Home/services/home.service";
 
 //**  config
-import {VITE_APP_API_URL} from "@/config";
+import { VITE_APP_API_URL } from "@/config";
 
 const CMSHome = () => {
   const [homeData, setHomeData] = useState<IForm>();
 
   const navigate = useNavigate();
 
-  const {getHomeAPI, isLoading} = usefetchHomeAPI();
+  const { getHomeAPI, isLoading } = usefetchHomeAPI();
   const getHomeData = async () => {
-    const {data, error} = await getHomeAPI();
+    const { data, error } = await getHomeAPI();
     if (!error && data) {
       console.log(data.data, "hjome data");
 
@@ -50,7 +50,7 @@ const CMSHome = () => {
                   <RightArrowLongIcon className="!text-black w-5 min-w-5" />
                 </Link>
 
-                <h1 className=" text-5xl md:text-6xl font-bold">
+                <h1 className="text-5xl md:text-6xl font-bold md:px-20 !leading-[70px]">
                   {homeData.topSection.title}
                 </h1>
                 <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
