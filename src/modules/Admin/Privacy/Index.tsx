@@ -65,7 +65,12 @@ const Privacy = () => {
             </span>
           </div>
           <div>
-            <Button btnName="Update" type="submit" btnClass="!w-auto" isLoading={updateLoading}></Button>
+            <Button
+              btnName="Update"
+              type="submit"
+              btnClass="!w-auto"
+              isLoading={updateLoading}
+            ></Button>
           </div>
         </div>
         <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">
@@ -74,7 +79,7 @@ const Privacy = () => {
               {" "}
               <ReactQuillTextEditor
                 control={control}
-                className="h-[500px]"
+                className="h-[70vh]  mb-16 xl:mb-10"
                 placeholder="Write Privacy and Policy here..."
                 modules={modules}
                 name={"policy"}
