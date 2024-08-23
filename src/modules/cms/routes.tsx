@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import { getAuth } from "@/redux/slices/authSlice";
 import { Navigate, Outlet } from "react-router-dom";
 import { Footer } from "./common/Footer";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 const CMSHome = React.lazy(() => import("./pages/Home"));
 const AboutUs = React.lazy(() => import("./pages/AboutUs"));
@@ -56,5 +58,13 @@ export const CMSRoutes = applySuspense([
   {
     path: RoutesPath.CMSContact,
     element: <Contact />,
+  },
+  {
+    path: RoutesPath.CMSTerms,
+    element: <Terms />,
+  },
+  {
+    path: RoutesPath.CMSPrivacy,
+    element: <Privacy />,
   },
 ]);

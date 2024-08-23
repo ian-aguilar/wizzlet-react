@@ -23,3 +23,18 @@ export const useCreateContactUsAPI = () => {
 
   return { createContactUsAPI, isLoading, isError, isSuccess };
 };
+
+export const useCreateTermsAPI = () => {
+  const [postRequest, { isLoading, isError, isSuccess }] = useAxiosPost();
+  const createTermsAPI = async (data: object, config: AxiosRequestConfig<object> = {}) => {
+    return postRequest(`${CMS_API_BASE_PATH}/terms`, data, config);
+  };
+  return { createTermsAPI, isLoading, isError, isSuccess };
+};
+export const useCreatePrivacyAPI = () => {
+  const [postRequest, { isLoading, isError, isSuccess }] = useAxiosPost();
+  const createPrivacyAPI = async (data: object, config: AxiosRequestConfig<object> = {}) => {
+    return postRequest(`${CMS_API_BASE_PATH}/privacy`, data, config);
+  };
+  return { createPrivacyAPI, isLoading, isError, isSuccess };
+};

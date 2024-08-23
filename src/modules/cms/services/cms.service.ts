@@ -21,6 +21,25 @@ export const useGetContactusAPI = () => {
 
   return { getContactusAPI, isLoading, isError, isSuccess };
 };
+export const useGetTermsAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getTermsAPI = async (data?: object) => {
+    return callApi(`${CMS_API_BASE_PATH}/terms`, data);
+  };
+
+  return { getTermsAPI, isLoading, isError, isSuccess };
+};
+
+export const useGetPrivacyAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getPrivacyAPI = async (data?: object) => {
+    return callApi(`${CMS_API_BASE_PATH}/privacy`, data);
+  };
+
+  return { getPrivacyAPI, isLoading, isError, isSuccess };
+};
 
 export const usePostContactusAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();

@@ -9,6 +9,8 @@ export enum RoutesPath {
   CMSAboutUs = "/aboutus",
   CMSContact = "/contact",
   CMSFaqs = "/faqs",
+  CMSTerms = "/terms",
+  CMSPrivacy = "/privacy-and-policy",
 }
 
 export const PrivateRoutesPath = {
@@ -28,6 +30,8 @@ export const PrivateRoutesPath = {
     contactus: "/cms-management/contact-us",
     faq: "/cms-management/faq",
     home: "/cms-management/home",
+    terms:"/cms-management/terms",
+    privacy:"/cms-management/privacy-and-policy"
   },
   contactusManagement: { view: "/contactus-management" },
 };

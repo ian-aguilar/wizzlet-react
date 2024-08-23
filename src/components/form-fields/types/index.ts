@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from "react";
+import { Dispatch, MouseEvent, ReactNode, SetStateAction } from "react";
 import {
   Control,
   FieldErrors,
@@ -21,6 +21,22 @@ export type IInputProps<T extends FieldValues> = {
   type?: string;
   autoComplete?: string;
   textLabelName?: string;
+  withLabel?: boolean;
+  isDisabled?: boolean;
+};
+
+export type IReactQuillProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  inputEndIcon?: ReactNode;
+  control?: FormControlProp<T>;
+  label?: string;
+  errors?: FieldErrors;
+  placeholder?: string;
+  type?: string;
+  autoComplete?: string;
+  textLabelName?: string;
+  modules?: Object;
   withLabel?: boolean;
   isDisabled?: boolean;
 };
