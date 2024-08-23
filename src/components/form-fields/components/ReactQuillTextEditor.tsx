@@ -23,21 +23,11 @@ const ReactQuillTextEditor = <T extends FieldValues>({
             theme="snow"
             formats={[
               "header",
-              "font",
-              "size",
               "bold",
               "italic",
               "underline",
-              "strike",
-              "color",
-              "direction",
-              "script",
-              "background",
-              "align",
-              "blockquote",
               "list",
               "bullet",
-              "indent",
               "link",
             ]}
             placeholder={placeholder}
