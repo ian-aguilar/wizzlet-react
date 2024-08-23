@@ -33,6 +33,15 @@ export const cmsSidebarComponents = [
     path: PrivateRoutesPath.cmsManagement.contactus,
     key: sidebarList.cmsContactus,
   },
+  {
+    navName: "Terms of Service",
+    path: PrivateRoutesPath.cmsManagement.terms,
+    key: sidebarList.cmsTerms,
+  },{
+    navName: "Privacy And Policy",
+    path: PrivateRoutesPath.cmsManagement.privacy,
+    key:sidebarList.cmsPrivacy
+  }
 ];
 
 export const userSidebar = [

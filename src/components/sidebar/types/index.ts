@@ -11,6 +11,8 @@ export enum sidebarList {
   cmsAboutus = "/cms-management/about-us",
   cmsFaq = "/cms-management/faq",
   cmsContactus = "/cms-management/contact-us",
+  cmsTerms = "/cms-management/terms",
+  cmsPrivacy = "/cms-management/privacy-and-policy",
 }
 
 export interface ISidebar {

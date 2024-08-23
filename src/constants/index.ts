@@ -1,13 +1,7 @@
 // ** types **
 import { PrivateRoutesPath } from "@/modules/Auth/types";
 
-import {
-  CMSMGTIcon,
-  DashboardIcon,
-  MarketPlaceIcon,
-  SettingsIcon,
-  UserMgtIcon,
-} from "@/assets/Svg";
+import { CMSMGTIcon, DashboardIcon, MarketPlaceIcon, SettingsIcon, UserMgtIcon } from "@/assets/Svg";
 
 import VisionImg from "/images/VisionImg.png";
 import MissionImg from "/images/MissionImg.png";
@@ -136,8 +130,7 @@ export const FaqData = {
     row: [
       {
         count: "01.",
-        question:
-          "How does your inventory management system help reduce stock outs and overstocking? ",
+        question: "How does your inventory management system help reduce stock outs and overstocking? ",
         answer:
           "Our system provides real-time inventory tracking and automated reordering alerts, ensuring you maintain optimal stock levels  and avoid costly stockouts or overstocking.",
       },
@@ -185,8 +178,7 @@ export const FaqData = {
       },
       {
         count: "09.",
-        question:
-          "Can I customize the features of the inventory management system to suit my business needs?",
+        question: "Can I customize the features of the inventory management system to suit my business needs?",
         answer:
           "Yes, our system is highly customizable. You can tailor various features and settings to align with your specific business processes and requirements. Whether it's setting custom reorder points or generating specific reports, our solution adapts to your needs.",
       },
@@ -270,8 +262,7 @@ export const FaqDataQuestionAnswer = [
   },
   {
     count: "09.",
-    question:
-      "Can I customize the features of the inventory management system to suit my business needs?",
+    question: "Can I customize the features of the inventory management system to suit my business needs?",
     answer:
       "Yes, our system is highly customizable. You can tailor various features and settings to align with your specific business processes and requirements. Whether it's setting custom reorder points or generating specific reports, our solution adapts to your needs.",
   },
@@ -320,4 +311,20 @@ export const aboutusCardDefaultValue: ICard = {
   icon: "",
   title: "",
   description: "",
+};
+
+// Quill modules configuration
+export const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
+    [{ size: [] }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ list: "ordered" }, { list: "bullet" }, { list: "check" }, { indent: "-1" }, { indent: "+1" }],
+    ["link"],
+    [{ color: [] }, { background: [] }],
+    [{ script: "sub" }, { script: "super" }],
+    [{ direction: "rtl" }],
+    [{ align: "right" }, { align: "center" }],
+    ["clean"],
+  ],
 };
