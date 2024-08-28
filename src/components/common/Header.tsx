@@ -41,15 +41,15 @@ const Header = ({ type }: { type: string }) => {
       {type === "App" ? (
         <header className="py-3 px-8 lg:px-14 flex items-center justify-between gap-8 border-b border-greyBorder">
           <div className="flex gap-4 items-center">
-            <Link to="" className="lg:hidden block">
+            {/* <Link to="" className="lg:hidden block">
               <HamburgerIcon />{" "}
-            </Link>
+            </Link> */}
 
             <Link to="">
               <img
                 src={MainLogo}
                 alt="Logo"
-                className="py-1 sm:min-w-[209px] sm:w-[209px] min-w-[100px] w-[100px]"
+                className="py-1 sm:min-w-[170px] sm:w-[170px] min-w-[120px] w-[120px]"
               />
             </Link>
           </div>
@@ -66,7 +66,9 @@ const Header = ({ type }: { type: string }) => {
               <div className="absolute opacity-0 invisible group-hover:visible group-hover:opacity-100 top-14 right-0 bg-white rounded-lg p-1  text-center min-w-[150px] w-[150px]  text-base font-semibold shadow-md ">
                 <span
                   className="block bg-grayLightBody/10 p-2 mb-1 hover:bg-greenPrimary/10 hover:text-greenPrimary hover:brightness-110 rounded-t-lg"
-                  onClick={() => navigate(PrivateRoutesPath.setting.profile.view)}
+                  onClick={() =>
+                    navigate(PrivateRoutesPath.setting.profile.view)
+                  }
                 >
                   Account
                 </span>
@@ -80,7 +82,11 @@ const Header = ({ type }: { type: string }) => {
                   Logout
                 </span>
               </div>
-              <img src={ProfilePlaceholder} className="w-14 h-14 min-w-14" alt="" />
+              <img
+                src={ProfilePlaceholder}
+                className="w-14 h-14 min-w-14"
+                alt=""
+              />
             </div>
           </div>
         </header>
@@ -89,7 +95,10 @@ const Header = ({ type }: { type: string }) => {
           {isSidebar && <ModalNav closeSidebar={() => setIsSidebar(false)} />}
           <header className="border-b shadow-headerWeb">
             <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
-              <Link to={RoutesPath.CMSHome} className="max-w-[177px] min-w-[177px] w-[177px]">
+              <Link
+                to={RoutesPath.CMSHome}
+                className="max-w-[177px] min-w-[177px] w-[177px]"
+              >
                 <img src={Logo} alt="" className="w-full h-auto" />
               </Link>
               <nav className=" hidden lg:flex gap-11 items-center">
@@ -135,7 +144,10 @@ const Header = ({ type }: { type: string }) => {
                   }}
                 />
               </div>
-              <div className="HamburgerIcon  lg:hidden block" onClick={() => setIsSidebar(true)}>
+              <div
+                className="HamburgerIcon  lg:hidden block"
+                onClick={() => setIsSidebar(true)}
+              >
                 <Link to="" className="inline-block ">
                   {" "}
                   <HamburgerIcon />{" "}
