@@ -9,8 +9,6 @@ import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes, RequiresUnAuthForCMS } from "./modules/cms/routes";
-import Terms from "./modules/Admin/Terms/Index";
-import Privacy from "./modules/Admin/Privacy/Index";
 
 const Marketplace = React.lazy(() => import("./modules/marketplace/pages/marketplace"));
 const InventoryManagement = React.lazy(() => import("./modules/inventory-management"));
@@ -22,6 +20,8 @@ const ImportProducts = React.lazy(() => import("./modules/import-products"));
 const ContactusManagement = React.lazy(() => import("./modules/contact-us-management"));
 const FaqForm = React.lazy(() => import("./modules/Admin/Faq"));
 const HomePageForm = React.lazy(() => import("./modules/Admin/Home"));
+const Terms = React.lazy(() => import("./modules/Admin/Terms/Index"));
+const Privacy = React.lazy(() => import("./modules/Admin/Privacy/Index"));
 
 // ** Types **
 export type RouteObjType = {
