@@ -5,14 +5,14 @@ import { useGetPrivacyAPI } from "../services/cms.service";
 export default function Privacy() {
   const [privacyData, setPrivacyData] = useState<{ privacy: string }>();
   const { getPrivacyAPI, isLoading } = useGetPrivacyAPI();
-  const getFaqData = async () => {
+  const getPrivacyData = async () => {
     const { data, error } = await getPrivacyAPI();
     if (!error && data) {
       setPrivacyData({ privacy: data.data.policy });
     }
   };
   useEffect(() => {
-    getFaqData();
+    getPrivacyData();
   }, []);
   return (
     <>

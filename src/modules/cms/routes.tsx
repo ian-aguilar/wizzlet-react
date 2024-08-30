@@ -6,14 +6,14 @@ import { useSelector } from "react-redux";
 import { getAuth } from "@/redux/slices/authSlice";
 import { Navigate, Outlet } from "react-router-dom";
 import { Footer } from "./common/Footer";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
 
 const CMSHome = React.lazy(() => import("./pages/Home"));
 const AboutUs = React.lazy(() => import("./pages/AboutUs"));
 const Faqs = React.lazy(() => import("./pages/Faqs"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const Header = React.lazy(() => import("@/components/common/Header"));
+const Terms = React.lazy(() => import("./pages/Terms"))
+const Privacy = React.lazy(() => import("./pages/Privacy"))
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
