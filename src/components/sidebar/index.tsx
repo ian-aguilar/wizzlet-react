@@ -19,7 +19,9 @@ const Sidebar = () => {
 
   useEffect(() => {
     if (location.pathname) {
-      const activeKey = sidebarColumn.find((el) => location.pathname.includes(el.key));
+      const activeKey = sidebarColumn.find((el) =>
+        location.pathname.includes(el.key)
+      );
       if (activeKey?.key) setActive(activeKey?.key);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +48,9 @@ const Sidebar = () => {
     <>
       <article
         className={`sidebar  LeftBar   h-full  block   p-5 relative transition-all duration-300    ${
-          isOpen == true ? "active  min-w-[291px] w-[291px]   " : "  min-w-[91px] w-[91px] "
+          isOpen == true
+            ? "active  min-w-[291px] w-[291px]   "
+            : "  min-w-[91px] w-[91px] "
         }`}
       >
         <div className="absolute -right-3 top-7 ">
@@ -59,12 +63,18 @@ const Sidebar = () => {
               setIsOpen(!isOpen);
             }}
           >
-            <LeftArrowIcon className="text-grayText" />
+            <LeftArrowIcon
+              className={`text-grayText transform transition-transform duration-200 ease-in-out ${
+                isOpen ? "" : "rotate-180"
+              }`}
+            />
           </div>
         </div>
         <div
           className={`  bg-[#F7F8FA] uppercase w-full text-grayText font-semibold mb-2  transition-all duration-300 h-[40px]  ${
-            isOpen == true ? "active  py-2 px-4  text-base   " : "   py-3 px-2  text-xs    "
+            isOpen == true
+              ? "active  py-2 px-4  text-base   "
+              : "   py-3 px-2  text-xs    "
           }`}
         >
           MENU
@@ -77,7 +87,9 @@ const Sidebar = () => {
                 <>
                   <div
                     className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110   duration-300 transition-all  hover:duration-300 hover:transition-all cursor-pointer  ${
-                      active === data.key ? "bg-greenPrimary text-white" : "bg-white text-grayText"
+                      active === data.key
+                        ? "bg-greenPrimary text-white"
+                        : "bg-white text-grayText"
                     } `}
                     key={i}
                     onClick={() => {
@@ -140,7 +152,9 @@ const Sidebar = () => {
               ) : (
                 <Link
                   className={` group font-medium w-full flex gap-2 rounded-md p-4 mb-1 hover:brightness-110   duration-300 transition-all  hover:duration-300 hover:transition-all ${
-                    active === data.key ? "bg-greenPrimary text-white" : "bg-white text-grayText"
+                    active === data.key
+                      ? "bg-greenPrimary text-white"
+                      : "bg-white text-grayText"
                   } `}
                   to={data.path}
                   key={i}

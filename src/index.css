@@ -113,3 +113,58 @@ input::-webkit-inner-spin-button {
 .dataTable.manager .rdt_TableRow {
   @apply bg-white hover:!bg-[#f4f5f7]   !rounded-md;
 }
+
+@layer {
+
+
+
+.termsContainer h1 , .termsContainer h2 , .termsContainer h3 , .termsContainer h4 , .termsContainer h5, .termsContainer h6 {
+  @apply  !font-semibold    !text-blackPrimary ;
+}
+
+
+.termsContainer {
+  @apply !px-4  !pt-10  !container ;
+}
+
+
+.termsContainer h6 {
+  @apply !text-xs !pb-1;
+}
+.termsContainer h5 {
+  @apply !text-sm !pb-2;
+}
+.termsContainer h4 {
+  @apply !text-base !pb-3;
+}
+.termsContainer h3 {
+  @apply !text-xl !pb-4;
+}
+.termsContainer h2 {
+  @apply !text-3xl !pb-6;
+}
+.termsContainer h1 {
+  @apply text-4xl lg:!text-5xl    ;
+}
+
+
+.termsContainer ul {
+  @apply !pl-0 !pb-4 !list-inside !text-blackPrimary ;
+}
+.termsContainer li {
+  @apply !list-disc   ;
+}
+
+.termsContainer p {
+  @apply  !text-blackPrimary !pb-10 ;
+}
+
+.termsContainer ul ul{
+  @apply !pb-0 ;
+ }
+
+ .termsContainer blockquote {
+  @apply  !text-blackPrimary !pb-10 ;
+ }
+
+}
