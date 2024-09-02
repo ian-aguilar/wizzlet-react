@@ -23,6 +23,7 @@ export type IInputProps<T extends FieldValues> = {
   textLabelName?: string;
   withLabel?: boolean;
   isDisabled?: boolean;
+  InputLeftIcon?: any;
 };
 
 export type IReactQuillProps<T extends FieldValues> = {

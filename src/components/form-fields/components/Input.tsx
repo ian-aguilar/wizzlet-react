@@ -48,6 +48,7 @@ const InputField = <T extends FieldValues>({
   type,
   autoComplete,
   isDisabled,
+  InputLeftIcon,
 }: IInputProps<T>) => {
   const [isShow, setIsShow] = useState<boolean>(false);
   return (
@@ -69,8 +70,13 @@ const InputField = <T extends FieldValues>({
         )}
       />
 
+      <div className="absolute left-4 top-4">{InputLeftIcon}</div>
+
       {inputEndIcon && (
-        <div className="absolute right-4 top-4" onClick={() => setIsShow((prev) => !prev)}>
+        <div
+          className="absolute right-4 top-4"
+          onClick={() => setIsShow((prev) => !prev)}
+        >
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}
@@ -79,7 +85,9 @@ const InputField = <T extends FieldValues>({
         errors={errors}
         name={name}
         render={({ message }) => (
-          <span className="errorText text-red-600 font-medium text-sm">{message}</span>
+          <span className="errorText text-red-600 font-medium text-sm">
+            {message}
+          </span>
         )}
       />
     </div>
