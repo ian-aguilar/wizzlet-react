@@ -630,33 +630,33 @@ export const DeleteIcon = ({ className }: any) => {
     >
       <path
         d="M17.5 4.98307C14.725 4.70807 11.9333 4.56641 9.15 4.56641C7.5 4.56641 5.85 4.64974 4.2 4.81641L2.5 4.98307"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M7.0835 4.14199L7.26683 3.05033C7.40016 2.25866 7.50016 1.66699 8.9085 1.66699H11.0918C12.5002 1.66699 12.6085 2.29199 12.7335 3.05866L12.9168 4.14199"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M15.7082 7.61621L15.1665 16.0079C15.0748 17.3162 14.9998 18.3329 12.6748 18.3329H7.32484C4.99984 18.3329 4.92484 17.3162 4.83317 16.0079L4.2915 7.61621"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M8.6084 13.75H11.3834"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M7.9165 10.417H12.0832"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -718,23 +718,23 @@ export const InfoIcon = ({ className }: any) => {
       <path
         d="M41.5 36.5V45.6667"
         stroke="#6C778B"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M41.5003 59.2517H30.3903C24.0286 59.2517 21.3703 54.705 24.4503 49.15L30.1703 38.8467L35.5603 29.1667C38.8236 23.2817 44.1769 23.2817 47.4403 29.1667L52.8303 38.865L58.5503 49.1683C61.6303 54.7233 58.9536 59.27 52.6103 59.27H41.5003V59.2517Z"
         stroke="#6C778B"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M41.4897 51.1666H41.5062"
         stroke="#6C778B"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -759,37 +759,37 @@ export const DeleteModalIcon = ({ className }: any) => {
       <path
         d="M58 30.4633C51.895 29.8583 45.7533 29.5466 39.63 29.5466C36 29.5466 32.37 29.73 28.74 30.0966L25 30.4633"
         stroke="#FC5F5F"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M35.083 28.6116L35.4863 26.21C35.7797 24.4683 35.9997 23.1666 39.098 23.1666H43.9013C46.9997 23.1666 47.238 24.5416 47.513 26.2283L47.9163 28.6116"
         stroke="#FC5F5F"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M54.0581 36.2567L52.8664 54.7184C52.6647 57.5967 52.4997 59.8334 47.3847 59.8334H35.6147C30.4997 59.8334 30.3347 57.5967 30.1331 54.7184L28.9414 36.2567"
         stroke="#FC5F5F"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M38.4385 49.75H44.5435"
         stroke="#FC5F5F"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M36.917 42.4166H46.0837"
         stroke="#FC5F5F"
-        stroke-width="3"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -976,23 +976,23 @@ export const CameraBgIcon = ({ className }: any) => {
       <path
         d="M16.7602 32.5H27.2402C30.0002 32.5 31.1002 30.81 31.2302 28.75L31.7502 20.49C31.8902 18.33 30.1702 16.5 28.0002 16.5C27.3902 16.5 26.8302 16.15 26.5502 15.61L25.8302 14.16C25.3702 13.25 24.1702 12.5 23.1502 12.5H20.8602C19.8302 12.5 18.6302 13.25 18.1702 14.16L17.4502 15.61C17.1702 16.15 16.6102 16.5 16.0002 16.5C13.8302 16.5 12.1102 18.33 12.2502 20.49L12.7702 28.75C12.8902 30.81 14.0002 32.5 16.7602 32.5Z"
         stroke="#09A17A"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M20.5 18.5H23.5"
         stroke="#09A17A"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M22 28.5C23.79 28.5 25.25 27.04 25.25 25.25C25.25 23.46 23.79 22 22 22C20.21 22 18.75 23.46 18.75 25.25C18.75 27.04 20.21 28.5 22 28.5Z"
         stroke="#09A17A"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -1010,17 +1010,17 @@ export const RightArrowLongIcon = ({ className }: any) => {
     >
       <path
         d="M14.9297 6.42969L20.9997 12.4997L14.9297 18.5697"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M4 12.5H20.83"
-        stroke-width="1.5"
+        strokeWidth="1.5"
         stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -1039,23 +1039,23 @@ export const PlusIcon = ({ className }: any) => {
       <path
         d="M9.99996 18.3333C14.5833 18.3333 18.3333 14.5833 18.3333 9.99996C18.3333 5.41663 14.5833 1.66663 9.99996 1.66663C5.41663 1.66663 1.66663 5.41663 1.66663 9.99996C1.66663 14.5833 5.41663 18.3333 9.99996 18.3333Z"
         stroke="white"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M6.66663 10H13.3333"
         stroke="white"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M10 13.3333V6.66663"
         stroke="white"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

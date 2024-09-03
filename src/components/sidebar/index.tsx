@@ -1,5 +1,5 @@
 // ** packages **
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // ** Icons **
@@ -82,7 +82,7 @@ const Sidebar = () => {
 
         <nav className="max-h-[calc(100vh_-_155px)] overflow-y-auto scroll-design  overflow-x-hidden">
           {sidebarColumn.map((data, i) => (
-            <>
+            <Fragment key={data.navName}>
               {data.components ? (
                 <>
                   <div
@@ -173,7 +173,7 @@ const Sidebar = () => {
                   </span>
                 </Link>
               )}
-            </>
+            </Fragment>
           ))}
         </nav>
       </article>

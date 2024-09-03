@@ -14,7 +14,6 @@ const Input = <T extends FieldValues>({
   errors,
   type,
   autoComplete,
-  withLabel = false,
   isDisabled,
 }: IInputProps<T>) => {
   return (
@@ -29,7 +28,6 @@ const Input = <T extends FieldValues>({
         name={name}
         errors={errors}
         autoComplete={autoComplete}
-        withLabel={withLabel}
         isDisabled={isDisabled}
         className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
       />
@@ -70,7 +68,10 @@ const InputField = <T extends FieldValues>({
       />
 
       {inputEndIcon && (
-        <div className="absolute right-4 top-4" onClick={() => setIsShow((prev) => !prev)}>
+        <div
+          className="absolute right-4 top-4"
+          onClick={() => setIsShow((prev) => !prev)}
+        >
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}
@@ -79,7 +80,9 @@ const InputField = <T extends FieldValues>({
         errors={errors}
         name={name}
         render={({ message }) => (
-          <span className="errorText text-red-600 font-medium text-sm">{message}</span>
+          <span className="errorText text-red-600 font-medium text-sm">
+            {message}
+          </span>
         )}
       />
     </div>
