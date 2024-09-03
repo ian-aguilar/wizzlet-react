@@ -1,15 +1,16 @@
 // ** packages **
 import { RouteObjType } from "@/router";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 
 // ** types **
 import { PrivateRoutesPath } from "../Auth/types";
 
 // ** common components **
-import ChangePassword from "./pages/ChangePassword";
-import LabelManager from "./pages/LabelManager";
-import Profile from "./pages/Profile";
 import { Loader } from "@/components/common/Loader";
+
+const ChangePassword = React.lazy(() => import("./pages/ChangePassword"));
+const LabelManager = React.lazy(() => import("./pages/LabelManager"));
+const Profile = React.lazy(() => import("./pages/Profile"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({

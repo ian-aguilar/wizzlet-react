@@ -4,7 +4,6 @@ import DataTable from "react-data-table-component";
 
 // ** Components **
 import AddLabel from "../components/AddLabel";
-import { ModalError } from "@/components/common/ModalError";
 import { btnShowType } from "@/components/form-fields/types";
 import Button from "@/components/form-fields/components/Button";
 
@@ -17,13 +16,11 @@ import useTable from "@/hooks/useTable";
 import useLabelHeaders from "../hooks/useLabelHeaders";
 
 // ** Services **
-import {
-  useDeleteLabelDataAPI,
-  useFetchLabelDataAPI,
-} from "../services/label.service";
+import { useDeleteLabelDataAPI, useFetchLabelDataAPI } from "../services/label.service";
 
 // ** Icons **
 import { AddIconBtn, SearchIcon } from "@/assets/Svg";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 const LabelManager = () => {
   //================= States =======================
@@ -32,8 +29,7 @@ const LabelManager = () => {
 
   // ================= Custom hooks ====================
   const { deleteLabelAPI } = useDeleteLabelDataAPI();
-  const { getLabelListingAPI, isLoading: listingLoader } =
-    useFetchLabelDataAPI();
+  const { getLabelListingAPI, isLoading: listingLoader } = useFetchLabelDataAPI();
 
   const handleDeleteClick = (row: Label) => setDeleteModel(row);
 
@@ -65,14 +61,7 @@ const LabelManager = () => {
       totalRecord: totalCount,
     };
   };
-  const {
-    setReload,
-    page,
-    limit,
-    onSearch,
-    resetTableToInitial,
-    ...TableProps
-  } = useTable<Label>({
+  const { setReload, onSearch, resetTableToInitial, ...TableProps } = useTable<Label>({
     getData,
   });
 
@@ -96,9 +85,7 @@ const LabelManager = () => {
   return (
     <div className="pb-5">
       <div className="border-b border-greyBorder pb-2 mb-4 flex justify-between">
-        <h3 className="text-2xl  text-blackPrimary  font-medium">
-          Label Manager
-        </h3>
+        <h3 className="text-2xl  text-blackPrimary  font-medium">Label Manager</h3>
         <div className=" flex gap-2 ">
           <div className="relative  ">
             <input
@@ -114,9 +101,7 @@ const LabelManager = () => {
           <Button
             showType={btnShowType.green}
             btnClass=" !w-auto !px-4 "
-            BtnIconLeft={
-              <AddIconBtn className="text-white inline-block mr-2" />
-            }
+            BtnIconLeft={<AddIconBtn className="text-white inline-block mr-2" />}
             type="submit"
             btnName="Add New Label"
             onClickHandler={() => setAddModelOpen(true)}
@@ -137,20 +122,15 @@ const LabelManager = () => {
         </div>
 
         {addModelOpen && (
-          <AddLabel
-            onClose={onAddModelClose}
-            reload={() => setReload((prev) => !prev)}
-          />
+          <AddLabel onClose={onAddModelClose} reload={() => setReload((prev) => !prev)} />
         )}
 
         {deleteModel && (
-          <ModalError
-            cancelButtonText="Cancel"
-            confirmButtonText="Delete"
+          <ErrorModal
+            onClose={closeDeleteModel}
+            onSave={handleRemove}
             heading="Are you sure?"
-            subText="This will delete your user from list"
-            onCancel={closeDeleteModel}
-            onConfirm={handleRemove}
+            subText="This will delete your user from the list."
           />
         )}
       </div>

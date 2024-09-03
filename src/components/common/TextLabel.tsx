@@ -38,7 +38,7 @@ export const TextLabel = <T extends FieldValues>({
         placeholder={TextPlaceHolder}
       /> */}
       {/* <div className="absolute right-4 top-10 "> {TextEndIcon} </div> */}
-      <span className="errorText text-red-400 text-xs"> </span>
+      <span className="errorText text-red-600 font-medium text-sm"> </span>
     </div>
   );
 };

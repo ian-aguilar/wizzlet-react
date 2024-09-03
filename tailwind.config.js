@@ -11,6 +11,7 @@ export default {
           inputAuthBg: "#EAEDF3",
           greyBorder: "#D8DCE4",
           redAlert: "#FC5F5F",
+          yellow: "#E1B000",
       },
       backgroundImage:{
         authPattern: "url('/images/bgPatternAuth.png');",

@@ -7,13 +7,13 @@ import ResetPassword from "./pages/ResetPassword";
 import { RoutesPath } from "./types";
 
 // ** Pages **
-const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
 const Otp = React.lazy(() => import("@/modules/Auth/pages/Otp"));
-const ForgotPassword = React.lazy(
-  () => import("@/modules/Auth/pages/ForgotPassword")
-);
+const Login = React.lazy(() => import("@/modules/Auth/pages/Login"));
 const Registration = React.lazy(
   () => import("@/modules/Auth/pages/Registration")
+);
+const ForgotPassword = React.lazy(
+  () => import("@/modules/Auth/pages/ForgotPassword")
 );
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
@@ -38,6 +38,10 @@ export const AuthenticationRoutes = applySuspense([
   },
   {
     path: RoutesPath.ResetPassword,
+    element: <ResetPassword />,
+  },
+  {
+    path: RoutesPath.SetPassword,
     element: <ResetPassword />,
   },
   {

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Logo from "/images/logo.svg";
+import { RoutesPath } from "@/modules/Auth/types";
 
 export const Footer = () => {
   return (
@@ -9,40 +10,40 @@ export const Footer = () => {
           <Link to="" className="max-w-[173px] min-w-[173px] w-[173px] mb-2">
             <img src={Logo} alt="" className="w-full h-auto" />
           </Link>
-          <span className="text-base font-normal text-blackPrimary/60">
-            © 2024 Importme Labs, Inc.
-          </span>
+          <p className="text-base font-normal mt-2 text-blackPrimary/60">
+            © 2024 Hayowl Labs, Inc.
+          </p>
         </div>
         <div className="flex flex-wrap justify-center items-center gap-4 lg:gap-7 text-blackPrimary/80 py-4">
-          <Link to="" className="hover:text-greenPrimary">
+          <Link to={RoutesPath.CMSHome} className="hover:text-greenPrimary">
             Home
           </Link>
           <Link
-            to=""
+            to={RoutesPath.CMSAboutUs}
             className="hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300 "
           >
             About Us
           </Link>
           <Link
-            to=""
+            to={RoutesPath.CMSFaqs}
             className="hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300 "
           >
             FAQs
           </Link>
           <Link
-            to=""
+            to={RoutesPath.CMSContact}
             className="hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300 "
           >
             Contact Us
           </Link>
           <Link
-            to=""
+            to={RoutesPath.CMSTerms}
             className="hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300 "
           >
             Terms of Service
           </Link>
           <Link
-            to=""
+            to={RoutesPath.CMSPrivacy}
             className="hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300 "
           >
             Privacy And Policy

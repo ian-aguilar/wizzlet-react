@@ -1,9 +1,5 @@
 // ** Packages **
-import {
-  RouteObject,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -12,12 +8,20 @@ import { SettingRoutes } from "./modules/settings/routes";
 import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
-import { CMSRoutes } from "./modules/cms/routes";
-import Marketplace from "./modules/marketplace/pages/marketplace";
-import InventoryManagement from "./modules/inventory-management";
-import Dashboard from "./modules/dashboard";
-import UserManagement from "./modules/user-management";
-import ImportProducts from "./modules/import-products";
+import { CMSRoutes, RequiresUnAuthForCMS } from "./modules/cms/routes";
+
+const Marketplace = React.lazy(() => import("./modules/marketplace/pages/marketplace"));
+const InventoryManagement = React.lazy(() => import("./modules/inventory-management"));
+const Dashboard = React.lazy(() => import("./modules/dashboard/index-temp"));
+const UserManagement = React.lazy(() => import("./modules/user-management"));
+const Aboutus = React.lazy(() => import("./modules/Admin/Aboutus/Index"));
+const Contactus = React.lazy(() => import("./modules/Admin/Contactus/Index"));
+const ImportProducts = React.lazy(() => import("./modules/import-products"));
+const ContactusManagement = React.lazy(() => import("./modules/contact-us-management"));
+const FaqForm = React.lazy(() => import("./modules/Admin/Faq"));
+const HomePageForm = React.lazy(() => import("./modules/Admin/Home"));
+const Terms = React.lazy(() => import("./modules/Admin/Terms/Index"));
+const Privacy = React.lazy(() => import("./modules/Admin/Privacy/Index"));
 
 // ** Types **
 export type RouteObjType = {
@@ -28,34 +32,24 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(
-  () => import("@/modules/Auth/components/RequiresUnAuth")
-);
-const RequiresAuth = React.lazy(
-  () => import("@/modules/dashboard/components/RequiresAuth")
-);
+const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
+const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: (
-      <Suspense
-        fallback={
-          <>
-            <Loader />
-          </>
-        }
-      >
-        {route.element}
-      </Suspense>
-    ),
+    element: <Suspense fallback={<Loader />}>{route.element}</Suspense>,
   }));
 };
 
 const applyRequiresAuthSuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
     ...route,
-    element: <RequiresAuth>{route.element}</RequiresAuth>,
+    element: (
+      <Suspense fallback={<Loader />}>
+        <RequiresAuth>{route.element}</RequiresAuth>
+      </Suspense>
+    ),
   }));
 };
 
@@ -64,7 +58,7 @@ const RouterComponent = () => {
   const routesForNotAuthenticatedOnly: RouteObject[] = applySuspense([
     {
       element: <RequiresUnAuth />,
-      children: AuthenticationRoutes,
+      children: [...AuthenticationRoutes],
     },
   ]);
 
@@ -94,12 +88,48 @@ const RouterComponent = () => {
       element: <SettingLayout />,
       children: SettingRoutes,
     },
+    {
+      path: PrivateRoutesPath.cmsManagement.aboutus,
+      element: <Aboutus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.contactus,
+      element: <Contactus />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.faq,
+      element: <FaqForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.home,
+      element: <HomePageForm />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.terms,
+      element: <Terms />,
+    },
+    {
+      path: PrivateRoutesPath.cmsManagement.privacy,
+      element: <Privacy />,
+    },
+    {
+      path: PrivateRoutesPath.contactusManagement.view,
+      element: <ContactusManagement />,
+    },
+  ]);
+
+  // ** CMS **
+  const routesForCMS: RouteObject[] = applySuspense([
+    {
+      element: <RequiresUnAuthForCMS />,
+      children: [...CMSRoutes],
+    },
   ]);
 
   const router = createBrowserRouter([
     ...routesForNotAuthenticatedOnly,
     ...routesForAuthenticatedOnly,
-    ...CMSRoutes,
+    ...routesForCMS,
   ]);
 
   return <RouterProvider router={router} />;

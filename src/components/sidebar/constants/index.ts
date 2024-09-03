@@ -2,6 +2,7 @@
 import {
   CMSMGTIcon,
   DashboardIcon,
+  HamburgerIcon,
   MarketPlaceIcon,
   SettingsIcon,
   UserMgtIcon,
@@ -10,6 +11,38 @@ import {
 // ** Types **
 import { sidebarList } from "../types";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
+
+export const cmsSidebarComponents = [
+  {
+    navName: "Home Page",
+    path: PrivateRoutesPath.cmsManagement.home,
+    key: sidebarList.cmsHome,
+  },
+  {
+    navName: "About Us Page",
+    path: PrivateRoutesPath.cmsManagement.aboutus,
+    key: sidebarList.cmsAboutus,
+  },
+  {
+    navName: "FAQ Page",
+    path: PrivateRoutesPath.cmsManagement.faq,
+    key: sidebarList.cmsFaq,
+  },
+  {
+    navName: "Contact Us Page",
+    path: PrivateRoutesPath.cmsManagement.contactus,
+    key: sidebarList.cmsContactus,
+  },
+  {
+    navName: "Terms of Service",
+    path: PrivateRoutesPath.cmsManagement.terms,
+    key: sidebarList.cmsTerms,
+  },{
+    navName: "Privacy And Policy",
+    path: PrivateRoutesPath.cmsManagement.privacy,
+    key:sidebarList.cmsPrivacy
+  }
+];
 
 export const userSidebar = [
   {
@@ -43,6 +76,7 @@ export const userSidebar = [
     key: sidebarList.setting,
   },
 ];
+
 export const adminSidebar = [
   {
     navIcon: DashboardIcon,
@@ -57,6 +91,12 @@ export const adminSidebar = [
     key: sidebarList.user,
   },
   {
+    navIcon: HamburgerIcon,
+    navName: "Inquiry Management",
+    path: PrivateRoutesPath.contactusManagement.view,
+    key: sidebarList.contactus,
+  },
+  {
     navIcon: MarketPlaceIcon,
     navName: "Marketplace",
     path: PrivateRoutesPath.marketplace.view,
@@ -65,8 +105,9 @@ export const adminSidebar = [
   {
     navIcon: CMSMGTIcon,
     navName: "CMS Management",
-    path: "",
     key: sidebarList.cms,
+    path: "",
+    components: cmsSidebarComponents,
   },
   {
     navIcon: SettingsIcon,

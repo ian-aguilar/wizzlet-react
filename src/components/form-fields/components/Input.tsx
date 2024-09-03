@@ -70,10 +70,7 @@ const InputField = <T extends FieldValues>({
       />
 
       {inputEndIcon && (
-        <div
-          className="absolute right-4 top-4"
-          onClick={() => setIsShow((prev) => !prev)}
-        >
+        <div className="absolute right-4 top-4" onClick={() => setIsShow((prev) => !prev)}>
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}
@@ -82,7 +79,7 @@ const InputField = <T extends FieldValues>({
         errors={errors}
         name={name}
         render={({ message }) => (
-          <span className="errorText text-red-400 text-xs">{message}</span>
+          <span className="errorText text-red-600 font-medium text-sm">{message}</span>
         )}
       />
     </div>

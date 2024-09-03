@@ -15,3 +15,17 @@ export interface ITextLabelProps<T extends FieldValues> {
   type?: string;
   autoComplete?: string;
 }
+
+export interface FileUploadProps {
+  allowedImageTypes: string[];
+  allowedVideoTypes: string[];
+  maxImageSizeInMB: number;
+  maxVideoSizeInMB: number;
+  onFileSelect: (file: File | null) => void;
+}
+
+export interface InputSwitchProps {
+  id: number;
+  status: string;
+  onToggle: (id: number, status: string) => void;
+}

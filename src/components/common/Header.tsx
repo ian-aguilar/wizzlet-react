@@ -14,25 +14,42 @@ import { setLogoutData } from "@/redux/slices/authSlice";
 import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 import Button from "../form-fields/components/Button";
 import { btnShowType } from "../form-fields/types";
+import { useEffect, useState } from "react";
+import ModalNav from "@/modules/cms/common/ModalNav";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [isSidebar, setIsSidebar] = useState(false);
+
+  const handleWindowSizeChange = () => {
+    if (window.innerWidth > 768) {
+      setIsSidebar(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleWindowSizeChange);
+    return () => {
+      window.removeEventListener("resize", handleWindowSizeChange);
+    };
+  }, []);
 
   return (
     <>
       {type === "App" ? (
         <header className="py-3 px-8 lg:px-14 flex items-center justify-between gap-8 border-b border-greyBorder">
           <div className="flex gap-4 items-center">
-            <Link to="" className="lg:hidden block">
+            {/* <Link to="" className="lg:hidden block">
               <HamburgerIcon />{" "}
-            </Link>
+            </Link> */}
 
             <Link to="">
               <img
                 src={MainLogo}
                 alt="Logo"
-                className="py-1 sm:min-w-[209px] sm:w-[209px] min-w-[100px] w-[100px]"
+                className="py-1 sm:min-w-[170px] sm:w-[170px] min-w-[120px] w-[120px]"
               />
             </Link>
           </div>
@@ -74,65 +91,71 @@ const Header = ({ type }: { type: string }) => {
           </div>
         </header>
       ) : (
-        <header className="border-b shadow-headerWeb">
-          <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
-            <Link
-              to={RoutesPath.CMSHome}
-              className="max-w-[177px] min-w-[177px] w-[177px]"
-            >
-              <img src={Logo} alt="" className="w-full h-auto" />
-            </Link>
-            <nav className=" hidden lg:flex gap-11 items-center">
+        <>
+          {isSidebar && <ModalNav closeSidebar={() => setIsSidebar(false)} />}
+          <header className="border-b shadow-headerWeb">
+            <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
               <Link
                 to={RoutesPath.CMSHome}
-                className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                className="max-w-[177px] min-w-[177px] w-[177px]"
               >
-                Home
+                <img src={Logo} alt="" className="w-full h-auto" />
               </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSAboutUs}
+              <nav className=" hidden lg:flex gap-11 items-center">
+                <Link
+                  to={RoutesPath.CMSHome}
+                  className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                >
+                  Home
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSAboutUs}
+                >
+                  About
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSFaqs}
+                >
+                  FAQ
+                </Link>
+                <Link
+                  className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                  to={RoutesPath.CMSContact}
+                >
+                  Contact Us
+                </Link>
+              </nav>
+              <div className=" hidden lg:flex ">
+                <Link
+                  to={RoutesPath.Login}
+                  className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
+                >
+                  Log In
+                </Link>
+                <Button
+                  showType={btnShowType.primary}
+                  btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
+                  btnName="Get Started"
+                  btnEndIcon={<RightArrowWhite />}
+                  onClickHandler={() => {
+                    navigate(RoutesPath.SignUp);
+                  }}
+                />
+              </div>
+              <div
+                className="HamburgerIcon  lg:hidden block"
+                onClick={() => setIsSidebar(true)}
               >
-                About
-              </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSFaqs}
-              >
-                FAQ
-              </Link>
-              <Link
-                className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                to={RoutesPath.CMSContact}
-              >
-                Contact Us
-              </Link>
-            </nav>
-            <div className=" hidden lg:flex ">
-              <Link
-                to={RoutesPath.Login}
-                className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
-              >
-                Log In
-              </Link>
-              <Button
-                showType={btnShowType.primary}
-                btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
-                btnName="Get Started"
-                btnEndIcon={<RightArrowWhite />}
-                onClickHandler={() => {
-                  navigate(RoutesPath.SignUp);
-                }}
-              />
+                <Link to="" className="inline-block ">
+                  {" "}
+                  <HamburgerIcon />{" "}
+                </Link>
+              </div>
             </div>
-            <div className="HamburgerIcon  lg:hidden block ">
-              <Link to="" className="inline-block ">
-                {" "}
-                <HamburgerIcon />{" "}
-              </Link>
-            </div>
-          </div>
-        </header>
+          </header>
+        </>
       )}
     </>
   );

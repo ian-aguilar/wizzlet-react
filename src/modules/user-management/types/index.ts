@@ -13,7 +13,7 @@ export interface IUserListing {
 
 export interface IUseUserHeadersProps {
   onDelete: (id: number) => void;
-  onStatusChange: (id: number) => void;
+  onInactive: (id: number, status: string) => void;
 }
 
 export interface IUserModel {
@@ -30,6 +30,5 @@ export interface User {
 }
 
 export type AddUserFormProps = {
-  onClose: () => void;
-  reload: () => void;
+  onClose: (reload?: boolean, link?: string) => void;
 };
