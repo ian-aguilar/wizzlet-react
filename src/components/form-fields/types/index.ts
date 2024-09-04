@@ -32,6 +32,7 @@ export type IDateInputProps<T extends FieldValues> = {
   placeholder?: string;
   label?: string;
   isDisabled?: boolean;
+  InputLeftIcon?: any;
 };
 
 export type IReactQuillProps<T extends FieldValues> = {
