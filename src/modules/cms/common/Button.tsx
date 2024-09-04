@@ -1,9 +1,10 @@
-export const Button = ({ btnName, btnClass, btnEndIcon }: any) => {
+export const Button = ({ btnName, btnClass, btnEndIcon, BtnIconLeft, onClickHandler }: any) => {
   return (
     <button
-      className={`py-3 px-5 border rounded-[10px] text-xl font-medium transition-all duration-300 hover:transition-all hover:duration-300 hover:brightness-110 flex gap-2 items-center ${btnClass}`}
+      onClick={onClickHandler}
+      className={`py-3 px-5 border rounded-md text-xl font-medium transition-all duration-300 hover:transition-all hover:duration-300 hover:brightness-110 flex gap-2 items-center ${btnClass}`}
     >
-      {btnName} {btnEndIcon}
+      {BtnIconLeft} {btnName} {btnEndIcon}
     </button>
   );
 };
