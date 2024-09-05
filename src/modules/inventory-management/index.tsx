@@ -4,53 +4,50 @@ import {
   BulkImportIcon,
   CategoryBtnIcon,
   CheckIconBtn,
-  DeleteIcon,
-  DownArrowBlack,
   DownArrowIcon,
   DownloadCSVIcon,
-  EditLabelIcon,
   SearchIcon,
-  SortIcon,
 } from "@/assets/Svg";
-import { Button } from "../cms/common/Button";
-import Checkbox from "@/components/form-fields/components/Checkbox";
-import Input from "@/components/form-fields/components/Input";
+
 import React, { MouseEvent, useCallback, useEffect, useState } from "react";
-import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { IMarketplace } from "../marketplace/types";
-import { categories, data, status } from "./helper/inventryData";
-import { VITE_APP_API_URL } from "@/config";
+import { debounce } from "lodash";
+import Button from "../../components/form-fields/components/Button";
+import Checkbox from "@/components/form-fields/components/Checkbox";
+import { SearchBox } from "../../components/common/SearchBox";
 import { Pagination } from "./components/Pagination";
 import DropDown from "./components/DropDown";
-import { SearchBox } from "./components/SearchBox";
-import { E_PRODUCT_STATUS, IItemFilter } from "./types";
-import { debounce } from "lodash";
+import Product from "./components/Product";
+
+import { IMarketplace } from "../marketplace/types";
+import { E_PRODUCT_STATUS, Option } from "./types";
+import { btnShowType } from "@/components/form-fields/types";
+
+import { categories, data, status } from "./helper/inventryData";
+import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 
 const InventoryManagement = () => {
   //================== States =========================
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<Option | undefined>(undefined);
   const [productStatus, setProductStatus] = useState<string>(E_PRODUCT_STATUS.active);
-  const [itemPerPage, setItemPerPage] = useState<number>(10);
+  const [itemPerPage, setItemPerPage] = useState<Option>({ label: "10", value: "10" });
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [searchValue, setSearchValue] = useState<string>("");
   const [marketplace, setMarketplace] = useState<{ connectedMarketplace: IMarketplace[] }>({
     connectedMarketplace: [],
   });
-
 
   // ================= Custom hooks ====================
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
 
   // ** Function for list products by API
-  const getProductsDetails = async () => {
+  const getProductsDetails = async (search: string = "") => {
     console.log("productStatus: ", productStatus);
     console.log("selectedMarketplace: ", selectedMarketplace);
-    console.log("category: ", category);
-    console.log("searchValue: ", searchValue);
+    console.log("category: ", category?.value ? category.value : "");
+    console.log("searchValue: ", search);
     console.log("currentPage", currentPage);
-    console.log("itemPerPage: ", itemPerPage);
+    console.log("itemPerPage: ", itemPerPage.value);
     console.log("++++++++++============+++++++++++");
   };
 
@@ -65,8 +62,8 @@ const InventoryManagement = () => {
 
   //Dummy json data constant
   const currentData = data.slice(
-    (Number(currentPage) - 1) * itemPerPage,
-    (Number(currentPage) - 1) * itemPerPage + itemPerPage
+    (Number(currentPage) - 1) * Number(itemPerPage.value),
+    (Number(currentPage) - 1) * Number(itemPerPage.value) + Number(itemPerPage.value)
   );
 
   //API call for get connected marketplace
@@ -88,57 +85,48 @@ const InventoryManagement = () => {
     }
   };
 
-  // Handle category dropdown
-  const handleCategory = (event: React.FormEvent<HTMLSelectElement>) => {
-    setCurrentPage(1);
-    if (event.currentTarget.value) {
-      setCategory(event.currentTarget.value);
-    }
-  };
-
-  // Handle page limit dropdown
-  const handlePageLimit = (event: React.FormEvent<HTMLSelectElement>) => {
-    setCurrentPage(1);
-    if (event.currentTarget.value) {
-      setItemPerPage(Number(event.currentTarget.value));
-    }
-  };
-
   // handle product status
-  const handleProductStatus = (item: string) => {
+  const handleProductStatus = (item: E_PRODUCT_STATUS) => {
     setProductStatus(item);
   };
 
   // search box with debouncing
-  const updateSearch = () => {
-    setSearchValue(searchTerm);
-  };
+  const request = debounce((value) => {
+    getProductsDetails(value);
+  }, 500);
 
-  const delayedSearch = useCallback(debounce(updateSearch, 500), [searchTerm]);
+  const debounceRequest = useCallback((value: string) => request(value), []);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
+    debounceRequest(event.currentTarget.value.trim());
   };
 
   useEffect(() => {
     marketplaceListing();
-    getProductsDetails();
-  }, [currentPage, searchValue, productStatus, itemPerPage, category, selectedMarketplace]);
+  }, []);
 
-  //useEffect for search box
   useEffect(() => {
-    delayedSearch();
-    return delayedSearch.cancel;
-  }, [searchTerm, delayedSearch]);
+    getProductsDetails();
+  }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
 
   return (
     <div>
-      {/* Inventory Management */}{" "}
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
         <div className="flex gap-2">
-          <Button btnName="Filters" btnClass=" !text-base bg-white  " BtnIconLeft={<CategoryBtnIcon />} />
-          <Button btnName="Add New" btnClass=" !text-base bg-greenPrimary text-white " BtnIconLeft={<AddIconBtn />} />
+          <Button
+            btnName="Filters"
+            showType={btnShowType.primary}
+            btnClass="!text-base bg-white  "
+            BtnIconLeft={<CategoryBtnIcon />}
+          />
+          <Button
+            btnName="Add New"
+            showType={btnShowType.greenRound}
+            btnClass=" !text-base bg-greenPrimary text-white "
+            BtnIconLeft={<AddIconBtn />}
+          />
         </div>
       </div>
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
@@ -151,6 +139,7 @@ const InventoryManagement = () => {
                   <Button
                     key={item.id}
                     btnName={item.name}
+                    showType={btnShowType.primary}
                     onClickHandler={() => handleMarketplace(item.id)}
                     btnClass={`!rounded-full capitalize ${
                       selectedMarketplace.includes(item.id)
@@ -205,9 +194,8 @@ const InventoryManagement = () => {
                       productStatus === item ? `bg-greenPrimary/10` : `bg-greyBorder/50`
                     } px-1 rounded-md`}
                   >
-                    {" "}
-                    {data.length}{" "}
-                  </span>{" "}
+                    {data.length}
+                  </span>
                 </div>
               );
             })}
@@ -217,29 +205,34 @@ const InventoryManagement = () => {
               value={searchTerm}
               name="search"
               placeholder="Search by title or SKU"
-              className="pl-10 border-none"
+              className="pl-10"
               InputLeftIcon={<SearchIcon />}
               onChange={handleSearch}
             />
             <Button
+              showType={btnShowType.primary}
               btnClass=" bg-grayText text-white !font-medium  !text-base   !py-2 !px-3 "
               btnName="Bulk Import CSV"
               BtnIconLeft={<BulkImportIcon className="text-white" />}
             />
             <Button
+              showType={btnShowType.primary}
               btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-base   !py-2 !px-3 "
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
             />
             <DropDown
+              isSearchable={false}
+              placeholder="By Category"
               onChange={(e) => {
-                handleCategory(e);
+                setSearchTerm("");
+                setCurrentPage(1);
+                if (e) {
+                  setCategory(e);
+                }
               }}
-              value={category}
+              value={category ? category : undefined}
               dropdownClass=" !font-medium hover:border-blackPrimary/20 text-grayText !text-base  !py-2 !px-3 "
-              dropdownName="By Category "
-              BtnIconLeft={<CategoryBtnIcon className="text-grayText" />}
-              btnEndIcon={<DownArrowIcon />}
               options={categories}
             />
           </div>
@@ -265,99 +258,31 @@ const InventoryManagement = () => {
                     { id: 4, name: "50" },
                     { id: 5, name: "100" },
                   ]}
-                  onChange={(e) => handlePageLimit(e)}
+                  onChange={(e) => {
+                    setSearchTerm("");
+                    setCurrentPage(1);
+                    if (e) {
+                      setItemPerPage(e);
+                    }
+                  }}
                 />
-                {/* <Button
-                  btnClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
-                  btnName="10"
-                  btnEndIcon={<SortIcon />}
-                /> */}
                 Entries
               </div>
-
               <Button
                 btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-3 "
-                btnName=" Newest "
+                btnName="Newest"
+                showType={btnShowType.primary}
                 btnEndIcon={<DownArrowIcon />}
               />
             </div>
           </div>
-          <div className="grid grid-cols-12 xl:gap-x-5 gap-y-5  max-h-[calc(100vh_-_685px)]  lg:max-h-[calc(100vh_-_540px)] overflow-y-auto scroll-design ">
-            {currentData.map((item) => {
-              return (
-                <div
-                  key={item.id}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
-                >
-                  <div>
-                    <Checkbox isChecked={item.status === "active"} checkLabel=" " />
-                  </div>
-                  <div className="IBox flex gap-6 w-full ">
-                    <div className="prodImg">
-                      <img src={item.img} className="max-w-[170px] max-h-[132px] " alt="" />
-                    </div>
-                    <div className="relative w-full">
-                      <div className="absolute right-1 top-1 flex gap-2 ">
-                        <div>
-                          <EditLabelIcon className="cursor-pointer" />
-                        </div>
-                        <div>
-                          <DeleteIcon className="text-redAlert cursor-pointer" />
-                        </div>
-                      </div>
-                      <h4 className="text-[19px] font-medium text-blackPrimary mr-10 line-clamp-1 ">{item.title}</h4>
-                      <div className="Badges flex flex-wrap gap-1 text-sm ">
-                        {item.categories.map((category) => {
-                          return (
-                            <div
-                              key={category.id}
-                              className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
-                            >
-                              {category.name}
-                            </div>
-                          );
-                        })}
-                      </div>
-                      <div className="DescSpecifications flex flex-wrap gap-6 py-5">
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">Price</span>
-                          <p className="text-blackPrimary font-medium ">{item.price}</p>
-                        </div>
-                        <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">Date</span>
-                          <p className="text-blackPrimary font-medium ">{item.date}</p>
-                        </div>
-                        <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">QTY</span>
-                          <p className="text-blackPrimary font-medium ">{item.qty}</p>
-                        </div>
-                        <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">SKU</span>
-                          <p className="text-blackPrimary font-medium ">{item.SKU}</p>
-                        </div>
-                      </div>
-                      <div className="syncingOn flex flex-wrap gap-1 ">
-                        {item.marketPlaces.map((marketsLogo) => {
-                          return (
-                            <div key={marketsLogo.id} className=" rounded-md  border border-grayText/20 p-1">
-                              <img src={`${VITE_APP_API_URL}${marketsLogo.logo}`} className="w-14 h-auto" alt="" />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+          <div>
+            <Product currentData={currentData} />
           </div>
         </div>
         <div className="flex-row">
           <Pagination
-            pageLimit={itemPerPage}
+            pageLimit={Number(itemPerPage.value)}
             pageNeighbors={2}
             currentPage={currentPage}
             totalRecords={data.length}
@@ -365,7 +290,6 @@ const InventoryManagement = () => {
           />
         </div>
       </section>
-      {/* Inventory Management */}
     </div>
   );
 };

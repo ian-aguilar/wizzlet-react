@@ -29,3 +29,13 @@ export interface InputSwitchProps {
   status: string;
   onToggle: (id: number, status: string) => void;
 }
+
+
+export interface ISearchBox {
+  value?: string | number;
+  name: string;
+  placeholder: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}

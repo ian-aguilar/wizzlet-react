@@ -2,13 +2,13 @@ import { DownArrowBlack } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { useEffect, useState } from "react";
-import { useEbayAuthAPI, useMarketplaceListingAPI } from "../services/marketplace.service";
+import { useMarketplaceListingAPI } from "../services/marketplace.service";
 import { IMarketplace } from "../types";
 import { VITE_APP_API_URL } from "@/config";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
+import { useEbayAuthAPI } from "../services/ebay.service";
 
 const Marketplace = () => {
-  
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];

@@ -1,3 +1,4 @@
+import { E_PRODUCT_STATUS } from "../types";
 import ProductImg from "/images/labelMAnager.png";
 
 export const data = [
@@ -2948,4 +2949,4 @@ export const categories = [
   },
 ];
 
-export const status = ["active", "draft"];
+export const status = [E_PRODUCT_STATUS.active, E_PRODUCT_STATUS.draft];
