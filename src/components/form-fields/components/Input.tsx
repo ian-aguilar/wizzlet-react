@@ -14,7 +14,6 @@ const Input = <T extends FieldValues>({
   errors,
   type,
   autoComplete,
-  withLabel = false,
   isDisabled,
 }: IInputProps<T>) => {
   return (
@@ -29,7 +28,6 @@ const Input = <T extends FieldValues>({
         name={name}
         errors={errors}
         autoComplete={autoComplete}
-        withLabel={withLabel}
         isDisabled={isDisabled}
         className={` bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 ${className} `}
       />
