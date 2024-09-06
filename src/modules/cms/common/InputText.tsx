@@ -1,4 +1,4 @@
-export const InputText = ({ inputPlaceholder, inputLabel }: any) => {
+export const InputText = ({ inputPlaceholder, inputLabel }: { inputPlaceholder?:string, inputLabel?:string }) => {
   return (
     <div className="w-full mb-8">
       <label className="text-lg">{inputLabel}</label>

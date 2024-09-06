@@ -1,21 +1,25 @@
 //** Packages **
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 //** Common Components **
 import Button from "@/components/form-fields/components/Button";
+import { Loader } from "@/components/common/Loader";
+import ReactQuillTextEditor from "@/components/form-fields/components/ReactQuillTextEditor";
 
 //** Types **
 import { ITermsForm } from "./types";
 
 //** Validations **
-import { yupResolver } from "@hookform/resolvers/yup";
 import { termsValidation } from "./validation-schema/termsValidationSchema";
+
+//** Services **
 import { useCreateTermsAPI } from "../services/cms.service";
 import { useGetTermsAPI } from "@/modules/cms/services/cms.service";
-import { Loader } from "@/components/common/Loader";
-import ReactQuillTextEditor from "@/components/form-fields/components/ReactQuillTextEditor";
+
+//** Constants **
 import { modules } from "@/constants";
 
 const Terms = () => {
@@ -64,12 +68,7 @@ const Terms = () => {
             </span>
           </div>
           <div>
-            <Button
-              btnName="Update"
-              type="submit"
-              btnClass="!w-auto"
-              isLoading={updateLoading}
-            ></Button>
+            <Button btnName="Update" type="submit" btnClass="!w-auto" isLoading={updateLoading}></Button>
           </div>
         </div>
         <section className="h-[calc(100%_-_60px)] w-full bg-white overflow-y-auto scroll-design p-5">

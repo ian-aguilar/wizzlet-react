@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { SingleValue } from "react-select";
 
 export interface IPaginationProps {
   pageLimit: number;
@@ -9,23 +9,22 @@ export interface IPaginationProps {
 }
 
 export interface IDropDown {
-  value: string | number;
-  btnEndIcon?: any;
-  BtnIconLeft?: any;
+  isSearchable?: boolean;
+  value?: Option;
+  placeholder?: string;
   dropdownName?: string;
   dropdownClass?: string;
-  options: any;
-  onChange: (e: React.FormEvent<HTMLSelectElement>) => void;
+  options:{ id: number; name: string }[];
+  onChange?: (newValue: SingleValue<Option>) => void;
 }
 
-export interface ISearchBox {
-  value?: string | number;
-  name: string;
-  placeholder: string;
-  className: string;
-  InputLeftIcon: ReactNode;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
+export type Option = {
+  label: string;
+  value: string | number;
+  role?: string | number;
+  isDisabled?: boolean | undefined;
+};
+
 
 export enum E_PRODUCT_STATUS {
   active = "active",
@@ -41,11 +40,24 @@ export interface IItemFilter {
   itemPerPage: number;
 }
 
- // const [itemFilter, setItemFilter] = useState<IItemFilter>({
-  //   productStatus: E_PRODUCT_STATUS.active,
-  //   selectedMarketplace: [],
-  //   category: "",
-  //   searchValue: "",
-  //   currentPage: 1,
-  //   itemPerPage: 10,
-  // });
+export type productProps = {
+  currentData: {
+    id: number;
+    title: string;
+    img: string;
+    categories: {
+      id: number;
+      name: string;
+    }[];
+    status: string;
+    price: string;
+    date: string;
+    qty: number;
+    SKU: string;
+    marketPlaces: {
+      id: number;
+      name: string;
+      logo: string;
+    }[];
+  }[];
+}
