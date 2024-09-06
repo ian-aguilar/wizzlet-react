@@ -1,5 +1,10 @@
-import { Loader } from "@/components/common/Loader";
+// ** Packages **
 import { useEffect, useState } from "react";
+
+// ** Components **
+import { Loader } from "@/components/common/Loader";
+
+// ** Services **
 import { useGetPrivacyAPI } from "../services/cms.service";
 
 export default function Privacy() {

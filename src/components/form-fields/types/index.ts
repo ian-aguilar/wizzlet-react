@@ -32,7 +32,7 @@ export type IDateInputProps<T extends FieldValues> = {
   placeholder?: string;
   label?: string;
   isDisabled?: boolean;
-  InputLeftIcon?: any;
+  InputLeftIcon?: ReactNode;
 };
 
 export type IReactQuillProps<T extends FieldValues> = {
@@ -122,7 +122,6 @@ export interface FilePropsType<T extends FieldValues> {
   value?: string;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
-  // setValue: (name: Path<T>, attachment: any) => void;
 
   name: any;
   label: string;
@@ -224,3 +223,7 @@ export interface ICustomSelect<T extends FieldValues> {
   className?: string;
   autoFocus?: boolean;
 }
+export type ICheckboxProps = {
+  checkLabel: string;
+  isChecked?: boolean;
+};
