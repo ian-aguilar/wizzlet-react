@@ -1,19 +1,24 @@
 // ** Packages **
 import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect } from "react";
 
 // ** Components **
 import Input from "@/components/form-fields/components/Input";
 import { ModalCommon } from "@/components/common/ModalCommon";
+import Button from "@/components/form-fields/components/Button";
+
+// ** Icons **
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
+
+// ** Types **
+import { IAddAttributeInputs, IAddAttributeProps } from "../types/attribute";
 
 // ** Services **
-import { IAddAttributeInputs, IAddAttributeProps } from "../types/attribute";
-import { addAttributeValidationSchema } from "../validation-schema/attributeValidation";
-import { ATTRIBUTE_VALUE } from "../constants/sidebar";
-import Button from "@/components/form-fields/components/Button";
-import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-import { useEffect } from "react";
 import { useAddAttributePostAPI } from "../services/attribute.service";
+
+// ** Validation Schema **
+import { addAttributeValidationSchema } from "../validation-schema/attributeValidation";
 
 const AddAttribute = ({ onClose, reload }: IAddAttributeProps) => {
   const { addAttributePostAPI, isLoading: loader } = useAddAttributePostAPI();

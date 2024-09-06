@@ -60,13 +60,13 @@ const InventoryManagement = () => {
     [setCurrentPage, setItemPerPage]
   );
 
-  //Dummy json data constant
+  // ** Dummy json data constant **
   const currentData = data.slice(
     (Number(currentPage) - 1) * Number(itemPerPage.value),
     (Number(currentPage) - 1) * Number(itemPerPage.value) + Number(itemPerPage.value)
   );
 
-  //API call for get connected marketplace
+  // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
@@ -74,7 +74,7 @@ const InventoryManagement = () => {
     }
   };
 
-  // Handle filter market places
+  // ** Handle filter market places **
   const handleMarketplace = (id: number) => {
     setCurrentPage(1);
     if (!selectedMarketplace.includes(id)) {
@@ -85,12 +85,12 @@ const InventoryManagement = () => {
     }
   };
 
-  // handle product status
+  // ** handle product status **
   const handleProductStatus = (item: E_PRODUCT_STATUS) => {
     setProductStatus(item);
   };
 
-  // search box with debouncing
+  // ** search box with debouncing **
   const request = debounce((value) => {
     getProductsDetails(value);
   }, 500);

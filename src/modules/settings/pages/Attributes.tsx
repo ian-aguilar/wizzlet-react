@@ -1,26 +1,42 @@
-import { AddIconBtn, SearchIcon } from "@/assets/Svg";
-import Button from "@/components/form-fields/components/Button";
-import { btnShowType } from "@/components/form-fields/types";
-import { useEffect, useState } from "react";
-
+// ** Packages **
+import { useState } from "react";
 import DataTable from "react-data-table-component";
-import { ErrorModal } from "@/components/common/ErrorModal";
+
+// ** Components **
+import Button from "@/components/form-fields/components/Button";
 import AddAttribute from "../components/AddAttribute";
-import useTable from "@/hooks/useTable";
-import { Attributes } from "../types/attribute";
+import { btnShowType } from "@/components/form-fields/types";
+import { ErrorModal } from "@/components/common/ErrorModal";
 import { TableFetchParams } from "@/components/common/types/table";
+
+// ** Icons **
+import { AddIconBtn, SearchIcon } from "@/assets/Svg";
+
+// ** Types **
+import { Attributes } from "../types/attribute";
+
+// ** Services **
 import { useDeleteAttributeDataAPI, useFetchAttributeDataAPI } from "../services/attribute.service";
+
+// ** Hooks **
+import useTable from "@/hooks/useTable";
 import useAttributeHeaders from "../hooks/useAttributeHeaders";
 
 const Attribute = () => {
+  // ** States **
   const [deleteModel, setDeleteModel] = useState<Attributes | null>(null);
   const [addModelOpen, setAddModelOpen] = useState(false);
+
+  // ** Custom hooks **
   const { getAttributeListingAPI, isLoading: listingLoader } = useFetchAttributeDataAPI();
   const { deleteAttributeAPI } = useDeleteAttributeDataAPI();
 
+  // ** Add attribute model handler **
   const onAddModelClose = () => {
     setAddModelOpen(false);
   };
+
+  // ** Call Attributes listing API **
   const getData = async ({ page, rowsPerPage, sortField, sortDirection, search }: TableFetchParams) => {
     const { data, error } = await getAttributeListingAPI({
       page,
@@ -42,15 +58,20 @@ const Attribute = () => {
     };
   };
 
-
+  // ** Delete button click event handler **
   const handleDeleteClick = (row: Attributes) => setDeleteModel(row);
 
+  // ** Use of AttributeHeaders hook **
   const { columns } = useAttributeHeaders({ onDelete: handleDeleteClick });
 
   const closeDeleteModel = () => setDeleteModel(null);
+
+  // Use of UseTable hook **
   const { setReload, onSearch, resetTableToInitial, ...TableProps } = useTable<Attributes>({
     getData,
   });
+
+  // ** Call Delete Attribute API **
   const handleRemove = async () => {
     if (deleteModel) {
       const { error } = await deleteAttributeAPI(deleteModel.id);
@@ -101,7 +122,7 @@ const Attribute = () => {
         </div>
 
         {addModelOpen && <AddAttribute onClose={onAddModelClose} reload={() => setReload((prev) => !prev)} />}
-        
+
         {deleteModel && (
           <ErrorModal
             onClose={closeDeleteModel}

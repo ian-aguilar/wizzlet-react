@@ -1,3 +1,4 @@
+// ** Types **
 import { ISearchBox } from "./types";
 
 export const SearchBox = ({ value, placeholder, className, InputLeftIcon, onChange }: ISearchBox) => {

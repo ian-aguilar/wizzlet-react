@@ -34,4 +34,3 @@ export const settingsNav = [
   },
 ];
 
-export const ATTRIBUTE_VALUE = { value: "" };

@@ -24,6 +24,8 @@ export const useCreateContactUsAPI = () => {
   return { createContactUsAPI, isLoading, isError, isSuccess };
 };
 
+
+//** Create Terms custom hook */
 export const useCreateTermsAPI = () => {
   const [postRequest, { isLoading, isError, isSuccess }] = useAxiosPost();
   const createTermsAPI = async (data: object, config: AxiosRequestConfig<object> = {}) => {
@@ -31,6 +33,8 @@ export const useCreateTermsAPI = () => {
   };
   return { createTermsAPI, isLoading, isError, isSuccess };
 };
+
+//** Create privacy & policy custom hook */
 export const useCreatePrivacyAPI = () => {
   const [postRequest, { isLoading, isError, isSuccess }] = useAxiosPost();
   const createPrivacyAPI = async (data: object, config: AxiosRequestConfig<object> = {}) => {

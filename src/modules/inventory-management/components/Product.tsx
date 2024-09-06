@@ -1,6 +1,13 @@
+// ** Icons **
 import { DeleteIcon, EditLabelIcon } from "@/assets/Svg";
+
+// ** Components **
 import Checkbox from "@/components/form-fields/components/Checkbox";
+
+// ** Config **
 import { VITE_APP_API_URL } from "@/config";
+
+// ** Types **
 import { productProps } from "../types";
 
 const Product = ({ currentData }: productProps) => {
