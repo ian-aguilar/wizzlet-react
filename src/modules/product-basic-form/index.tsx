@@ -8,8 +8,9 @@ import MultipleImageUpload from "@/components/form-fields/components/multipleFil
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { generateCombinations } from "./helper";
+import { useProductBasicFormApi } from "./services/productBasicForm.service";
 
-const InventoryManagement: React.FC = () => {
+const ProductBasicForm: React.FC = () => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({
     color: ["Red", "Blue", "Green"],
@@ -17,6 +18,7 @@ const InventoryManagement: React.FC = () => {
   });
   const [generatedCombinations, setGeneratedCombinations] =
     useState<variantOptionType>([]);
+  const { basicFormSubmitApi } = useProductBasicFormApi();
 
   const {
     control,
@@ -29,8 +31,7 @@ const InventoryManagement: React.FC = () => {
   } = useForm<IProductBasicForm>({
     resolver: yupResolver(productBasisFormValidationSchema),
     defaultValues: {
-      variantProperties: [{ singleSelect: null, multiSelect: [] }],
-      combinations: [],
+      productType: null,
     },
   });
 
@@ -81,47 +82,55 @@ const InventoryManagement: React.FC = () => {
     }
   }, [productType]);
 
-  const handleProductTypeChange = (value: string) => {
+  const handleProductTypeChange = (value: "normal" | "variant") => {
     setProductType(value);
+
+    if (value === "normal") {
+      setValue("variantProperties", []);
+    } else {
+      setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
+    }
   };
 
   // Function to handle Save Variant button click
   const handleSaveVariant = () => {
-    const selectedOptions = propertiesValues.map((item) => ({
-      name: item.singleSelect.value,
-      value: item.multiSelect.map((opt) => opt.value),
+    const selectedOptions = propertiesValues?.map((item) => ({
+      name: item?.singleSelect?.value,
+      value: item?.multiSelect?.map((opt) => opt?.value),
     }));
 
-    if (selectedOptions.some((options) => options.value.length === 0)) {
-      console.log("Please select options for all properties.");
-      return;
+    if (selectedOptions) {
+      if (selectedOptions?.some((options) => options?.value?.length === 0)) {
+        console.log("Please select options for all properties.");
+        return;
+      }
+
+      const combinations = generateCombinations(selectedOptions);
+
+      setGeneratedCombinations(combinations);
+
+      // Initialize field array with combinations and additional fields
+      const initialCombinationFields: ICombination[] = combinations?.map(
+        (combination) => ({
+          combination,
+          price: 0,
+          sku: "",
+          quantity: 0,
+        })
+      );
+
+      setValue("combinations", initialCombinationFields);
     }
-
-    const combinations = generateCombinations(selectedOptions);
-
-    setGeneratedCombinations(combinations);
-
-    // Initialize field array with combinations and additional fields
-    const initialCombinationFields: ICombination[] = combinations.map(
-      (combination) => ({
-        combination,
-        price: 0,
-        sku: "",
-        quantity: 0,
-      })
-    );
-
-    setValue("combinations", initialCombinationFields);
   };
 
   // Handler to add a new combination from remaining combinations
   const handleAddCombination = () => {
-    const existingCombinations = watch("combinations").map(
+    const existingCombinations = watch("combinations")?.map(
       (item) => item.combination
     );
     const availableCombinations = generatedCombinations.filter(
       (comb) =>
-        !existingCombinations.some(
+        !existingCombinations?.some(
           (existing) =>
             JSON.stringify(existing.map((e) => e.value)) ===
             JSON.stringify(comb.map((e) => e.value))
@@ -139,8 +148,29 @@ const InventoryManagement: React.FC = () => {
     }
   };
 
-  const onSubmit: SubmitHandler<IProductBasicForm> = (data) => {
-    console.log("Form Data:", data);
+  const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
+    console.log("Form Data:", payload);
+
+    const formData = new FormData();
+    formData.append("productType", JSON.stringify(payload?.productType));
+    formData.append("combinations", JSON.stringify(payload?.combinations));
+    formData.append(
+      "variantProperties",
+      JSON.stringify(payload?.variantProperties)
+    );
+    formData.append("price", JSON.stringify(payload?.price));
+    formData.append("quantity", JSON.stringify(payload?.quantity));
+    formData.append("sku", JSON.stringify(payload?.sku));
+    formData.append("tagOptions", JSON.stringify(payload?.tagOptions));
+    formData.append("image", payload.image[0]);
+    formData.append("description", JSON.stringify(payload?.description));
+    formData.append("title", JSON.stringify(payload?.title));
+    const { data } = await basicFormSubmitApi(payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(data, "================");
   };
 
   return (
@@ -261,7 +291,7 @@ const InventoryManagement: React.FC = () => {
                         textLabelName="Quantity"
                         placeholder="Enter Quantity"
                         name="quantity"
-                        type="text"
+                        type="number"
                         control={control}
                         errors={errors}
                       />
@@ -394,6 +424,13 @@ const InventoryManagement: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {errors?.combinations?.type === "min" ? (
+              <span className="errorText text-red-600 font-medium text-sm">
+                Please save the variant and create at least one combination
+              </span>
+            ) : null}
+
             <button
               type="submit"
               className="p-2 mt-4 text-white bg-green-500 rounded-md">
@@ -406,4 +443,4 @@ const InventoryManagement: React.FC = () => {
   );
 };
 
-export default InventoryManagement;
+export default ProductBasicForm;
