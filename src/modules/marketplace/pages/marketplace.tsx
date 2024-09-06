@@ -12,12 +12,13 @@ import { btnShowType } from "@/components/form-fields/types";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
 import { IMarketplace } from "../types";
 
-// ** Config ** 
+// ** Config **
 import { VITE_APP_API_URL } from "@/config";
 
 // ** Services **
 import { useEbayAuthAPI } from "../services/ebay.service";
 import { useMarketplaceListingAPI } from "../services/marketplace.service";
+import { useAmazonAuthAPI } from "../services/amazon.service";
 
 const Marketplace = () => {
   //================== States =========================
@@ -30,6 +31,7 @@ const Marketplace = () => {
   // ================= Custom hooks ====================
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { ebayAuthAPI, isLoading } = useEbayAuthAPI();
+  const { amazonAuthAPI, isLoading: amazonLoading } = useAmazonAuthAPI();
 
   useEffect(() => {
     marketplaceListing();
@@ -45,10 +47,21 @@ const Marketplace = () => {
   const authenticateUser = async (item: IMarketplace) => {
     switch (item?.name) {
       case "ebay":
-        setButtonLoading(item.id);
-        const { data, error } = await ebayAuthAPI(PrivateRoutesPath.marketplace.view);
-        if (!error && data) {
-          window.location.replace(data?.data?.url);
+        {
+          setButtonLoading(item.id);
+          const { data, error } = await ebayAuthAPI(PrivateRoutesPath.marketplace.view);
+          if (!error && data) {
+            window.location.replace(data?.data?.url);
+          }
+        }
+        break;
+      case "amazon":
+        {
+          setButtonLoading(item.id);
+          const { data, error } = await amazonAuthAPI(PrivateRoutesPath.marketplace.view);
+          if (!error && data) {
+            window.location.replace(data?.data?.url);
+          }
         }
         break;
       default:
@@ -132,7 +145,7 @@ const Marketplace = () => {
                   btnName="Connect "
                   btnClass=""
                   onClickHandler={() => authenticateUser(item)}
-                  isLoading={item.id === buttonLoading ? isLoading : false}
+                  isLoading={item.id === buttonLoading ? isLoading || amazonLoading : false}
                 />
               </div>
             </div>
