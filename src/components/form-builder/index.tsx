@@ -4,8 +4,8 @@ import { FieldValues } from "react-hook-form";
 import DateInput from "../form-fields/components/DateInput";
 import { FieldsType, FieldsTypeEnum, FromBuilderPropsType } from "./types";
 
-import { InputText } from "@/modules/cms/common/InputText";
 import SelectField from "../form-fields/components/SelectField";
+import Input from "../form-fields/components/Input";
 
 const FormBuilder = <T extends FieldValues>({
   fields,
@@ -29,12 +29,12 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.NUMBER:
       case FieldsTypeEnum.STRING:
         return (
-          <InputText
+          <Input
             name={data.name}
             className=""
             control={control}
             errors={errors}
-            label={data.name}
+            textLabelName={data.name}
             placeholder=""
           />
         );

@@ -15,6 +15,7 @@ export type IInputProps<T extends FieldValues> = {
   name: Path<T>;
   className?: string;
   inputEndIcon?: ReactNode;
+  InputLeftIcon?:ReactNode;
   control?: FormControlProp<T>;
   errors?: FieldErrors;
   placeholder?: string;
