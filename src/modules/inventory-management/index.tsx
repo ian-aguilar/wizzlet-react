@@ -24,18 +24,28 @@ import { btnShowType } from "@/components/form-fields/types";
 
 import { categories, data, status } from "./helper/inventryData";
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
+import { useNavigate } from "react-router-dom";
+import { PrivateRoutesPath } from "../Auth/types";
 
 const InventoryManagement = () => {
   //================== States =========================
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [category, setCategory] = useState<Option | undefined>(undefined);
-  const [productStatus, setProductStatus] = useState<string>(E_PRODUCT_STATUS.active);
-  const [itemPerPage, setItemPerPage] = useState<Option>({ label: "10", value: "10" });
+  const [productStatus, setProductStatus] = useState<string>(
+    E_PRODUCT_STATUS.active
+  );
+  const [itemPerPage, setItemPerPage] = useState<Option>({
+    label: "10",
+    value: "10",
+  });
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [marketplace, setMarketplace] = useState<{ connectedMarketplace: IMarketplace[] }>({
+  const [marketplace, setMarketplace] = useState<{
+    connectedMarketplace: IMarketplace[];
+  }>({
     connectedMarketplace: [],
   });
+  const navigate = useNavigate();
 
   // ================= Custom hooks ====================
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
@@ -53,7 +63,10 @@ const InventoryManagement = () => {
 
   // ** Page change event function
   const onPageChanged = useCallback(
-    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
+    (
+      event: MouseEvent<HTMLElement, globalThis.MouseEvent>,
+      page: number | string
+    ) => {
       event.preventDefault();
       setCurrentPage(page);
     },
@@ -63,7 +76,8 @@ const InventoryManagement = () => {
   // ** Dummy json data constant **
   const currentData = data.slice(
     (Number(currentPage) - 1) * Number(itemPerPage.value),
-    (Number(currentPage) - 1) * Number(itemPerPage.value) + Number(itemPerPage.value)
+    (Number(currentPage) - 1) * Number(itemPerPage.value) +
+      Number(itemPerPage.value)
   );
 
   // ** API call for get connected marketplace **
@@ -80,7 +94,9 @@ const InventoryManagement = () => {
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
-      const newSelectedMarket = selectedMarketplace.filter((market) => market !== id);
+      const newSelectedMarket = selectedMarketplace.filter(
+        (market) => market !== id
+      );
       setSelectedMarketplace(newSelectedMarket);
     }
   };
@@ -113,7 +129,9 @@ const InventoryManagement = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+          Inventory Management
+        </h2>
         <div className="flex gap-2">
           <Button
             btnName="Filters"
@@ -124,6 +142,9 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
+            onClickHandler={() =>
+              navigate(PrivateRoutesPath.productBasicForm.view)
+            }
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -132,7 +153,9 @@ const InventoryManagement = () => {
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">SELECT Your Marketplace</span>
+            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
+              SELECT Your Marketplace
+            </span>
             <div className="flex gap-2">
               {marketplace.connectedMarketplace.map((item) => {
                 return (
@@ -162,7 +185,9 @@ const InventoryManagement = () => {
             <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
-              BtnIconLeft={<AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />}
+              BtnIconLeft={
+                <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
+              }
             />
             <div className="flex gap-2 items-center ">
               <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
@@ -184,16 +209,18 @@ const InventoryManagement = () => {
                 <div
                   key={item}
                   className={`activeTab px-7 py-2 flex items-center ${
-                    productStatus === item ? `text-greenPrimary border-greenPrimary` : `text-black border-greyBorder`
+                    productStatus === item
+                      ? `text-greenPrimary border-greenPrimary`
+                      : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}
-                >
+                  onClick={() => handleProductStatus(item)}>
                   {item}
                   <span
                     className={`text-base ${
-                      productStatus === item ? `bg-greenPrimary/10` : `bg-greyBorder/50`
-                    } px-1 rounded-md`}
-                  >
+                      productStatus === item
+                        ? `bg-greenPrimary/10`
+                        : `bg-greyBorder/50`
+                    } px-1 rounded-md`}>
                     {data.length}
                   </span>
                 </div>
