@@ -6,7 +6,6 @@ import {
   Path,
   UseFormClearErrors,
   UseFormRegister,
-  UseFormSetError,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -143,7 +142,7 @@ export interface FilePropsType<T extends FieldValues> {
       message: string;
     }
   ) => void;
-  clearErrors?: (name: Path<T>) => void;
+  clearErrors?: (name: any) => void;
   watch: UseFormWatch<T>;
 }
 export interface inviteModalProps {
@@ -223,7 +222,7 @@ export interface ICustomSelect<T extends FieldValues> {
   isCompulsory?: boolean;
   Margin?: string;
   Width?: string;
-  onChange?: (...event) => void;
+  onChange?: (...event:any) => void;
   disabled?: boolean;
   isSearchable?: boolean;
   isClearable?: boolean;

@@ -1,6 +1,6 @@
 // import { useEffect, useState } from "react";
-import { Controller, FieldValues, Path, PathValue } from "react-hook-form";
-import { ErrorMessage } from "@hookform/error-message";
+import { Controller, FieldErrors, FieldName, FieldValues, Path, PathValue } from "react-hook-form";
+import { ErrorMessage, FieldValuesFromFieldErrors } from "@hookform/error-message";
 // ** Helper Functions and Types **
 import { FilePropsType } from "../types";
 import { checkFileFormat } from "@/utils";
@@ -138,7 +138,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
       <ErrorMessage
         errors={errors}
-        name={name}
+        name={name as unknown as FieldName<FieldValuesFromFieldErrors<FieldErrors<T>>>}
         render={({ message }) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}

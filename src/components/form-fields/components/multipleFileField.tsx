@@ -1,11 +1,12 @@
 import { CameraBgIcon } from "@/assets/Svg";
 import { VITE_APP_API_URL } from "@/config";
 import { checkFileFormat } from "@/utils";
-import { ErrorMessage } from "@hookform/error-message";
+import { ErrorMessage, FieldValuesFromFieldErrors } from "@hookform/error-message";
 import React from "react";
 import {
   Controller,
   FieldErrors,
+  FieldName,
   FieldValues,
   Path,
   PathValue,
@@ -149,7 +150,7 @@ const MultipleImageUpload = <T extends FieldValues>(
 
       <ErrorMessage
         errors={errors as FieldErrors<T>}
-        name={name}
+        name={ name as unknown as FieldName<FieldValuesFromFieldErrors<FieldErrors<T>>>}
         render={({ message }) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
