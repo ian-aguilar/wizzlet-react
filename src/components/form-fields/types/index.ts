@@ -4,7 +4,9 @@ import {
   FieldErrors,
   FieldValues,
   Path,
+  UseFormClearErrors,
   UseFormRegister,
+  UseFormSetError,
   UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
@@ -47,7 +49,7 @@ export type IReactQuillProps<T extends FieldValues> = {
   type?: string;
   autoComplete?: string;
   textLabelName?: string;
-  modules?: Object;
+  modules?: object;
   withLabel?: boolean;
   isDisabled?: boolean;
 };
@@ -123,8 +125,7 @@ export interface FilePropsType<T extends FieldValues> {
   value?: string;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
-
-  name: any;
+  name: Path<T>;
   label: string;
   register: UseFormRegister<T>;
   maxSize?: number;
@@ -143,7 +144,6 @@ export interface FilePropsType<T extends FieldValues> {
     }
   ) => void;
   clearErrors?: (name: Path<T>) => void;
-  // defaultValue?: string[];
   watch: UseFormWatch<T>;
 }
 export interface inviteModalProps {
@@ -158,6 +158,30 @@ export interface errorModalProps {
   heading: string;
   subText: string;
 }
+
+export type IFilePropsType<T extends FieldValues> = {
+  id?: string;
+  errors: FieldErrors<T>;
+  control: Control<T>;
+  setValue: UseFormSetValue<T>;
+  name: Path<T>;
+  maxSize?: number;
+  className?: string;
+  errorClass?: string;
+  disabled?: boolean;
+  allowedFormat?: string[];
+  onBlur?: React.FocusEventHandler;
+  onFocus?: React.FocusEventHandler;
+  setError?: (
+    name: Path<T>,
+    error: {
+      type: string;
+      message: string;
+    }
+  ) => void;
+  clearErrors?: UseFormClearErrors<T>;
+  watch: UseFormWatch<T>;
+};
 
 export interface warningModalProps {
   onClose: () => void;
@@ -199,7 +223,7 @@ export interface ICustomSelect<T extends FieldValues> {
   isCompulsory?: boolean;
   Margin?: string;
   Width?: string;
-  onChange?: (...event: any[]) => void;
+  onChange?: (...event) => void;
   disabled?: boolean;
   isSearchable?: boolean;
   isClearable?: boolean;
