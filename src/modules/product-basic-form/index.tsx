@@ -3,22 +3,33 @@ import SelectField from "@/components/form-fields/components/SelectField";
 import TextArea from "@/components/form-fields/components/TextArea";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import { ICombination, IProductBasicForm, variantOptionType } from "./types";
+import {
+  ICombination,
+  IProductBasicForm,
+  TagOption,
+  variantOptionType,
+} from "./types";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { generateCombinations } from "./helper";
-import { useProductBasicFormApi } from "./services/productBasicForm.service";
+import {
+  useProductBasicFormApi,
+  useTagOptionsApi,
+  useVariantPropertyOptionsApi,
+} from "./services/productBasicForm.service";
+import { productTypes } from "./constant";
 
 const ProductBasicForm: React.FC = () => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
-  const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({
-    color: ["Red", "Blue", "Green"],
-    size: ["S", "M", "L", "XL"],
-  });
+  const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({});
+  const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
+  const [propertyOptions, setPropertyOptions] = useState<TagOption[]>([]);
   const [generatedCombinations, setGeneratedCombinations] =
     useState<variantOptionType>([]);
   const { basicFormSubmitApi } = useProductBasicFormApi();
+  const { getTagOptionsApi } = useTagOptionsApi();
+  const { getVariantPropertyOptionsApi } = useVariantPropertyOptionsApi();
 
   const {
     control,
@@ -34,8 +45,6 @@ const ProductBasicForm: React.FC = () => {
       productType: null,
     },
   });
-
-  console.log(errors, "errors");
 
   const {
     fields: variantFields,
@@ -57,34 +66,38 @@ const ProductBasicForm: React.FC = () => {
 
   const propertiesValues = watch("variantProperties");
 
-  const options = [
-    { label: "Normal", value: "normal" },
-    { label: "Variant", value: "variant" },
-  ];
+  const tagOptionApi = async () => {
+    try {
+      const { data, error } = await getTagOptionsApi();
+      if (data && !error) {
+        setTagsOptions(data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const propertyOptions = [
-    { label: "Color", value: "color" },
-    { label: "Size", value: "size" },
-  ];
-
-  const tagsOptions = [
-    { label: "Abc", value: "abc" },
-    { label: "Xys", value: "xyz" },
-    { label: "Def", value: "def" },
-  ];
+  const variantPropertyOptionApi = async () => {
+    try {
+      const { data, error } = await getVariantPropertyOptionsApi();
+      if (data && !error) {
+        if (productType === "variant") {
+          setAllOptions(data?.data?.allOptions);
+          setPropertyOptions(data?.data?.propertyOptions);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    if (productType === "variant") {
-      setAllOptions({
-        color: ["Red", "Blue", "Green"],
-        size: ["S", "M", "L", "XL"],
-      });
-    }
+    tagOptionApi();
+    variantPropertyOptionApi();
   }, [productType]);
 
   const handleProductTypeChange = (value: "normal" | "variant") => {
     setProductType(value);
-
     if (value === "normal") {
       setValue("variantProperties", []);
     } else {
@@ -149,8 +162,6 @@ const ProductBasicForm: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    console.log("Form Data:", payload);
-
     const formData = new FormData();
     formData.append("productType", JSON.stringify(payload?.productType));
     formData.append("combinations", JSON.stringify(payload?.combinations));
@@ -165,12 +176,11 @@ const ProductBasicForm: React.FC = () => {
     formData.append("image", payload.image[0]);
     formData.append("description", JSON.stringify(payload?.description));
     formData.append("title", JSON.stringify(payload?.title));
-    const { data } = await basicFormSubmitApi(payload, {
+    await basicFormSubmitApi(payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(data, "================");
   };
 
   return (
@@ -242,7 +252,7 @@ const ProductBasicForm: React.FC = () => {
                 <div className="col-span-6">
                   <SelectField
                     label="Product Type"
-                    options={options}
+                    options={productTypes}
                     name="productType"
                     control={control}
                     errors={errors}

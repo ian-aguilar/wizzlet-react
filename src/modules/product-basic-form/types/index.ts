@@ -41,3 +41,8 @@ export interface IFormError {
 }
 
 export type variantOptionType = { name: string; value: string }[][];
+
+export type TagOption = {
+  label: string;
+  value: string;
+};

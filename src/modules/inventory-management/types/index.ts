@@ -5,7 +5,10 @@ export interface IPaginationProps {
   pageNeighbors: number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (event: React.MouseEvent<HTMLElement, MouseEvent>, page: number | string) => void;
+  onPageChanged: (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    page: number | string
+  ) => void;
 }
 
 export interface IDropDown {
@@ -14,7 +17,7 @@ export interface IDropDown {
   placeholder?: string;
   dropdownName?: string;
   dropdownClass?: string;
-  options:{ id: number; name: string }[];
+  options: { id: number; name: string }[];
   onChange?: (newValue: SingleValue<Option>) => void;
 }
 
@@ -24,7 +27,6 @@ export type Option = {
   role?: string | number;
   isDisabled?: boolean | undefined;
 };
-
 
 export enum E_PRODUCT_STATUS {
   active = "active",
@@ -60,4 +62,4 @@ export type productProps = {
       logo: string;
     }[];
   }[];
-}
+};

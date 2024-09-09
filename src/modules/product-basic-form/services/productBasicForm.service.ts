@@ -2,11 +2,10 @@
 import { AxiosRequestConfig } from "axios";
 
 // ** hooks **
-import { useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 
 const BASE_PATH = "/product";
 
-//  ** Register User **
 export const useProductBasicFormApi = () => {
   // ** custom Hooks **
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
@@ -19,4 +18,26 @@ export const useProductBasicFormApi = () => {
   };
 
   return { basicFormSubmitApi, isLoading, isError, isSuccess };
+};
+
+export const useTagOptionsApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getTagOptionsApi = async () => {
+    return callApi(`${BASE_PATH}/tags`);
+  };
+
+  return { getTagOptionsApi, isLoading, isError, isSuccess };
+};
+
+export const useVariantPropertyOptionsApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getVariantPropertyOptionsApi = async () => {
+    return callApi(`${BASE_PATH}/variant-property`);
+  };
+
+  return { getVariantPropertyOptionsApi, isLoading, isError, isSuccess };
 };
