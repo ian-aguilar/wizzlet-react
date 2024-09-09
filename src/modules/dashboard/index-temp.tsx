@@ -5,16 +5,12 @@ import {
   CategoryBtnIcon,
   CheckIconBtn,
   DeleteIcon,
-  DownArrowBlack,
   DownArrowIcon,
   DownloadCSVIcon,
   EditLabelIcon,
-  SearchIcon,
   SortIcon,
 } from "@/assets/Svg";
-
 import Checkbox from "@/components/form-fields/components/Checkbox";
-import Input from "@/components/form-fields/components/Input";
 import AmazonImg from "/images/Amazon_logo.png";
 import EbayImg from "/images/ebay_logo.png";
 import ProductImg from "/images/labelMAnager.png";
@@ -41,54 +37,6 @@ const Dashboard = () => {
         </div>
       </div>
       {/* Add New Inventory Item*/}
-      <section className="block lg:flex gap-5 items-start">
-        <div className="w-[335px] min-w-[335px] bg-white rounded-md border-greyBorder p-8 lg:mb-0 mb-5 ">
-          <div className="stepperInventory pl-5">
-            <div className="step1 relative ">
-              <div className="absolute -left-[23px] -top-3 border-8 rounded-full border-greenPrimary/20   ">
-                <div className="  w-7 h-7 min-w-7 bg-greenPrimary rounded-full  flex justify-center items-center text-white ">
-                  1
-                </div>
-              </div>
-              <div className="border-l border-dashed border-greenPrimary pl-10 min-h-[70px]">
-                <h3 className="font-medium text-xl">Heyowl Form</h3>
-                <p className="text-grayText text-sm font-medium ">
-                  Fill Heyowl form details.
-                </p>
-              </div>
-            </div>
-            <div className="step1 relative ">
-              <div className="absolute -left-[23px] -top-0 border-8 rounded-full border-grayText/20   ">
-                <div className="  w-7 h-7 min-w-7 bg-gray-400 rounded-full  flex justify-center items-center text-white ">
-                  2
-                </div>
-              </div>
-              <div className="border-l border-dashed border-grayText/20 pl-10 min-h-[85px]">
-                <h3 className="font-medium text-xl">Choose Marketplace</h3>
-                <p className="text-grayText text-sm font-medium ">
-                  Select Marketplace
-                </p>
-              </div>
-            </div>
-            <div className="step1 relative ">
-              <div className="absolute -left-[23px] -top-0 border-8 rounded-full border-grayText/20   ">
-                <div className="  w-7 h-7 min-w-7 bg-gray-400 rounded-full  flex justify-center items-center text-white ">
-                  3
-                </div>
-              </div>
-              <div className=" pl-10  ">
-                <h3 className="font-medium text-xl">Marketplace Form</h3>
-                <p className="text-grayText text-sm font-medium ">
-                  Fill Marketplace form details.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-          Content
-        </div>
-      </section>
       {/* Add New Inventory Item */}
       {/* Inventory Management */}
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">

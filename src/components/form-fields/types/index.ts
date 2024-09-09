@@ -158,6 +158,24 @@ export interface errorModalProps {
   subText: string;
 }
 
+export type IFilePropsType<T extends FieldValues> = {
+  id?: string;
+  errors: any;
+  control: any;
+  setValue: any;
+  name: string;
+  maxSize?: number;
+  className?: string;
+  errorClass?: string;
+  disabled?: boolean;
+  allowedFormat?: string[];
+  onBlur?: React.FocusEventHandler;
+  onFocus?: React.FocusEventHandler;
+  setError?: any;
+  clearErrors?: any;
+  watch: any;
+};
+
 export interface warningModalProps {
   onClose: () => void;
   onSave?: () => void;
