@@ -3,7 +3,13 @@ import { VITE_APP_API_URL } from "@/config";
 import { checkFileFormat } from "@/utils";
 import { ErrorMessage } from "@hookform/error-message";
 import React from "react";
-import { Controller, FieldValues } from "react-hook-form";
+import {
+  Controller,
+  FieldErrors,
+  FieldValues,
+  Path,
+  PathValue,
+} from "react-hook-form";
 import { IFilePropsType } from "../types";
 
 const MultipleImageUpload = <T extends FieldValues>(
@@ -27,12 +33,14 @@ const MultipleImageUpload = <T extends FieldValues>(
     watch,
   } = fieldProps;
 
-  const defaultValue: any = Array.isArray(watch(name))
+  // Use watch to track the current value of the field
+  const defaultValue: File[] | string[] = Array.isArray(watch(name))
     ? watch(name)
     : typeof watch(name) === "string" && watch(name).trim() !== ""
     ? [watch(name)]
     : [];
 
+  // Handle file selection and validation
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       const errorMsgArr: string[] = [];
@@ -55,7 +63,13 @@ const MultipleImageUpload = <T extends FieldValues>(
       });
 
       if (filteredFiles.length) {
-        setValue(name, [...defaultValue, ...filteredFiles] as any);
+        setValue(
+          name,
+          [...defaultValue, ...filteredFiles] as PathValue<T, Path<T>>,
+          {
+            shouldValidate: true,
+          }
+        );
       }
 
       if (errorMsgArr.length && setError) {
@@ -66,19 +80,25 @@ const MultipleImageUpload = <T extends FieldValues>(
       } else if (largeErrorMsgArr.length && setError) {
         setError(name, {
           type: "custom",
-          message: `File size is too large, it must be less than ${maxSize} MB.`,
+          message: `File size is too large; it must be less than ${maxSize} MB.`,
         });
       } else {
         clearErrors?.(name);
       }
     }
-    e.target.value = "";
+    e.target.value = ""; // Reset input value to allow the same file upload again
   };
 
+  // Delete an attachment
   const deleteAttachment = (id: number) => {
-    setValue(name, [
-      ...defaultValue.filter((_: any, index: number) => id !== index),
-    ] as any);
+    setValue(
+      name,
+      [...defaultValue.filter((_, index: number) => id !== index)] as PathValue<
+        T,
+        Path<T>
+      >,
+      { shouldValidate: true }
+    );
     clearErrors?.(name);
   };
 
@@ -89,7 +109,7 @@ const MultipleImageUpload = <T extends FieldValues>(
           <div className="upload__btn absolute inset-0 z-10 border border-greenPrimary/30 border-dashed bg-greenPrimary/5 rounded-md">
             {control && name && (
               <Controller
-                name={name}
+                name={name as Path<T>}
                 control={control}
                 render={({ field: { name: fieldName } }) => (
                   <input
@@ -101,9 +121,7 @@ const MultipleImageUpload = <T extends FieldValues>(
                     onFocus={onFocus}
                     autoComplete="off"
                     disabled={disabled}
-                    onChange={(e) => {
-                      handleFileSelect(e);
-                    }}
+                    onChange={handleFileSelect}
                     className={`cursor-pointer absolute top-0 left-0 w-full h-full z-[3] opacity-0 ${className}`}
                   />
                 )}
@@ -130,7 +148,7 @@ const MultipleImageUpload = <T extends FieldValues>(
       </div>
 
       <ErrorMessage
-        errors={errors}
+        errors={errors as FieldErrors<T>}
         name={name}
         render={({ message }) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
@@ -143,7 +161,7 @@ const MultipleImageUpload = <T extends FieldValues>(
         className={`attachments__up__wrapper p-6 absolute w-full h-full relative ${
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
         } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md`}>
-        {defaultValue.map((value: any, index: number) => {
+        {defaultValue.map((value, index) => {
           const isUrl = typeof value === "string";
 
           return (
@@ -155,7 +173,7 @@ const MultipleImageUpload = <T extends FieldValues>(
                   src={
                     isUrl
                       ? VITE_APP_API_URL + value
-                      : URL.createObjectURL(value)
+                      : URL.createObjectURL(value as File)
                   }
                   alt={`attachment-url-${index + 1}`}
                   className="attachment-img !w-auto !max-h-full object-contain mx-auto"
