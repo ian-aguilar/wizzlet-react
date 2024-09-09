@@ -1,26 +1,21 @@
+// ** Packages **
+import Select from "react-select";
+
+// ** Icons **
 import { IDropDown } from "../types";
 
-export default function DropDown({
-  dropdownClass,
-  dropdownName,
-  value,
-  options,
-  BtnIconLeft,
-  btnEndIcon,
-  onChange,
-}: IDropDown) {
+export default function DropDown({ dropdownClass, placeholder, value, options, isSearchable, onChange }: IDropDown) {
+  const newOptions = options.map((option: { id: number; name: string }) => {
+    return { label: option.name, value: option.name.toLocaleLowerCase() };
+  });
   return (
-    <select name="" value={value} className={dropdownClass} id="" onChange={onChange}>
-      <option disabled={dropdownName === "Limit"} value={""}>
-        {BtnIconLeft} {dropdownName} {btnEndIcon}
-      </option>
-      {options.map((option: any) => {
-        return (
-          <option key={option.id} value={option.name}>
-            {option.name}
-          </option>
-        );
-      })}
-    </select>
+    <Select
+      options={newOptions}
+      isSearchable={isSearchable}
+      value={value}
+      placeholder={placeholder}
+      className={dropdownClass}
+      onChange={onChange}
+    />
   );
 }

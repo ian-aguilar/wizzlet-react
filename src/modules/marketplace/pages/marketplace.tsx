@@ -1,14 +1,25 @@
-import { DownArrowBlack } from "@/assets/Svg";
-import Button from "@/components/form-fields/components/Button";
-import { btnShowType } from "@/components/form-fields/types";
+// ** Packages **
 import { useEffect, useState } from "react";
-import { useEbayAuthAPI, useMarketplaceListingAPI } from "../services/marketplace.service";
-import { IMarketplace } from "../types";
-import { VITE_APP_API_URL } from "@/config";
+
+// ** Icons **
+import { DownArrowBlack } from "@/assets/Svg";
+
+// ** Components **
+import Button from "@/components/form-fields/components/Button";
+
+// ** Types **
+import { btnShowType } from "@/components/form-fields/types";
 import { PrivateRoutesPath } from "@/modules/Auth/types";
+import { IMarketplace } from "../types";
+
+// ** Config ** 
+import { VITE_APP_API_URL } from "@/config";
+
+// ** Services **
+import { useEbayAuthAPI } from "../services/ebay.service";
+import { useMarketplaceListingAPI } from "../services/marketplace.service";
 
 const Marketplace = () => {
-  
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
@@ -22,7 +33,6 @@ const Marketplace = () => {
 
   useEffect(() => {
     marketplaceListing();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const marketplaceListing = async () => {

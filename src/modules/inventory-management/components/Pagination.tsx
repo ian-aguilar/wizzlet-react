@@ -1,4 +1,7 @@
+// ** Packages **
 import { useEffect, useState } from "react";
+
+// ** Types **
 import { IPaginationProps } from "../types";
 
 const LEFT_PAGE = "LEFT";

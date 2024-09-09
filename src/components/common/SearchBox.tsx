@@ -1,7 +1,7 @@
-import { ISearchBox } from "../types";
+// ** Types **
+import { ISearchBox } from "./types";
 
-export const SearchBox = ({ value, name, placeholder, className, InputLeftIcon, onChange }: ISearchBox) => {
-
+export const SearchBox = ({ value, placeholder, className, InputLeftIcon, onChange }: ISearchBox) => {
   return (
     <div className="relative">
       <div className="absolute left-4 top-3">{InputLeftIcon}</div>

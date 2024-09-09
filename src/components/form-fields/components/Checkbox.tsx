@@ -1,4 +1,6 @@
-const Checkbox = ({ checkLabel, isChecked }: any) => {
+import { ICheckboxProps } from "../types";
+
+const Checkbox = ({ checkLabel, isChecked }: ICheckboxProps) => {
   return (
     <>
       <div className="flex items-center">

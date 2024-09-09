@@ -74,3 +74,12 @@ export interface ISetSelectOptions {
     id?: string | number;
   };
 }
+
+export interface ISearchBox {
+  value?: string | number;
+  name: string;
+  placeholder: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}

@@ -16,7 +16,7 @@ export enum sidebarList {
 }
 
 export interface ISidebar {
-  navIcon?: ({ className }: any) => JSX.Element;
+  navIcon?: ({ className }: {className:string}) => JSX.Element;
   navName: string;
   path: string;
   key: sidebarList;
