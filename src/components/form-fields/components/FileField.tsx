@@ -1,6 +1,6 @@
 // import { useEffect, useState } from "react";
-import { Controller, FieldErrors, FieldName, FieldValues, Path, PathValue } from "react-hook-form";
-import { ErrorMessage, FieldValuesFromFieldErrors } from "@hookform/error-message";
+import { Controller, FieldValues, Path, PathValue } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 // ** Helper Functions and Types **
 import { FilePropsType } from "../types";
 import { checkFileFormat } from "@/utils";
@@ -138,7 +138,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
       <ErrorMessage
         errors={errors}
-        name={name as unknown as FieldName<FieldValuesFromFieldErrors<FieldErrors<T>>>}
+        name={name}
         render={({ message }) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
@@ -149,14 +149,16 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <div
         className={`attachments__up__wrapper p-6 absolute w-full h-full relative ${
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
-        } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}>
+        } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
+      >
         {defaultValue.map((value, index) => {
           const isUrl = typeof value === "string";
 
           return (
             <div
               className="attachments__box flex flex-col h-[95%] "
-              key={`url-${index}`}>
+              key={`url-${index}`}
+            >
               <div className="attachments__details flex items-center h-full">
                 <img
                   src={
@@ -178,7 +180,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 className="action__btn__SD absolute top-3 right-3 block z-10 "
                 name="Delete"
                 title="Delete"
-                onClick={() => deleteAttachment(index)}>
+                onClick={() => deleteAttachment(index)}
+              >
                 ✕
               </button>
             </div>

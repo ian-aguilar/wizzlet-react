@@ -16,7 +16,7 @@ export type IInputProps<T extends FieldValues> = {
   name: Path<T>;
   className?: string;
   inputEndIcon?: ReactNode;
-  InputLeftIcon?:ReactNode;
+  InputLeftIcon?: ReactNode;
   control?: FormControlProp<T>;
   errors?: FieldErrors;
   placeholder?: string;
@@ -120,7 +120,7 @@ export interface IOtpInputProps {
 
 export interface FilePropsType<T extends FieldValues> {
   id?: string;
-  errors: FieldErrors<T>;
+  errors: FieldErrors;
   value?: string;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
@@ -142,7 +142,7 @@ export interface FilePropsType<T extends FieldValues> {
       message: string;
     }
   ) => void;
-  clearErrors?: (name: any) => void;
+  clearErrors?: UseFormClearErrors<T>;
   watch: UseFormWatch<T>;
 }
 export interface inviteModalProps {
@@ -160,7 +160,7 @@ export interface errorModalProps {
 
 export type IFilePropsType<T extends FieldValues> = {
   id?: string;
-  errors: FieldErrors<T>;
+  errors: FieldErrors;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
   name: Path<T>;
@@ -222,7 +222,7 @@ export interface ICustomSelect<T extends FieldValues> {
   isCompulsory?: boolean;
   Margin?: string;
   Width?: string;
-  onChange?: (...event:any) => void;
+  onChange?: (...event: any[]) => void;
   disabled?: boolean;
   isSearchable?: boolean;
   isClearable?: boolean;
