@@ -1,5 +1,9 @@
 // ** Packages **
-import { RouteObject, RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouteObject,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import React, { Suspense } from "react";
 
 // ** Auth Routes
@@ -9,15 +13,22 @@ import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes, RequiresUnAuthForCMS } from "./modules/cms/routes";
+import ProductBasicForm from "./modules/product-basic-form";
 
-const Marketplace = React.lazy(() => import("./modules/marketplace/pages/marketplace"));
-const InventoryManagement = React.lazy(() => import("./modules/inventory-management"));
+const Marketplace = React.lazy(
+  () => import("./modules/marketplace/pages/marketplace")
+);
+const InventoryManagement = React.lazy(
+  () => import("./modules/inventory-management")
+);
 const Dashboard = React.lazy(() => import("./modules/dashboard/index-temp"));
 const UserManagement = React.lazy(() => import("./modules/user-management"));
 const Aboutus = React.lazy(() => import("./modules/Admin/Aboutus/Index"));
 const Contactus = React.lazy(() => import("./modules/Admin/Contactus/Index"));
 const ImportProducts = React.lazy(() => import("./modules/import-products"));
-const ContactusManagement = React.lazy(() => import("./modules/contact-us-management"));
+const ContactusManagement = React.lazy(
+  () => import("./modules/contact-us-management")
+);
 const FaqForm = React.lazy(() => import("./modules/Admin/Faq"));
 const HomePageForm = React.lazy(() => import("./modules/Admin/Home"));
 const Terms = React.lazy(() => import("./modules/Admin/Terms/Index"));
@@ -32,8 +43,12 @@ export type RouteObjType = {
 };
 
 // ** Auth Routes
-const RequiresUnAuth = React.lazy(() => import("@/modules/Auth/components/RequiresUnAuth"));
-const RequiresAuth = React.lazy(() => import("@/modules/dashboard/components/RequiresAuth"));
+const RequiresUnAuth = React.lazy(
+  () => import("@/modules/Auth/components/RequiresUnAuth")
+);
+const RequiresAuth = React.lazy(
+  () => import("@/modules/dashboard/components/RequiresAuth")
+);
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -75,6 +90,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.inventoryManagement.view,
       element: <InventoryManagement />,
+    },
+    {
+      path: PrivateRoutesPath.productBasicForm.view,
+      element: <ProductBasicForm />,
     },
     {
       path: PrivateRoutesPath.import.view,

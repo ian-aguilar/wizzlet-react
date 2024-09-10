@@ -2,9 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Logo from "/images/logo.svg";
 import { HamburgerIcon, RightArrowWhite } from "@/assets/Svg";
-import { Button } from "./Button";
 import { RoutesPath } from "@/modules/Auth/types";
 import { btnShowType } from "@/components/form-fields/types";
+import Button from "@/components/form-fields/components/Button";
 
 export const Header = () => {
   const navigate = useNavigate();

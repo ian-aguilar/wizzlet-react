@@ -23,6 +23,7 @@ export const PrivateRoutesPath = {
     attribute:{view:"/setting/attribute"}
   },
   inventoryManagement: { view: "/inventory-management" },
+  productBasicForm: { view: "/product-form" },
   import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
@@ -31,8 +32,8 @@ export const PrivateRoutesPath = {
     contactus: "/cms-management/contact-us",
     faq: "/cms-management/faq",
     home: "/cms-management/home",
-    terms:"/cms-management/terms",
-    privacy:"/cms-management/privacy-and-policy"
+    terms: "/cms-management/terms",
+    privacy: "/cms-management/privacy-and-policy",
   },
   contactusManagement: { view: "/contactus-management" },
 };
