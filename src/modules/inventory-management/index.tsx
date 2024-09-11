@@ -1,3 +1,9 @@
+// ** Packages **
+import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { debounce } from "lodash";
+
+// ** Icons **
 import {
   AddIconBtn,
   AutoSyncIcon,
@@ -9,8 +15,7 @@ import {
   SearchIcon,
 } from "@/assets/Svg";
 
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
-import { debounce } from "lodash";
+// ** Components **
 import Button from "../../components/form-fields/components/Button";
 import Checkbox from "@/components/form-fields/components/Checkbox";
 import { SearchBox } from "../../components/common/SearchBox";
@@ -18,66 +23,72 @@ import { Pagination } from "./components/Pagination";
 import DropDown from "./components/DropDown";
 import Product from "./components/Product";
 
+// ** Helper **
+import { status } from "./helper/inventryData";
+
+// ** Services **
+import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
+import { useGetCategoriesAPI, useProductListingAPI } from "./services";
+
+// ** Types **
+import { PrivateRoutesPath } from "../Auth/types";
 import { IMarketplace } from "../marketplace/types";
-import { E_PRODUCT_STATUS, Option } from "./types";
+import { E_PRODUCT_STATUS, Option, categoriesType, productProps } from "./types";
 import { btnShowType } from "@/components/form-fields/types";
 
-import { categories, data, status } from "./helper/inventryData";
-import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { useNavigate } from "react-router-dom";
-import { PrivateRoutesPath } from "../Auth/types";
 
 const InventoryManagement = () => {
-  //================== States =========================
+  // ** States **
+  const [totalItem, setTotalItem] = useState<number>();
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [category, setCategory] = useState<Option | undefined>(undefined);
-  const [productStatus, setProductStatus] = useState<string>(
-    E_PRODUCT_STATUS.active
-  );
-  const [itemPerPage, setItemPerPage] = useState<Option>({
-    label: "10",
-    value: "10",
-  });
+  const [productStatus, setProductStatus] = useState<string>(E_PRODUCT_STATUS.active);
+  const [categories, serCategories] = useState<categoriesType[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
   }>({
     connectedMarketplace: [],
   });
+  const [itemPerPage, setItemPerPage] = useState<Option>({
+    label: "10",
+    value: "10",
+  });
+  const [products, setProducts] = useState<{ products: productProps[]; totalRecord?: number }>({
+    products: [],
+  });
   const navigate = useNavigate();
 
-  // ================= Custom hooks ====================
+  // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { getCategoriesAPI } = useGetCategoriesAPI();
+  const { getProductsDetailsAPI } = useProductListingAPI();
 
   // ** Function for list products by API
-  const getProductsDetails = async (search: string = "") => {
-    console.log("productStatus: ", productStatus);
-    console.log("selectedMarketplace: ", selectedMarketplace);
-    console.log("category: ", category?.value ? category.value : "");
-    console.log("searchValue: ", search);
-    console.log("currentPage", currentPage);
-    console.log("itemPerPage: ", itemPerPage.value);
-    console.log("++++++++++============+++++++++++");
+  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
+    console.log("selectedMarketplace: ", marketplace);
+    const { data, error } = await getProductsDetailsAPI({
+      productStatus: productStatus,
+      selectedMarketplace: { marketplace: marketplace.length ? marketplace : selectedMarketplace },
+      category: category?.value ? category.value : "",
+      search: search,
+      currentPage: currentPage,
+      itemPerPage: itemPerPage.value,
+    });
+    if (!error && data) {
+      setProducts(data?.data);
+      setTotalItem(data.data.totalRecord);
+    }
   };
 
   // ** Page change event function
   const onPageChanged = useCallback(
-    (
-      event: MouseEvent<HTMLElement, globalThis.MouseEvent>,
-      page: number | string
-    ) => {
+    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
       event.preventDefault();
       setCurrentPage(page);
     },
     [setCurrentPage, setItemPerPage]
-  );
-
-  // ** Dummy json data constant **
-  const currentData = data.slice(
-    (Number(currentPage) - 1) * Number(itemPerPage.value),
-    (Number(currentPage) - 1) * Number(itemPerPage.value) +
-      Number(itemPerPage.value)
   );
 
   // ** API call for get connected marketplace **
@@ -85,18 +96,29 @@ const InventoryManagement = () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
+      setSelectedMarketplace(data?.data.connectedMarketplace.map((item: IMarketplace) => item.id));
+    }
+  };
+  useEffect(() => {
+    marketplaceListing();
+  }, []);
+
+  // ** Categories fetch **
+  const getCategories = async () => {
+    const { data, error } = await getCategoriesAPI(selectedMarketplace);
+    if (!error && data) {
+      serCategories(data?.data);
     }
   };
 
   // ** Handle filter market places **
   const handleMarketplace = (id: number) => {
     setCurrentPage(1);
+    setCategory(undefined);
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
-      const newSelectedMarket = selectedMarketplace.filter(
-        (market) => market !== id
-      );
+      const newSelectedMarket = selectedMarketplace.filter((market) => market !== id);
       setSelectedMarketplace(newSelectedMarket);
     }
   };
@@ -107,20 +129,23 @@ const InventoryManagement = () => {
   };
 
   // ** search box with debouncing **
-  const request = debounce((value) => {
-    getProductsDetails(value);
+  const request = debounce((value, selectedMarketplace) => {
+    getProductsDetails(value, selectedMarketplace);
   }, 500);
 
-  const debounceRequest = useCallback((value: string) => request(value), []);
+  const debounceRequest = useCallback(
+    (value: string, selectedMarketplace: number[]) => request(value, selectedMarketplace),
+    []
+  );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
-    debounceRequest(event.currentTarget.value.trim());
+    debounceRequest(event.currentTarget.value.trim(), selectedMarketplace);
   };
 
   useEffect(() => {
-    marketplaceListing();
-  }, []);
+    getCategories();
+  }, [selectedMarketplace]);
 
   useEffect(() => {
     getProductsDetails();
@@ -129,9 +154,7 @@ const InventoryManagement = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-          Inventory Management
-        </h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
         <div className="flex gap-2">
           <Button
             btnName="Filters"
@@ -142,9 +165,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() =>
-              navigate(PrivateRoutesPath.productBasicForm.view)
-            }
+            onClickHandler={() => navigate(PrivateRoutesPath.productBasicForm.view)}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -153,9 +174,7 @@ const InventoryManagement = () => {
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
-              SELECT Your Marketplace
-            </span>
+            <span className="block text-grayText text-base font-normal uppercase pb-4 ">SELECT Your Marketplace</span>
             <div className="flex gap-2">
               {marketplace.connectedMarketplace.map((item) => {
                 return (
@@ -185,9 +204,7 @@ const InventoryManagement = () => {
             <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
-              BtnIconLeft={
-                <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
-              }
+              BtnIconLeft={<AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />}
             />
             <div className="flex gap-2 items-center ">
               <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
@@ -209,19 +226,17 @@ const InventoryManagement = () => {
                 <div
                   key={item}
                   className={`activeTab px-7 py-2 flex items-center ${
-                    productStatus === item
-                      ? `text-greenPrimary border-greenPrimary`
-                      : `text-black border-greyBorder`
+                    productStatus === item ? `text-greenPrimary border-greenPrimary` : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}>
+                  onClick={() => handleProductStatus(item)}
+                >
                   {item}
                   <span
                     className={`text-base ${
-                      productStatus === item
-                        ? `bg-greenPrimary/10`
-                        : `bg-greyBorder/50`
-                    } px-1 rounded-md`}>
-                    {data.length}
+                      productStatus === item ? `bg-greenPrimary/10` : `bg-greyBorder/50`
+                    } px-1 rounded-md`}
+                  >
+                    {totalItem}
                   </span>
                 </div>
               );
@@ -258,7 +273,7 @@ const InventoryManagement = () => {
                   setCategory(e);
                 }
               }}
-              value={category ? category : undefined}
+              value={category !== undefined || null ? category : undefined}
               dropdownClass=" !font-medium hover:border-blackPrimary/20 text-grayText !text-base  !py-2 !px-3 "
               options={categories}
             />
@@ -304,17 +319,21 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div>
-            <Product currentData={currentData} />
+            <Product currentData={products.products} />
           </div>
         </div>
         <div className="flex-row">
-          <Pagination
-            pageLimit={Number(itemPerPage.value)}
-            pageNeighbors={2}
-            currentPage={currentPage}
-            totalRecords={data.length}
-            onPageChanged={onPageChanged}
-          />
+          {totalItem ? (
+            <Pagination
+              pageLimit={Number(itemPerPage.value)}
+              pageNeighbors={2}
+              currentPage={currentPage}
+              totalRecords={Number(totalItem)}
+              onPageChanged={onPageChanged}
+            />
+          ) : (
+            ""
+          )}
         </div>
       </section>
     </div>
