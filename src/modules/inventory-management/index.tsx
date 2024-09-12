@@ -36,7 +36,6 @@ import { IMarketplace } from "../marketplace/types";
 import { E_PRODUCT_STATUS, Option, categoriesType, productProps } from "./types";
 import { btnShowType } from "@/components/form-fields/types";
 
-
 const InventoryManagement = () => {
   // ** States **
   const [totalItem, setTotalItem] = useState<number>();
@@ -165,7 +164,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate(PrivateRoutesPath.productBasicForm.view)}
+            onClickHandler={() => navigate('/product-form/1')}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />

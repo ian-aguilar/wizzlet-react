@@ -20,12 +20,16 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
             className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
           >
             <div>
-              <Checkbox isChecked={"active"  === "active"} checkLabel=" " />
+              <Checkbox isChecked={"active" === "active"} checkLabel=" " />
             </div>
             <div className="IBox flex gap-6 w-full ">
-              {item.images !== undefined || null ? <div className="prodImg">
-                <img src={`${VITE_APP_API_URL}${item.images}`} className="max-w-[170px] max-h-[132px] " alt="" />
-              </div>: ""}
+              {item.images !== undefined || null ? (
+                <div className="prodImg">
+                  <img src={`${VITE_APP_API_URL}${item.images}`} className="max-w-[170px] max-h-[132px] " alt="" />
+                </div>
+              ) : (
+                ""
+              )}
               <div className="relative w-full">
                 <div className="absolute right-1 top-1 flex gap-2 ">
                   <div>
@@ -36,18 +40,20 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                   </div>
                 </div>
                 <h4 className="text-[19px] font-medium text-blackPrimary mr-10 line-clamp-1 ">{item.title}</h4>
-                <div className="Badges flex flex-wrap gap-1 text-sm ">
-                  {item.categories.map((category) => {
-                    return (
-                      <div
-                        key={category.id}
-                        className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
-                      >
-                        {category.name}
-                      </div>
-                    );
-                  })}
-                </div>
+                {item.categories.length > 0 ? (
+                  <div className="Badges flex flex-wrap gap-1 text-sm ">
+                    {item.categories.map((category) => {
+                      return (
+                        <div
+                          key={category.id}
+                          className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
+                        >
+                          {category.name}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : null}
                 <div className="DescSpecifications flex flex-wrap gap-6 py-5">
                   <div>
                     <span className="uppercase font-normal text-sm text-grayText">Price</span>
