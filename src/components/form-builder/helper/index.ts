@@ -12,13 +12,11 @@ export const getValidation = <T extends FieldValues>(data: FieldsType<T>[]) => {
           validationSchema[e.name] = yup.date();
           break;
         case FieldsTypeEnum.NUMBER:
+        case FieldsTypeEnum.DOUBLE:
           validationSchema[e.name] = yup.number();
           break;
         case FieldsTypeEnum.OPTIONS:
-          validationSchema[e.name] = yup.object({
-            value: yup.string(),
-            label: yup.string(),
-          });
+          validationSchema[e.name] = yup.object();
           break;
 
         default:

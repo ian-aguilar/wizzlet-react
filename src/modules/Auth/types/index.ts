@@ -20,10 +20,10 @@ export const PrivateRoutesPath = {
     profile: { view: "/setting/profile" },
     labelManager: { view: "/setting/label-manager" },
     changePassword: { view: "/setting/change-password" },
-    attribute:{view:"/setting/attribute"}
+    attribute: { view: "/setting/attribute" },
   },
   inventoryManagement: { view: "/inventory-management" },
-  productBasicForm: { view: "/product-form" },
+  productForm: { view: "/product-form/:step" },
   import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },

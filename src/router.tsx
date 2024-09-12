@@ -13,7 +13,7 @@ import { PrivateRoutesPath } from "./modules/Auth/types";
 import SettingLayout from "./modules/settings/components/SettingLayout";
 import { Loader } from "./components/common/Loader";
 import { CMSRoutes, RequiresUnAuthForCMS } from "./modules/cms/routes";
-import ProductBasicForm from "./modules/product-basic-form";
+import ProductForm from "./modules/all-product-form-wrapper";
 
 const Marketplace = React.lazy(
   () => import("./modules/marketplace/pages/marketplace")
@@ -92,8 +92,8 @@ const RouterComponent = () => {
       element: <InventoryManagement />,
     },
     {
-      path: PrivateRoutesPath.productBasicForm.view,
-      element: <ProductBasicForm />,
+      path: PrivateRoutesPath.productForm.view,
+      element: <ProductForm />,
     },
     {
       path: PrivateRoutesPath.import.view,
