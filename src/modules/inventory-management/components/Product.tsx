@@ -20,11 +20,11 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
             className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
           >
             <div>
-              <Checkbox isChecked={item.status === "active"} checkLabel=" " />
+              <Checkbox isChecked={"active"  === "active"} checkLabel=" " />
             </div>
             <div className="IBox flex gap-6 w-full ">
-              {item.images ? <div className="prodImg">
-                <img src={`${VITE_APP_API_URL}${item.images.url}`} className="max-w-[170px] max-h-[132px] " alt="" />
+              {item.images !== undefined || null ? <div className="prodImg">
+                <img src={`${VITE_APP_API_URL}${item.images}`} className="max-w-[170px] max-h-[132px] " alt="" />
               </div>: ""}
               <div className="relative w-full">
                 <div className="absolute right-1 top-1 flex gap-2 ">
@@ -72,7 +72,7 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                   <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
                   <div>
                     <span className="uppercase font-normal text-sm text-grayText">SKU</span>
-                    <p className="text-blackPrimary font-medium ">{item.SKU}</p>
+                    <p className="text-blackPrimary font-medium ">{item.sku}</p>
                   </div>
                 </div>
                 <div className="syncingOn flex flex-wrap gap-1 ">

@@ -51,7 +51,8 @@ export type productProps = {
   price: string;
   date: string;
   quantity: number;
-  SKU: string;
+  sku: string;
+  variantId?:number;
   marketplaces: {
     id: number;
     name: string;
