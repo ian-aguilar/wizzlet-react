@@ -30,14 +30,6 @@ export interface InputSwitchProps {
   onToggle: (id: number, status: string) => void;
 }
 
-export interface ISearchBox {
-  value?: string | number;
-  name: string;
-  placeholder: string;
-  className: string;
-  InputLeftIcon?: ReactNode;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
 export interface ICategory extends CategoryOptions {
   id?: number | string;
   name?: string;
@@ -84,4 +76,13 @@ export interface ISetSelectOptions {
     slug?: string;
     id?: string | number;
   };
+}
+
+export interface ISearchBox {
+  value?: string | number;
+  name: string;
+  placeholder: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
