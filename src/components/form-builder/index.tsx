@@ -28,6 +28,7 @@ const FormBuilder = <T extends FieldValues>({
 
       case FieldsTypeEnum.NUMBER:
       case FieldsTypeEnum.STRING:
+      case FieldsTypeEnum.DOUBLE:
         return (
           <Input
             name={data.name}

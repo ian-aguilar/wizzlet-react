@@ -46,3 +46,19 @@ export type TagOption = {
   label: string;
   value: string;
 };
+
+export type VariantProperty = {
+  singleSelect: {
+    label: string;
+    value: string;
+  };
+  multiSelect: {
+    label: string;
+    value: string;
+  }[];
+};
+
+export type TransformedVariant = {
+  name: string;
+  value: string[];
+};
