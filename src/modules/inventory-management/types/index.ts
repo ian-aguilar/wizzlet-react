@@ -5,10 +5,7 @@ export interface IPaginationProps {
   pageNeighbors: number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-    page: number | string
-  ) => void;
+  onPageChanged: (event: React.MouseEvent<HTMLElement, MouseEvent>, page: number | string) => void;
 }
 
 export interface IDropDown {
@@ -17,7 +14,7 @@ export interface IDropDown {
   placeholder?: string;
   dropdownName?: string;
   dropdownClass?: string;
-  options: { id: number; name: string }[];
+  options: categoriesType[];
   onChange?: (newValue: SingleValue<Option>) => void;
 }
 
@@ -43,23 +40,27 @@ export interface IItemFilter {
 }
 
 export type productProps = {
-  currentData: {
+  id: number;
+  title: string;
+  images: { url: string };
+  categories: {
     id: number;
-    title: string;
-    img: string;
-    categories: {
-      id: number;
-      name: string;
-    }[];
-    status: string;
-    price: string;
-    date: string;
-    qty: number;
-    SKU: string;
-    marketPlaces: {
-      id: number;
-      name: string;
-      logo: string;
-    }[];
+    name: string;
   }[];
+  status: string;
+  price: string;
+  date: string;
+  quantity: number;
+  sku: string;
+  variantId?:number;
+  marketplaces: {
+    id: number;
+    name: string;
+    logo: string;
+  }[];
+};
+
+export type categoriesType = {
+  id: number;
+  name: string;
 };

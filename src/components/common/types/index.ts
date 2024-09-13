@@ -41,13 +41,16 @@ export interface CategoryOptions {
   label?: string;
   options?: CategoryOptions[];
   value?: string;
-  slug: string;
+  slug?: string;
 }
 
 export interface SelectCategoryProps {
   options: ICategory[];
   defaultValue?: string | number;
-  setValue?: Dispatch<SetStateAction<{ id: number | string; value: string } | undefined>>;
+  setValue?: Dispatch<
+    SetStateAction<{ id: number | string; value: string } | undefined>
+  >;
+  onChange?: (selectedOption: CategoryOptions) => void;
 }
 
 export interface CategoryOptionProps {

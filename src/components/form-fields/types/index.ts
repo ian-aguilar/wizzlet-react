@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode } from "react";
+import { ChangeEventHandler, MouseEvent, ReactNode } from "react";
 import {
   Control,
   FieldErrors,
@@ -230,6 +230,8 @@ export interface ICustomSelect<T extends FieldValues> {
   autoFocus?: boolean;
 }
 export type ICheckboxProps = {
+  value?: string | number | readonly string[] | undefined ,
   checkLabel: string;
   isChecked?: boolean;
+  onChange?: ChangeEventHandler<HTMLInputElement>
 };

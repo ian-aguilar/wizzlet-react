@@ -35,7 +35,13 @@ export const Options = ({
   );
 };
 
-const OptGroup = ({ option, setValue, setIsSelectOpen, setSlug, setId }: CategoryOptGroupProps) => {
+const OptGroup = ({
+  option,
+  setValue,
+  setIsSelectOpen,
+  setSlug,
+  setId,
+}: CategoryOptGroupProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
@@ -46,8 +52,7 @@ const OptGroup = ({ option, setValue, setIsSelectOpen, setSlug, setId }: Categor
             className="list-none bg-red mt-[5px]"
             onClick={() => {
               setIsOpen(!isOpen);
-            }}
-          >
+            }}>
             {option.label}
           </li>
           {isOpen && (
@@ -71,8 +76,7 @@ const OptGroup = ({ option, setValue, setIsSelectOpen, setSlug, setId }: Categor
               setSlug(option.slug);
               setId(option.id);
             }}
-            className="bg-slate-500"
-          >
+            className="bg-slate-500">
             {option.label}
           </li>
         </>
@@ -87,28 +91,40 @@ const setSelectOptions = (
   defaultValue?: string | number
 ): ISetSelectOptions => {
   let newValue, newSlug, newId;
-  for (let category of data) {
+  for (const category of data) {
     if (category.children && category?.children?.length > 0) {
       category.label = category.name;
       category.slug = `${slug}  ${category.label} > `;
 
-      const optionValues = setSelectOptions(category.children, category.slug, defaultValue);
+      const optionValues = setSelectOptions(
+        category.children,
+        category.slug,
+        defaultValue
+      );
 
       category.options = optionValues.options;
-      newValue = optionValues.defaultValue.value ? optionValues.defaultValue.value : newValue;
-      newSlug = optionValues.defaultValue.slug ? optionValues.defaultValue.slug : newSlug;
-      newId = optionValues.defaultValue.id ? optionValues.defaultValue.id : newId;
+      newValue = optionValues.defaultValue.value
+        ? optionValues.defaultValue.value
+        : newValue;
+      newSlug = optionValues.defaultValue.slug
+        ? optionValues.defaultValue.slug
+        : newSlug;
+      newId = optionValues.defaultValue.id
+        ? optionValues.defaultValue.id
+        : newId;
 
       const childOptions = category.options.filter((child: CategoryOptions) => {
         if (child.options && child.options.length > 0) {
           return child;
         }
       });
-      const nonChildOptions = category.options.filter((child: CategoryOptions) => {
-        if (!child.options) {
-          return child;
+      const nonChildOptions = category.options.filter(
+        (child: CategoryOptions) => {
+          if (!child.options) {
+            return child;
+          }
         }
-      });
+      );
       category.options = [...childOptions, ...nonChildOptions];
     } else {
       category.label = category.name;
@@ -136,7 +152,7 @@ const setSelectOptions = (
 };
 
 export const Select = (props: SelectCategoryProps) => {
-  const { options, defaultValue } = props;
+  const { options, defaultValue, onChange } = props;
 
   const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false);
   const [finalOptions, setFinalOptions] = useState<CategoryOptions[]>([]);
@@ -156,11 +172,13 @@ export const Select = (props: SelectCategoryProps) => {
   }, [options]);
 
   useEffect(() => {
-    if (newValue && props.setValue && id) {
-      props.setValue({
-        id: id,
-        value: newValue,
-      });
+    if (newValue && id) {
+      if (onChange) {
+        onChange({
+          id: id,
+          value: newValue,
+        });
+      }
     }
   }, [newValue]);
 
@@ -170,8 +188,7 @@ export const Select = (props: SelectCategoryProps) => {
         className="bg-slate-400 max h-[25px]"
         onClick={() => {
           setIsSelectOpen(!isSelectOpen);
-        }}
-      >
+        }}>
         {newValue && slug}
         {!isSelectOpen && !newValue && `Select Value`}
       </div>

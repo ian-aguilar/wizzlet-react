@@ -19,8 +19,125 @@ import {
   useVariantPropertyOptionsApi,
 } from "./services/productBasicForm.service";
 import { productTypes } from "./constant";
+import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 
-const ProductBasicForm: React.FC = () => {
+// const apiData: IProductBasicForm = {
+//   productType: {
+//     label: "Variant",
+//     value: "variant",
+//   },
+//   combinations: [
+//     {
+//       quantity: 5434,
+//       sku: "asdasd",
+//       price: 43,
+//       combination: [
+//         {
+//           name: "color",
+//           value: "Red",
+//         },
+//         {
+//           name: "size",
+//           value: "S",
+//         },
+//       ],
+//     },
+//     {
+//       quantity: 23,
+//       sku: "sfsd",
+//       price: 43676,
+//       combination: [
+//         {
+//           name: "color",
+//           value: "Red",
+//         },
+//         {
+//           name: "size",
+//           value: "M",
+//         },
+//       ],
+//     },
+//     {
+//       quantity: 324,
+//       sku: "df",
+//       price: 5435,
+//       combination: [
+//         {
+//           name: "color",
+//           value: "Blue",
+//         },
+//         {
+//           name: "size",
+//           value: "S",
+//         },
+//       ],
+//     },
+//     {
+//       quantity: 234,
+//       sku: "df",
+//       price: 23,
+//       combination: [
+//         {
+//           name: "color",
+//           value: "Blue",
+//         },
+//         {
+//           name: "size",
+//           value: "M",
+//         },
+//       ],
+//     },
+//   ],
+//   variantProperties: [
+//     {
+//       singleSelect: {
+//         label: "Color",
+//         value: "color",
+//       },
+//       multiSelect: [
+//         {
+//           label: "Red",
+//           value: "Red",
+//         },
+//         {
+//           label: "Blue",
+//           value: "Blue",
+//         },
+//       ],
+//     },
+//     {
+//       singleSelect: {
+//         label: "Size",
+//         value: "size",
+//       },
+//       multiSelect: [
+//         {
+//           label: "S",
+//           value: "S",
+//         },
+//         {
+//           label: "M",
+//           value: "M",
+//         },
+//       ],
+//     },
+//   ],
+//   tagOptions: [
+//     {
+//       label: "Def",
+//       value: "def",
+//     },
+//     {
+//       label: "Xyz",
+//       value: "xyz",
+//     },
+//   ],
+//   image: ["/product/Screenshot from 2023-03-24 19-08-28_1725854563636.png"],
+//   description: "sdfdfds",
+//   title: "gdfdf",
+// };
+
+const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({});
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
@@ -39,10 +156,20 @@ const ProductBasicForm: React.FC = () => {
     setError,
     clearErrors,
     watch,
+    // reset,
   } = useForm<IProductBasicForm>({
     resolver: yupResolver(productBasisFormValidationSchema),
     defaultValues: {
-      productType: null,
+      title: "",
+      description: "",
+      productType: "",
+      tagOptions: [],
+      image: null,
+      price: undefined,
+      quantity: undefined,
+      sku: "",
+      variantProperties: undefined,
+      combinations: undefined,
     },
   });
 
@@ -161,6 +288,51 @@ const ProductBasicForm: React.FC = () => {
     }
   };
 
+  // useEffect(() => {
+  //   setProductType(apiData?.productType?.value);
+
+  //   const transformedData = transformVariantProperties(
+  //     apiData?.variantProperties
+  //   );
+  //   const combinations = generateCombinations(transformedData);
+  //   setGeneratedCombinations(combinations);
+
+  //   const formattedData = {
+  //     productType: apiData.productType,
+  //     title: apiData.title,
+  //     description: apiData.description,
+  //     tagOptions: apiData?.tagOptions?.map((tag) => ({
+  //       label: tag.label,
+  //       value: tag.value,
+  //     })),
+  //     image: apiData.image,
+  //     price: apiData.price,
+  //     quantity: apiData.quantity,
+  //     sku: apiData.sku,
+  //     variantProperties: apiData?.variantProperties?.map((prop) => ({
+  //       singleSelect: {
+  //         label: prop?.singleSelect?.label,
+  //         value: prop?.singleSelect?.value,
+  //       },
+  //       multiSelect: prop?.multiSelect?.map((opt) => ({
+  //         label: opt.label,
+  //         value: opt.value,
+  //       })),
+  //     })),
+  //     combinations: apiData?.combinations?.map((comb) => ({
+  //       combination: comb.combination?.map((e) => ({
+  //         name: e?.name,
+  //         value: e?.value,
+  //       })),
+  //       price: comb.price,
+  //       sku: comb.sku,
+  //       quantity: comb.quantity,
+  //     })),
+  //   };
+
+  //   reset(formattedData);
+  // }, [reset]);
+
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
     const formData = new FormData();
     formData.append("productType", JSON.stringify(payload?.productType));
@@ -176,280 +348,241 @@ const ProductBasicForm: React.FC = () => {
     formData.append("image", payload.image[0]);
     formData.append("description", JSON.stringify(payload?.description));
     formData.append("title", JSON.stringify(payload?.title));
-    await basicFormSubmitApi(payload, {
+    const {
+      data: {
+        data: { productId: productId },
+      },
+    } = await basicFormSubmitApi(payload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
+    if (productId) {
+      onComplete(productId);
+    }
   };
 
   return (
-    <section className="block lg:flex gap-5 items-start">
-      <div className="w-[335px] min-w-[335px] bg-white rounded-md border-greyBorder p-8 lg:mb-0 mb-5 ">
-        <div className="stepperInventory pl-5">
-          <div className="step1 relative ">
-            <div className="absolute -left-[23px] -top-3 border-8 rounded-full border-greenPrimary/20   ">
-              <div className="  w-7 h-7 min-w-7 bg-greenPrimary rounded-full  flex justify-center items-center text-white ">
-                1
+    <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <section>
+          <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+            Heyowl Form
+          </h2>
+          <div className="border-l border-r border-b mb-6 rounded-b-md">
+            <div className="grid grid-cols-12 w-full gap-4 p-4">
+              <div className="col-span-6 relative">
+                <MultipleImageUpload
+                  name="image"
+                  control={control}
+                  setError={setError}
+                  clearErrors={clearErrors}
+                  errors={errors}
+                  maxSize={8}
+                  allowedFormat={["image/png", "image/jpeg"]}
+                  setValue={setValue}
+                  watch={watch}
+                />
               </div>
-            </div>
-            <div className="border-l border-dashed border-greenPrimary pl-10 min-h-[70px]">
-              <h3 className="font-medium text-xl">Heyowl Form</h3>
-              <p className="text-grayText text-sm font-medium ">
-                Fill Heyowl form details.
-              </p>
-            </div>
-          </div>
-          <div className="step1 relative ">
-            <div className="absolute -left-[23px] -top-0 border-8 rounded-full border-grayText/20   ">
-              <div className="  w-7 h-7 min-w-7 bg-gray-400 rounded-full  flex justify-center items-center text-white ">
-                2
-              </div>
-            </div>
-            <div className="border-l border-dashed border-grayText/20 pl-10 min-h-[85px]">
-              <h3 className="font-medium text-xl">Choose Marketplace</h3>
-              <p className="text-grayText text-sm font-medium ">
-                Select Marketplace
-              </p>
-            </div>
-          </div>
-          <div className="step1 relative ">
-            <div className="absolute -left-[23px] -top-0 border-8 rounded-full border-grayText/20   ">
-              <div className="  w-7 h-7 min-w-7 bg-gray-400 rounded-full  flex justify-center items-center text-white ">
-                3
-              </div>
-            </div>
-            <div className=" pl-10  ">
-              <h3 className="font-medium text-xl">Marketplace Form</h3>
-              <p className="text-grayText text-sm font-medium ">
-                Fill Marketplace form details.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <section>
-            <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
-              Heyowl Form
-            </h2>
-            <div className="border-l border-r border-b mb-6 rounded-b-md">
-              <div className="grid grid-cols-12 w-full gap-4 p-4">
-                <div className="col-span-6 relative">
-                  <MultipleImageUpload
-                    name="image"
-                    control={control}
-                    setError={setError}
-                    clearErrors={clearErrors}
-                    errors={errors}
-                    maxSize={8}
-                    allowedFormat={["image/png", "image/jpeg"]}
-                    setValue={setValue}
-                    watch={watch}
-                  />
-                </div>
-                <div className="col-span-6">
-                  <SelectField
-                    label="Product Type"
-                    options={productTypes}
-                    name="productType"
-                    control={control}
-                    errors={errors}
-                    onChange={(selectedOption) =>
-                      handleProductTypeChange(
-                        selectedOption ? selectedOption.value : ""
-                      )
-                    }
-                  />
-                  <Input
-                    textLabelName="Title"
-                    placeholder="Enter Title"
-                    name="title"
-                    type="text"
-                    control={control}
-                    errors={errors}
-                  />
-                  <TextArea
-                    textLabelName="Description"
-                    placeholder="Enter Description"
-                    name="description"
-                    type="text"
-                    control={control}
-                    errors={errors}
-                  />
-                  <SelectField
-                    label="Tags"
-                    placeholder="Select Tags"
-                    options={tagsOptions}
-                    name="tagOptions"
-                    control={control}
-                    errors={errors}
-                    isMulti
-                  />
-                  {productType !== "variant" && (
-                    <div>
-                      <Input
-                        textLabelName="SKU"
-                        placeholder="Enter SKU"
-                        name="sku"
-                        type="text"
-                        control={control}
-                        errors={errors}
-                      />
-                      <Input
-                        textLabelName="Quantity"
-                        placeholder="Enter Quantity"
-                        name="quantity"
-                        type="number"
-                        control={control}
-                        errors={errors}
-                      />
-                      <Input
-                        textLabelName="Price"
-                        placeholder="Enter Price"
-                        name="price"
-                        type="number"
-                        control={control}
-                        errors={errors}
-                      />
-                    </div>
-                  )}
+              <div className="col-span-6">
+                <SelectField
+                  label="Product Type"
+                  options={productTypes}
+                  name="productType"
+                  control={control}
+                  errors={errors}
+                  onChange={(selectedOption) =>
+                    handleProductTypeChange(
+                      selectedOption ? selectedOption.value : ""
+                    )
+                  }
+                />
+                <Input
+                  textLabelName="Title"
+                  placeholder="Enter Title"
+                  name="title"
+                  type="text"
+                  control={control}
+                  errors={errors}
+                />
+                <TextArea
+                  textLabelName="Description"
+                  placeholder="Enter Description"
+                  name="description"
+                  type="text"
+                  control={control}
+                  errors={errors}
+                />
+                <SelectField
+                  label="Tags"
+                  placeholder="Select Tags"
+                  options={tagsOptions}
+                  name="tagOptions"
+                  control={control}
+                  errors={errors}
+                  isMulti
+                />
+                {productType !== "variant" && (
+                  <div>
+                    <Input
+                      textLabelName="SKU"
+                      placeholder="Enter SKU"
+                      name="sku"
+                      type="text"
+                      control={control}
+                      errors={errors}
+                    />
+                    <Input
+                      textLabelName="Quantity"
+                      placeholder="Enter Quantity"
+                      name="quantity"
+                      type="number"
+                      control={control}
+                      errors={errors}
+                    />
+                    <Input
+                      textLabelName="Price"
+                      placeholder="Enter Price"
+                      name="price"
+                      type="number"
+                      control={control}
+                      errors={errors}
+                    />
+                  </div>
+                )}
 
-                  {productType === "variant" && (
-                    <div>
-                      {variantFields.map((item, index) => (
-                        <div key={item.id} className="my-4">
-                          <SelectField
-                            label="Property"
-                            placeholder="Select Property"
-                            options={propertyOptions.filter(
-                              (e) =>
-                                !propertiesValues?.some(
-                                  (item) =>
-                                    e.value === item?.singleSelect?.value
-                                )
-                            )}
-                            name={`variantProperties.${index}.singleSelect`}
-                            control={control}
-                            errors={errors}
-                          />
-                          <span className="text-lg font-bold">→</span>
-                          <SelectField
-                            label="Options"
-                            placeholder="Select Options"
-                            options={(
-                              allOptions[
-                                watch(`variantProperties.${index}.singleSelect`)
-                                  ?.value || ""
-                              ] || []
-                            ).map((opt) => ({ label: opt, value: opt }))}
-                            name={`variantProperties.${index}.multiSelect`}
-                            control={control}
-                            errors={errors}
-                            isMulti
-                          />
-                          {variantFields.length > 1 && (
-                            <button
-                              type="button"
-                              className="p-1 text-red-500"
-                              onClick={() => removeVariant(index)}>
-                              Remove
-                            </button>
+                {productType === "variant" && (
+                  <div>
+                    {variantFields.map((item, index) => (
+                      <div key={item.id} className="my-4">
+                        <SelectField
+                          label="Property"
+                          placeholder="Select Property"
+                          options={propertyOptions.filter(
+                            (e) =>
+                              !propertiesValues?.some(
+                                (item) => e.value === item?.singleSelect?.value
+                              )
                           )}
-                        </div>
-                      ))}
+                          name={`variantProperties.${index}.singleSelect`}
+                          control={control}
+                          errors={errors}
+                        />
+                        <span className="text-lg font-bold">→</span>
+                        <SelectField
+                          label="Options"
+                          placeholder="Select Options"
+                          options={(
+                            allOptions[
+                              watch(`variantProperties.${index}.singleSelect`)
+                                ?.value || ""
+                            ] || []
+                          ).map((opt) => ({ label: opt, value: opt }))}
+                          name={`variantProperties.${index}.multiSelect`}
+                          control={control}
+                          errors={errors}
+                          isMulti
+                        />
+                        {variantFields.length > 1 && (
+                          <button
+                            type="button"
+                            className="p-1 text-red-500"
+                            onClick={() => removeVariant(index)}>
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    ))}
 
+                    <button
+                      type="button"
+                      className="p-2 my-4 text-white bg-greenPrimary rounded-md"
+                      onClick={() =>
+                        appendVariant({ singleSelect: null, multiSelect: [] })
+                      }>
+                      Add Property
+                    </button>
+                    {productType === "variant" && (
                       <button
                         type="button"
-                        className="p-2 my-4 text-white bg-greenPrimary rounded-md"
-                        onClick={() =>
-                          appendVariant({ singleSelect: null, multiSelect: [] })
-                        }>
-                        Add Property
+                        className="p-2 mt-4 text-white bg-blue-500 rounded-md"
+                        onClick={handleSaveVariant}>
+                        Save Variant
                       </button>
-                      {productType === "variant" && (
-                        <button
-                          type="button"
-                          className="p-2 mt-4 text-white bg-blue-500 rounded-md"
-                          onClick={handleSaveVariant}>
-                          Save Variant
-                        </button>
-                      )}
+                    )}
+                  </div>
+                )}
+                {productType === "variant" &&
+                  generatedCombinations.length > 0 && (
+                    <div>
+                      <h3 className="font-bold text-lg">
+                        Generated Combinations:
+                      </h3>
+                      {combinationFields.map((item, index) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-2 my-2">
+                          <div>
+                            {item.combination.map((e) => e.value).join(", ")}
+                          </div>
+                          <Input
+                            textLabelName="Price"
+                            placeholder="Enter Price"
+                            name={`combinations.${index}.price`}
+                            type="number"
+                            control={control}
+                            errors={errors}
+                          />
+                          <Input
+                            textLabelName="SKU"
+                            placeholder="Enter SKU"
+                            name={`combinations.${index}.sku`}
+                            type="text"
+                            control={control}
+                            errors={errors}
+                          />
+                          <Input
+                            textLabelName="Quantity"
+                            placeholder="Enter Quantity"
+                            name={`combinations.${index}.quantity`}
+                            type="number"
+                            control={control}
+                            errors={errors}
+                          />
+                          <button
+                            type="button"
+                            className="p-1 text-red-500"
+                            onClick={() => removeCombination(index)}>
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        className="p-2 my-4 text-white bg-blue-500 rounded-md"
+                        onClick={handleAddCombination}>
+                        Add Combination
+                      </button>
                     </div>
                   )}
-                  {productType === "variant" &&
-                    generatedCombinations.length > 0 && (
-                      <div>
-                        <h3 className="font-bold text-lg">
-                          Generated Combinations:
-                        </h3>
-                        {combinationFields.map((item, index) => (
-                          <div
-                            key={item.id}
-                            className="flex items-center gap-2 my-2">
-                            <div>
-                              {item.combination.map((e) => e.value).join(", ")}
-                            </div>
-                            <Input
-                              textLabelName="Price"
-                              placeholder="Enter Price"
-                              name={`combinations.${index}.price`}
-                              type="number"
-                              control={control}
-                              errors={errors}
-                            />
-                            <Input
-                              textLabelName="SKU"
-                              placeholder="Enter SKU"
-                              name={`combinations.${index}.sku`}
-                              type="text"
-                              control={control}
-                              errors={errors}
-                            />
-                            <Input
-                              textLabelName="Quantity"
-                              placeholder="Enter Quantity"
-                              name={`combinations.${index}.quantity`}
-                              type="number"
-                              control={control}
-                              errors={errors}
-                            />
-                            <button
-                              type="button"
-                              className="p-1 text-red-500"
-                              onClick={() => removeCombination(index)}>
-                              Remove
-                            </button>
-                          </div>
-                        ))}
-                        <button
-                          type="button"
-                          className="p-2 my-4 text-white bg-blue-500 rounded-md"
-                          onClick={handleAddCombination}>
-                          Add Combination
-                        </button>
-                      </div>
-                    )}
-                </div>
               </div>
             </div>
+          </div>
 
-            {errors?.combinations?.type === "min" ? (
-              <span className="errorText text-red-600 font-medium text-sm">
-                Please save the variant and create at least one combination
-              </span>
-            ) : null}
+          {errors?.combinations?.type === "min" ? (
+            <span className="errorText text-red-600 font-medium text-sm">
+              Please save the variant and create at least one combination
+            </span>
+          ) : null}
 
-            <button
-              type="submit"
-              className="p-2 mt-4 text-white bg-green-500 rounded-md">
-              Submit Form
-            </button>
-          </section>
-        </form>
-      </div>
-    </section>
+          <button
+            type="submit"
+            className="p-2 mt-4 text-white bg-green-500 rounded-md">
+            Submit Form
+          </button>
+        </section>
+      </form>
+    </div>
   );
 };
 
