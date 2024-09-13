@@ -49,14 +49,14 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                   </div>
                 </div>
                 <h4 className="text-[19px] font-medium text-blackPrimary mr-10 line-clamp-1 ">
-                  {item.title}
+                  {item?.title}
                 </h4>
                 {item?.categories?.length > 0 ? (
                   <div className="Badges flex flex-wrap gap-1 text-sm ">
-                    {item?.categories?.map((category) => {
+                    {item?.categories.map((category) => {
                       return (
                         <div
-                          key={category.id}
+                          key={category?.id}
                           className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
                           {category?.name}
                         </div>
@@ -70,7 +70,7 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                       Price
                     </span>
                     <p className="text-blackPrimary font-medium ">
-                      {item.price}
+                      {item?.price}
                     </p>
                   </div>
                   <div className="border-r border-dashed border-grayText/30">
@@ -81,7 +81,7 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                       Date
                     </span>
                     <p className="text-blackPrimary font-medium ">
-                      {new Date(item.date).toLocaleDateString("en-GB", {
+                      {new Date(item?.date).toLocaleDateString("en-GB", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
@@ -96,7 +96,7 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                       QTY
                     </span>
                     <p className="text-blackPrimary font-medium ">
-                      {item.quantity}
+                      {item?.quantity}
                     </p>
                   </div>
                   <div className="border-r border-dashed border-grayText/30">
@@ -106,17 +106,19 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                     <span className="uppercase font-normal text-sm text-grayText">
                       SKU
                     </span>
-                    <p className="text-blackPrimary font-medium ">{item.sku}</p>
+                    <p className="text-blackPrimary font-medium ">
+                      {item?.sku}
+                    </p>
                   </div>
                 </div>
                 <div className="syncingOn flex flex-wrap gap-1 ">
-                  {item.marketplaces.map((marketsLogo) => {
+                  {item?.marketplaces?.map((marketsLogo) => {
                     return (
                       <div
-                        key={marketsLogo.id}
+                        key={marketsLogo?.id}
                         className=" rounded-md  border border-grayText/20 p-1">
                         <img
-                          src={`${VITE_APP_API_URL}${marketsLogo.logo}`}
+                          src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                           className="w-14 h-auto"
                           alt=""
                         />

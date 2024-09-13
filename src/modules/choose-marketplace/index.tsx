@@ -15,9 +15,12 @@ import { useParams } from "react-router-dom";
 // ** Types **
 
 const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
+  // ** States **
+
   const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
     []
   ); // List of selected marketplaces
+  const [errorShow, setErrorShow] = useState<boolean>(false);
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
   }>({
@@ -38,6 +41,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   };
 
   useEffect(() => {
+    setErrorShow(false);
     marketplaceListing();
   }, []);
 
@@ -54,14 +58,20 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
 
   // Handle form submission
   const handleSubmit = async () => {
+    if (selectedMarketplaces.length === 0) {
+      setErrorShow(true);
+      return;
+    }
     const { data, error } = await setProductMarketplace({
       marketplace: selectedMarketplaces,
       productId: productId,
     });
     if (!data && error) {
       console.log("Error: ", error);
+    } else {
+      setErrorShow(false);
+      onComplete(selectedMarketplaces);
     }
-    onComplete(productId);
   };
 
   return (
@@ -94,6 +104,13 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           <p>No marketplaces available</p>
         )}
       </div>
+
+      {errorShow && selectedMarketplaces.length == 0 ? (
+        <span className="errorText text-red-600 font-medium text-sm">
+          {"Marketplace is not selected."}
+        </span>
+      ) : null}
+
       <div className="flex gap-2 my-6">
         <Button
           btnName="Back"
