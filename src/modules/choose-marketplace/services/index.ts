@@ -8,7 +8,7 @@ export const useSetProductMarketplaceAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
   const setProductMarketplace = async (data: object) => {
-    return callApi(`${PATH}/setMarketplace`, { data });
+    return callApi(`${PATH}/setMarketplace`, data);
   };
 
   return { setProductMarketplace, isLoading, isError, isSuccess };
