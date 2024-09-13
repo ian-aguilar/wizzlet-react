@@ -16,41 +16,47 @@ const FormBuilder = <T extends FieldValues>({
     switch (data.type) {
       case FieldsTypeEnum.DATE:
         return (
-          <DateInput
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            label={data.name}
-            placeholder=""
-          />
+          <div className="mt-2">
+            <DateInput
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              label={data.name}
+              placeholder=""
+            />
+          </div>
         );
 
       case FieldsTypeEnum.NUMBER:
       case FieldsTypeEnum.STRING:
       case FieldsTypeEnum.DOUBLE:
         return (
-          <Input
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            textLabelName={data.name}
-            placeholder=""
-          />
+          <div className="mt-2">
+            <Input
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              textLabelName={data.name}
+              placeholder=""
+            />
+          </div>
         );
 
       case FieldsTypeEnum.OPTIONS:
         return (
-          <SelectField<T>
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            label={data.name}
-            placeholder=""
-            options={data.option || []}
-          />
+          <div className="mt-2">
+            <SelectField<T>
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              label={data.name}
+              placeholder=""
+              options={data.option || []}
+            />
+          </div>
         );
 
       default:

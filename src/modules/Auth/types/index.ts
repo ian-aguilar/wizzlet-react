@@ -23,7 +23,7 @@ export const PrivateRoutesPath = {
     attribute: { view: "/setting/attribute" },
   },
   inventoryManagement: { view: "/inventory-management" },
-  productForm: { view: "/product-form/:step" },
+  productForm: { view: "/product-form/:step/:productId" },
   import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },

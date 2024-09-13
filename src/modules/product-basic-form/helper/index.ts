@@ -33,8 +33,8 @@ export const generateCombinations = (
 export const transformVariantProperties = (
   variantProperties: VariantProperty[]
 ): TransformedVariant[] => {
-  return variantProperties.map((variant) => ({
+  return variantProperties?.map((variant) => ({
     name: variant.singleSelect.value,
-    value: variant.multiSelect.map((option) => option.value),
+    value: variant.multiSelect?.map((option) => option.value),
   }));
 };

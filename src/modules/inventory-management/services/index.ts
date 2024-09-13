@@ -6,7 +6,9 @@ export const useGetCategoriesAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
   const getCategoriesAPI = async (data: number[]) => {
-    return callApi(`${CATEGORIES_PATH}/marketplace-wise`, { marketplace: data });
+    return callApi(`${CATEGORIES_PATH}/marketplace-wise`, {
+      marketplace: data,
+    });
   };
 
   return { getCategoriesAPI, isLoading, isError, isSuccess };
@@ -19,4 +21,13 @@ export const useProductListingAPI = () => {
     return callApi(`${PRODUCT_LIST_PATH}/list`, { params: data });
   };
   return { getProductsDetailsAPI, isLoading, isError, isSuccess };
+};
+
+export const useEditProductAPi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getEditProductsDetailsAPI = async (productId: string | undefined) => {
+    return callApi(`${PRODUCT_LIST_PATH}/${productId}`);
+  };
+  return { getEditProductsDetailsAPI, isLoading, isError, isSuccess };
 };
