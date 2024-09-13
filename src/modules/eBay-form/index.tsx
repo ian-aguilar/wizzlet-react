@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IUserModel } from "../user-management/types";
 import FormBuilder from "@/components/form-builder";
-import { useEbayFormHandleApi, useGetAllFieldsApi, useGetCategoryApi } from "./services/productBasicForm.service";
+import {
+  useEbayFormHandleApi,
+  useGetAllFieldsApi,
+  useGetCategoryApi,
+} from "./services/productBasicForm.service";
 import { useEffect, useState } from "react";
 import { Select } from "@/components/form-fields/components/SelectCategory";
 import { CategoryOptions, ICategory } from "@/components/common/types";
@@ -90,7 +94,9 @@ import { PropertiesState } from "./types";
 //   "California Prop 65 Warning": "dfd",
 // };
 
-const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) => {
+const EbayForm: React.FC<{ productId: number | undefined }> = ({
+  productId,
+}) => {
   console.log("🚀 ~ productId:", productId);
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
@@ -171,12 +177,27 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
   return (
     <>
       <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-        {fieldsLoading || optionsLoading ? <Loader loaderClass=" !fixed " /> : null}
+        {fieldsLoading || optionsLoading ? (
+          <Loader loaderClass=" !fixed " />
+        ) : null}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Select options={categories} onChange={handleOnChange} />
-          <FormBuilder control={control} errors={errors} fields={propertiesState.nullCategory} />
-          <FormBuilder control={control} errors={errors} fields={propertiesState.categorized} />
-          <Button showType={btnShowType.primary} btnName="Save" type="submit" />
+          <FormBuilder
+            control={control}
+            errors={errors}
+            fields={propertiesState.nullCategory}
+          />
+          <FormBuilder
+            control={control}
+            errors={errors}
+            fields={propertiesState.categorized}
+          />
+          <Button
+            showType={btnShowType.primary}
+            btnName="Save"
+            type="submit"
+            btnClass="mt-6"
+          />
         </form>
       </div>
     </>

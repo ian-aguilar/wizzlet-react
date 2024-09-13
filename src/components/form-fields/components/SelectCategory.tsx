@@ -7,6 +7,8 @@ import {
   ISetSelectOptions,
   SelectCategoryProps,
 } from "@/components/common/types";
+import { LeftArrow } from "@/components/svgIcons";
+import { DownArrowBlack, DownArrowIcon } from "@/assets/Svg";
 
 export const Options = ({
   data,
@@ -45,43 +47,52 @@ const OptGroup = ({
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   return (
-    <>
-      {option.options ? (
-        <>
-          <li
-            className="list-none bg-red mt-[5px]"
-            onClick={() => {
-              setIsOpen(!isOpen);
-            }}>
-            {option.label}
-          </li>
-          {isOpen && (
-            <>
-              <Options
-                data={option.options}
-                setValue={setValue}
-                setIsSelectOpen={setIsSelectOpen}
-                setSlug={setSlug}
-                setId={setId}
+    <div className="">
+      <ul className="pl-5 list-inside list-disc border border-b rounded-sm m-1 px-2">
+        {option.options ? (
+          <>
+            <li
+              className="  bg-red mt-[5px] flex gap-4 "
+              onClick={() => {
+                setIsOpen(!isOpen);
+              }}
+            >
+              {option.label}{" "}
+              <DownArrowIcon
+                className={` transition-all duration-300  ${
+                  isOpen ? "rotate-0" : " -rotate-90 "
+                } `}
               />
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <li
-            onClick={() => {
-              setValue(option.value);
-              setIsSelectOpen(false);
-              setSlug(option.slug);
-              setId(option.id);
-            }}
-            className="bg-slate-500">
-            {option.label}
-          </li>
-        </>
-      )}
-    </>
+            </li>
+            {isOpen && (
+              <>
+                <Options
+                  data={option.options}
+                  setValue={setValue}
+                  setIsSelectOpen={setIsSelectOpen}
+                  setSlug={setSlug}
+                  setId={setId}
+                />
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <li
+              onClick={() => {
+                setValue(option.value);
+                setIsSelectOpen(false);
+                setSlug(option.slug);
+                setId(option.id);
+              }}
+              className=" "
+            >
+              {option.label}
+            </li>
+          </>
+        )}
+      </ul>
+    </div>
   );
 };
 
@@ -185,22 +196,31 @@ export const Select = (props: SelectCategoryProps) => {
   return (
     <>
       <div
-        className="bg-slate-400 max h-[25px]"
+        className="border border-greyBorder p-3 rounded-md max h-[50px]  "
         onClick={() => {
           setIsSelectOpen(!isSelectOpen);
-        }}>
+        }}
+      >
         {newValue && slug}
         {!isSelectOpen && !newValue && `Select Value`}
       </div>
-      {isSelectOpen && finalOptions && (
-        <Options
-          data={finalOptions}
-          setValue={setNewValue}
-          setIsSelectOpen={setIsSelectOpen}
-          setSlug={setSlug}
-          setId={setId}
-        />
-      )}
+      <div
+        className={` ${
+          isSelectOpen
+            ? " max-h-[500px] overflow-y-auto scroll-design border-greyBorder border rounded-md mt-1"
+            : ""
+        }`}
+      >
+        {isSelectOpen && finalOptions && (
+          <Options
+            data={finalOptions}
+            setValue={setNewValue}
+            setIsSelectOpen={setIsSelectOpen}
+            setSlug={setSlug}
+            setId={setId}
+          />
+        )}
+      </div>
     </>
   );
 };
