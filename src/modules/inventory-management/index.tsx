@@ -31,9 +31,13 @@ import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.se
 import { useGetCategoriesAPI, useProductListingAPI } from "./services";
 
 // ** Types **
-import { PrivateRoutesPath } from "../Auth/types";
 import { IMarketplace } from "../marketplace/types";
-import { E_PRODUCT_STATUS, Option, categoriesType, productProps } from "./types";
+import {
+  E_PRODUCT_STATUS,
+  Option,
+  categoriesType,
+  productProps,
+} from "./types";
 import { btnShowType } from "@/components/form-fields/types";
 
 const InventoryManagement = () => {
@@ -42,7 +46,9 @@ const InventoryManagement = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [category, setCategory] = useState<Option | undefined>(undefined);
-  const [productStatus, setProductStatus] = useState<string>(E_PRODUCT_STATUS.active);
+  const [productStatus, setProductStatus] = useState<string>(
+    E_PRODUCT_STATUS.active
+  );
   const [categories, serCategories] = useState<categoriesType[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [marketplace, setMarketplace] = useState<{
@@ -54,7 +60,10 @@ const InventoryManagement = () => {
     label: "10",
     value: "10",
   });
-  const [products, setProducts] = useState<{ products: productProps[]; totalRecord?: number }>({
+  const [products, setProducts] = useState<{
+    products: productProps[];
+    totalRecord?: number;
+  }>({
     products: [],
   });
   const navigate = useNavigate();
@@ -65,11 +74,16 @@ const InventoryManagement = () => {
   const { getProductsDetailsAPI } = useProductListingAPI();
 
   // ** Function for list products by API
-  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
+  const getProductsDetails = async (
+    search: string = "",
+    marketplace: number[] = []
+  ) => {
     console.log("selectedMarketplace: ", marketplace);
     const { data, error } = await getProductsDetailsAPI({
       productStatus: productStatus,
-      selectedMarketplace: { marketplace: marketplace.length ? marketplace : selectedMarketplace },
+      selectedMarketplace: {
+        marketplace: marketplace.length ? marketplace : selectedMarketplace,
+      },
       category: category?.value ? category.value : "",
       search: search,
       currentPage: currentPage,
@@ -83,7 +97,10 @@ const InventoryManagement = () => {
 
   // ** Page change event function
   const onPageChanged = useCallback(
-    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
+    (
+      event: MouseEvent<HTMLElement, globalThis.MouseEvent>,
+      page: number | string
+    ) => {
       event.preventDefault();
       setCurrentPage(page);
     },
@@ -95,7 +112,9 @@ const InventoryManagement = () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
-      setSelectedMarketplace(data?.data.connectedMarketplace.map((item: IMarketplace) => item.id));
+      setSelectedMarketplace(
+        data?.data.connectedMarketplace.map((item: IMarketplace) => item.id)
+      );
     }
   };
   useEffect(() => {
@@ -117,7 +136,9 @@ const InventoryManagement = () => {
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
-      const newSelectedMarket = selectedMarketplace.filter((market) => market !== id);
+      const newSelectedMarket = selectedMarketplace.filter(
+        (market) => market !== id
+      );
       setSelectedMarketplace(newSelectedMarket);
     }
   };
@@ -133,7 +154,8 @@ const InventoryManagement = () => {
   }, 500);
 
   const debounceRequest = useCallback(
-    (value: string, selectedMarketplace: number[]) => request(value, selectedMarketplace),
+    (value: string, selectedMarketplace: number[]) =>
+      request(value, selectedMarketplace),
     []
   );
 
@@ -153,7 +175,9 @@ const InventoryManagement = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+          Inventory Management
+        </h2>
         <div className="flex gap-2">
           <Button
             btnName="Filters"
@@ -164,7 +188,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate('/product-form/1')}
+            onClickHandler={() => navigate("/product-form/1/0")}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -173,7 +197,9 @@ const InventoryManagement = () => {
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">SELECT Your Marketplace</span>
+            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
+              SELECT Your Marketplace
+            </span>
             <div className="flex gap-2">
               {marketplace.connectedMarketplace.map((item) => {
                 return (
@@ -203,7 +229,9 @@ const InventoryManagement = () => {
             <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
-              BtnIconLeft={<AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />}
+              BtnIconLeft={
+                <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
+              }
             />
             <div className="flex gap-2 items-center ">
               <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
@@ -225,16 +253,18 @@ const InventoryManagement = () => {
                 <div
                   key={item}
                   className={`activeTab px-7 py-2 flex items-center ${
-                    productStatus === item ? `text-greenPrimary border-greenPrimary` : `text-black border-greyBorder`
+                    productStatus === item
+                      ? `text-greenPrimary border-greenPrimary`
+                      : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}
-                >
+                  onClick={() => handleProductStatus(item)}>
                   {item}
                   <span
                     className={`text-base ${
-                      productStatus === item ? `bg-greenPrimary/10` : `bg-greyBorder/50`
-                    } px-1 rounded-md`}
-                  >
+                      productStatus === item
+                        ? `bg-greenPrimary/10`
+                        : `bg-greyBorder/50`
+                    } px-1 rounded-md`}>
                     {totalItem}
                   </span>
                 </div>

@@ -5,7 +5,10 @@ export interface IPaginationProps {
   pageNeighbors: number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (event: React.MouseEvent<HTMLElement, MouseEvent>, page: number | string) => void;
+  onPageChanged: (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    page: number | string
+  ) => void;
 }
 
 export interface IDropDown {
@@ -42,7 +45,10 @@ export interface IItemFilter {
 export type productProps = {
   id: number;
   title: string;
-  images: { url: string };
+  images: {
+    PictureURL: string;
+    url: string;
+  };
   categories: {
     id: number;
     name: string;
@@ -52,7 +58,7 @@ export type productProps = {
   date: string;
   quantity: number;
   sku: string;
-  variantId?:number;
+  variantId?: number;
   marketplaces: {
     id: number;
     name: string;

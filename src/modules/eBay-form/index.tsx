@@ -3,7 +3,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { IUserModel } from "../user-management/types";
 import FormBuilder from "@/components/form-builder";
-import { useEbayFormHandleApi, useGetAllFieldsApi, useGetCategoryApi } from "./services/productBasicForm.service";
+import {
+  useEbayFormHandleApi,
+  useEditProductValuesApi,
+  useGetAllFieldsApi,
+  useGetCategoryApi,
+} from "./services/productBasicForm.service";
 import { useEffect, useState } from "react";
 import { Select } from "@/components/form-fields/components/SelectCategory";
 import { CategoryOptions, ICategory } from "@/components/common/types";
@@ -11,91 +16,15 @@ import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
 import { PropertiesState } from "./types";
+import { useParams } from "react-router-dom";
 
-// const dummyData = {
-//   ShippingService: {
-//     value: "AT_BitteTreffenSieEineAuswahl",
-//     label: "AT_BITTE_TREFFEN_SIE_EINE_AUSWAHL",
-//   },
-//   ShippingServicePriority: {
-//     label: "1",
-//     value: "1",
-//   },
-//   ShippingServiceCost: 34,
-//   ShippingType: {
-//     label: "Calculated",
-//     value: "Calculated",
-//   },
-//   ShippingCostPaidByOption: {
-//     label: "Buyer",
-//     value: "Buyer",
-//   },
-//   RefundOption: {
-//     label: "MoneyBackOrExchange",
-//     value: "MoneyBackOrExchange",
-//   },
-//   ReturnsWithinOption: {
-//     label: "Days 14",
-//     value: "Days_14",
-//   },
-//   ReturnsAcceptedOption: {
-//     label: "ReturnsAccepted",
-//     value: "ReturnsAccepted",
-//   },
-//   Quantity: 434,
-//   PostalCode: 34,
-//   DispatchTimeMax: {
-//     label: "1 Day",
-//     value: 1,
-//   },
-//   Description: "sdads",
-//   Title: "sddz",
-//   StartPrice: 34,
-//   Currency: {
-//     label: "Andorran Peseta",
-//     value: "ADP",
-//   },
-//   Country: {
-//     label: "Andorra",
-//     value: "AD",
-//   },
-//   Color: {
-//     label: "Black",
-//     value: "Black",
-//   },
-//   Style: {
-//     label: "American Directoire",
-//     value: "American Directoire",
-//   },
-//   Material: {
-//     label: "Brass",
-//     value: "Brass",
-//   },
-//   "Original/Reproduction": {
-//     label: "Antique Original",
-//     value: "Antique Original",
-//   },
-//   Decade: {
-//     label: "1920s",
-//     value: "1920s",
-//   },
-//   Features: {
-//     label: "New Old Stock",
-//     value: "New Old Stock",
-//   },
-//   Maker: {
-//     label: "Planet Jr.",
-//     value: "Planet Jr.",
-//   },
-//   "California Prop 65 Warning": "dfd",
-// };
-
-const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) => {
-  console.log("🚀 ~ productId:", productId);
+const EbayForm: React.FC = () => {
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { ebayFormSubmitApi } = useEbayFormHandleApi();
-
+  const { editProductValueApi } = useEditProductValuesApi();
+  const { productId } = useParams();
+  const [id, setId] = useState();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
   const [propertiesState, setPropertiesState] = useState<PropertiesState>({
@@ -112,7 +41,7 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
 
   const handleCommonField = async () => {
     try {
-      const { data } = await getAllFieldsApi(productId);
+      const { data } = await getAllFieldsApi(null);
       setPropertiesState((prevState) => ({
         ...prevState,
         nullCategory: data?.data?.nullCategoryProperties || [],
@@ -135,6 +64,16 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
     }));
   };
 
+  const handleEditApiResponse = async () => {
+    if (Number(productId) === 0) {
+      return;
+    }
+    const { data, error } = await editProductValueApi(productId);
+    if (data && !error) {
+      return data?.data;
+    }
+  };
+
   useEffect(() => {
     handleCategoryOptionAPi();
     handleCommonField();
@@ -146,36 +85,51 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
     control,
     handleSubmit,
     formState: { errors },
-    // reset,
+    reset,
   } = useForm<any>({
     resolver: yupResolver(validation),
   });
   console.log("🚀 ~ errors:", errors);
 
-  // useEffect(() => {
-  //   reset(dummyData);
-  // }, []);
-
   const onSubmit = async (payload: IUserModel) => {
-    console.log("🚀  onSubmit  payload:", payload);
     const filteredPayload = {
       payload: payload,
       productId: productId,
       categoryId: categoriesId,
       marketplaceId: 2,
     };
-    const { data } = await ebayFormSubmitApi(filteredPayload);
-    console.log("🚀 ~ onSubmit ~ data:", data);
+    await ebayFormSubmitApi(filteredPayload);
   };
+
+  useEffect(() => {
+    handleEditApiResponse().then((data) => {
+      setId(data?.categoryId);
+      reset(data);
+    });
+  }, [reset]);
 
   return (
     <>
       <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-        {fieldsLoading || optionsLoading ? <Loader loaderClass=" !fixed " /> : null}
+        {fieldsLoading || optionsLoading ? (
+          <Loader loaderClass=" !fixed " />
+        ) : null}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Select options={categories} onChange={handleOnChange} />
-          <FormBuilder control={control} errors={errors} fields={propertiesState.nullCategory} />
-          <FormBuilder control={control} errors={errors} fields={propertiesState.categorized} />
+          <Select
+            options={categories}
+            defaultValue={id}
+            onChange={handleOnChange}
+          />
+          <FormBuilder
+            control={control}
+            errors={errors}
+            fields={propertiesState.nullCategory}
+          />
+          <FormBuilder
+            control={control}
+            errors={errors}
+            fields={propertiesState.categorized}
+          />
           <Button showType={btnShowType.primary} btnName="Save" type="submit" />
         </form>
       </div>

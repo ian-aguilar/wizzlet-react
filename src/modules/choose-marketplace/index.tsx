@@ -9,20 +9,21 @@ import Button from "@/components/form-fields/components/Button";
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 import { useSetProductMarketplaceAPI } from "./services";
+import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
+import { useParams } from "react-router-dom";
 
 // ** Types **
-interface ProductBasicFormProps {
-  onComplete: (selectedMarketplaces: number[]) => void;
-  productId: number;
-}
 
-const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, productId }) => {
-  // ** States **
-
-  const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>([]); // List of selected marketplaces
-  const [marketplace, setMarketplace] = useState<{ connectedMarketplace: IMarketplace[] }>({
+const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
+  const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
+    []
+  ); // List of selected marketplaces
+  const [marketplace, setMarketplace] = useState<{
+    connectedMarketplace: IMarketplace[];
+  }>({
     connectedMarketplace: [],
   });
+  const { productId } = useParams();
 
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
@@ -45,7 +46,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
     if (!selectedMarketplaces.includes(id)) {
       setSelectedMarketplaces([...selectedMarketplaces, id]); // Add if not selected
     } else {
-      setSelectedMarketplaces(selectedMarketplaces.filter((market) => market !== id)); // Remove if already selected
+      setSelectedMarketplaces(
+        selectedMarketplaces.filter((market) => market !== id)
+      ); // Remove if already selected
     }
   };
 
@@ -58,7 +61,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
     if (!data && error) {
       console.log("Error: ", error);
     }
-    onComplete(selectedMarketplaces);
+    onComplete(productId);
   };
 
   return (

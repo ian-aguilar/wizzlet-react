@@ -12,7 +12,7 @@ import {
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { generateCombinations } from "./helper";
+import { generateCombinations, transformVariantProperties } from "./helper";
 import {
   useProductBasicFormApi,
   useTagOptionsApi,
@@ -20,6 +20,8 @@ import {
 } from "./services/productBasicForm.service";
 import { productTypes } from "./constant";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
+import { useEditProductAPi } from "../inventory-management/services";
+import { useParams } from "react-router-dom";
 
 // const apiData: IProductBasicForm = {
 //   productType: {
@@ -138,6 +140,7 @@ import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 // };
 
 const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
+  // let apiData: IProductBasicForm;
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({});
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
@@ -147,6 +150,8 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   const { basicFormSubmitApi } = useProductBasicFormApi();
   const { getTagOptionsApi } = useTagOptionsApi();
   const { getVariantPropertyOptionsApi } = useVariantPropertyOptionsApi();
+  const { getEditProductsDetailsAPI } = useEditProductAPi();
+  const { productId } = useParams();
 
   const {
     control,
@@ -156,7 +161,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     setError,
     clearErrors,
     watch,
-    // reset,
+    reset,
   } = useForm<IProductBasicForm>({
     resolver: yupResolver(productBasisFormValidationSchema),
     defaultValues: {
@@ -173,6 +178,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     },
   });
 
+  console.log("🚀 ~ errors:", errors);
   const {
     fields: variantFields,
     append: appendVariant,
@@ -208,7 +214,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     try {
       const { data, error } = await getVariantPropertyOptionsApi();
       if (data && !error) {
-        if (productType === "variant") {
+        if (productType === "VARIANT") {
           setAllOptions(data?.data?.allOptions);
           setPropertyOptions(data?.data?.propertyOptions);
         }
@@ -218,14 +224,73 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     }
   };
 
+  const handleEditProductApi = async () => {
+    if (Number(productId) === 0) {
+      return;
+    }
+    console.log(productId, "++++++++++++++++++++");
+    const { data, error } = await getEditProductsDetailsAPI(productId);
+    console.log("🚀 ~ handleEditProductApi ~ data:", data);
+    if (data && !error) {
+      return data?.data;
+    }
+  };
+
+  useEffect(() => {
+    handleEditProductApi().then((apiData) => {
+      setProductType(apiData?.productType?.value);
+
+      const transformedData = transformVariantProperties(
+        apiData?.variantProperties
+      );
+      const combinations = generateCombinations(transformedData);
+      setGeneratedCombinations(combinations);
+
+      const formattedData = {
+        productType: apiData.productType,
+        title: apiData.title,
+        description: apiData.description,
+        tagOptions: apiData?.tagOptions?.map((tag) => ({
+          label: tag.label,
+          value: tag.value,
+        })),
+        image: apiData.image,
+        price: apiData.price,
+        quantity: apiData.quantity,
+        sku: apiData.sku,
+        variantProperties: apiData?.variantProperties?.map((prop) => ({
+          singleSelect: {
+            label: prop?.singleSelect?.label,
+            value: prop?.singleSelect?.value,
+          },
+          multiSelect: prop?.multiSelect?.map((opt) => ({
+            label: opt.label,
+            value: opt.value,
+          })),
+        })),
+        combinations: apiData?.combinations?.map((comb) => ({
+          combination: comb.combination?.map((e) => ({
+            name: e?.name,
+            value: e?.value,
+          })),
+          price: comb.price,
+          sku: comb.sku,
+          quantity: comb.quantity,
+        })),
+      };
+
+      reset(formattedData);
+    });
+  }, [reset]);
+
   useEffect(() => {
     tagOptionApi();
     variantPropertyOptionApi();
   }, [productType]);
 
-  const handleProductTypeChange = (value: "normal" | "variant") => {
+  const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
     setProductType(value);
-    if (value === "normal") {
+    if (value === "NORMAL") {
       setValue("variantProperties", []);
     } else {
       setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
@@ -288,77 +353,19 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     }
   };
 
-  // useEffect(() => {
-  //   setProductType(apiData?.productType?.value);
-
-  //   const transformedData = transformVariantProperties(
-  //     apiData?.variantProperties
-  //   );
-  //   const combinations = generateCombinations(transformedData);
-  //   setGeneratedCombinations(combinations);
-
-  //   const formattedData = {
-  //     productType: apiData.productType,
-  //     title: apiData.title,
-  //     description: apiData.description,
-  //     tagOptions: apiData?.tagOptions?.map((tag) => ({
-  //       label: tag.label,
-  //       value: tag.value,
-  //     })),
-  //     image: apiData.image,
-  //     price: apiData.price,
-  //     quantity: apiData.quantity,
-  //     sku: apiData.sku,
-  //     variantProperties: apiData?.variantProperties?.map((prop) => ({
-  //       singleSelect: {
-  //         label: prop?.singleSelect?.label,
-  //         value: prop?.singleSelect?.value,
-  //       },
-  //       multiSelect: prop?.multiSelect?.map((opt) => ({
-  //         label: opt.label,
-  //         value: opt.value,
-  //       })),
-  //     })),
-  //     combinations: apiData?.combinations?.map((comb) => ({
-  //       combination: comb.combination?.map((e) => ({
-  //         name: e?.name,
-  //         value: e?.value,
-  //       })),
-  //       price: comb.price,
-  //       sku: comb.sku,
-  //       quantity: comb.quantity,
-  //     })),
-  //   };
-
-  //   reset(formattedData);
-  // }, [reset]);
-
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    const formData = new FormData();
-    formData.append("productType", JSON.stringify(payload?.productType));
-    formData.append("combinations", JSON.stringify(payload?.combinations));
-    formData.append(
-      "variantProperties",
-      JSON.stringify(payload?.variantProperties)
-    );
-    formData.append("price", JSON.stringify(payload?.price));
-    formData.append("quantity", JSON.stringify(payload?.quantity));
-    formData.append("sku", JSON.stringify(payload?.sku));
-    formData.append("tagOptions", JSON.stringify(payload?.tagOptions));
-    formData.append("image", payload.image[0]);
-    formData.append("description", JSON.stringify(payload?.description));
-    formData.append("title", JSON.stringify(payload?.title));
+    const newPayload = { ...payload, productId: productId };
     const {
       data: {
-        data: { productId: productId },
+        data: { productId: createProductId },
       },
-    } = await basicFormSubmitApi(payload, {
+    } = await basicFormSubmitApi(newPayload, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-    if (productId) {
-      onComplete(productId);
+    if (createProductId) {
+      onComplete(createProductId);
     }
   };
 
@@ -422,7 +429,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   errors={errors}
                   isMulti
                 />
-                {productType !== "variant" && (
+                {productType !== "VARIANT" && (
                   <div>
                     <Input
                       textLabelName="SKU"
@@ -451,7 +458,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   </div>
                 )}
 
-                {productType === "variant" && (
+                {productType === "VARIANT" && (
                   <div>
                     {variantFields.map((item, index) => (
                       <div key={item.id} className="my-4">
@@ -502,7 +509,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                       }>
                       Add Property
                     </button>
-                    {productType === "variant" && (
+                    {productType === "VARIANT" && (
                       <button
                         type="button"
                         className="p-2 mt-4 text-white bg-blue-500 rounded-md"
@@ -512,7 +519,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                     )}
                   </div>
                 )}
-                {productType === "variant" &&
+                {productType === "VARIANT" &&
                   generatedCombinations.length > 0 && (
                     <div>
                       <h3 className="font-bold text-lg">
