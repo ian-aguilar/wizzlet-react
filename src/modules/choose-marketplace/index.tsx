@@ -9,27 +9,24 @@ import Button from "@/components/form-fields/components/Button";
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 import { useSetProductMarketplaceAPI } from "./services";
+import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
+import { useParams } from "react-router-dom";
 
 // ** Types **
-interface ProductBasicFormProps {
-  onComplete: (selectedMarketplaces: number[]) => void;
-  productId: number;
-}
 
-const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
-  onComplete,
-  productId,
-}) => {
+const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   // ** States **
 
   const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
     []
   ); // List of selected marketplaces
+  const [errorShow, setErrorShow] = useState<boolean>(false);
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
   }>({
     connectedMarketplace: [],
   });
+  const { productId } = useParams();
 
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
@@ -44,6 +41,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   };
 
   useEffect(() => {
+    setErrorShow(false);
     marketplaceListing();
   }, []);
 
@@ -60,14 +58,20 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
 
   // Handle form submission
   const handleSubmit = async () => {
+    if (selectedMarketplaces.length === 0) {
+      setErrorShow(true);
+      return;
+    }
     const { data, error } = await setProductMarketplace({
       marketplace: selectedMarketplaces,
       productId: productId,
     });
     if (!data && error) {
       console.log("Error: ", error);
+    } else {
+      setErrorShow(false);
+      onComplete(selectedMarketplaces);
     }
-    onComplete(selectedMarketplaces);
   };
 
   return (
@@ -80,8 +84,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
           marketplace.connectedMarketplace.map((item) => (
             <div
               key={item.id}
-              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  "
-            >
+              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  ">
               <img
                 src={MArketPlaceImg}
                 className="max-w-[77px] h-[23px] object-contain "
@@ -101,6 +104,13 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
           <p>No marketplaces available</p>
         )}
       </div>
+
+      {errorShow && selectedMarketplaces.length == 0 ? (
+        <span className="errorText text-red-600 font-medium text-sm">
+          {"Marketplace is not selected."}
+        </span>
+      ) : null}
+
       <div className="flex gap-2 my-6">
         <Button
           btnName="Back"

@@ -48,3 +48,14 @@ export const useCreateEbayProductApi = () => {
 
   return { createEbayProductApi, isLoading, isError, isSuccess };
 };
+
+export const useEditProductValuesApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const editProductValueApi = async (id: string | undefined) => {
+    return callApi(`/products/values/${id}`);
+  };
+
+  return { editProductValueApi, isLoading, isError, isSuccess };
+};

@@ -7,8 +7,7 @@ import {
   ISetSelectOptions,
   SelectCategoryProps,
 } from "@/components/common/types";
-import { LeftArrow } from "@/components/svgIcons";
-import { DownArrowBlack, DownArrowIcon } from "@/assets/Svg";
+import { DownArrowIcon } from "@/assets/Svg";
 
 export const Options = ({
   data,
@@ -55,8 +54,7 @@ const OptGroup = ({
               className="  bg-red mt-[5px] flex gap-4 "
               onClick={() => {
                 setIsOpen(!isOpen);
-              }}
-            >
+              }}>
               {option.label}{" "}
               <DownArrowIcon
                 className={` transition-all duration-300  ${
@@ -85,8 +83,7 @@ const OptGroup = ({
                 setSlug(option.slug);
                 setId(option.id);
               }}
-              className=" "
-            >
+              className=" ">
               {option.label}
             </li>
           </>
@@ -199,8 +196,7 @@ export const Select = (props: SelectCategoryProps) => {
         className="border border-greyBorder p-3 rounded-md max h-[50px]  "
         onClick={() => {
           setIsSelectOpen(!isSelectOpen);
-        }}
-      >
+        }}>
         {newValue && slug}
         {!isSelectOpen && !newValue && `Select Value`}
       </div>
@@ -209,8 +205,7 @@ export const Select = (props: SelectCategoryProps) => {
           isSelectOpen
             ? " max-h-[500px] overflow-y-auto scroll-design border-greyBorder border rounded-md mt-1"
             : ""
-        }`}
-      >
+        }`}>
         {isSelectOpen && finalOptions && (
           <Options
             data={finalOptions}

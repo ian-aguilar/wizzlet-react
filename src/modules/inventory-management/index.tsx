@@ -53,7 +53,11 @@ const InventoryManagement = () => {
     label: "10",
     value: "10",
   });
-  const [products, setProducts] = useState<{ products: productProps[]; totalRecord?: number }>({
+  const [products, setProducts] = useState<{
+    products: productProps[];
+    totalRecord?: number;
+    otherStatusTotal?: number;
+  }>({
     products: [],
   });
   const navigate = useNavigate();
@@ -62,32 +66,6 @@ const InventoryManagement = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { getCategoriesAPI } = useGetCategoriesAPI();
   const { getProductsDetailsAPI } = useProductListingAPI();
-
-  // ** Function for list products by API
-  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
-    console.log("selectedMarketplace: ", marketplace);
-    const { data, error } = await getProductsDetailsAPI({
-      productStatus: productStatus,
-      selectedMarketplace: { marketplace: marketplace.length ? marketplace : selectedMarketplace },
-      category: category?.value ? category.value : "",
-      search: search,
-      currentPage: currentPage,
-      itemPerPage: itemPerPage.value,
-    });
-    if (!error && data) {
-      setProducts(data?.data);
-      setTotalItem(data.data.totalRecord);
-    }
-  };
-
-  // ** Page change event function
-  const onPageChanged = useCallback(
-    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
-      event.preventDefault();
-      setCurrentPage(page);
-    },
-    [setCurrentPage, setItemPerPage]
-  );
 
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
@@ -100,6 +78,33 @@ const InventoryManagement = () => {
   useEffect(() => {
     marketplaceListing();
   }, []);
+
+  // ** Function for list products by API
+  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
+    const { data, error } = await getProductsDetailsAPI({
+      productStatus: productStatus,
+      selectedMarketplace: {
+        marketplace: marketplace.length ? marketplace : selectedMarketplace,
+      },
+      category: category?.value ? category.value : "",
+      search: search,
+      currentPage: currentPage,
+      itemPerPage: itemPerPage.value,
+    });
+    if (!error && data) {
+      setProducts(data?.data);
+      setTotalItem(data?.data?.totalRecord);
+    }
+  };
+
+  // ** Page change event function
+  const onPageChanged = useCallback(
+    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
+      event.preventDefault();
+      setCurrentPage(page);
+    },
+    [setCurrentPage, setItemPerPage]
+  );
 
   // ** Categories fetch **
   const getCategories = async () => {
@@ -163,7 +168,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate("/product-form/1")}
+            onClickHandler={() => navigate("/product-form/1/0")}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -287,8 +292,10 @@ const InventoryManagement = () => {
         <div className="ActiveItemsBox p-5 bg-grayLightBody/5 mt-7">
           <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
             <div className="flex gap-5 items-center ">
-              <h3 className="text-[26px] font-medium ">Active Items</h3>
-              <Checkbox checkLabel="Check All" mainClass={""} />
+              <h3 className="text-[26px] font-medium ">
+                {productStatus === E_PRODUCT_STATUS.active ? `Active Items` : `Draft Items`}
+              </h3>
+              <Checkbox checkLabel="Check All" />
             </div>
             <div className="flex gap-5 items-center ">
               <div className="inline-flex gap-2 items-center text-grayText">

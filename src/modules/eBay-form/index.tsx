@@ -6,6 +6,7 @@ import FormBuilder from "@/components/form-builder";
 import {
   useCreateEbayProductApi,
   useEbayFormHandleApi,
+  useEditProductValuesApi,
   useGetAllFieldsApi,
   useGetCategoryApi,
 } from "./services/productBasicForm.service";
@@ -16,98 +17,22 @@ import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
 import { PropertiesState } from "./types";
+import { useParams } from "react-router-dom";
 
-// const dummyData = {
-//   ShippingService: {
-//     value: "AT_BitteTreffenSieEineAuswahl",
-//     label: "AT_BITTE_TREFFEN_SIE_EINE_AUSWAHL",
-//   },
-//   ShippingServicePriority: {
-//     label: "1",
-//     value: "1",
-//   },
-//   ShippingServiceCost: 34,
-//   ShippingType: {
-//     label: "Calculated",
-//     value: "Calculated",
-//   },
-//   ShippingCostPaidByOption: {
-//     label: "Buyer",
-//     value: "Buyer",
-//   },
-//   RefundOption: {
-//     label: "MoneyBackOrExchange",
-//     value: "MoneyBackOrExchange",
-//   },
-//   ReturnsWithinOption: {
-//     label: "Days 14",
-//     value: "Days_14",
-//   },
-//   ReturnsAcceptedOption: {
-//     label: "ReturnsAccepted",
-//     value: "ReturnsAccepted",
-//   },
-//   Quantity: 434,
-//   PostalCode: 34,
-//   DispatchTimeMax: {
-//     label: "1 Day",
-//     value: 1,
-//   },
-//   Description: "sdads",
-//   Title: "sddz",
-//   StartPrice: 34,
-//   Currency: {
-//     label: "Andorran Peseta",
-//     value: "ADP",
-//   },
-//   Country: {
-//     label: "Andorra",
-//     value: "AD",
-//   },
-//   Color: {
-//     label: "Black",
-//     value: "Black",
-//   },
-//   Style: {
-//     label: "American Directoire",
-//     value: "American Directoire",
-//   },
-//   Material: {
-//     label: "Brass",
-//     value: "Brass",
-//   },
-//   "Original/Reproduction": {
-//     label: "Antique Original",
-//     value: "Antique Original",
-//   },
-//   Decade: {
-//     label: "1920s",
-//     value: "1920s",
-//   },
-//   Features: {
-//     label: "New Old Stock",
-//     value: "New Old Stock",
-//   },
-//   Maker: {
-//     label: "Planet Jr.",
-//     value: "Planet Jr.",
-//   },
-//   "California Prop 65 Warning": "dfd",
-// };
-
-const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) => {
-  console.log("🚀 ~ productId:", productId);
+const EbayForm: React.FC = () => {
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { ebayFormSubmitApi } = useEbayFormHandleApi();
-  const { createEbayProductApi } = useCreateEbayProductApi();
-
+  const { editProductValueApi } = useEditProductValuesApi();
+  const { productId } = useParams();
+  const [id, setId] = useState();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
   const [propertiesState, setPropertiesState] = useState<PropertiesState>({
     categorized: [],
     nullCategory: [],
   });
+  const { createEbayProductApi } = useCreateEbayProductApi();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -118,7 +43,7 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
 
   const handleCommonField = async () => {
     try {
-      const { data } = await getAllFieldsApi(productId || null);
+      const { data } = await getAllFieldsApi(null);
       setPropertiesState((prevState) => ({
         ...prevState,
         nullCategory: data?.data?.nullCategoryProperties || [],
@@ -141,6 +66,17 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
     }));
   };
 
+  const handleEditApiResponse = async () => {
+    if (Number(productId) === 0) {
+      return;
+    }
+    const { data, error } = await editProductValueApi(productId);
+    if (data && !error) {
+      setId(data?.data?.categoryId);
+      reset(data?.data);
+    }
+  };
+
   useEffect(() => {
     handleCategoryOptionAPi();
     handleCommonField();
@@ -152,18 +88,12 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
     control,
     handleSubmit,
     formState: { errors },
-    // reset,
+    reset,
   } = useForm<any>({
     resolver: yupResolver(validation),
   });
-  console.log("🚀 ~ errors:", errors);
-
-  // useEffect(() => {
-  //   reset(dummyData);
-  // }, []);
 
   const onSubmit = async (payload: IUserModel) => {
-    console.log("🚀  onSubmit  payload:", payload);
     const filteredPayload = {
       payload: payload,
       productId: productId,
@@ -172,25 +102,23 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) =>
     };
     const { data } = await ebayFormSubmitApi(filteredPayload);
     console.log("🚀 ~ onSubmit ~ data:", data);
-    await createEbayProductApi(productId);
+    await createEbayProductApi(Number(productId));
+    await ebayFormSubmitApi(filteredPayload);
   };
+
+  useEffect(() => {
+    handleEditApiResponse();
+  }, [reset]);
 
   return (
     <>
       <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
         {fieldsLoading || optionsLoading ? <Loader loaderClass=" !fixed " /> : null}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Select options={categories} onChange={handleOnChange} />
+          <Select options={categories} defaultValue={id} onChange={handleOnChange} />
           <FormBuilder control={control} errors={errors} fields={propertiesState.nullCategory} />
           <FormBuilder control={control} errors={errors} fields={propertiesState.categorized} />
-          <div className="flex justify-between">
-            <Button
-              showType={btnShowType.primary}
-              btnName="Save and List in Ebay"
-              type="submit"
-              btnClass="mt-6"
-            />
-          </div>
+          <Button showType={btnShowType.primary} btnName="Save" type="submit" btnClass="mt-6" />
         </form>
       </div>
     </>

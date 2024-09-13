@@ -25,19 +25,19 @@ export const productBasisFormValidationSchema = yup.object().shape({
     .required("Choose at least one"),
   sku: yup.string().when("productType", {
     is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
+      productType?.value === "NORMAL",
     then: (schema) => schema.required("SKU is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
   quantity: yup.number().when("productType", {
     is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
+      productType?.value === "NORMAL",
     then: (schema) => schema.required("Quantity is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
   price: yup.number().when("productType", {
     is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
+      productType?.value === "NORMAL",
     then: (schema) => schema.required("Price is required"),
     otherwise: (schema) => schema.notRequired(),
   }),
@@ -72,7 +72,7 @@ export const productBasisFormValidationSchema = yup.object().shape({
     )
     .when("productType", {
       is: (productType: { label: string; value: string }) =>
-        productType?.value === "variant",
+        productType?.value === "VARIANT",
       then: (schema) => schema.required("Variant Properties are required"),
       otherwise: (schema) => schema.notRequired(),
     }),
@@ -108,7 +108,7 @@ export const productBasisFormValidationSchema = yup.object().shape({
     )
     .when("productType", {
       is: (productType: { label: string; value: string }) =>
-        productType?.value == "variant",
+        productType?.value == "VARIANT",
       then: (schema) =>
         schema
           .min(1, "Combinations are required")
