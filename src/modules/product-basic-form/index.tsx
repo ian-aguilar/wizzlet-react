@@ -250,7 +250,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         productType: apiData.productType,
         title: apiData.title,
         description: apiData.description,
-        tagOptions: apiData?.tagOptions?.map((tag) => ({
+        tagOptions: apiData?.tagOptions?.map((tag: any) => ({
           label: tag.label,
           value: tag.value,
         })),
@@ -258,18 +258,18 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         price: apiData.price,
         quantity: apiData.quantity,
         sku: apiData.sku,
-        variantProperties: apiData?.variantProperties?.map((prop) => ({
+        variantProperties: apiData?.variantProperties?.map((prop: any) => ({
           singleSelect: {
             label: prop?.singleSelect?.label,
             value: prop?.singleSelect?.value,
           },
-          multiSelect: prop?.multiSelect?.map((opt) => ({
+          multiSelect: prop?.multiSelect?.map((opt: any) => ({
             label: opt.label,
             value: opt.value,
           })),
         })),
-        combinations: apiData?.combinations?.map((comb) => ({
-          combination: comb.combination?.map((e) => ({
+        combinations: apiData?.combinations?.map((comb: any) => ({
+          combination: comb.combination?.map((e: any) => ({
             name: e?.name,
             value: e?.value,
           })),

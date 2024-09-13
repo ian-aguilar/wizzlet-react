@@ -70,7 +70,8 @@ const EbayForm: React.FC = () => {
     }
     const { data, error } = await editProductValueApi(productId);
     if (data && !error) {
-      return data?.data;
+      setId(data?.data?.categoryId);
+      reset(data?.data);
     }
   };
 
@@ -89,7 +90,6 @@ const EbayForm: React.FC = () => {
   } = useForm<any>({
     resolver: yupResolver(validation),
   });
-  console.log("🚀 ~ errors:", errors);
 
   const onSubmit = async (payload: IUserModel) => {
     const filteredPayload = {
@@ -102,10 +102,7 @@ const EbayForm: React.FC = () => {
   };
 
   useEffect(() => {
-    handleEditApiResponse().then((data) => {
-      setId(data?.categoryId);
-      reset(data);
-    });
+    handleEditApiResponse();
   }, [reset]);
 
   return (
