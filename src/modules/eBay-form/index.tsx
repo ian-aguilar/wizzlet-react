@@ -127,7 +127,12 @@ const EbayForm: React.FC = () => {
             errors={errors}
             fields={propertiesState.categorized}
           />
-          <Button showType={btnShowType.primary} btnName="Save" type="submit" />
+          <Button
+            showType={btnShowType.primary}
+            btnName="Save"
+            type="submit"
+            btnClass="mt-6"
+          />
         </form>
       </div>
     </>
