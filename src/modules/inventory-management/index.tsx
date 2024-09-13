@@ -31,7 +31,6 @@ import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.se
 import { useGetCategoriesAPI, useProductListingAPI } from "./services";
 
 // ** Types **
-import { PrivateRoutesPath } from "../Auth/types";
 import { IMarketplace } from "../marketplace/types";
 import { E_PRODUCT_STATUS, Option, categoriesType, productProps } from "./types";
 import { btnShowType } from "@/components/form-fields/types";
@@ -164,7 +163,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate('/product-form/1')}
+            onClickHandler={() => navigate("/product-form/1")}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -173,7 +172,9 @@ const InventoryManagement = () => {
       <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">SELECT Your Marketplace</span>
+            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
+              SELECT Your Marketplace
+            </span>
             <div className="flex gap-2">
               {marketplace.connectedMarketplace.map((item) => {
                 return (
@@ -203,7 +204,9 @@ const InventoryManagement = () => {
             <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
-              BtnIconLeft={<AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />}
+              BtnIconLeft={
+                <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
+              }
             />
             <div className="flex gap-2 items-center ">
               <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
@@ -225,7 +228,9 @@ const InventoryManagement = () => {
                 <div
                   key={item}
                   className={`activeTab px-7 py-2 flex items-center ${
-                    productStatus === item ? `text-greenPrimary border-greenPrimary` : `text-black border-greyBorder`
+                    productStatus === item
+                      ? `text-greenPrimary border-greenPrimary`
+                      : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
                   onClick={() => handleProductStatus(item)}
                 >
@@ -283,7 +288,7 @@ const InventoryManagement = () => {
           <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
             <div className="flex gap-5 items-center ">
               <h3 className="text-[26px] font-medium ">Active Items</h3>
-              <Checkbox checkLabel="Check All" />
+              <Checkbox checkLabel="Check All" mainClass={""} />
             </div>
             <div className="flex gap-5 items-center ">
               <div className="inline-flex gap-2 items-center text-grayText">

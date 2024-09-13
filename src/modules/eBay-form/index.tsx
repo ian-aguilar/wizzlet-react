@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { IUserModel } from "../user-management/types";
 import FormBuilder from "@/components/form-builder";
 import {
+  useCreateEbayProductApi,
   useEbayFormHandleApi,
   useGetAllFieldsApi,
   useGetCategoryApi,
@@ -94,13 +95,12 @@ import { PropertiesState } from "./types";
 //   "California Prop 65 Warning": "dfd",
 // };
 
-const EbayForm: React.FC<{ productId: number | undefined }> = ({
-  productId,
-}) => {
+const EbayForm: React.FC<{ productId: number | undefined }> = ({ productId }) => {
   console.log("🚀 ~ productId:", productId);
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { ebayFormSubmitApi } = useEbayFormHandleApi();
+  const { createEbayProductApi } = useCreateEbayProductApi();
 
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
@@ -118,7 +118,7 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({
 
   const handleCommonField = async () => {
     try {
-      const { data } = await getAllFieldsApi(productId);
+      const { data } = await getAllFieldsApi(productId || null);
       setPropertiesState((prevState) => ({
         ...prevState,
         nullCategory: data?.data?.nullCategoryProperties || [],
@@ -172,32 +172,25 @@ const EbayForm: React.FC<{ productId: number | undefined }> = ({
     };
     const { data } = await ebayFormSubmitApi(filteredPayload);
     console.log("🚀 ~ onSubmit ~ data:", data);
+    await createEbayProductApi(productId);
   };
 
   return (
     <>
       <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-        {fieldsLoading || optionsLoading ? (
-          <Loader loaderClass=" !fixed " />
-        ) : null}
+        {fieldsLoading || optionsLoading ? <Loader loaderClass=" !fixed " /> : null}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Select options={categories} onChange={handleOnChange} />
-          <FormBuilder
-            control={control}
-            errors={errors}
-            fields={propertiesState.nullCategory}
-          />
-          <FormBuilder
-            control={control}
-            errors={errors}
-            fields={propertiesState.categorized}
-          />
-          <Button
-            showType={btnShowType.primary}
-            btnName="Save"
-            type="submit"
-            btnClass="mt-6"
-          />
+          <FormBuilder control={control} errors={errors} fields={propertiesState.nullCategory} />
+          <FormBuilder control={control} errors={errors} fields={propertiesState.categorized} />
+          <div className="flex justify-between">
+            <Button
+              showType={btnShowType.primary}
+              btnName="Save and List in Ebay"
+              type="submit"
+              btnClass="mt-6"
+            />
+          </div>
         </form>
       </div>
     </>
