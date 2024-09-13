@@ -232,7 +232,7 @@ export interface ICustomSelect<T extends FieldValues> {
 export type ICheckboxProps = {
   value?: string | number | readonly string[] | undefined;
   name?: string;
-  checkLabel: string;
+  checkLabel?: string;
   isChecked?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   mainClass?: any;
