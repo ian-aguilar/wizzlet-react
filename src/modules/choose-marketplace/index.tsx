@@ -20,6 +20,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
   // ** States **
 
   const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>([]); // List of selected marketplaces
+  const [errorShow, setErrorShow] = useState<boolean>(false);
   const [marketplace, setMarketplace] = useState<{ connectedMarketplace: IMarketplace[] }>({
     connectedMarketplace: [],
   });
@@ -37,6 +38,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
   };
 
   useEffect(() => {
+    setErrorShow(false);
     marketplaceListing();
   }, []);
 
@@ -51,6 +53,10 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
 
   // Handle form submission
   const handleSubmit = async () => {
+    if(selectedMarketplaces.length === 0){
+      setErrorShow(true);
+      return;
+    }
     const { data, error } = await setProductMarketplace({
       marketplace: selectedMarketplaces,
       productId: productId,
@@ -58,7 +64,10 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
     if (!data && error) {
       console.log("Error: ", error);
     }
-    onComplete(selectedMarketplaces);
+    else{
+      setErrorShow(false)
+      onComplete(selectedMarketplaces);
+    }
   };
 
   return (
@@ -80,6 +89,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete, produc
           <p>No marketplaces available</p>
         )}
       </div>
+      {errorShow && selectedMarketplaces.length == 0 ? (
+        <span className="errorText text-red-600 font-medium text-sm">{"Marketplace is not selected."}</span>
+      ) : null}
       <Button btnName="Next" onClickHandler={handleSubmit} />
     </div>
   );

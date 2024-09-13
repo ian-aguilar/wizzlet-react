@@ -230,6 +230,7 @@ export interface ICustomSelect<T extends FieldValues> {
   autoFocus?: boolean;
 }
 export type ICheckboxProps = {
+  name?:string;
   value?: string | number | readonly string[] | undefined ,
   checkLabel: string;
   isChecked?: boolean;

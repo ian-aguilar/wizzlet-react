@@ -25,7 +25,7 @@ export const Pagination = ({
   const [totalPages, setTotalPages] = useState(0);
   useEffect(() => {
     setTotalPages(Math.ceil(totalRecords / pageLimit));
-  }, [setTotalPages, pageLimit]);
+  }, [setTotalPages, pageLimit, totalRecords]);
   const fetchPageNumbers = () => {
     const totalNumbers = pageNeighbors * 2 + 1;
     const totalBlocks = totalNumbers + 2;
@@ -91,16 +91,42 @@ export const Pagination = ({
               );
 
             return (
-              <li
-                key={index}
-                aria-hidden="true"
-                onClick={(e) => onPageChanged(e, page)}
-                className={`${
-                  currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
-                } "cursor-pointer rounded-sm p-2 border border-1"`}
-              >
-                <span>{page == 1 ? `First` : page === totalPages ? `Last` : page}</span>
-              </li>
+              <>
+                {page === totalPages && page !== 1 ? (
+                  <li
+                    key={index+totalRecords+1}
+                    aria-hidden="true"
+                    onClick={(e) => onPageChanged(e, page)}
+                    className={`${
+                      currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
+                    } "cursor-pointer rounded-sm p-2 border border-1"`}
+                  >
+                    <span>{totalPages}</span>
+                  </li>
+                ) : null}
+                <li
+                  key={index}
+                  aria-hidden="true"
+                  onClick={(e) => onPageChanged(e, page)}
+                  className={`${
+                    currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
+                  } "cursor-pointer rounded-sm p-2 border border-1"`}
+                >
+                  <span>{page == 1 ? `First` : page === totalPages ? `Last` : page}</span>
+                </li>
+                {page === 1 ? (
+                  <li
+                    key={index+totalRecords}
+                    aria-hidden="true"
+                    onClick={(e) => onPageChanged(e, page)}
+                    className={`${
+                      currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
+                    } "cursor-pointer rounded-sm p-2 border border-1"`}
+                  >
+                    <span>{page}</span>
+                  </li>
+                ) : null}
+              </>
             );
           })}
         </ul>

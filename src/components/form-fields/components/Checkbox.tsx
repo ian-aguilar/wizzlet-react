@@ -1,10 +1,11 @@
 import { ICheckboxProps } from "../types";
 
-const Checkbox = ({ checkLabel, isChecked,onChange, value }: ICheckboxProps) => {
+const Checkbox = ({ name,checkLabel, isChecked,onChange, value }: ICheckboxProps) => {
   return (
     <>
       <div className="flex items-center">
         <input
+          name={name}
           value={value}
           onChange={onChange}
           defaultChecked={isChecked}
