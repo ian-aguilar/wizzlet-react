@@ -10,7 +10,7 @@ export const generateCombinations = (
 ): variantOptionType => {
   if (arr?.length === 0) return [];
   if (arr?.length === 1)
-    return arr[0].value.map((el) => [{ name: arr[0].name, value: el }]);
+    return arr[0].value?.map((el) => [{ name: arr[0].name, value: el }]);
 
   if (arr?.length > 0) {
     const [first, ...rest] = arr;

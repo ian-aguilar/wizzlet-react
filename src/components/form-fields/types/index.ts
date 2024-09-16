@@ -217,7 +217,7 @@ export interface ICustomSelect<T extends FieldValues> {
   label?: string;
   labelClass?: string;
   name: Path<T>;
-  options: Option[];
+  options: Option[] | any;
   placeholder?: string;
   isCompulsory?: boolean;
   Margin?: string;

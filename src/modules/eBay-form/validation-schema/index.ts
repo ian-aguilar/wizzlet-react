@@ -1,59 +1,13 @@
 import * as yup from "yup";
 
-export const productBasisFormValidationSchema = yup.object().shape({
-  title: yup.string().required("Title is required"),
-  description: yup.string().required("Description is required"),
-  productType: yup
-    .object()
-    .shape({
-      value: yup.string().required(),
-      label: yup.string().required(),
-    })
-    .required("Product Type is required"),
-  image: yup.mixed().required("Image is required"),
-  tagOptions: yup
-    .array()
-    .of(
-      yup
-        .object()
-        .shape({
-          value: yup.string().required(),
-          label: yup.string().required(),
-        })
-        .required("required")
-    )
-    .required("Choose at least one"),
-  sku: yup.string().when("productType", {
-    is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
-    then: (schema) => schema.required("SKU is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  quantity: yup.number().when("productType", {
-    is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
-    then: (schema) => schema.required("Quantity is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
-  price: yup.number().when("productType", {
-    is: (productType: { label: string; value: string }) =>
-      productType?.value === "normal",
-    then: (schema) => schema.required("Price is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
+export const productEbayFormValidationSchema = yup.object().shape({
   variantProperties: yup
     .array()
     .of(
       yup
         .object()
         .shape({
-          singleSelect: yup
-            .object()
-            .shape({
-              value: yup.string().required(),
-              label: yup.string().required(),
-            })
-            .required("Choose at least one"),
+          singleSelect: yup.object().required("Choose at least one"),
           multiSelect: yup
             .array()
             .of(
@@ -72,7 +26,7 @@ export const productBasisFormValidationSchema = yup.object().shape({
     )
     .when("productType", {
       is: (productType: { label: string; value: string }) =>
-        productType?.value === "variant",
+        productType?.value === "VARIANT",
       then: (schema) => schema.required("Variant Properties are required"),
       otherwise: (schema) => schema.notRequired(),
     }),
@@ -108,7 +62,7 @@ export const productBasisFormValidationSchema = yup.object().shape({
     )
     .when("productType", {
       is: (productType: { label: string; value: string }) =>
-        productType?.value == "variant",
+        productType?.value == "VARIANT",
       then: (schema) =>
         schema
           .min(1, "Combinations are required")

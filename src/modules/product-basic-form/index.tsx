@@ -2,34 +2,32 @@ import Input from "@/components/form-fields/components/Input";
 import SelectField from "@/components/form-fields/components/SelectField";
 import TextArea from "@/components/form-fields/components/TextArea";
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import { ICombination, IProductBasicForm, TagOption, variantOptionType } from "./types";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  ICombination,
+  IProductBasicForm,
+  TagOption,
+  VariantProperty,
+} from "./types";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { generateCombinations, transformVariantProperties } from "./helper";
 import {
   useProductBasicFormApi,
   useTagOptionsApi,
-  useVariantPropertyOptionsApi,
 } from "./services/productBasicForm.service";
 import { productTypes } from "./constant";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useEditProductAPi } from "../inventory-management/services";
 import { useParams } from "react-router-dom";
-import { DeleteIcon } from "@/assets/Svg";
 import Button from "@/components/form-fields/components/Button";
+import { INameOption, IOption } from "../inventory-management/types";
 
 const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
-  // let apiData: IProductBasicForm;
   const [productType, setProductType] = useState<string | undefined>(undefined);
-  const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({});
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
-  const [propertyOptions, setPropertyOptions] = useState<TagOption[]>([]);
-  const [generatedCombinations, setGeneratedCombinations] = useState<variantOptionType>([]);
   const { basicFormSubmitApi } = useProductBasicFormApi();
   const { getTagOptionsApi } = useTagOptionsApi();
-  const { getVariantPropertyOptionsApi } = useVariantPropertyOptionsApi();
   const { getEditProductsDetailsAPI } = useEditProductAPi();
   const { productId } = useParams();
 
@@ -58,27 +56,6 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     },
   });
 
-  console.log("🚀 ~ errors:", errors);
-  const {
-    fields: variantFields,
-    append: appendVariant,
-    remove: removeVariant,
-  } = useFieldArray<IProductBasicForm, "variantProperties">({
-    control,
-    name: "variantProperties",
-  });
-
-  const {
-    fields: combinationFields,
-    append: appendCombination,
-    remove: removeCombination,
-  } = useFieldArray<IProductBasicForm, "combinations">({
-    control,
-    name: "combinations",
-  });
-
-  const propertiesValues = watch("variantProperties");
-
   const tagOptionApi = async () => {
     try {
       const { data, error } = await getTagOptionsApi();
@@ -90,25 +67,10 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     }
   };
 
-  const variantPropertyOptionApi = async () => {
-    try {
-      const { data, error } = await getVariantPropertyOptionsApi();
-      if (data && !error) {
-        if (productType === "VARIANT") {
-          setAllOptions(data?.data?.allOptions);
-          setPropertyOptions(data?.data?.propertyOptions);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleEditProductApi = async () => {
     if (Number(productId) === 0) {
       return;
     }
-    console.log(productId, "++++++++++++++++++++");
     const { data, error } = await getEditProductsDetailsAPI(productId);
     console.log("🚀 ~ handleEditProductApi ~ data:", data);
     if (data && !error) {
@@ -120,40 +82,38 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     handleEditProductApi().then((apiData) => {
       setProductType(apiData?.productType?.value);
 
-      const transformedData = transformVariantProperties(apiData?.variantProperties);
-      const combinations = generateCombinations(transformedData);
-      setGeneratedCombinations(combinations);
-
       const formattedData = {
-        productType: apiData.productType,
-        title: apiData.title,
-        description: apiData.description,
-        tagOptions: apiData?.tagOptions?.map((tag: any) => ({
+        productType: apiData?.productType,
+        title: apiData?.title,
+        description: apiData?.description,
+        tagOptions: apiData?.tagOptions?.map((tag: IOption) => ({
           label: tag.label,
           value: tag.value,
         })),
-        image: apiData.image,
-        price: apiData.price,
-        quantity: apiData.quantity,
-        sku: apiData.sku,
-        variantProperties: apiData?.variantProperties?.map((prop: any) => ({
-          singleSelect: {
-            label: prop?.singleSelect?.label,
-            value: prop?.singleSelect?.value,
-          },
-          multiSelect: prop?.multiSelect?.map((opt: any) => ({
-            label: opt.label,
-            value: opt.value,
-          })),
-        })),
-        combinations: apiData?.combinations?.map((comb: any) => ({
-          combination: comb.combination?.map((e: any) => ({
+        image: apiData?.image,
+        price: apiData?.price,
+        quantity: apiData?.quantity,
+        sku: apiData?.sku,
+        variantProperties: apiData?.variantProperties?.map(
+          (prop: VariantProperty) => ({
+            singleSelect: {
+              label: prop?.singleSelect?.label,
+              value: prop?.singleSelect?.value,
+            },
+            multiSelect: prop?.multiSelect?.map((opt: IOption) => ({
+              label: opt.label,
+              value: opt.value,
+            })),
+          })
+        ),
+        combinations: apiData?.combinations?.map((comb: ICombination) => ({
+          combination: comb?.combination?.map((e: INameOption) => ({
             name: e?.name,
             value: e?.value,
           })),
-          price: comb.price,
-          sku: comb.sku,
-          quantity: comb.quantity,
+          price: comb?.price,
+          sku: comb?.sku,
+          quantity: comb?.quantity,
         })),
       };
 
@@ -163,7 +123,6 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
 
   useEffect(() => {
     tagOptionApi();
-    variantPropertyOptionApi();
   }, [productType]);
 
   const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
@@ -175,59 +134,11 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     }
   };
 
-  // Function to handle Save Variant button click
-  const handleSaveVariant = () => {
-    const selectedOptions = propertiesValues?.map((item) => ({
-      name: item?.singleSelect?.value,
-      value: item?.multiSelect?.map((opt) => opt?.value),
-    }));
-
-    if (selectedOptions) {
-      if (selectedOptions?.some((options) => options?.value?.length === 0)) {
-        console.log("Please select options for all properties.");
-        return;
-      }
-
-      const combinations = generateCombinations(selectedOptions);
-
-      setGeneratedCombinations(combinations);
-
-      // Initialize field array with combinations and additional fields
-      const initialCombinationFields: ICombination[] = combinations?.map((combination) => ({
-        combination,
-        price: 0,
-        sku: "",
-        quantity: 0,
-      }));
-
-      setValue("combinations", initialCombinationFields);
-    }
-  };
-
-  // Handler to add a new combination from remaining combinations
-  const handleAddCombination = () => {
-    const existingCombinations = watch("combinations")?.map((item) => item.combination);
-    const availableCombinations = generatedCombinations.filter(
-      (comb) =>
-        !existingCombinations?.some(
-          (existing) =>
-            JSON.stringify(existing.map((e) => e.value)) ===
-            JSON.stringify(comb.map((e) => e.value))
-        )
-    );
-    if (availableCombinations.length > 0) {
-      appendCombination({
-        combination: availableCombinations[0], // Add the first available combination
-        price: 0,
-        sku: "",
-        quantity: 0,
-      });
-    } else {
-      console.log("No more combinations available to add.");
-    }
-  };
-
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
+    console.log(
+      "🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:",
+      payload
+    );
     const newPayload = { ...payload, productId: productId };
     const {
       data: {
@@ -279,7 +190,9 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   control={control}
                   errors={errors}
                   onChange={(selectedOption) =>
-                    handleProductTypeChange(selectedOption ? selectedOption.value : "")
+                    handleProductTypeChange(
+                      selectedOption ? selectedOption.value : ""
+                    )
                   }
                 />
                 <Input
@@ -336,154 +249,6 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                     />
                   </div>
                 )}
-
-                {productType === "VARIANT" && (
-                  <div>
-                    {variantFields.map((item, index) => (
-                      <div key={item.id} className="my-4 flex gap-4 items-center">
-                        <div className=" w-full ">
-                          <SelectField
-                            label="Property"
-                            placeholder="Select Property"
-                            options={propertyOptions.filter(
-                              (e) =>
-                                !propertiesValues?.some(
-                                  (item) => e.value === item?.singleSelect?.value
-                                )
-                            )}
-                            name={`variantProperties.${index}.singleSelect`}
-                            control={control}
-                            errors={errors}
-                          />
-                        </div>
-                        <span className="text-lg font-bold  mx-auto mt-3 ">→</span>
-                        <div className=" w-full">
-                          <SelectField
-                            label="Options"
-                            placeholder="Select Options"
-                            options={(
-                              allOptions[
-                                watch(`variantProperties.${index}.singleSelect`)?.value || ""
-                              ] || []
-                            ).map((opt) => ({ label: opt, value: opt }))}
-                            name={`variantProperties.${index}.multiSelect`}
-                            control={control}
-                            errors={errors}
-                            isMulti
-                          />
-                        </div>
-                        {variantFields.length > 1 && (
-                          <button
-                            type="button"
-                            className="p-1 text-red-500"
-                            onClick={() => removeVariant(index)}
-                          >
-                            <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                    <div className="flex gap-4 justify-start items-center">
-                      <Button
-                        btnName="Add Property"
-                        type="button"
-                        btnClass="p-2  text-white bg-greenPrimary !w-auto rounded-md"
-                        onClickHandler={() =>
-                          appendVariant({ singleSelect: null, multiSelect: [] })
-                        }
-                      />
-
-                      {productType === "VARIANT" && (
-                        <Button
-                          btnName=" Save Variant"
-                          type="button"
-                          btnClass=" !w-auto p-2 border !border-black/20 bg-white !text-grayText !rounded-md   "
-                          onClickHandler={handleSaveVariant}
-                        />
-                      )}
-                    </div>
-                  </div>
-                )}
-                {productType === "VARIANT" && generatedCombinations.length > 0 && (
-                  <div className="mt-6">
-                    <h3 className="font-bold text-lg">Generated Combinations:</h3>
-                    {combinationFields.map((item, index) => (
-                      <div key={item.id} className="flex items-start gap-2 my-2">
-                        <div className="min-w-[100px] mt-9 ">
-                          {item.combination.map((e) => e.value).join(", ")}
-                        </div>
-                        <Input
-                          textLabelName="Price"
-                          placeholder="Enter Price"
-                          name={`combinations.${index}.price`}
-                          type="number"
-                          control={control}
-                          errors={errors}
-                        />
-                        <Input
-                          textLabelName="SKU"
-                          placeholder="Enter SKU"
-                          name={`combinations.${index}.sku`}
-                          type="text"
-                          control={control}
-                          errors={errors}
-                        />
-                        <Input
-                          textLabelName="Quantity"
-                          placeholder="Enter Quantity"
-                          name={`combinations.${index}.quantity`}
-                          type="number"
-                          control={control}
-                          errors={errors}
-                        />
-                        <button
-                          type="button"
-                          className="p-1 text-red-500"
-                          onClick={() => removeCombination(index)}
-                        >
-                          <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
-                        </button>
-                        <Input
-                          textLabelName="Price"
-                          placeholder="Enter Price"
-                          name={`combinations.${index}.price`}
-                          type="number"
-                          control={control}
-                          errors={errors}
-                        />
-                        <Input
-                          textLabelName="SKU"
-                          placeholder="Enter SKU"
-                          name={`combinations.${index}.sku`}
-                          type="text"
-                          control={control}
-                          errors={errors}
-                        />
-                        <Input
-                          textLabelName="Quantity"
-                          placeholder="Enter Quantity"
-                          name={`combinations.${index}.quantity`}
-                          type="number"
-                          control={control}
-                          errors={errors}
-                        />
-                        <button
-                          type="button"
-                          className="p-1 text-red-500"
-                          onClick={() => removeCombination(index)}
-                        >
-                          <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
-                        </button>
-                      </div>
-                    ))}
-                    <Button
-                      btnName=" Add Combination"
-                      type="button"
-                      btnClass=" !w-auto  p-2  text-white  rounded-md"
-                      onClickHandler={handleAddCombination}
-                    />
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -495,7 +260,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           ) : null}
 
           <Button
-            btnName="Submit Form"
+            btnName="Save & Next"
             type="submit"
             btnClass=" !w-auto p-2    text-white bg-green-500 rounded-md"
           />

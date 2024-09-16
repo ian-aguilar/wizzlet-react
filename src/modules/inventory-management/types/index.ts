@@ -28,6 +28,16 @@ export type Option = {
   isDisabled?: boolean | undefined;
 };
 
+export type IOption = {
+  label: string;
+  value: string | number;
+};
+
+export type INameOption = {
+  name: string;
+  value: string | number;
+};
+
 export enum E_PRODUCT_STATUS {
   active = "active",
   draft = "draft",

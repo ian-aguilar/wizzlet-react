@@ -10,7 +10,6 @@ import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.se
 import { useSetProductMarketplaceAPI } from "./services";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useParams } from "react-router-dom";
-import { divide } from "lodash";
 import { VITE_APP_API_URL } from "@/config";
 
 // ** Types **
@@ -18,7 +17,9 @@ import { VITE_APP_API_URL } from "@/config";
 const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   // ** States **
 
-  const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>([]); // List of selected marketplaces
+  const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
+    []
+  ); // List of selected marketplaces
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
@@ -51,7 +52,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     if (!selectedMarketplaces.includes(id)) {
       setSelectedMarketplaces([...selectedMarketplaces, id]); // Add if not selected
     } else {
-      setSelectedMarketplaces(selectedMarketplaces.filter((market) => market !== id)); // Remove if already selected
+      setSelectedMarketplaces(
+        selectedMarketplaces.filter((market) => market !== id)
+      ); // Remove if already selected
     }
   };
 
@@ -69,21 +72,26 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
       console.log("Error: ", error);
     } else {
       setErrorShow(false);
-      onComplete(selectedMarketplaces);
+      onComplete(productId);
     }
   };
 
   return (
     <div className="marketplace-form p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-      <h3 className="title text-[26px] font-semibold pb-4 mb-4 border-b border-black/20  ">Choose Marketplace</h3>
+      <h3 className="title text-[26px] font-semibold pb-4 mb-4 border-b border-black/20  ">
+        Choose Marketplace
+      </h3>
       <div className="marketplace-list flex flex-col gap-4 lg:max-w-[568px]">
         {marketplace.connectedMarketplace.length > 0 ? (
           marketplace.connectedMarketplace.map((item) => (
             <div
               key={item.id}
-              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  "
-            >
-              <img src={VITE_APP_API_URL + item.logo} className="max-w-[77px] h-[23px] object-contain " alt="" />
+              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  ">
+              <img
+                src={VITE_APP_API_URL + item.logo}
+                className="max-w-[77px] h-[23px] object-contain "
+                alt=""
+              />
 
               <Checkbox
                 mainClass="  flex-row-reverse gap-4"
@@ -100,7 +108,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
       </div>
 
       {errorShow && selectedMarketplaces.length == 0 ? (
-        <span className="errorText text-red-600 font-medium text-sm">{"Marketplace is not selected."}</span>
+        <span className="errorText text-red-600 font-medium text-sm">
+          {"Marketplace is not selected."}
+        </span>
       ) : null}
 
       <div className="flex gap-2 my-6">
@@ -109,7 +119,11 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           btnClass="!w-auto !px-6 border !border-black/20 bg-white !text-grayText !rounded-md "
           onClickHandler={handleSubmit}
         />
-        <Button btnName="Save & Next" btnClass="!w-auto" onClickHandler={handleSubmit} />
+        <Button
+          btnName="Save & Next"
+          btnClass="!w-auto"
+          onClickHandler={handleSubmit}
+        />
       </div>
 
       <div className="">
@@ -120,8 +134,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
               return (
                 <div
                   key={item.id}
-                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center"
-                >
+                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center">
                   <img
                     src={VITE_APP_API_URL + item.logo}
                     className="max-w-[77px] h-[23px] object-contain mx-auto"
