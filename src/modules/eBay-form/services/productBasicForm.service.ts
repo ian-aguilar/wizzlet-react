@@ -10,8 +10,11 @@ export const useEbayFormHandleApi = () => {
   // ** custom Hooks **
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const ebayFormSubmitApi = async (data: object, config: AxiosRequestConfig<object> = {}) => {
-    return callApi(`ebay/form`, data, config);
+  const ebayFormSubmitApi = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`/ebay/form`, data, config);
   };
 
   return { ebayFormSubmitApi, isLoading, isError, isSuccess };
@@ -37,6 +40,17 @@ export const useGetCategoryApi = () => {
   };
 
   return { getCategoryApi, isLoading, isError, isSuccess };
+};
+
+export const useGetProductTypeApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getProductTypeApi = async (id: string | undefined) => {
+    return callApi(`products/type/${id}`);
+  };
+
+  return { getProductTypeApi, isLoading, isError, isSuccess };
 };
 
 export const useCreateEbayProductApi = () => {
