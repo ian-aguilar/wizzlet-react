@@ -15,13 +15,7 @@ import { CategoryOptions, ICategory } from "@/components/common/types";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
-import {
-  Combination,
-  ImageCombinations,
-  Payload,
-  PropertiesState,
-  SelectOption,
-} from "./types";
+import { Combination, Payload, PropertiesState, SelectOption } from "./types";
 import { useParams } from "react-router-dom";
 import SelectField from "@/components/form-fields/components/SelectField";
 import { DeleteIcon } from "@/assets/Svg";
@@ -38,7 +32,6 @@ const EbayForm: React.FC = () => {
   const { editProductValueApi } = useEditProductValuesApi();
   const { productId } = useParams();
   const [id, setId] = useState();
-  const [addModelOpen, setAddModelOpen] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
   const [productType, setProductType] = useState<string | null>(null);
@@ -134,6 +127,8 @@ const EbayForm: React.FC = () => {
     formState: { errors },
     reset,
     watch,
+    setError,
+    clearErrors,
     setValue,
   } = useForm<any>({
     resolver: yupResolver(finalValidationSchema),
@@ -168,6 +163,7 @@ const EbayForm: React.FC = () => {
 
   const propertiesValues = watch("variantProperties");
   const combinations = watch("combinations");
+  console.log("🚀 ~ combinations:", combinations);
 
   // Function to handle Save Variant button click
   const handleSaveVariant = () => {
@@ -331,26 +327,20 @@ const EbayForm: React.FC = () => {
       }
     });
 
-    const { data: result } = await ebayFormSubmitApi(formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+    const { data: result } = await ebayFormSubmitApi(
+      {
+        payload: formData,
+        productId: productId,
+        categoryId: categoriesId,
+        marketplaceId: 2, //For Ebay Only
       },
-    });
-    console.log("🚀 ~ onSubmit ~ result:", result);
-  };
-
-  const onAddModelClose = () => {
-    setAddModelOpen(false);
-  };
-
-  const handleImageUpload = (imageUrls: ImageCombinations, index: number) => {
-    console.log("🚀 ~ handleImageUpload ~ imageUrls:", imageUrls);
-    setValue(
-      `combinations.${index}.images`,
-      imageUrls.combinations[index].images
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
-
-    setAddModelOpen(false);
+    console.log("🚀 ~ onSubmit ~ result:", result);
   };
 
   useEffect(() => {
@@ -477,18 +467,15 @@ const EbayForm: React.FC = () => {
                     control={control}
                     errors={errors}
                   />
-                  <div onClick={() => setAddModelOpen(true)}>Upload Image</div>
-                  {addModelOpen && (
-                    <div>
-                      <ImageUpload
-                        name={`combinations.${index}.images`}
-                        onClose={onAddModelClose}
-                        onSubmitImages={(imageUrls: any) =>
-                          handleImageUpload(imageUrls, index)
-                        }
-                      />
-                    </div>
-                  )}
+                  <ImageUpload
+                    name={`combinations.${index}.images`}
+                    watch={watch}
+                    control={control}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                    setValue={setValue}
+                  />
 
                   <button
                     type="button"
