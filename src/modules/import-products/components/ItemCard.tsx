@@ -9,26 +9,57 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
     }
   };
   return (
-    <div className="flex bg-white mt-[5px] justify-between">
-      <div>
-        <img src={item.picture_url?.PictureURL} />
-      </div>
-      <div>
+    <div className="flex bg-white items-center mt-2 p-5  gap-4 border border-grayLightBody/20 rounded-md ">
+      <div className="flex gap-4 items-start">
         <div>
-          {item.is_imported === true ? (
-            <span className="bg-slate-500 text-white">Not Imported</span>
-          ) : (
-            <span className="bg-green-700 text-white">Imported</span>
-          )}
+          <img
+            src={item.picture_url?.PictureURL}
+            className="w-[171px] h-[132px] object-cover rounded-md "
+          />
         </div>
-        <h2>{item.title}</h2>
-        <div className="flex justify-between">
-          <span>PRICE {item.price}</span>
-          <span>DATE {item.price}</span>
-          <span>ITEM ID {item.product_portal_id}</span>
+        <div>
+          <div>
+            {item.is_imported === true ? (
+              <span className="bg-[#97A0B2] text-white text-xs font-medium py-0.5 rounded-md px-1">
+                Not Imported
+              </span>
+            ) : (
+              <span className="bg-[#6C778B] text-white  text-xs font-medium py-0.5 rounded-md px-1">
+                Imported
+              </span>
+            )}
+          </div>
+          <h2 className="text-[19px] font-medium py-2 ">{item.title}</h2>
+          <div className="flex gap-4 text-sm ">
+            <span className="font-medium flex items-center gap-2">
+              {" "}
+              <p className="font-normal inline-block text-grayText">
+                {" "}
+                PRICE
+              </p>{" "}
+              {item.price}
+            </span>
+            <span className="text-[#D8DCE4]">|</span>
+            <span className="font-medium flex items-center gap-2">
+              {" "}
+              <p className="font-normal inline-block text-grayText">
+                DATE
+              </p>{" "}
+              {item.price}
+            </span>
+            <span className="text-[#D8DCE4]">|</span>
+            <span className="font-medium flex items-center gap-2">
+              {" "}
+              <p className="font-normal inline-block text-grayText">
+                {" "}
+                ITEM ID
+              </p>{" "}
+              {item.product_portal_id}
+            </span>
+          </div>
         </div>
       </div>
-      <div>
+      <div className="ml-auto  pr-8">
         <Checkbox
           checkLabel=""
           isChecked={isCheck.includes(item.id)}
