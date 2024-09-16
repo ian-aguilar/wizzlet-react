@@ -26,11 +26,5 @@ export const settingsNav = [
     path: PrivateRoutesPath.setting.changePassword.view,
     name: SettingSidebarEnum.ChangePassword,
   },
-  {
-    navIcon: SettingsIcon,
-    navText: "Attributes",
-    path: PrivateRoutesPath.setting.attribute.view,
-    name: SettingSidebarEnum.Attribute,
-  },
 ];
 

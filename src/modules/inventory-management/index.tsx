@@ -22,6 +22,7 @@ import { SearchBox } from "../../components/common/SearchBox";
 import { Pagination } from "./components/Pagination";
 import DropDown from "./components/DropDown";
 import Product from "./components/Product";
+import AsyncSelectField from "./components/AsyncSelectField";
 
 // ** Helper **
 import { status } from "./helper/inventryData";
@@ -32,17 +33,22 @@ import { useGetCategoriesAPI, useProductListingAPI } from "./services";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
-import { E_PRODUCT_STATUS, Option, categoriesType, productProps } from "./types";
 import { btnShowType } from "@/components/form-fields/types";
+import {
+  E_PRODUCT_STATUS,
+  Option,
+  productProps,
+} from "./types";
 
 const InventoryManagement = () => {
   // ** States **
   const [totalItem, setTotalItem] = useState<number>();
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [category, setCategory] = useState<Option | undefined>(undefined);
-  const [productStatus, setProductStatus] = useState<string>(E_PRODUCT_STATUS.active);
-  const [categories, serCategories] = useState<categoriesType[]>([]);
+  const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [productStatus, setProductStatus] = useState<string>(
+    E_PRODUCT_STATUS.active
+  );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
@@ -60,11 +66,12 @@ const InventoryManagement = () => {
   }>({
     products: [],
   });
+  
   const navigate = useNavigate();
 
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
-  const { getCategoriesAPI } = useGetCategoriesAPI();
+  const { getCategoriesAPI, isLoading: categoryLoading } = useGetCategoriesAPI();
   const { getProductsDetailsAPI } = useProductListingAPI();
 
   // ** API call for get connected marketplace **
@@ -86,7 +93,9 @@ const InventoryManagement = () => {
       selectedMarketplace: {
         marketplace: marketplace.length ? marketplace : selectedMarketplace,
       },
-      category: category?.value ? category.value : "",
+      category: {
+        categories: category?.length ? category.map((item) => item.label) : [],
+      },
       search: search,
       currentPage: currentPage,
       itemPerPage: itemPerPage.value,
@@ -107,10 +116,14 @@ const InventoryManagement = () => {
   );
 
   // ** Categories fetch **
-  const getCategories = async () => {
-    const { data, error } = await getCategoriesAPI(selectedMarketplace);
+  const getCategories = async (search: string, page: number) => {
+    const { data, error } = await getCategoriesAPI(
+      selectedMarketplace,
+      search,
+      page
+    );
     if (!error && data) {
-      serCategories(data?.data);
+      return data?.data;
     }
   };
 
@@ -145,10 +158,6 @@ const InventoryManagement = () => {
     setSearchTerm(event.currentTarget.value.trim());
     debounceRequest(event.currentTarget.value.trim(), selectedMarketplace);
   };
-
-  useEffect(() => {
-    getCategories();
-  }, [selectedMarketplace]);
 
   useEffect(() => {
     getProductsDetails();
@@ -242,10 +251,14 @@ const InventoryManagement = () => {
                   {item}
                   <span
                     className={`text-base ${
-                      productStatus === item ? `bg-greenPrimary/10` : `bg-greyBorder/50`
+                      productStatus === item
+                        ? `bg-greenPrimary/10`
+                        : `bg-greyBorder/50`
                     } px-1 rounded-md`}
                   >
-                    {totalItem}
+                    {productStatus === item
+                      ? totalItem
+                      : products.otherStatusTotal}
                   </span>
                 </div>
               );
@@ -272,19 +285,24 @@ const InventoryManagement = () => {
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
             />
-            <DropDown
-              isSearchable={false}
-              placeholder="By Category"
-              onChange={(e) => {
+            <AsyncSelectField
+              name="Categories select box"
+              serveSideSearch={true}
+              getOnChange={(e) => {
                 setSearchTerm("");
                 setCurrentPage(1);
                 if (e) {
                   setCategory(e);
                 }
               }}
+              isLoading={categoryLoading}
+              isMulti={true}
+              isSearchable={true}
+              notClearable={false}
+              getOptions={getCategories}
               value={category !== undefined || null ? category : undefined}
-              dropdownClass=" !font-medium hover:border-blackPrimary/20 text-grayText !text-base  !py-2 !px-3 "
-              options={categories}
+              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
+              placeholder="By Category"
             />
           </div>
         </div>

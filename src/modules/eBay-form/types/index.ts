@@ -1,5 +1,13 @@
 import { FieldsTypeEnum } from "@/components/form-builder/types";
 import { IUserModel } from "@/modules/user-management/types";
+import { FieldValues } from "react-hook-form";
+import {
+  Control,
+  FieldErrors,
+  UseFormSetValue,
+  UseFormSetError,
+  UseFormClearErrors,
+} from "react-hook-form";
 
 export type Property = {
   type: FieldsTypeEnum;
@@ -51,10 +59,14 @@ export type SelectData = {
 export type SelectDataArray = SelectData[];
 
 // Type for the props of the ImageUpload component
-export interface IUploadProps {
-  onClose: () => void; // Function to close the modal
-  onSubmitImages: (payload: IImageUpload) => void; // Function to handle image submission
-  name: any; // The name of the field for image upload
+export interface IUploadProps<T extends FieldValues = FieldValues> {
+  name: keyof T;
+  watch: any;
+  control: Control<T>;
+  setError: UseFormSetError<T>;
+  clearErrors: UseFormClearErrors<T>;
+  errors: FieldErrors<T>;
+  setValue: UseFormSetValue<T>;
 }
 
 export interface Combination {

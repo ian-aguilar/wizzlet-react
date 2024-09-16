@@ -7,6 +7,7 @@ export type ISelectCategoryProps = {
   dropdownName?: string;
   dropdownClass?: string;
   options: IOption[];
+  customStyles: any;
   onChange?: (newValue: SingleValue<IOption>) => void;
 };
 
