@@ -1,20 +1,30 @@
 // ** packages **
-import { AxiosRequestConfig } from "axios";
 
 // ** hooks **
-import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosGet, useAxiosPost, useAxiosPut } from "@/hooks/useAxios";
 
 const BASE_PATH = "/property";
 
 export const useEbayFormHandleApi = () => {
   // ** custom Hooks **
-  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPut();
 
   const ebayFormSubmitApi = async (
     data: object,
-    config: AxiosRequestConfig<object> = {}
+    {
+      productId,
+      categoryId,
+    }: { productId: number | string; categoryId: number | string }
   ) => {
-    return callApi(`/ebay/form`, data, config);
+    return callApi(
+      `/ebay/form?categoryId=${categoryId}&productId=${productId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   };
 
   return { ebayFormSubmitApi, isLoading, isError, isSuccess };

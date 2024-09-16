@@ -316,36 +316,29 @@ const EbayForm: React.FC = () => {
         const value = payload[key];
         if (Array.isArray(value)) {
           value.forEach((item, index) => {
-            formData.append(`${key}[${index}]`, JSON.stringify(item));
+            if (item) formData.append(`${key}[${index}]`, JSON.stringify(item));
           });
         } else if (
           typeof value === "object" &&
           value !== null &&
           !(value instanceof File)
         ) {
-          formData.append(key, JSON.stringify(value));
+          if (value) formData.append(key, JSON.stringify(value));
         } else {
           formData.append(key, value);
         }
       }
     });
 
-    const { data: result } = await ebayFormSubmitApi(
-      {
-        payload: formData,
-        productId: productId,
+    if (productId) {
+      const { data: result } = await ebayFormSubmitApi(formData, {
         categoryId: categoriesId,
-        marketplaceId: 2, //For Ebay Only
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    console.log("🚀 ~ onSubmit ~ result:", result);
+        productId,
+      });
+      console.log("🚀 ~ onSubmit ~ result:", result);
 
-    await createEbayProductApi(Number(productId));
+      await createEbayProductApi(Number(productId));
+    }
   };
 
   useEffect(() => {
@@ -408,8 +401,7 @@ const EbayForm: React.FC = () => {
                     <button
                       type="button"
                       className="p-1 text-red-500"
-                      onClick={() => removeVariant(index)}
-                    >
+                      onClick={() => removeVariant(index)}>
                       <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                     </button>
                   )}
@@ -486,8 +478,7 @@ const EbayForm: React.FC = () => {
                   <button
                     type="button"
                     className="p-1 text-red-500"
-                    onClick={() => removeCombination(index)}
-                  >
+                    onClick={() => removeCombination(index)}>
                     <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
                   </button>
                 </div>
