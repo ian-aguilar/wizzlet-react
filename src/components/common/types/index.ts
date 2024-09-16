@@ -47,9 +47,7 @@ export interface CategoryOptions {
 export interface SelectCategoryProps {
   options: ICategory[];
   defaultValue?: string | number;
-  setValue?: Dispatch<
-    SetStateAction<{ id: number | string; value: string } | undefined>
-  >;
+  setValue?: Dispatch<SetStateAction<{ id: number | string; value: string } | undefined>>;
   onChange?: (selectedOption: CategoryOptions) => void;
 }
 
@@ -85,4 +83,9 @@ export interface ISearchBox {
   className: string;
   InputLeftIcon?: ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+export enum MARKETPLACE {
+  EBAY = "ebay",
+  AMAZON = "amazon",
 }

@@ -158,7 +158,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h3 className="font-semibold text-[26px] pb-2 mb-4 border-b border-b-black/20">
-          Heyowl Form
+          Hayowl Form
         </h3>
         <div className="text-lg font-medium text-blackPrimary">Item Photos</div>
         <div className="col-span-12 relative">
@@ -177,7 +177,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         </div>
         <section className="pt-4">
           <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
-            Heyowl Form
+            Hayowl Form
           </h2>
           <div className="border-l border-r border-b mb-2 rounded-b-md">
             <div className="grid grid-cols-12 w-full p-4">
