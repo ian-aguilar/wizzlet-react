@@ -79,9 +79,7 @@ const InventoryManagement = () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
-      setSelectedMarketplace(
-        data?.data.connectedMarketplace.map((item: IMarketplace) => item.id)
-      );
+      setSelectedMarketplace(data?.data.connectedMarketplace.map((item: IMarketplace) => item.id));
     }
   };
   useEffect(() => {
@@ -89,10 +87,7 @@ const InventoryManagement = () => {
   }, []);
 
   // ** Function for list products by API
-  const getProductsDetails = async (
-    search: string = "",
-    marketplace: number[] = []
-  ) => {
+  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
     const { data, error } = await getProductsDetailsAPI({
       productStatus: productStatus,
       selectedMarketplace: {
@@ -113,10 +108,7 @@ const InventoryManagement = () => {
 
   // ** Page change event function
   const onPageChanged = useCallback(
-    (
-      event: MouseEvent<HTMLElement, globalThis.MouseEvent>,
-      page: number | string
-    ) => {
+    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
       event.preventDefault();
       setCurrentPage(page);
     },
@@ -142,9 +134,7 @@ const InventoryManagement = () => {
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
-      const newSelectedMarket = selectedMarketplace.filter(
-        (market) => market !== id
-      );
+      const newSelectedMarket = selectedMarketplace.filter((market) => market !== id);
       setSelectedMarketplace(newSelectedMarket);
     }
   };
@@ -160,8 +150,7 @@ const InventoryManagement = () => {
   }, 500);
 
   const debounceRequest = useCallback(
-    (value: string, selectedMarketplace: number[]) =>
-      request(value, selectedMarketplace),
+    (value: string, selectedMarketplace: number[]) => request(value, selectedMarketplace),
     []
   );
 
@@ -177,9 +166,7 @@ const InventoryManagement = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
-          Inventory Management
-        </h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
         <div className="flex gap-2">
           <Button
             btnName="Filters"
@@ -324,9 +311,7 @@ const InventoryManagement = () => {
           <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
             <div className="flex gap-5 items-center ">
               <h3 className="text-[26px] font-medium ">
-                {productStatus === E_PRODUCT_STATUS.active
-                  ? `Active Items`
-                  : `Draft Items`}
+                {productStatus === E_PRODUCT_STATUS.active ? `Active Items` : `Draft Items`}
               </h3>
               <Checkbox checkLabel="Check All" />
             </div>

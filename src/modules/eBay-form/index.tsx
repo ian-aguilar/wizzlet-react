@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { IUserModel } from "../user-management/types";
 import FormBuilder from "@/components/form-builder";
 import {
+  useCreateEbayProductApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
@@ -31,6 +32,7 @@ const EbayForm: React.FC = () => {
     categorized: [],
     nullCategory: [],
   });
+  const { createEbayProductApi } = useCreateEbayProductApi();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -98,6 +100,9 @@ const EbayForm: React.FC = () => {
       categoryId: categoriesId,
       marketplaceId: 2,
     };
+    const { data } = await ebayFormSubmitApi(filteredPayload);
+    console.log("🚀 ~ onSubmit ~ data:", data);
+    await createEbayProductApi(Number(productId));
     await ebayFormSubmitApi(filteredPayload);
   };
 
@@ -108,31 +113,12 @@ const EbayForm: React.FC = () => {
   return (
     <>
       <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
-        {fieldsLoading || optionsLoading ? (
-          <Loader loaderClass=" !fixed " />
-        ) : null}
+        {fieldsLoading || optionsLoading ? <Loader loaderClass=" !fixed " /> : null}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Select
-            options={categories}
-            defaultValue={id}
-            onChange={handleOnChange}
-          />
-          <FormBuilder
-            control={control}
-            errors={errors}
-            fields={propertiesState.nullCategory}
-          />
-          <FormBuilder
-            control={control}
-            errors={errors}
-            fields={propertiesState.categorized}
-          />
-          <Button
-            showType={btnShowType.primary}
-            btnName="Save"
-            type="submit"
-            btnClass="mt-6"
-          />
+          <Select options={categories} defaultValue={id} onChange={handleOnChange} />
+          <FormBuilder control={control} errors={errors} fields={propertiesState.nullCategory} />
+          <FormBuilder control={control} errors={errors} fields={propertiesState.categorized} />
+          <Button showType={btnShowType.primary} btnName="Save" type="submit" btnClass="mt-6" />
         </form>
       </div>
     </>

@@ -3,12 +3,7 @@ import SelectField from "@/components/form-fields/components/SelectField";
 import TextArea from "@/components/form-fields/components/TextArea";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import {
-  ICombination,
-  IProductBasicForm,
-  TagOption,
-  variantOptionType,
-} from "./types";
+import { ICombination, IProductBasicForm, TagOption, variantOptionType } from "./types";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -31,8 +26,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   const [allOptions, setAllOptions] = useState<{ [key: string]: string[] }>({});
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
   const [propertyOptions, setPropertyOptions] = useState<TagOption[]>([]);
-  const [generatedCombinations, setGeneratedCombinations] =
-    useState<variantOptionType>([]);
+  const [generatedCombinations, setGeneratedCombinations] = useState<variantOptionType>([]);
   const { basicFormSubmitApi } = useProductBasicFormApi();
   const { getTagOptionsApi } = useTagOptionsApi();
   const { getVariantPropertyOptionsApi } = useVariantPropertyOptionsApi();
@@ -126,9 +120,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     handleEditProductApi().then((apiData) => {
       setProductType(apiData?.productType?.value);
 
-      const transformedData = transformVariantProperties(
-        apiData?.variantProperties
-      );
+      const transformedData = transformVariantProperties(apiData?.variantProperties);
       const combinations = generateCombinations(transformedData);
       setGeneratedCombinations(combinations);
 
@@ -201,14 +193,12 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
       setGeneratedCombinations(combinations);
 
       // Initialize field array with combinations and additional fields
-      const initialCombinationFields: ICombination[] = combinations?.map(
-        (combination) => ({
-          combination,
-          price: 0,
-          sku: "",
-          quantity: 0,
-        })
-      );
+      const initialCombinationFields: ICombination[] = combinations?.map((combination) => ({
+        combination,
+        price: 0,
+        sku: "",
+        quantity: 0,
+      }));
 
       setValue("combinations", initialCombinationFields);
     }
@@ -216,9 +206,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
 
   // Handler to add a new combination from remaining combinations
   const handleAddCombination = () => {
-    const existingCombinations = watch("combinations")?.map(
-      (item) => item.combination
-    );
+    const existingCombinations = watch("combinations")?.map((item) => item.combination);
     const availableCombinations = generatedCombinations.filter(
       (comb) =>
         !existingCombinations?.some(
@@ -291,9 +279,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   control={control}
                   errors={errors}
                   onChange={(selectedOption) =>
-                    handleProductTypeChange(
-                      selectedOption ? selectedOption.value : ""
-                    )
+                    handleProductTypeChange(selectedOption ? selectedOption.value : "")
                   }
                 />
                 <Input
@@ -354,9 +340,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                 {productType === "VARIANT" && (
                   <div>
                     {variantFields.map((item, index) => (
-                      <div
-                        key={item.id}
-                        className="my-4 flex gap-4 items-center">
+                      <div key={item.id} className="my-4 flex gap-4 items-center">
                         <div className=" w-full ">
                           <SelectField
                             label="Property"
@@ -364,8 +348,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                             options={propertyOptions.filter(
                               (e) =>
                                 !propertiesValues?.some(
-                                  (item) =>
-                                    e.value === item?.singleSelect?.value
+                                  (item) => e.value === item?.singleSelect?.value
                                 )
                             )}
                             name={`variantProperties.${index}.singleSelect`}
@@ -373,17 +356,14 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                             errors={errors}
                           />
                         </div>
-                        <span className="text-lg font-bold  mx-auto mt-3 ">
-                          →
-                        </span>
+                        <span className="text-lg font-bold  mx-auto mt-3 ">→</span>
                         <div className=" w-full">
                           <SelectField
                             label="Options"
                             placeholder="Select Options"
                             options={(
                               allOptions[
-                                watch(`variantProperties.${index}.singleSelect`)
-                                  ?.value || ""
+                                watch(`variantProperties.${index}.singleSelect`)?.value || ""
                               ] || []
                             ).map((opt) => ({ label: opt, value: opt }))}
                             name={`variantProperties.${index}.multiSelect`}
@@ -396,7 +376,8 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                           <button
                             type="button"
                             className="p-1 text-red-500"
-                            onClick={() => removeVariant(index)}>
+                            onClick={() => removeVariant(index)}
+                          >
                             <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                           </button>
                         )}
@@ -423,59 +404,86 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                     </div>
                   </div>
                 )}
-                {productType === "VARIANT" &&
-                  generatedCombinations.length > 0 && (
-                    <div className="mt-6">
-                      <h3 className="font-bold text-lg">
-                        Generated Combinations:
-                      </h3>
-                      {combinationFields.map((item, index) => (
-                        <div
-                          key={item.id}
-                          className="flex items-start gap-2 my-2">
-                          <div className="min-w-[100px] mt-9 ">
-                            {item.combination.map((e) => e.value).join(", ")}
-                          </div>
-                          <Input
-                            textLabelName="Price"
-                            placeholder="Enter Price"
-                            name={`combinations.${index}.price`}
-                            type="number"
-                            control={control}
-                            errors={errors}
-                          />
-                          <Input
-                            textLabelName="SKU"
-                            placeholder="Enter SKU"
-                            name={`combinations.${index}.sku`}
-                            type="text"
-                            control={control}
-                            errors={errors}
-                          />
-                          <Input
-                            textLabelName="Quantity"
-                            placeholder="Enter Quantity"
-                            name={`combinations.${index}.quantity`}
-                            type="number"
-                            control={control}
-                            errors={errors}
-                          />
-                          <button
-                            type="button"
-                            className="p-1 text-red-500"
-                            onClick={() => removeCombination(index)}>
-                            <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
-                          </button>
+                {productType === "VARIANT" && generatedCombinations.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-bold text-lg">Generated Combinations:</h3>
+                    {combinationFields.map((item, index) => (
+                      <div key={item.id} className="flex items-start gap-2 my-2">
+                        <div className="min-w-[100px] mt-9 ">
+                          {item.combination.map((e) => e.value).join(", ")}
                         </div>
-                      ))}
-                      <Button
-                        btnName=" Add Combination"
-                        type="button"
-                        btnClass=" !w-auto  p-2  text-white  rounded-md"
-                        onClickHandler={handleAddCombination}
-                      />
-                    </div>
-                  )}
+                        <Input
+                          textLabelName="Price"
+                          placeholder="Enter Price"
+                          name={`combinations.${index}.price`}
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="SKU"
+                          placeholder="Enter SKU"
+                          name={`combinations.${index}.sku`}
+                          type="text"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="Quantity"
+                          placeholder="Enter Quantity"
+                          name={`combinations.${index}.quantity`}
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                        <button
+                          type="button"
+                          className="p-1 text-red-500"
+                          onClick={() => removeCombination(index)}
+                        >
+                          <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
+                        </button>
+                        <Input
+                          textLabelName="Price"
+                          placeholder="Enter Price"
+                          name={`combinations.${index}.price`}
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="SKU"
+                          placeholder="Enter SKU"
+                          name={`combinations.${index}.sku`}
+                          type="text"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="Quantity"
+                          placeholder="Enter Quantity"
+                          name={`combinations.${index}.quantity`}
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                        <button
+                          type="button"
+                          className="p-1 text-red-500"
+                          onClick={() => removeCombination(index)}
+                        >
+                          <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
+                        </button>
+                      </div>
+                    ))}
+                    <Button
+                      btnName=" Add Combination"
+                      type="button"
+                      btnClass=" !w-auto  p-2  text-white  rounded-md"
+                      onClickHandler={handleAddCombination}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
