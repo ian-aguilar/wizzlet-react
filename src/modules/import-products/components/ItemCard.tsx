@@ -1,7 +1,13 @@
 import Checkbox from "@/components/form-fields/components/Checkbox";
-import { IItemsProps } from "../types";
+import { IItems, IItemsProps } from "../types";
 
-export const ItemCard = ({ item }: IItemsProps) => {
+export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
+  const checkHandler = (item: IItems, isChecked: boolean) => {
+    setIsCheck([...isCheck, item.id]);
+    if (!isChecked) {
+      setIsCheck(isCheck.filter((element) => element !== item.id));
+    }
+  };
   return (
     <div className="flex bg-white mt-[5px] justify-between">
       <div>
@@ -16,14 +22,20 @@ export const ItemCard = ({ item }: IItemsProps) => {
           )}
         </div>
         <h2>{item.title}</h2>
-        <div className="flex">
-          <span>Price {item.price}</span>
-          <span>Date {item.price}</span>
-          <span>Item Id {item.product_portal_id}</span>
+        <div className="flex justify-between">
+          <span>PRICE {item.price}</span>
+          <span>DATE {item.price}</span>
+          <span>ITEM ID {item.product_portal_id}</span>
         </div>
       </div>
       <div>
-        <Checkbox checkLabel="" />
+        <Checkbox
+          checkLabel=""
+          isChecked={isCheck.includes(item.id)}
+          onChange={(e) => {
+            checkHandler(item, e.target.checked);
+          }}
+        />
       </div>
     </div>
   );

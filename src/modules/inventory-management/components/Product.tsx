@@ -23,9 +23,10 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
         return (
           <div
             key={index}
-            className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3">
+            className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
+          >
             <div>
-              <Checkbox isChecked={"active" === "active"} checkLabel=" " />
+              <Checkbox checkLabel=" " />
             </div>
             <div className="IBox flex gap-6 w-full ">
               {item?.images !== undefined || null ? (
@@ -57,7 +58,8 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                       return (
                         <div
                           key={category?.id}
-                          className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
+                          className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
+                        >
                           {category?.name}
                         </div>
                       );
@@ -66,20 +68,12 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                 ) : null}
                 <div className="DescSpecifications flex flex-wrap gap-6 py-5">
                   <div>
-                    <span className="uppercase font-normal text-sm text-grayText">
-                      Price
-                    </span>
-                    <p className="text-blackPrimary font-medium ">
-                      {item?.price}
-                    </p>
+                    <span className="uppercase font-normal text-sm text-grayText">Price</span>
+                    <p className="text-blackPrimary font-medium ">{item?.price}</p>
                   </div>
-                  <div className="border-r border-dashed border-grayText/30">
-                    &nbsp;
-                  </div>
+                  <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
                   <div>
-                    <span className="uppercase font-normal text-sm text-grayText">
-                      Date
-                    </span>
+                    <span className="uppercase font-normal text-sm text-grayText">Date</span>
                     <p className="text-blackPrimary font-medium ">
                       {new Date(item?.date).toLocaleDateString("en-GB", {
                         year: "numeric",
@@ -88,27 +82,15 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                       })}
                     </p>
                   </div>
-                  <div className="border-r border-dashed border-grayText/30">
-                    &nbsp;
-                  </div>
+                  <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
                   <div>
-                    <span className="uppercase font-normal text-sm text-grayText">
-                      QTY
-                    </span>
-                    <p className="text-blackPrimary font-medium ">
-                      {item?.quantity}
-                    </p>
+                    <span className="uppercase font-normal text-sm text-grayText">QTY</span>
+                    <p className="text-blackPrimary font-medium ">{item?.quantity}</p>
                   </div>
-                  <div className="border-r border-dashed border-grayText/30">
-                    &nbsp;
-                  </div>
+                  <div className="border-r border-dashed border-grayText/30">&nbsp;</div>
                   <div>
-                    <span className="uppercase font-normal text-sm text-grayText">
-                      SKU
-                    </span>
-                    <p className="text-blackPrimary font-medium ">
-                      {item?.sku}
-                    </p>
+                    <span className="uppercase font-normal text-sm text-grayText">SKU</span>
+                    <p className="text-blackPrimary font-medium ">{item?.sku}</p>
                   </div>
                 </div>
                 <div className="syncingOn flex flex-wrap gap-1 ">
@@ -116,7 +98,8 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                     return (
                       <div
                         key={marketsLogo?.id}
-                        className=" rounded-md  border border-grayText/20 p-1">
+                        className=" rounded-md  border border-grayText/20 p-1"
+                      >
                         <img
                           src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                           className="w-14 h-auto"

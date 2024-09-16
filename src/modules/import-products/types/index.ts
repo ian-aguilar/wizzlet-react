@@ -31,4 +31,6 @@ export type IItems = {
 
 export type IItemsProps = {
   item: IItems;
+  isCheck: number[];
+  setIsCheck: React.Dispatch<React.SetStateAction<number[]>>;
 };

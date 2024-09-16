@@ -1,21 +1,26 @@
-import SelectField from "@/components/form-fields/components/SelectField";
-import { useForm } from "react-hook-form";
-import { markeplaces } from "./constants";
+// ** Packages **
 import { useEffect, useState } from "react";
+
+// ** Common **
+import { markeplaces } from "./constants";
 import Button from "@/components/form-fields/components/Button";
-import DropDown from "../inventory-management/components/DropDown";
 import { SelectMarketplace } from "./components/SelectMarketplace";
 import { IItems, IOption } from "./types";
+import { MARKETPLACE } from "@/components/common/types";
+import { ItemCard } from "./components/ItemCard";
+import Checkbox from "@/components/form-fields/components/Checkbox";
+
+// ** Services **
 import {
   useGetImportedEbayProductsApi,
   useImportEbayProductsApi,
 } from "./services/importProducts.service";
-import { MARKETPLACE } from "@/components/common/types";
-import { ItemCard } from "./components/ItemCard";
 
 const ImportProducts = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<IOption>();
   const [items, setItems] = useState<IItems[]>();
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+  const [isCheck, setIsCheck] = useState<number[]>([]);
 
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
   const { getImportedEbayProductsApi } = useGetImportedEbayProductsApi();
@@ -44,12 +49,25 @@ const ImportProducts = () => {
           break;
         }
       }
+    } else {
+      const { data } = await getImportedEbayProductsApi();
+      setItems(data?.data);
     }
   };
 
   useEffect(() => {
     getImportProductsHandler();
   }, [selectedMarketplace]);
+
+  const selectAllHandler = () => {
+    setIsAllChecked(!isAllChecked);
+    if (items) {
+      setIsCheck(items.map((item) => item.id));
+    }
+    if (isAllChecked) {
+      setIsCheck([]);
+    }
+  };
 
   return (
     <div>
@@ -72,12 +90,17 @@ const ImportProducts = () => {
         </div>
       </div>
       <div>
-        <h3>Items</h3>
+        <div className="flex justify-between">
+          <h3>Items</h3>
+          <Checkbox checkLabel="All" onChange={selectAllHandler} />
+        </div>
         <div>
           {items &&
             items.length > 0 &&
             items.map((item) => {
-              return <ItemCard item={item} />;
+              return (
+                <ItemCard item={item} isCheck={isCheck} setIsCheck={setIsCheck} key={item.id} />
+              );
             })}
         </div>
       </div>
