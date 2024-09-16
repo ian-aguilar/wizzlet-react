@@ -5,9 +5,15 @@ const PRODUCT_LIST_PATH = "/products";
 export const useGetCategoriesAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const getCategoriesAPI = async (data: number[]) => {
+  const getCategoriesAPI = async (
+    marketplace?: number[],
+    searchQuery?: string,
+    page?: number
+  ) => {
     return callApi(`${CATEGORIES_PATH}/marketplace-wise`, {
-      marketplace: data,
+      marketplace: marketplace,
+      search: searchQuery,
+      page: page,
     });
   };
 

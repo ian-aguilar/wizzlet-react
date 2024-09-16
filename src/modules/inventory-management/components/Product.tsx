@@ -51,9 +51,9 @@ const Product = ({ currentData }: { currentData: productProps[] }) => {
                 <h4 className="text-[19px] font-medium text-blackPrimary mr-10 line-clamp-1 ">
                   {item?.title}
                 </h4>
-                {item?.categories?.length > 0 ? (
+                {item.categories?.length > 0 ? (
                   <div className="Badges flex flex-wrap gap-1 text-sm ">
-                    {item?.categories.map((category) => {
+                    {item.categories.map((category) => {
                       return (
                         <div
                           key={category?.id}
