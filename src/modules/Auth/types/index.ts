@@ -20,7 +20,6 @@ export const PrivateRoutesPath = {
     profile: { view: "/setting/profile" },
     labelManager: { view: "/setting/label-manager" },
     changePassword: { view: "/setting/change-password" },
-    attribute: { view: "/setting/attribute" },
   },
   inventoryManagement: { view: "/inventory-management" },
   productForm: { view: "/product-form/:step/:productId" },
