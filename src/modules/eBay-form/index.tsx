@@ -3,6 +3,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormBuilder from "@/components/form-builder";
 import {
+  useCreateEbayProductApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
@@ -276,6 +277,8 @@ const EbayForm: React.FC = () => {
     }
   };
 
+  const { createEbayProductApi } = useCreateEbayProductApi();
+
   const onSubmit = async (payload: Payload) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
@@ -341,6 +344,8 @@ const EbayForm: React.FC = () => {
       }
     );
     console.log("🚀 ~ onSubmit ~ result:", result);
+
+    await createEbayProductApi(Number(productId));
   };
 
   useEffect(() => {
@@ -403,7 +408,8 @@ const EbayForm: React.FC = () => {
                     <button
                       type="button"
                       className="p-1 text-red-500"
-                      onClick={() => removeVariant(index)}>
+                      onClick={() => removeVariant(index)}
+                    >
                       <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                     </button>
                   )}
@@ -480,7 +486,8 @@ const EbayForm: React.FC = () => {
                   <button
                     type="button"
                     className="p-1 text-red-500"
-                    onClick={() => removeCombination(index)}>
+                    onClick={() => removeCombination(index)}
+                  >
                     <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
                   </button>
                 </div>
@@ -508,7 +515,7 @@ const EbayForm: React.FC = () => {
           />
           <Button
             showType={btnShowType.primary}
-            btnName="Save"
+            btnName="Save and list in Ebay"
             type="submit"
             btnClass="mt-6"
           />

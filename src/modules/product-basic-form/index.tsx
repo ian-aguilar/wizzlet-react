@@ -3,19 +3,11 @@ import SelectField from "@/components/form-fields/components/SelectField";
 import TextArea from "@/components/form-fields/components/TextArea";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {
-  ICombination,
-  IProductBasicForm,
-  TagOption,
-  VariantProperty,
-} from "./types";
+import { ICombination, IProductBasicForm, TagOption, VariantProperty } from "./types";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  useProductBasicFormApi,
-  useTagOptionsApi,
-} from "./services/productBasicForm.service";
+import { useProductBasicFormApi, useTagOptionsApi } from "./services/productBasicForm.service";
 import { productTypes } from "./constant";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useEditProductAPi } from "../inventory-management/services";
@@ -94,18 +86,16 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         price: apiData?.price,
         quantity: apiData?.quantity,
         sku: apiData?.sku,
-        variantProperties: apiData?.variantProperties?.map(
-          (prop: VariantProperty) => ({
-            singleSelect: {
-              label: prop?.singleSelect?.label,
-              value: prop?.singleSelect?.value,
-            },
-            multiSelect: prop?.multiSelect?.map((opt: IOption) => ({
-              label: opt.label,
-              value: opt.value,
-            })),
-          })
-        ),
+        variantProperties: apiData?.variantProperties?.map((prop: VariantProperty) => ({
+          singleSelect: {
+            label: prop?.singleSelect?.label,
+            value: prop?.singleSelect?.value,
+          },
+          multiSelect: prop?.multiSelect?.map((opt: IOption) => ({
+            label: opt.label,
+            value: opt.value,
+          })),
+        })),
         combinations: apiData?.combinations?.map((comb: ICombination) => ({
           combination: comb?.combination?.map((e: INameOption) => ({
             name: e?.name,
@@ -135,10 +125,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    console.log(
-      "🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:",
-      payload
-    );
+    console.log("🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:", payload);
     const newPayload = { ...payload, productId: productId };
     const {
       data: {
@@ -190,9 +177,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   control={control}
                   errors={errors}
                   onChange={(selectedOption) =>
-                    handleProductTypeChange(
-                      selectedOption ? selectedOption.value : ""
-                    )
+                    handleProductTypeChange(selectedOption ? selectedOption.value : "")
                   }
                 />
                 <Input

@@ -14,7 +14,7 @@ export const useEbayFormHandleApi = () => {
     data: object,
     config: AxiosRequestConfig<object> = {}
   ) => {
-    return callApi(`ebay/form`, data, config);
+    return callApi(`/ebay/form`, data, config);
   };
 
   return { ebayFormSubmitApi, isLoading, isError, isSuccess };
