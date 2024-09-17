@@ -108,6 +108,8 @@ const EbayForm: React.FC = () => {
     const { data, error } = await editProductValueApi(productId);
     if (data && !error) {
       setId(data?.data?.categoryId);
+      setCategoriesId(data?.data?.categoryId);
+      setGeneratedCombinations(data?.data?.combinations);
       reset(data?.data);
     }
   };
@@ -283,7 +285,6 @@ const EbayForm: React.FC = () => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
 
-    formData.append("categoryId", categoriesId.toString());
     if (productType === "VARIANT") {
       formData.append(
         "combinations",
@@ -330,20 +331,13 @@ const EbayForm: React.FC = () => {
       }
     });
 
-    const { data: result } = await ebayFormSubmitApi(
-      {
-        payload: formData,
-        productId: productId,
+    if (productId) {
+      const { data: result } = await ebayFormSubmitApi(formData, {
+        productId,
         categoryId: categoriesId,
-        marketplaceId: 2, //For Ebay Only
-      },
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    console.log("🚀 ~ onSubmit ~ result:", result);
+      });
+      console.log("🚀 ~ onSubmit ~ result:", result);
+    }
 
     await createEbayProductApi(Number(productId));
   };
@@ -351,6 +345,8 @@ const EbayForm: React.FC = () => {
   useEffect(() => {
     handleEditApiResponse();
   }, [reset]);
+
+  console.log(combinations, ">>>>>>>>>>>>>>>>>>>", generatedCombinations);
 
   return (
     <>
@@ -513,12 +509,19 @@ const EbayForm: React.FC = () => {
             errors={errors}
             fields={propertiesState.categorized}
           />
-          <Button
-            showType={btnShowType.primary}
-            btnName="Save and list in Ebay"
-            type="submit"
-            btnClass="mt-6"
-          />
+          <div className="flex justify-between">
+            <Button
+              showType={btnShowType.primary}
+              btnName="Save"
+              type="submit"
+              btnClass="mt-6"
+            />
+            <Button
+              showType={btnShowType.primary}
+              btnName="Save and list in Ebay"
+              btnClass="mt-6"
+            />
+          </div>
         </form>
       </div>
     </>
