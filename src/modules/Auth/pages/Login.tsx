@@ -20,6 +20,8 @@ import { setCredentials } from "@/redux/slices/authSlice";
 import { setUser } from "@/redux/slices/userSlice";
 import { btnShowType } from "@/components/form-fields/types";
 
+import Img404 from "/images/404Svg.svg";
+
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -118,6 +120,20 @@ const Login = () => {
           </p>
         </div>
       </div>
+      {/* <div className="Error404Design flex flex-col w-full justify-center items-center min-h-screen">
+        <div className="max-w-[90%] mx-auto mb-20 h-full  ">
+          <img src={Img404} alt="" />
+        </div>
+        <div className="text-center">
+          <h2 className=" text-xl md:text-4xl font-bold">
+            Sorry! This Page isn’t available{" "}
+          </h2>
+          <p className="text-grayText text-sm md:text-[19px] pt-3 pb-10">
+            The Page you were looking for couldn’t be found
+          </p>
+          <Button btnName="Back To Home" btnClass="!w-auto" />
+        </div>
+      </div> */}
     </>
   );
 };
