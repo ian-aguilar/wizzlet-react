@@ -1,7 +1,7 @@
 // ** Packages **
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
-import ReactSelect, { InputActionMeta, MultiValue } from "react-select";
+import ReactSelect from "react-select";
 
 // ** Components **
 
@@ -18,7 +18,7 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
     icon,
     getOptions,
     getOnChange,
-    defaultOptions, 
+    defaultOptions,
     isMulti = false,
     OptionComponent,
     className,
@@ -26,7 +26,7 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
     placeholder = "",
     disabled = false,
     isLoading = false,
-    defaultSelectValue, 
+    defaultSelectValue,
     isIconRight = false,
     fromGroupClass = "",
     singleValueComponent,
@@ -96,13 +96,11 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
     <div
       className={`field__wrapper ${
         errors?.message ? "field__has__error" : ""
-      } ${disabled ? "disable" : ""} ${fromGroupClass}`}
-    >
+      } ${disabled ? "disable" : ""} ${fromGroupClass}`}>
       <div
         className={`field__inner__wrapper ${icon ? "field__has__icon" : ""} ${
           isIconRight ? "icon__right" : ""
-        }`}
-      >
+        }`}>
         <ReactSelect
           name={name}
           value={value}
@@ -121,7 +119,7 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
           {...(isMulti && { defaultValue: defaultOptions })}
           onInputChange={serveSideSearch ? onInputChange : undefined}
           {...(onFocusApiCall && {
-            onFocus: () => fetchOption({ pageNo: 1}),
+            onFocus: () => fetchOption({ pageNo: 1 }),
           })}
           onChange={(selectedOption) => {
             getOnChange?.(selectedOption);

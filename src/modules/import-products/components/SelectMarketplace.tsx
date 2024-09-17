@@ -1,7 +1,6 @@
 // ** Packages **
 import Select, { StylesConfig } from "react-select";
 import { ISelectCategoryProps } from "../types";
-const customStyles: StylesConfig = {};
 export const SelectMarketplace = ({
   dropdownClass,
   placeholder,

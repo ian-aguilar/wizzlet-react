@@ -21,3 +21,13 @@ export const useGetImportedEbayProductsApi = () => {
 
   return { getImportedEbayProductsApi, isLoading, isError, isSuccess };
 };
+
+export const useImportProductsFromEbayApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const importProductsFromEbayApi = async (data: object) => {
+    return callApi(`${BASE_PATH}`, { productId: data });
+  };
+
+  return { importProductsFromEbayApi, isLoading, isError, isSuccess };
+};

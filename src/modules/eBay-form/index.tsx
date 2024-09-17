@@ -3,7 +3,6 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormBuilder from "@/components/form-builder";
 import {
-  useCreateEbayProductApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
@@ -276,7 +275,7 @@ const EbayForm: React.FC = () => {
     }
   };
 
-  const { createEbayProductApi } = useCreateEbayProductApi();
+  // const { createEbayProductApi } = useCreateEbayProductApi();
 
   const onSubmit = async (payload: Payload) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
@@ -346,6 +345,8 @@ const EbayForm: React.FC = () => {
       reset(data.data);
     });
   }, [reset]);
+
+  console.log(combinations, ">>>>>>>>>>>>>>>>>>>", generatedCombinations);
 
   return (
     <>
@@ -506,12 +507,19 @@ const EbayForm: React.FC = () => {
             errors={errors}
             fields={propertiesState.categorized}
           />
-          <Button
-            showType={btnShowType.primary}
-            btnName="Save and list in Ebay"
-            type="submit"
-            btnClass="mt-6"
-          />
+          <div className="flex justify-between">
+            <Button
+              showType={btnShowType.primary}
+              btnName="Save"
+              type="submit"
+              btnClass="mt-6"
+            />
+            <Button
+              showType={btnShowType.primary}
+              btnName="Save and list in Ebay"
+              btnClass="mt-6"
+            />
+          </div>
         </form>
       </div>
     </>
