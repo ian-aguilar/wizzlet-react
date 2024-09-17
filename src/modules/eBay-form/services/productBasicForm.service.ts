@@ -12,9 +12,20 @@ export const useEbayFormHandleApi = () => {
 
   const ebayFormSubmitApi = async (
     data: object,
-    config: AxiosRequestConfig<object> = {}
+    {
+      categoryId,
+      productId,
+    }: { categoryId: number | string; productId: number | string }
   ) => {
-    return callApi(`/ebay/form`, data, config);
+    return callApi(
+      `/ebay/form?productId=${productId}&categoryId=${categoryId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   };
 
   return { ebayFormSubmitApi, isLoading, isError, isSuccess };

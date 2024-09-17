@@ -21,11 +21,11 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
           <div>
             {item.is_imported === true ? (
               <span className="bg-[#97A0B2] text-white text-xs font-medium py-0.5 rounded-md px-1">
-                Not Imported
+                Imported
               </span>
             ) : (
               <span className="bg-[#6C778B] text-white  text-xs font-medium py-0.5 rounded-md px-1">
-                Imported
+                Not Imported
               </span>
             )}
           </div>
@@ -59,15 +59,17 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
           </div>
         </div>
       </div>
-      <div className="ml-auto  pr-8">
-        <Checkbox
-          checkLabel=""
-          isChecked={isCheck.includes(item.id)}
-          onChange={(e) => {
-            checkHandler(item, e.target.checked);
-          }}
-        />
-      </div>
+      {!item.is_imported && (
+        <div className="ml-auto  pr-8">
+          <Checkbox
+            checkLabel=""
+            isChecked={isCheck.includes(item.id)}
+            onChange={(e) => {
+              checkHandler(item, e.target.checked);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
