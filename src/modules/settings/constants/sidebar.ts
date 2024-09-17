@@ -1,5 +1,9 @@
 // ** Icons **
-import { LabelSettingIcon, SettingsIcon, SettingsPWDIcon, SettingsProfileIcon } from "@/assets/Svg";
+import {
+  LabelSettingIcon,
+  SettingsPWDIcon,
+  SettingsProfileIcon,
+} from "@/assets/Svg";
 
 // ** Types **
 import { PrivateRoutesPath } from "@/modules/Auth/types";
@@ -27,4 +31,3 @@ export const settingsNav = [
     name: SettingSidebarEnum.ChangePassword,
   },
 ];
-

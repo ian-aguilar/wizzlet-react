@@ -115,6 +115,7 @@ const MultipleImageUpload = <T extends FieldValues>(
                       onFocus={onFocus}
                       autoComplete="off"
                       disabled={disabled}
+                      accept="image/*"
                       onChange={handleFileSelect}
                       className={`cursor-pointer absolute top-0 left-0 w-full h-full z-[3] opacity-0 ${className}`}
                     />

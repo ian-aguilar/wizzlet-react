@@ -144,7 +144,7 @@ const ImportProducts = () => {
             value={selectedMarketplace}
             placeholder="Select Marketplace"
             options={markeplaces}
-            onChange={(result) => {
+            onChange={(result: IOption) => {
               setSelectedMarketplace(result as IOption);
             }}
           />
