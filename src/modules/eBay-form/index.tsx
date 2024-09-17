@@ -3,11 +3,11 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormBuilder from "@/components/form-builder";
 import {
+  useCreateEbayProductApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
   useGetCategoryApi,
-  useGetProductTypeApi,
 } from "./services/productBasicForm.service";
 import { useEffect, useState } from "react";
 import { Select } from "@/components/form-fields/components/SelectCategory";
@@ -15,7 +15,7 @@ import { CategoryOptions, ICategory } from "@/components/common/types";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
-import { Combination, Payload, PropertiesState, SelectOption } from "./types";
+import { Combination, PropertiesState, SelectOption } from "./types";
 import { useParams } from "react-router-dom";
 import SelectField from "@/components/form-fields/components/SelectField";
 import { DeleteIcon } from "@/assets/Svg";
@@ -26,11 +26,14 @@ import ImageUpload from "./component/ImageUpload";
 import { productEbayFormValidationSchema } from "./validation-schema";
 
 const EbayForm: React.FC = () => {
-  const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
-  const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { ebayFormSubmitApi } = useEbayFormHandleApi();
   const { editProductValueApi } = useEditProductValuesApi();
+  const { createEbayProductApi } = useCreateEbayProductApi();
+  const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
+  const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
+
   const { productId } = useParams();
+
   const [id, setId] = useState();
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
@@ -49,18 +52,12 @@ const EbayForm: React.FC = () => {
   const [allPropertyOptions, setAllPropertyOptions] = useState<any>({
     categorized: [],
   });
-  const { getProductTypeApi } = useGetProductTypeApi();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
     if (data && !error) {
       setCategories(data?.data);
     }
-  };
-
-  const getProductType = async () => {
-    const { data } = await getProductTypeApi(productId);
-    await handleProductTypeChange(data?.data?.productType);
   };
 
   const handleCommonField = async () => {
@@ -105,13 +102,12 @@ const EbayForm: React.FC = () => {
       return;
     }
     const { data, error } = await editProductValueApi(productId);
-    if (data && !error) {
-      return data;
+    if (!error && data?.data) {
+      return data?.data;
     }
   };
 
   useEffect(() => {
-    getProductType();
     handleCategoryOptionAPi();
     handleCommonField();
   }, []);
@@ -132,6 +128,7 @@ const EbayForm: React.FC = () => {
   } = useForm<any>({
     resolver: yupResolver(finalValidationSchema),
   });
+  console.log("🚀 ~ errors:", errors);
 
   const {
     fields: variantFields,
@@ -151,18 +148,8 @@ const EbayForm: React.FC = () => {
     name: "combinations",
   });
 
-  const handleProductTypeChange = async (value: "NORMAL" | "VARIANT") => {
-    setProductType(value);
-    if (value === "NORMAL") {
-      setValue("variantProperties", []);
-    } else {
-      setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
-    }
-  };
-
   const propertiesValues = watch("variantProperties");
   const combinations = watch("combinations");
-  console.log("🚀 ~ combinations:", combinations);
 
   // Function to handle Save Variant button click
   const handleSaveVariant = () => {
@@ -275,9 +262,7 @@ const EbayForm: React.FC = () => {
     }
   };
 
-  // const { createEbayProductApi } = useCreateEbayProductApi();
-
-  const onSubmit = async (payload: Payload) => {
+  const onSubmit = async (payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
 
@@ -285,9 +270,9 @@ const EbayForm: React.FC = () => {
       formData.append(
         "combinations",
         JSON.stringify(
-          payload.combinations.map(({ images, ...rest }) => ({
+          payload.combinations.map(({ images, ...rest }: any) => ({
             ...rest,
-            images: images?.map((image) => image.name),
+            images: images?.map((image: any) => image.name),
           }))
         )
       );
@@ -297,20 +282,30 @@ const EbayForm: React.FC = () => {
       );
 
       // Append images
-      payload?.combinations?.forEach((combination, combinationIndex) => {
-        combination?.images?.forEach((image, imageIndex) => {
-          formData.append(
-            `combinations[${combinationIndex}].images[${imageIndex}]`,
-            image
-          );
-        });
-      });
+      payload?.combinations?.forEach(
+        (combination: any, combinationIndex: any) => {
+          combination?.images?.forEach((image: any, imageIndex: any) => {
+            formData.append(
+              `combinations[${combinationIndex}].images[${imageIndex}]`,
+              image
+            );
+          });
+        }
+      );
     }
+
+    payload = Object.entries(payload).reduce((prev: any, current) => {
+      if (current[1] !== undefined && current[1] !== null) {
+        prev[current[0]] = current[1];
+      }
+      return prev;
+    }, {});
 
     // Append dynamic fields
     Object.keys(payload).forEach((key) => {
       if (key !== "combinations" && key !== "variantProperties") {
         const value = payload[key];
+        console.log("🚀 ~ Object.keys ~ value:", value, Boolean(value));
         if (Array.isArray(value)) {
           value.forEach((item, index) => {
             if (item) formData.append(`${key}[${index}]`, JSON.stringify(item));
@@ -333,20 +328,51 @@ const EbayForm: React.FC = () => {
         productId,
       });
       console.log("🚀 ~ onSubmit ~ result:", result);
-
-      // await createEbayProductApi(Number(productId));
+      await createEbayProductApi(Number(productId));
     }
   };
 
   useEffect(() => {
     handleEditApiResponse().then((data) => {
-      console.log("🚀 ~ handleEditApiResponse ~ data:", data);
-      setId(data?.data?.categoryId);
-      reset(data.data);
-    });
-  }, [reset]);
+      setId(data?.categoryId);
 
-  console.log(combinations, ">>>>>>>>>>>>>>>>>>>", generatedCombinations);
+      let temp: any = { ...data };
+      if (data?.productType === "NORMAL") {
+        temp = { ...temp, variantProperties: [] };
+      } else {
+        if (temp?.variantProperties?.length > 0) {
+          const selectedOptions = temp?.variantProperties?.map(
+            (item: {
+              singleSelect: { value: string };
+              multiSelect: SelectOption[];
+            }) => ({
+              name: item?.singleSelect?.value,
+              value: item?.multiSelect?.map(
+                (opt: { value: string }) => opt?.value
+              ),
+            })
+          );
+
+          if (selectedOptions) {
+            const combinations = generateCombinations(selectedOptions);
+            setGeneratedCombinations(combinations);
+          }
+        } else {
+          temp = {
+            ...temp,
+            variantProperties: [{ singleSelect: null, multiSelect: [] }],
+          };
+        }
+      }
+
+      setProductType(data?.productType);
+
+      // NEED TO CHECK
+      setTimeout(() => {
+        reset(temp);
+      }, 1000);
+    });
+  }, []);
 
   return (
     <>

@@ -52,17 +52,6 @@ export const useGetCategoryApi = () => {
   return { getCategoryApi, isLoading, isError, isSuccess };
 };
 
-export const useGetProductTypeApi = () => {
-  // ** custom Hooks **
-  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
-
-  const getProductTypeApi = async (id: string | undefined) => {
-    return callApi(`products/type/${id}`);
-  };
-
-  return { getProductTypeApi, isLoading, isError, isSuccess };
-};
-
 export const useCreateEbayProductApi = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
