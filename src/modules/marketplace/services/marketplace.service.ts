@@ -1,7 +1,6 @@
 import { useAxiosGet } from "@/hooks/useAxios";
 
 const AUTH_API_BASE_PATH = "/marketplace";
-
 //  ** Get All Marketplace Listing **
 export const useMarketplaceListingAPI = () => {
   // ** custom Hooks **
@@ -13,3 +12,5 @@ export const useMarketplaceListingAPI = () => {
 
   return { getMarketplaceListingAPI, isLoading, isError, isSuccess };
 };
+
+

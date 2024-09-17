@@ -1011,14 +1011,14 @@ export const RightArrowLongIcon = ({ className }: any) => {
       <path
         d="M14.9297 6.42969L20.9997 12.4997L14.9297 18.5697"
         strokeWidth="1.5"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M4 12.5H20.83"
         strokeWidth="1.5"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -1056,6 +1056,149 @@ export const PlusIcon = ({ className }: any) => {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const DownArrowIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M16.6004 7.45837L11.1671 12.8917C10.5254 13.5334 9.47539 13.5334 8.83372 12.8917L3.40039 7.45837"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const BulkImportIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M10 1.66663V6.66663L11.6667 4.99996"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.99967 6.66667L8.33301 5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5.83333 10C2.5 10 2.5 11.4917 2.5 13.3333V14.1667C2.5 16.4667 2.5 18.3333 6.66667 18.3333H13.3333C16.6667 18.3333 17.5 16.4667 17.5 14.1667V13.3333C17.5 11.4917 17.5 10 14.1667 10C13.3333 10 13.1 10.175 12.6667 10.5L11.8167 11.4C10.8333 12.45 9.16667 12.45 8.175 11.4L7.33333 10.5C6.9 10.175 6.66667 10 5.83333 10Z"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.16699 10V6.6667C4.16699 4.9917 4.16699 3.60837 6.66699 3.3667"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.833 10V6.6667C15.833 4.9917 15.833 3.60837 13.333 3.3667"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const SortIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M16.5 7.56254L11 1.83337L5.5 7.56254M5.5 14.4375L11 20.1667L16.5 14.4375"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const DownloadCSVIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+    >
+      <path
+        d="M7.5 9.16663V14.1666L9.16667 12.5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.49967 14.1667L5.83301 12.5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.3337 8.33329V12.5C18.3337 16.6666 16.667 18.3333 12.5003 18.3333H7.50033C3.33366 18.3333 1.66699 16.6666 1.66699 12.5V7.49996C1.66699 3.33329 3.33366 1.66663 7.50033 1.66663H11.667"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.3337 8.33329H15.0003C12.5003 8.33329 11.667 7.49996 11.667 4.99996V1.66663L18.3337 8.33329Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const CategoryBtnIcon = ({ className }: any) => {
+  return (
+    <svg
+      className={` ${className}`}
+      width="22"
+      height="22"
+      viewBox="0 0 22 22"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.16667 16.5H12.8333V14.6667H9.16667V16.5ZM2.75 5.5V7.33333H19.25V5.5H2.75ZM5.5 11.9167H16.5V10.0833H5.5V11.9167Z"
+        fill="#242425"
       />
     </svg>
   );

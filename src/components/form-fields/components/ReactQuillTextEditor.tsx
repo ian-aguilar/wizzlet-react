@@ -1,8 +1,14 @@
-import { ErrorMessage } from "@hookform/error-message";
-import { IReactQuillProps } from "../types";
+// ** Package **
 import { Controller, FieldValues } from "react-hook-form";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+
+// ** Custom Hook **
+import { ErrorMessage } from "@hookform/error-message";
+
+// ** Types **
+import { IReactQuillProps } from "../types";
+
 
 const ReactQuillTextEditor = <T extends FieldValues>({
   placeholder,

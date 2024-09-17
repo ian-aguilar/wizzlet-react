@@ -1,9 +1,10 @@
-import { MouseEvent, ReactNode } from "react";
+import { ChangeEventHandler, MouseEvent, ReactNode } from "react";
 import {
   Control,
   FieldErrors,
   FieldValues,
   Path,
+  UseFormClearErrors,
   UseFormRegister,
   UseFormSetValue,
   UseFormWatch,
@@ -15,6 +16,7 @@ export type IInputProps<T extends FieldValues> = {
   name: Path<T>;
   className?: string;
   inputEndIcon?: ReactNode;
+  InputLeftIcon?: ReactNode;
   control?: FormControlProp<T>;
   errors?: FieldErrors;
   placeholder?: string;
@@ -32,6 +34,7 @@ export type IDateInputProps<T extends FieldValues> = {
   placeholder?: string;
   label?: string;
   isDisabled?: boolean;
+  InputLeftIcon?: ReactNode;
 };
 
 export type IReactQuillProps<T extends FieldValues> = {
@@ -45,7 +48,7 @@ export type IReactQuillProps<T extends FieldValues> = {
   type?: string;
   autoComplete?: string;
   textLabelName?: string;
-  modules?: Object;
+  modules?: object;
   withLabel?: boolean;
   isDisabled?: boolean;
 };
@@ -117,13 +120,11 @@ export interface IOtpInputProps {
 
 export interface FilePropsType<T extends FieldValues> {
   id?: string;
-  errors: FieldErrors<T>;
+  errors: FieldErrors;
   value?: string;
   control: Control<T>;
   setValue: UseFormSetValue<T>;
-  // setValue: (name: Path<T>, attachment: any) => void;
-
-  name: any;
+  name: Path<T>;
   label: string;
   register: UseFormRegister<T>;
   maxSize?: number;
@@ -141,8 +142,7 @@ export interface FilePropsType<T extends FieldValues> {
       message: string;
     }
   ) => void;
-  clearErrors?: (name: Path<T>) => void;
-  // defaultValue?: string[];
+  clearErrors?: UseFormClearErrors<T>;
   watch: UseFormWatch<T>;
 }
 export interface inviteModalProps {
@@ -157,6 +157,30 @@ export interface errorModalProps {
   heading: string;
   subText: string;
 }
+
+export type IFilePropsType<T extends FieldValues> = {
+  id?: string;
+  errors: FieldErrors;
+  control: Control<T>;
+  setValue: UseFormSetValue<T>;
+  name: Path<T>;
+  maxSize?: number;
+  className?: string;
+  errorClass?: string;
+  disabled?: boolean;
+  allowedFormat?: string[];
+  onBlur?: React.FocusEventHandler;
+  onFocus?: React.FocusEventHandler;
+  setError?: (
+    name: Path<T>,
+    error: {
+      type: string;
+      message: string;
+    }
+  ) => void;
+  clearErrors?: UseFormClearErrors<T>;
+  watch: UseFormWatch<T>;
+};
 
 export interface warningModalProps {
   onClose: () => void;
@@ -193,7 +217,7 @@ export interface ICustomSelect<T extends FieldValues> {
   label?: string;
   labelClass?: string;
   name: Path<T>;
-  options: Option[];
+  options: Option[] | any;
   placeholder?: string;
   isCompulsory?: boolean;
   Margin?: string;
@@ -205,3 +229,11 @@ export interface ICustomSelect<T extends FieldValues> {
   className?: string;
   autoFocus?: boolean;
 }
+export type ICheckboxProps = {
+  value?: string | number | readonly string[] | undefined;
+  name?: string;
+  checkLabel?: string;
+  isChecked?: boolean;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+  mainClass?: any;
+};

@@ -3,5 +3,4 @@ export interface IVisionSection {
   description: string;
   greenButton: string;
   image: FileList | "";
-  // image: any;
 }

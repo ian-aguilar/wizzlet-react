@@ -4,8 +4,8 @@ import { FieldValues } from "react-hook-form";
 import DateInput from "../form-fields/components/DateInput";
 import { FieldsType, FieldsTypeEnum, FromBuilderPropsType } from "./types";
 
-import { InputText } from "@/modules/cms/common/InputText";
 import SelectField from "../form-fields/components/SelectField";
+import Input from "../form-fields/components/Input";
 
 const FormBuilder = <T extends FieldValues>({
   fields,
@@ -16,40 +16,47 @@ const FormBuilder = <T extends FieldValues>({
     switch (data.type) {
       case FieldsTypeEnum.DATE:
         return (
-          <DateInput
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            label={data.name}
-            placeholder=""
-          />
+          <div className="mt-2">
+            <DateInput
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              label={data.name}
+              placeholder=""
+            />
+          </div>
         );
 
       case FieldsTypeEnum.NUMBER:
       case FieldsTypeEnum.STRING:
+      case FieldsTypeEnum.DOUBLE:
         return (
-          <InputText
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            label={data.name}
-            placeholder=""
-          />
+          <div className="mt-2">
+            <Input
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              textLabelName={data.name}
+              placeholder=""
+            />
+          </div>
         );
 
       case FieldsTypeEnum.OPTIONS:
         return (
-          <SelectField<T>
-            name={data.name}
-            className=""
-            control={control}
-            errors={errors}
-            label={data.name}
-            placeholder=""
-            options={data.option || []}
-          />
+          <div className="mt-2">
+            <SelectField<T>
+              name={data.name}
+              className="mb-2"
+              control={control}
+              errors={errors}
+              label={data.name}
+              placeholder=""
+              options={data.option || []}
+            />
+          </div>
         );
 
       default:

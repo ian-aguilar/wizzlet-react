@@ -1,11 +1,11 @@
 // import { useEffect, useState } from "react";
-import {Controller, FieldValues} from "react-hook-form";
-import {ErrorMessage} from "@hookform/error-message";
+import { Controller, FieldValues, Path, PathValue } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 // ** Helper Functions and Types **
-import {FilePropsType} from "../types";
-import {checkFileFormat} from "@/utils";
-import {CameraBgIcon} from "@/assets/Svg";
-import {VITE_APP_API_URL} from "@/config";
+import { FilePropsType } from "../types";
+import { checkFileFormat } from "@/utils";
+import { CameraBgIcon } from "@/assets/Svg";
+import { VITE_APP_API_URL } from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   const {
@@ -23,11 +23,10 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     onFocus,
     setError,
     clearErrors,
-    // defaultValue = [], // Add a defaultValue prop for URLs
     watch,
   } = fieldProps;
 
-  const defaultValue: any = Array.isArray(watch(name))
+  const defaultValue: File[] | string[] = Array.isArray(watch(name))
     ? watch(name)
     : typeof watch(name) === "string" && watch(name).trim() !== ""
     ? [watch(name)]
@@ -56,7 +55,10 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       if (filteredFiles.length) {
         // console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
-        setValue(name, [...defaultValue, ...filteredFiles] as any);
+        setValue(name, [...defaultValue, ...filteredFiles] as PathValue<
+          T,
+          Path<T>
+        >);
 
         // setAttachments((prev) => [...prev, ...filteredFiles]);
       }
@@ -80,8 +82,8 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
 
   const deleteAttachment = (id: number) => {
     setValue(name, [
-      ...defaultValue.filter((_: any, index: number) => id !== index),
-    ] as any);
+      ...defaultValue.filter((_, index: number) => id !== index),
+    ] as PathValue<T, Path<T>>);
     clearErrors?.(name);
   };
 
@@ -94,7 +96,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
               <Controller
                 name={name}
                 control={control}
-                render={({field: {name: fieldName}}) => (
+                render={({ field: { name: fieldName } }) => (
                   <input
                     id={id}
                     multiple
@@ -137,7 +139,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <ErrorMessage
         errors={errors}
         name={name}
-        render={({message}) => (
+        render={({ message }) => (
           <span className={`errorText-file text-red-400 text-xs ${errorClass}`}>
             {message}
           </span>
@@ -149,7 +151,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
         } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
       >
-        {defaultValue.map((value: any, index: number) => {
+        {defaultValue.map((value, index) => {
           const isUrl = typeof value === "string";
 
           return (
@@ -185,65 +187,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
             </div>
           );
         })}
-
-        {/* {urls.map((url, index) => (
-          <div
-            className="attachments__box flex items-center mb-[10px] last:mb-0"
-            key={`url-${index}`}
-          >
-            <div className="attachments__details flex items-center">
-              <img src={url} alt={`attachment-url-${index + 1}`} className="attachment-img" />
-            </div>
-
-            <div className="attachments__details text-center ">
-              <span className="attachments__name whitespace-pre overflow-hidden  ">
-                {url.split("/").pop()}
-              </span>
-            </div>
-            <button
-              className="action__btn__SD text-[14px] w-[24px] h-[24px] p-[4px] top-[-1px] rounded-full overflow-hidden shadow-raiseShadow relative duration-300"
-              name="Delete"
-              title="Delete"
-              onClick={() => deleteAttachment(index, true)}
-            >
-              ✕
-            </button>
-          </div>
-        ))}
-
-        {attachments.map((file, index) => {
-          const fileSize = fileSizeGenerator(file.size);
-          return (
-            <div className="attachments__box flex items-center mb-[10px] last:mb-0" key={index}>
-              <div className="attachments__details flex items-center">
-                {file ? (
-                  <img
-                    src={URL.createObjectURL(file)}
-                    alt={`attachment-${index + 1}`}
-                    className="attachment-img w-auto h-full object-contain mx-auto"
-                  />
-                ) : null}
-              </div>
-
-              <div className="attachments__details    text-center ">
-                <span className="attachments__name whitespace-pre overflow-hidden text-ellipsis text-[14px] font-Biotif__Medium text-textDark">
-                  {file.name}
-                </span>
-              </div>
-              <div className="attachments__size   text-center ">
-                {`${fileSize.size} ${fileSize.sizeType}`}
-              </div>
-              <button
-                className="action__btn__SD absolute top-3 right-3 block z-10 "
-                name="Delete"
-                title="Delete"
-                onClick={() => deleteAttachment(index, false)}
-              >
-                ✕
-              </button>
-            </div>
-          );
-        })} */}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-export const Loader = ({ loaderClass }: any) => {
+export const Loader = ({ loaderClass }: {loaderClass?:string}) => {
   return (
     <div
       className={`fixed inset-0 w-full !h-screen z-[99999] backdrop-blur-sm bg-white/30 flex justify-center items-center ${loaderClass} `}

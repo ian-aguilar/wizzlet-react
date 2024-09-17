@@ -3,8 +3,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-//** Common Components **
+//** Components **
 import Button from "@/components/form-fields/components/Button";
+import { Loader } from "@/components/common/Loader";
+import ReactQuillTextEditor from "@/components/form-fields/components/ReactQuillTextEditor";
 
 //** Types **
 import { IPrivacyPolicyForm } from "./types";
@@ -12,10 +14,12 @@ import { IPrivacyPolicyForm } from "./types";
 //** Validations **
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PrivacyPolicyValidation } from "./validation-schema/PrivacyValidationSchema";
+
+//** Services ** 
 import { useCreatePrivacyAPI } from "../services/cms.service";
 import { useGetPrivacyAPI } from "@/modules/cms/services/cms.service";
-import { Loader } from "@/components/common/Loader";
-import ReactQuillTextEditor from "@/components/form-fields/components/ReactQuillTextEditor";
+
+//** Constants **
 import { modules } from "@/constants";
 
 const Privacy = () => {

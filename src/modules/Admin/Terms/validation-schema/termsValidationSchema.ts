@@ -1,3 +1,4 @@
+// ** Package **
 import * as Yup from "yup";
 
 export const termsValidation = Yup.object().shape({

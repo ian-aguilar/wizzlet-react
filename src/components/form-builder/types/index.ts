@@ -12,7 +12,7 @@ export type FromBuilderPropsType<T extends FieldValues> = {
 export type FieldsType<T extends FieldValues> = {
   type: FieldsTypeEnum;
   name: Path<T>;
-  title: string;
+  title?: string;
   required: boolean;
   option?: Option[];
 };
@@ -22,6 +22,7 @@ export enum FieldsTypeEnum {
   DATE = "DATE",
   OPTIONS = "OPTIONS",
   NUMBER = "NUMBER",
+  DOUBLE = "DOUBLE",
 }
 
 export type ValidationType = {

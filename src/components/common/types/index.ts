@@ -1,5 +1,5 @@
 import { FormControlProp } from "@/components/form-fields/types";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { FieldErrors, FieldValues, Path } from "react-hook-form";
 
 export interface ITextLabelProps<T extends FieldValues> {
@@ -28,4 +28,64 @@ export interface InputSwitchProps {
   id: number;
   status: string;
   onToggle: (id: number, status: string) => void;
+}
+
+export interface ICategory extends CategoryOptions {
+  id?: number | string;
+  name?: string;
+  children?: ICategory[];
+}
+
+export interface CategoryOptions {
+  id?: number | string;
+  label?: string;
+  options?: CategoryOptions[];
+  value?: string;
+  slug?: string;
+}
+
+export interface SelectCategoryProps {
+  options: ICategory[];
+  defaultValue?: string | number;
+  setValue?: Dispatch<SetStateAction<{ id: number | string; value: string } | undefined>>;
+  onChange?: (selectedOption: CategoryOptions) => void;
+}
+
+export interface CategoryOptionProps {
+  data: CategoryOptions[];
+  setValue: Dispatch<SetStateAction<string | undefined>>;
+  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
+  setSlug: Dispatch<SetStateAction<string | undefined>>;
+  setId: Dispatch<SetStateAction<number | string | undefined>>;
+}
+
+export interface CategoryOptGroupProps {
+  option: CategoryOptions;
+  setValue: Dispatch<SetStateAction<string | undefined>>;
+  setIsSelectOpen: Dispatch<SetStateAction<boolean>>;
+  setSlug: Dispatch<SetStateAction<string | undefined>>;
+  setId: Dispatch<SetStateAction<number | string | undefined>>;
+}
+
+export interface ISetSelectOptions {
+  options: CategoryOptions[];
+  defaultValue: {
+    value?: string;
+    slug?: string;
+    id?: string | number;
+  };
+}
+
+export interface ISearchBox {
+  value?: string | number;
+  name: string;
+  placeholder: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+export enum MARKETPLACE {
+  EBAY = "ebay",
+  AMAZON = "amazon",
 }

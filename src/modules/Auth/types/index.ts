@@ -22,6 +22,7 @@ export const PrivateRoutesPath = {
     changePassword: { view: "/setting/change-password" },
   },
   inventoryManagement: { view: "/inventory-management" },
+  productForm: { view: "/product-form/:step/:productId" },
   import: { view: "/import" },
   userManagement: { view: "/user-management" },
   marketplace: { view: "/marketplace" },
@@ -30,8 +31,8 @@ export const PrivateRoutesPath = {
     contactus: "/cms-management/contact-us",
     faq: "/cms-management/faq",
     home: "/cms-management/home",
-    terms:"/cms-management/terms",
-    privacy:"/cms-management/privacy-and-policy"
+    terms: "/cms-management/terms",
+    privacy: "/cms-management/privacy-and-policy",
   },
   contactusManagement: { view: "/contactus-management" },
 };
