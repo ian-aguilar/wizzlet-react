@@ -7,7 +7,7 @@ import Button from "@/components/form-fields/components/Button";
 
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { useSetProductMarketplaceAPI } from "./services";
+import { useGetProductMarketplaceAPI, useSetProductMarketplaceAPI } from "./services";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useParams } from "react-router-dom";
 import { VITE_APP_API_URL } from "@/config";
@@ -33,6 +33,8 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { setProductMarketplace } = useSetProductMarketplaceAPI();
+  const { getProductMarketplace } = useGetProductMarketplaceAPI();
+  
 
   // Fetch the marketplace listing
   const marketplaceListing = async () => {
@@ -42,9 +44,17 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     }
   };
 
+  const getSelectedMarketplace = async () => {
+    const {data, error} = await getProductMarketplace(productId as string)
+    if (!error && data) {
+      setSelectedMarketplaces(data?.data);
+    }
+  }
+
   useEffect(() => {
     setErrorShow(false);
     marketplaceListing();
+    getSelectedMarketplace();
   }, []);
 
   // Handle marketplace selection toggle
