@@ -8,13 +8,22 @@ const ChooseMarketplace = lazy(() => import("../choose-marketplace"));
 const EbayForm = lazy(() => import("../eBay-form"));
 
 const ProductForm: React.FC = () => {
-  const { step } = useParams<{ step: string }>();
+  const { step, productId } = useParams<{ step: string; productId: string }>();
   const navigate = useNavigate();
   const currentStep = parseInt(step || "1", 10);
 
   const isStepCompleted = (stepId: number) => stepId <= currentStep;
 
-  const handleStepChange = (newStep: number, productId?: number) => {
+  const handleStepChange = (
+    newStep: number,
+    productId: number = 0,
+    isClick: boolean = false
+  ) => {
+    if (isClick) {
+      if (newStep > currentStep) {
+        return;
+      }
+    }
     navigate(`/product-form/${newStep}/${productId}`);
   };
 
@@ -41,17 +50,23 @@ const ProductForm: React.FC = () => {
                   key={id}
                   className={`step1 relative pt-0.5  ${
                     isStepCompleted(id) ? "active" : ""
-                  }`}>
+                  }`}
+                >
                   <div
                     className={`absolute -left-[23px] z-20  border-8 rounded-full ${
                       isStepCompleted(id)
                         ? "border-greenPrimary/20"
                         : "border-grayText/20"
-                    }`}>
+                    }`}
+                  >
                     <div
-                      className={`w-7 h-7 min-w-7 rounded-full flex justify-center items-center text-white ${
+                      className={`w-7 h-7 min-w-7 rounded-full flex justify-center items-center text-white cursor-pointer ${
                         isStepCompleted(id) ? "bg-greenPrimary" : "bg-gray-400"
-                      }`}>
+                      }`}
+                      onClick={() =>
+                        handleStepChange(id, Number(productId), true)
+                      }
+                    >
                       {id}
                     </div>
                   </div>
@@ -61,7 +76,8 @@ const ProductForm: React.FC = () => {
                         ? " before:border-greenPrimary"
                         : " before:border-grayText/20"
                     } pl-10
-                min-h-[70px]`}>
+                min-h-[70px]`}
+                  >
                     <h3 className="font-medium text-xl  ">{label}</h3>
                     <p className="text-grayText text-sm font-medium">
                       {description}
