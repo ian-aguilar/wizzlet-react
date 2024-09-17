@@ -1,7 +1,7 @@
 // ** Packages **
 import { debounce } from "lodash";
 import { useEffect, useRef, useState } from "react";
-import ReactSelect, { InputActionMeta, MultiValue } from "react-select";
+import ReactSelect from "react-select";
 
 // ** Components **
 
