@@ -59,15 +59,17 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
           </div>
         </div>
       </div>
-      <div className="ml-auto  pr-8">
-        <Checkbox
-          checkLabel=""
-          isChecked={isCheck.includes(item.id)}
-          onChange={(e) => {
-            checkHandler(item, e.target.checked);
-          }}
-        />
-      </div>
+      {!item.is_imported && (
+        <div className="ml-auto  pr-8">
+          <Checkbox
+            checkLabel=""
+            isChecked={isCheck.includes(item.id)}
+            onChange={(e) => {
+              checkHandler(item, e.target.checked);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

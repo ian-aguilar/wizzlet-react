@@ -66,7 +66,13 @@ const ImportProducts = () => {
   const selectAllHandler = () => {
     setIsAllChecked(!isAllChecked);
     if (items) {
-      setIsCheck(items.map((item) => item.id));
+      const selectedItems: number[] = [];
+      items.forEach((item) => {
+        if (!item.is_imported) {
+          selectedItems.push(item.id);
+        }
+      });
+      setIsCheck(selectedItems);
     }
     if (isAllChecked) {
       setIsCheck([]);
