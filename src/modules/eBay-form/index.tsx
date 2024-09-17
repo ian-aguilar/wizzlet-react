@@ -107,8 +107,7 @@ const EbayForm: React.FC = () => {
     }
     const { data, error } = await editProductValueApi(productId);
     if (data && !error) {
-      setId(data?.data?.categoryId);
-      reset(data?.data);
+      return data;
     }
   };
 
@@ -283,14 +282,13 @@ const EbayForm: React.FC = () => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
 
-    formData.append("categoryId", categoriesId.toString());
     if (productType === "VARIANT") {
       formData.append(
         "combinations",
         JSON.stringify(
           payload.combinations.map(({ images, ...rest }) => ({
             ...rest,
-            images: images.map((image) => image.name),
+            images: images?.map((image) => image.name),
           }))
         )
       );
@@ -300,8 +298,8 @@ const EbayForm: React.FC = () => {
       );
 
       // Append images
-      payload.combinations.forEach((combination, combinationIndex) => {
-        combination.images.forEach((image, imageIndex) => {
+      payload?.combinations?.forEach((combination, combinationIndex) => {
+        combination?.images?.forEach((image, imageIndex) => {
           formData.append(
             `combinations[${combinationIndex}].images[${imageIndex}]`,
             image
@@ -337,12 +335,16 @@ const EbayForm: React.FC = () => {
       });
       console.log("🚀 ~ onSubmit ~ result:", result);
 
-      await createEbayProductApi(Number(productId));
+      // await createEbayProductApi(Number(productId));
     }
   };
 
   useEffect(() => {
-    handleEditApiResponse();
+    handleEditApiResponse().then((data) => {
+      console.log("🚀 ~ handleEditApiResponse ~ data:", data);
+      setId(data?.data?.categoryId);
+      reset(data.data);
+    });
   }, [reset]);
 
   return (
