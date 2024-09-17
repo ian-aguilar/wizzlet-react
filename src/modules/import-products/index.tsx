@@ -14,16 +14,9 @@ import Checkbox from "@/components/form-fields/components/Checkbox";
 import {
   useGetImportedEbayProductsApi,
   useImportEbayProductsApi,
+  useImportProductsFromEbayApi,
 } from "./services/importProducts.service";
-import {
-  AutoSyncIcon,
-  DownArrowIcon,
-  SearchIcon,
-  SortIcon,
-} from "@/assets/Svg";
-import { SearchBox } from "@/components/common/SearchBox";
-import Input from "@/components/form-fields/components/Input";
-import { text } from "stream/consumers";
+import { AutoSyncIcon } from "@/assets/Svg";
 
 const ImportProducts = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<IOption>();
@@ -33,6 +26,8 @@ const ImportProducts = () => {
 
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
   const { getImportedEbayProductsApi } = useGetImportedEbayProductsApi();
+  const { importProductsFromEbayApi, isLoading: importLoading } =
+    useImportProductsFromEbayApi();
 
   const importProductsHandler = async () => {
     if (selectedMarketplace) {
@@ -74,6 +69,14 @@ const ImportProducts = () => {
       setIsCheck(items.map((item) => item.id));
     }
     if (isAllChecked) {
+      setIsCheck([]);
+    }
+  };
+
+  const importProductsFromEbayHandler = async () => {
+    if (isCheck.length > 0) {
+      await importProductsFromEbayApi(isCheck);
+      await getImportProductsHandler();
       setIsCheck([]);
     }
   };
@@ -145,6 +148,14 @@ const ImportProducts = () => {
             isLoading={isLoading}
             btnClass="!w-auto"
           />
+          {isCheck.length > 0 && (
+            <Button
+              btnName={`Import ${isCheck.length} Products`}
+              onClickHandler={importProductsFromEbayHandler}
+              isLoading={importLoading}
+              btnClass="!w-auto"
+            />
+          )}
         </div>
         {/* <div className="flex gap-4 items-start pt-5">
           <div className="flex flex-col gap-2 ">
