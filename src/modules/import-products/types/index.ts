@@ -1,14 +1,13 @@
-import { SingleValue } from "react-select";
-
 export type ISelectCategoryProps = {
   isSearchable?: boolean;
   value?: IOption;
   placeholder?: string;
   dropdownName?: string;
   dropdownClass?: string;
-  options: IOption[];
-  customStyles: any;
-  onChange?: (newValue: SingleValue<IOption>) => void;
+  options?: IOption[];
+  customStyles?: any;
+  StylesConfig: any;
+  onChange?: any;
 };
 
 export type IOption = {

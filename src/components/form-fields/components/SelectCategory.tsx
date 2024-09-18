@@ -8,6 +8,7 @@ import {
   SelectCategoryProps,
 } from "@/components/common/types";
 import { DownArrowIcon } from "@/assets/Svg";
+import _ from "lodash";
 
 export const Options = ({
   data,
@@ -54,7 +55,8 @@ const OptGroup = ({
               className="  bg-red mt-[5px] flex gap-4 "
               onClick={() => {
                 setIsOpen(!isOpen);
-              }}>
+              }}
+            >
               {option.label}{" "}
               <DownArrowIcon
                 className={` transition-all duration-300  ${
@@ -83,7 +85,8 @@ const OptGroup = ({
                 setSlug(option.slug);
                 setId(option.id);
               }}
-              className=" ">
+              className=" "
+            >
               {option.label}
             </li>
           </>
@@ -170,14 +173,14 @@ export const Select = (props: SelectCategoryProps) => {
 
   useEffect(() => {
     if (options.length > 0) {
-      const newOptions = options;
+      const newOptions = _.cloneDeep(options);
       const updatedOptions = setSelectOptions(newOptions, "", defaultValue);
       setFinalOptions(updatedOptions.options);
       setNewValue(updatedOptions.defaultValue.value);
       setId(updatedOptions.defaultValue.id);
       setSlug(updatedOptions.defaultValue.slug);
     }
-  }, [options]);
+  }, [options, defaultValue]);
 
   useEffect(() => {
     if (newValue && id) {
@@ -196,7 +199,8 @@ export const Select = (props: SelectCategoryProps) => {
         className="border border-greyBorder p-3 rounded-md max h-[50px]  "
         onClick={() => {
           setIsSelectOpen(!isSelectOpen);
-        }}>
+        }}
+      >
         {newValue && slug}
         {!isSelectOpen && !newValue && `Select Value`}
       </div>
@@ -205,7 +209,8 @@ export const Select = (props: SelectCategoryProps) => {
           isSelectOpen
             ? " max-h-[500px] overflow-y-auto scroll-design border-greyBorder border rounded-md mt-1"
             : ""
-        }`}>
+        }`}
+      >
         {isSelectOpen && finalOptions && (
           <Options
             data={finalOptions}

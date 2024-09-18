@@ -1,4 +1,4 @@
-import { useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 
 const PATH = "/product";
 
@@ -12,4 +12,16 @@ export const useSetProductMarketplaceAPI = () => {
   };
 
   return { setProductMarketplace, isLoading, isError, isSuccess };
+};
+
+export const useGetProductMarketplaceAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getProductMarketplace = async (productId: string) => {
+    return callApi(`${PATH}/getProductMarketplace`, {
+      params: { productId: productId },
+    });
+  };
+
+  return { getProductMarketplace, isLoading, isError, isSuccess };
 };

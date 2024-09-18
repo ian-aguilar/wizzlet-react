@@ -3,12 +3,19 @@ import SelectField from "@/components/form-fields/components/SelectField";
 import TextArea from "@/components/form-fields/components/TextArea";
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { ICombination, IProductBasicForm, TagOption, VariantProperty } from "./types";
+import {
+  ICombination,
+  IProductBasicForm,
+  TagOption,
+  VariantProperty,
+} from "./types";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { productBasisFormValidationSchema } from "./validation-schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useProductBasicFormApi, useTagOptionsApi } from "./services/productBasicForm.service";
-import { productTypes } from "./constant";
+import {
+  useProductBasicFormApi,
+  useTagOptionsApi,
+} from "./services/productBasicForm.service";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useEditProductAPi } from "../inventory-management/services";
 import { useParams } from "react-router-dom";
@@ -37,7 +44,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     defaultValues: {
       title: "",
       description: "",
-      productType: "",
+      // productType: "",
       tagOptions: [],
       image: null,
       price: undefined,
@@ -48,6 +55,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     },
   });
 
+  console.log("🚀 ~ errors:", errors);
   const tagOptionApi = async () => {
     try {
       const { data, error } = await getTagOptionsApi();
@@ -86,16 +94,18 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         price: apiData?.price,
         quantity: apiData?.quantity,
         sku: apiData?.sku,
-        variantProperties: apiData?.variantProperties?.map((prop: VariantProperty) => ({
-          singleSelect: {
-            label: prop?.singleSelect?.label,
-            value: prop?.singleSelect?.value,
-          },
-          multiSelect: prop?.multiSelect?.map((opt: IOption) => ({
-            label: opt.label,
-            value: opt.value,
-          })),
-        })),
+        variantProperties: apiData?.variantProperties?.map(
+          (prop: VariantProperty) => ({
+            singleSelect: {
+              label: prop?.singleSelect?.label,
+              value: prop?.singleSelect?.value,
+            },
+            multiSelect: prop?.multiSelect?.map((opt: IOption) => ({
+              label: opt.label,
+              value: opt.value,
+            })),
+          })
+        ),
         combinations: apiData?.combinations?.map((comb: ICombination) => ({
           combination: comb?.combination?.map((e: INameOption) => ({
             name: e?.name,
@@ -115,18 +125,29 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     tagOptionApi();
   }, [productType]);
 
-  const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
-    setProductType(value);
-    if (value === "NORMAL") {
-      setValue("variantProperties", []);
-    } else {
-      setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
-    }
-  };
+  // const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
+  //   setProductType(value);
+  //   if (value === "NORMAL") {
+  //     setValue("variantProperties", []);
+  //   } else {
+  //     setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
+  //   }
+  // };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    console.log("🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:", payload);
-    const newPayload = { ...payload, productId: productId };
+    console.log(
+      "🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:",
+      payload
+    );
+
+    const newPayload = {
+      ...payload,
+      productId: productId,
+      productType: {
+        label: "Normal",
+        value: "NORMAL",
+      },
+    };
     const {
       data: {
         data: { productId: createProductId },
@@ -169,7 +190,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           <div className="border-l border-r border-b mb-2 rounded-b-md">
             <div className="grid grid-cols-12 w-full p-4">
               <div className="col-span-12   ">
-                <SelectField
+                {/* <SelectField
                   className="mb-3"
                   label="Product Type"
                   options={productTypes}
@@ -177,9 +198,11 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                   control={control}
                   errors={errors}
                   onChange={(selectedOption) =>
-                    handleProductTypeChange(selectedOption ? selectedOption.value : "")
+                    handleProductTypeChange(
+                      selectedOption ? selectedOption.value : ""
+                    )
                   }
-                />
+                /> */}
                 <Input
                   textLabelName="Title"
                   placeholder="Enter Title"
