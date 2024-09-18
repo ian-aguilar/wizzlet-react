@@ -16,7 +16,10 @@ export interface IPaginationProps {
   pageNeighbors: number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (event: React.MouseEvent<HTMLElement, MouseEvent>, page: number | string) => void;
+  onPageChanged: (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    page: number | string
+  ) => void;
 }
 
 export interface IDropDown {
@@ -39,6 +42,11 @@ export type Option = {
 export type IOption = {
   label: string;
   value: string | number;
+};
+
+export type ClearOption = {
+  label: string;
+  value: string;
 };
 
 export type INameOption = {
