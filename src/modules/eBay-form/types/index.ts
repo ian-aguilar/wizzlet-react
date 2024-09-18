@@ -1,5 +1,7 @@
 import { FieldsTypeEnum } from "@/components/form-builder/types";
+import { variantOptionType } from "@/modules/product-basic-form/types";
 import { IUserModel } from "@/modules/user-management/types";
+import { Dispatch, SetStateAction } from "react";
 import { FieldValues } from "react-hook-form";
 import {
   Control,
@@ -49,6 +51,7 @@ export type InputData = {
 export type SelectOption = {
   label: string;
   value: string;
+  name?: string;
 };
 
 export type SelectData = {
@@ -102,6 +105,7 @@ export interface ImageCombinations {
 }
 
 interface VariantProperty {
+  id: number | string;
   singleSelect: {
     label: string;
     value: string;
@@ -116,4 +120,30 @@ export interface Payload {
   combinations: Combination[];
   variantProperties: VariantProperty[];
   [key: string]: any; // Allows dynamic fields
+}
+
+export interface FormValues {
+  attributeOptions: {
+    option: string;
+    files: FileList | null;
+  }[];
+}
+
+export interface VariantImageProps {
+  control: Control<any>;
+  errors: FieldErrors<any>;
+  setError: UseFormSetError<any>;
+  clearErrors: UseFormClearErrors<any>;
+  setValue: UseFormSetValue<any>;
+  watch: any;
+  categoriesId: string | number;
+  productType: string;
+  propertyOptions: SelectOption[] | any;
+  allPropertyOptions: SelectOption[];
+  allOptions: { [key: string]: string[] };
+  setPropertiesState: Dispatch<
+    SetStateAction<{ categorized: []; nullCategory: [] }> | any
+  >;
+  setGeneratedCombinations: Dispatch<SetStateAction<variantOptionType>>;
+  generatedCombinations: variantOptionType;
 }
