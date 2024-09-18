@@ -225,7 +225,8 @@ const Variation: React.FC<VariantImageProps> = ({
                 <button
                   type="button"
                   className="p-1 text-red-500"
-                  onClick={() => removeVariant(index)}>
+                  onClick={() => removeVariant(index)}
+                >
                   <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                 </button>
               )}
@@ -254,13 +255,18 @@ const Variation: React.FC<VariantImageProps> = ({
       )}
 
       {productType === "VARIANT" && generatedCombinations?.length > 0 && (
-        <div className="mt-6">
+        <div className="mt-6 mb-6">
           {combinations?.length > 0 ? (
-            <h3 className="font-bold text-lg">Generated Combinations:</h3>
+            <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
+              Generated Combinations:
+            </h2>
           ) : null}
           {combinationFields.map((item: any, index) => (
-            <div key={item.id} className="flex items-start gap-2 my-2">
-              <div className="min-w-[100px] mt-9 ">
+            <div
+              key={item.id}
+              className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md "
+            >
+              <div className="min-w-[180px] mt-9 ">
                 {item?.combination
                   ?.map((e: { value: string }) => e.value)
                   .join(", ")}
@@ -302,7 +308,8 @@ const Variation: React.FC<VariantImageProps> = ({
               <button
                 type="button"
                 className="p-1 text-red-500"
-                onClick={() => removeCombination(index)}>
+                onClick={() => removeCombination(index)}
+              >
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
             </div>
@@ -311,7 +318,7 @@ const Variation: React.FC<VariantImageProps> = ({
             <Button
               btnName=" Add Combination"
               type="button"
-              btnClass=" !w-auto  p-2  text-white  rounded-md"
+              btnClass=" !w-auto  p-2 mt-4 text-white  rounded-md"
               onClickHandler={handleAddCombination}
             />
           ) : null}
@@ -319,50 +326,65 @@ const Variation: React.FC<VariantImageProps> = ({
       )}
 
       {productType === "VARIANT" && generatedCombinations?.length > 0 && (
-        <div>
-          <h1 className="text-center mt-2">Variant Images</h1>
-          <SelectField
-            className="mb-3"
-            label="Variant Property"
-            options={
-              propertiesValues?.map((e: VariantProperty) => e.singleSelect) ||
-              []
-            }
-            name="variant"
-            control={control}
-            errors={errors}
-            onChange={(selectedOption) =>
-              handleOptionChange(selectedOption ? selectedOption.value : "")
-            }
-          />
-          {selectedOption.map((item, index) => (
-            <div className="flex" key={index}>
-              <div
-                onClick={() => setImageIndex(item.value)}
-                className={`mr-2 cursor-pointer p-2 border rounded ${
-                  imageIndex === item.value
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-200"
-                }`}>
-                {item.value}
+        <>
+          <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
+            Variant Images
+          </h2>
+          <div className=" py-3 px-5 border-l border-r border-b  mb-6 rounded-b-md ">
+            <div className="grid grid-cols-12 gap-4 ">
+              <div className="col-span-3">
+                <SelectField
+                  className="mb-3"
+                  label="Variant Property"
+                  options={
+                    propertiesValues?.map(
+                      (e: VariantProperty) => e.singleSelect
+                    ) || []
+                  }
+                  name="variant"
+                  control={control}
+                  errors={errors}
+                  onChange={(selectedOption) =>
+                    handleOptionChange(
+                      selectedOption ? selectedOption.value : ""
+                    )
+                  }
+                />
+                {selectedOption.map((item, index) => (
+                  <div className="flex" key={index}>
+                    <div
+                      onClick={() => setImageIndex(item.value)}
+                      className={`mr-2 mb-2 cursor-pointer p-2 border rounded ${
+                        imageIndex === item.value
+                          ? "bg-greenPrimary text-white"
+                          : "bg-gray-200"
+                      }`}
+                    >
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="col-span-9">
+                <h4> Select Photos </h4>
+                {imageIndex && (
+                  <MultipleImageUpload
+                    name={`variantimage.${imageIndex}.images`}
+                    control={control}
+                    setError={setError}
+                    clearErrors={clearErrors}
+                    errors={errors}
+                    maxSize={8}
+                    allowedFormat={["image/png", "image/jpeg"]}
+                    setValue={setValue}
+                    watch={watch}
+                    className=""
+                  />
+                )}
               </div>
             </div>
-          ))}
-          {imageIndex && (
-            <MultipleImageUpload
-              name={`variantimage.${imageIndex}.images`}
-              control={control}
-              setError={setError}
-              clearErrors={clearErrors}
-              errors={errors}
-              maxSize={8}
-              allowedFormat={["image/png", "image/jpeg"]}
-              setValue={setValue}
-              watch={watch}
-              className=""
-            />
-          )}
-        </div>
+          </div>
+        </>
       )}
     </>
   );

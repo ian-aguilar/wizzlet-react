@@ -185,7 +185,7 @@ const MultipleImageUpload = <T extends FieldValues>(
                 <DeleteIcon className="text-redAlert" />
               </button>
               <div className="attachments__details absolute left-0 -top-6   ">
-                <span className="attachments__name  mb-1 !line-clamp-1 block">
+                <span className="attachments__name  mb-1 !line-clamp-1 block break-all">
                   {isUrl ? value.split("/").pop() : (value as File).name}
                 </span>
               </div>
