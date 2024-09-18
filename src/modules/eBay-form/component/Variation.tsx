@@ -35,7 +35,6 @@ const Variation: React.FC<VariantImageProps> = ({
   //** STATE **//
   const [selectedOption, setSelectedOption] = useState<ClearOption[]>([]);
   const [imageIndex, setImageIndex] = useState<string>("");
-  const [variantImages, setVariantImages] = useState<Record<string, any>>({});
 
   const {
     fields: variantFields,
@@ -179,21 +178,6 @@ const Variation: React.FC<VariantImageProps> = ({
     } else {
       setSelectedOption([]);
     }
-  };
-
-  // Updated handler for image upload
-  const handleImageUpload = (property: string, value: string, images: File) => {
-    const newVariantImage = {
-      property,
-      value,
-      images,
-    };
-
-    // Update the state for the selected variant property with its images
-    setVariantImages((prevState) => ({
-      ...prevState,
-      [value]: newVariantImage, // key by value (like "Beige") for each variant option
-    }));
   };
 
   return (
@@ -376,15 +360,6 @@ const Variation: React.FC<VariantImageProps> = ({
               setValue={setValue}
               watch={watch}
               className=""
-              onChange={(images: File) =>
-                handleImageUpload(
-                  propertiesValues?.find(
-                    (e: VariantProperty) => e.singleSelect.value === imageIndex
-                  )?.singleSelect?.value,
-                  imageIndex,
-                  images
-                )
-              }
             />
           )}
         </div>
