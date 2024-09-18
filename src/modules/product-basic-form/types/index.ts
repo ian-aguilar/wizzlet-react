@@ -3,7 +3,7 @@ import { FieldArrayWithId, FieldErrors } from "react-hook-form";
 export interface IProductBasicForm {
   title: string;
   description: string;
-  // productType: { label: string; value: string } | any;
+  productType: { label: string; value: string } | any;
   image: any;
   sku?: string;
   quantity?: number;

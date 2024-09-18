@@ -117,3 +117,20 @@ export interface Payload {
   variantProperties: VariantProperty[];
   [key: string]: any; // Allows dynamic fields
 }
+
+export interface FormValues {
+  attributeOptions: {
+    option: string;
+    files: FileList | null;
+  }[];
+}
+
+export interface VariantImageProps {
+  control: Control<any>;
+  errors: FieldErrors<any>;
+  propertiesValues: VariantProperty[];
+  setError: (name: string, error: { type: string; message?: string }) => void;
+  clearErrors: (name?: string | string[]) => void;
+  setValue: SetValue<any>;
+  watch: any;
+}

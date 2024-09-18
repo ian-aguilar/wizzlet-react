@@ -24,6 +24,7 @@ import { ICombination, variantOptionType } from "../product-basic-form/types";
 import Input from "@/components/form-fields/components/Input";
 import ImageUpload from "./component/ImageUpload";
 import { productEbayFormValidationSchema } from "./validation-schema";
+import VariantImage from "./component/VariantImage";
 
 const EbayForm: React.FC = () => {
   const { ebayFormSubmitApi } = useEbayFormHandleApi();
@@ -322,14 +323,14 @@ const EbayForm: React.FC = () => {
       }
     });
 
-    if (productId) {
-      const { data: result } = await ebayFormSubmitApi(formData, {
-        categoryId: categoriesId,
-        productId,
-      });
-      console.log("🚀 ~ onSubmit ~ result:", result);
-      await createEbayProductApi(Number(productId));
-    }
+    // if (productId) {
+    //   const { data: result } = await ebayFormSubmitApi(formData, {
+    //     categoryId: categoriesId,
+    //     productId,
+    //   });
+    //   console.log("🚀 ~ onSubmit ~ result:", result);
+    //   await createEbayProductApi(Number(productId));
+    // }
   };
 
   useEffect(() => {
@@ -521,6 +522,18 @@ const EbayForm: React.FC = () => {
                 />
               ) : null}
             </div>
+          )}
+
+          {productType === "VARIANT" && (
+            <VariantImage
+              control={control}
+              errors={errors}
+              propertiesValues={propertiesValues}
+              setError={setError}
+              clearErrors={clearErrors}
+              setValue={setValue}
+              watch={watch}
+            />
           )}
 
           <FormBuilder
