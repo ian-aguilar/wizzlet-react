@@ -106,7 +106,8 @@ const EbayForm: React.FC = () => {
 
   useEffect(() => {
     handleCategoryOptionAPi();
-    handleCommonField();
+    // handleCommonField();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const validation = getValidation(propertiesState.nullCategory);
@@ -158,19 +159,19 @@ const EbayForm: React.FC = () => {
         }
       );
 
-      if (payload?.variantimage?.data?.some((e: any) => e.images.length > 0)) {
-        formData.append(
-          "variantimage[property]",
-          payload?.variantimage?.property
-        );
+      // if (payload?.variantimage?.data?.some((e: any) => e.images.length > 0)) {
+      formData.append(
+        "variantimage[property]",
+        payload?.variantimage?.property
+      );
 
-        payload?.variantimage?.data?.forEach((item: any, index: number) => {
-          formData.append(`variantimage[data][${index}][value]`, item.value);
-          item?.images?.forEach((image: any) => {
-            formData.append(`variantimage[data][${index}][images]`, image);
-          });
+      payload?.variantimage?.data?.forEach((item: any, index: number) => {
+        formData.append(`variantimage[data][${index}][value]`, item.value);
+        item?.images?.forEach((image: any) => {
+          formData.append(`variantimage[data][${index}][images]`, image);
         });
-      }
+      });
+      // }
     }
 
     payload = Object.entries(payload).reduce((prev: any, current) => {
@@ -206,7 +207,7 @@ const EbayForm: React.FC = () => {
         categoryId: categoriesId,
         productId,
       });
-      // console.log("🚀 ~ onSubmit ~ result:", result);
+      console.log("🚀 ~ onSubmit ~ result:", result);
       // await createEbayProductApi(Number(productId));
     }
   };

@@ -1,6 +1,5 @@
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import SelectField from "@/components/form-fields/components/SelectField";
-import { ClearOption } from "@/modules/inventory-management/types";
 import { VariantProperty } from "@/modules/product-basic-form/types";
 import React, { useState } from "react";
 import {
@@ -13,7 +12,6 @@ import Button from "@/components/form-fields/components/Button";
 import { DeleteIcon } from "@/assets/Svg";
 import { useFieldArray } from "react-hook-form";
 import { generateCombinations } from "../helper";
-import ImageUpload from "./ImageUpload";
 import Input from "@/components/form-fields/components/Input";
 
 const Variation: React.FC<VariantImageProps> = ({
@@ -32,7 +30,6 @@ const Variation: React.FC<VariantImageProps> = ({
   generatedCombinations,
 }) => {
   //** STATE **//
-  const [selectedOption, setSelectedOption] = useState<ClearOption[]>([]);
   const [imageIndex, setImageIndex] = useState(0);
 
   const {
@@ -54,6 +51,8 @@ const Variation: React.FC<VariantImageProps> = ({
     name: "combinations",
   });
   const combinations = watch("combinations");
+
+  const variantImage = watch("variantimage");
 
   const handlePropertyOnChange = (index: number) => {
     if (propertiesValues[index].multiSelect) {
@@ -87,7 +86,6 @@ const Variation: React.FC<VariantImageProps> = ({
 
   const handleOptionOnChange = () => {
     setValue("combinations", []);
-    setSelectedOption([]);
     setImageIndex(0);
     setGeneratedCombinations([]);
   };
@@ -171,8 +169,6 @@ const Variation: React.FC<VariantImageProps> = ({
       (item: VariantProperty) => item.singleSelect.value === option
     );
     if (result) {
-      setSelectedOption(result.multiSelect);
-
       setValue("variantimage", {
         property: option || "",
         data: result.multiSelect.map((e: any) => ({
@@ -180,8 +176,6 @@ const Variation: React.FC<VariantImageProps> = ({
           images: [],
         })),
       });
-    } else {
-      setSelectedOption([]);
     }
   };
 
@@ -230,8 +224,7 @@ const Variation: React.FC<VariantImageProps> = ({
                 <button
                   type="button"
                   className="p-1 text-red-500"
-                  onClick={() => removeVariant(index)}
-                >
+                  onClick={() => removeVariant(index)}>
                   <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                 </button>
               )}
@@ -293,21 +286,11 @@ const Variation: React.FC<VariantImageProps> = ({
                 control={control}
                 errors={errors}
               />
-              <ImageUpload
-                name={`combinations.${index}.images`}
-                watch={watch}
-                control={control}
-                setError={setError}
-                clearErrors={clearErrors}
-                errors={errors}
-                setValue={setValue}
-              />
 
               <button
                 type="button"
                 className="p-1 text-red-500"
-                onClick={() => removeCombination(index)}
-              >
+                onClick={() => removeCombination(index)}>
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
             </div>
@@ -340,7 +323,7 @@ const Variation: React.FC<VariantImageProps> = ({
               handleOptionChange(selectedOption ? selectedOption.value : "");
             }}
           />
-          {selectedOption.map((item, index) => (
+          {variantImage?.data?.map((item: { value: string }, index: number) => (
             <div className="flex" key={index}>
               <div
                 onClick={() => setImageIndex(index)}
@@ -348,13 +331,12 @@ const Variation: React.FC<VariantImageProps> = ({
                   imageIndex === index
                     ? "bg-blue-500 text-white"
                     : "bg-gray-200"
-                }`}
-              >
+                }`}>
                 {item.value}
               </div>
             </div>
           ))}
-          {selectedOption.length > 0 && (
+          {variantImage?.data?.length > 0 && (
             <MultipleImageUpload
               name={`variantimage.data.${imageIndex}.images`}
               control={control}

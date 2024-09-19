@@ -80,7 +80,6 @@ export interface Combination {
     name: string;
     value: string;
   }>;
-  images: Array<File>; // Assuming images are File objects
 }
 
 export interface IImageUpload {
