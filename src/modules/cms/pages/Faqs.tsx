@@ -1,27 +1,27 @@
 // ** Packages **
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ** Types **
-import {IForm} from "@/modules/Admin/Faq/types";
-import {btnShowType} from "@/components/form-fields/types";
-import {RoutesPath} from "@/modules/Auth/types";
+import { IForm } from "@/modules/Admin/Faq/types";
+import { btnShowType } from "@/components/form-fields/types";
+import { RoutesPath } from "@/modules/Auth/types";
 
 // **common components
 import Button from "@/components/form-fields/components/Button";
-import {Loader} from "@/components/common/Loader";
+import { Loader } from "@/components/common/Loader";
 
 // ** Services **
-import {usefetchFaqAPI} from "../../Admin/Faq/services/faq.service";
+import { usefetchFaqAPI } from "../../Admin/Faq/services/faq.service";
 
 const Faqs = () => {
   const [faqData, setFaqData] = useState<IForm>();
 
   const navigate = useNavigate();
 
-  const {getFaqAPI, isLoading} = usefetchFaqAPI();
+  const { getFaqAPI, isLoading } = usefetchFaqAPI();
   const getFaqData = async () => {
-    const {data, error} = await getFaqAPI();
+    const { data, error } = await getFaqAPI();
     if (!error && data) {
       setFaqData(data.data);
     }
@@ -89,7 +89,7 @@ const Faqs = () => {
           </section>
         </>
       ) : (
-        <Loader />
+        <Loader loaderClass="!h-[calc(100vh-103px)] !top-[103px] " />
       )}
     </>
   );

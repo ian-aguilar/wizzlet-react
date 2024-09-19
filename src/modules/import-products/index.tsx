@@ -132,11 +132,15 @@ const ImportProducts = () => {
                 boxSizing: "border-box",
                 borderRadius: "5px",
                 boxShadow: "none",
-                color: "#fff",
+                color: "#fff ",
               }),
               valueContainer: (base: any) => ({
                 ...base,
                 paddingLeft: "0px",
+                color: "#fff",
+              }),
+              placeholder: (base) => ({
+                ...base,
                 color: "#fff",
               }),
             }}
@@ -152,14 +156,14 @@ const ImportProducts = () => {
             btnName={"Sync All Products"}
             onClickHandler={importProductsHandler}
             isLoading={isLoading}
-            btnClass="!w-auto"
+            btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
           />
           {isCheck.length > 0 && (
             <Button
               btnName={`Import ${isCheck.length} Products`}
               onClickHandler={importProductsFromEbayHandler}
               isLoading={importLoading}
-              btnClass="!w-auto"
+              btnClass="!w-auto !ml-auto "
             />
           )}
         </div>
@@ -237,7 +241,7 @@ const ImportProducts = () => {
                 StylesConfig={{
                   singleValue: (base: any) => ({
                     ...base,
-                    color: "#ddd",
+                    color: "#fff",
                     fontSize: "16px",
                     lineHeight: "18px",
                   }),
