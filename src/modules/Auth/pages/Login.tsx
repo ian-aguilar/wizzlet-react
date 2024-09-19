@@ -91,8 +91,7 @@ const Login = () => {
             <div className="flex gap-2 justify-center items-center">
               <Link
                 className="my-4 cursor-pointer text-greenPrimary bg-transparent p-0 border-none font-normal text-base leading-4 hover:underline hover:underline-offset-2  duration-300 transition-all"
-                to={RoutesPath.ForgotPassword}
-              >
+                to={RoutesPath.ForgotPassword}>
                 Forgot Password?
               </Link>
             </div>
@@ -111,13 +110,26 @@ const Login = () => {
             Don’t have an account yet?{" "}
             <Link
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
-              to={RoutesPath.SignUp}
-            >
+              to={RoutesPath.SignUp}>
               Signup
             </Link>
           </p>
         </div>
       </div>
+      {/* <div className="Error404Design flex flex-col w-full justify-center items-center min-h-screen">
+        <div className="max-w-[90%] mx-auto mb-20 h-full  ">
+          <img src={Img404} alt="" />
+        </div>
+        <div className="text-center">
+          <h2 className=" text-xl md:text-4xl font-bold">
+            Sorry! This Page isn’t available{" "}
+          </h2>
+          <p className="text-grayText text-sm md:text-[19px] pt-3 pb-10">
+            The Page you were looking for couldn’t be found
+          </p>
+          <Button btnName="Back To Home" btnClass="!w-auto" />
+        </div>
+      </div> */}
     </>
   );
 };

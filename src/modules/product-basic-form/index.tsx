@@ -148,6 +148,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         value: "NORMAL",
       },
     };
+
     const {
       data: {
         data: { productId: createProductId },

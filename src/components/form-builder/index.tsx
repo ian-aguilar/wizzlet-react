@@ -16,7 +16,7 @@ const FormBuilder = <T extends FieldValues>({
     switch (data.type) {
       case FieldsTypeEnum.DATE:
         return (
-          <div className="mt-2">
+          <div className="py-1">
             <DateInput
               name={data.name}
               className="mb-2"
@@ -32,7 +32,7 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.STRING:
       case FieldsTypeEnum.DOUBLE:
         return (
-          <div className="mt-2">
+          <div className="py-1">
             <Input
               name={data.name}
               className="mb-2"
@@ -46,7 +46,7 @@ const FormBuilder = <T extends FieldValues>({
 
       case FieldsTypeEnum.OPTIONS:
         return (
-          <div className="mt-2">
+          <div className="py-1">
             <SelectField<T>
               name={data.name}
               className="mb-2"

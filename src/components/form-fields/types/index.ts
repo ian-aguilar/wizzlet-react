@@ -171,6 +171,7 @@ export type IFilePropsType<T extends FieldValues> = {
   allowedFormat?: string[];
   onBlur?: React.FocusEventHandler;
   onFocus?: React.FocusEventHandler;
+  onChange?: any;
   setError?: (
     name: Path<T>,
     error: {
@@ -178,7 +179,7 @@ export type IFilePropsType<T extends FieldValues> = {
       message: string;
     }
   ) => void;
-  clearErrors?: UseFormClearErrors<T>;
+  clearErrors?: UseFormClearErrors<T> | any;
   watch: UseFormWatch<T>;
 };
 
