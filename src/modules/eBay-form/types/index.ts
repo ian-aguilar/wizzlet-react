@@ -137,7 +137,6 @@ export interface VariantImageProps {
   setValue: UseFormSetValue<any>;
   watch: any;
   categoriesId: string | number;
-  productType: string;
   propertyOptions: SelectOption[] | any;
   allPropertyOptions: SelectOption[];
   allOptions: { [key: string]: string[] };
