@@ -106,7 +106,7 @@ const EbayForm: React.FC = () => {
 
   useEffect(() => {
     handleCategoryOptionAPi();
-    // handleCommonField();
+    handleCommonField();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -256,7 +256,7 @@ const EbayForm: React.FC = () => {
 
   return (
     <>
-      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
+      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design  ">
         {fieldsLoading || optionsLoading ? (
           <Loader loaderClass=" !fixed " />
         ) : null}
@@ -300,12 +300,12 @@ const EbayForm: React.FC = () => {
               showType={btnShowType.primary}
               btnName="Save"
               type="submit"
-              btnClass="mt-6"
+              btnClass="mt-6 !text-base"
             />
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Ebay"
-              btnClass="mt-6"
+              btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
             />
           </div>
         </form>
