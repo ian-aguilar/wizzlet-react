@@ -139,7 +139,7 @@ const ImportProducts = () => {
                 paddingLeft: "0px",
                 color: "#fff",
               }),
-              placeholder: (base) => ({
+              placeholder: (base: any) => ({
                 ...base,
                 color: "#fff",
               }),

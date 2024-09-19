@@ -128,7 +128,7 @@ const EbayForm: React.FC = () => {
   });
   console.log("🚀 ~ errors:", errors);
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
 
@@ -208,7 +208,10 @@ const EbayForm: React.FC = () => {
         productId,
       });
       console.log("🚀 ~ onSubmit ~ result:", result);
-      // await createEbayProductApi(Number(productId));
+
+      if (type === "SaveInEbay") {
+        await createEbayProductApi(Number(productId));
+      }
     }
   };
 
@@ -260,7 +263,7 @@ const EbayForm: React.FC = () => {
         {fieldsLoading || optionsLoading ? (
           <Loader loaderClass=" !fixed " />
         ) : null}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit.bind(this, "Save"))}>
           <Select
             options={categories}
             defaultValue={id}
@@ -306,6 +309,10 @@ const EbayForm: React.FC = () => {
               showType={btnShowType.primary}
               btnName="Save and list in Ebay"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
+              type="button"
+              onClickHandler={() =>
+                handleSubmit(onSubmit.bind(this, "SaveInEbay"))()
+              }
             />
           </div>
         </form>
