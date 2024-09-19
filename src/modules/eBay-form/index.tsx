@@ -107,6 +107,7 @@ const EbayForm: React.FC = () => {
   useEffect(() => {
     handleCategoryOptionAPi();
     handleCommonField();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const validation = getValidation(propertiesState.nullCategory);
@@ -157,6 +158,20 @@ const EbayForm: React.FC = () => {
           });
         }
       );
+
+      // if (payload?.variantimage?.data?.some((e: any) => e.images.length > 0)) {
+      formData.append(
+        "variantimage[property]",
+        payload?.variantimage?.property
+      );
+
+      payload?.variantimage?.data?.forEach((item: any, index: number) => {
+        formData.append(`variantimage[data][${index}][value]`, item.value);
+        item?.images?.forEach((image: any) => {
+          formData.append(`variantimage[data][${index}][images]`, image);
+        });
+      });
+      // }
     }
 
     payload = Object.entries(payload).reduce((prev: any, current) => {
@@ -193,7 +208,7 @@ const EbayForm: React.FC = () => {
         productId,
       });
       console.log("🚀 ~ onSubmit ~ result:", result);
-      await createEbayProductApi(Number(productId));
+      // await createEbayProductApi(Number(productId));
     }
   };
 
@@ -241,7 +256,7 @@ const EbayForm: React.FC = () => {
 
   return (
     <>
-      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
+      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design  ">
         {fieldsLoading || optionsLoading ? (
           <Loader loaderClass=" !fixed " />
         ) : null}
@@ -261,7 +276,6 @@ const EbayForm: React.FC = () => {
               setValue={setValue}
               watch={watch}
               categoriesId={categoriesId}
-              productType={productType}
               allPropertyOptions={allPropertyOptions}
               propertyOptions={propertyOptions}
               allOptions={allOptions}
@@ -286,12 +300,12 @@ const EbayForm: React.FC = () => {
               showType={btnShowType.primary}
               btnName="Save"
               type="submit"
-              btnClass="mt-6"
+              btnClass="mt-6 !text-base"
             />
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Ebay"
-              btnClass="mt-6"
+              btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
             />
           </div>
         </form>

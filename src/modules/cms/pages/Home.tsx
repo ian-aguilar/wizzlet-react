@@ -69,7 +69,7 @@ const CMSHome = () => {
             <div className="container">
               <div className="grid grid-cols-12 md:gap-x-4 gap-y-4  ">
                 {homeData.topSection.feature.map((data, i) => {
-                  let index = i;
+                  const index = i;
                   return (
                     <div
                       className={`col-span-12 bg-grayLightBody/10  rounded-2xl flex flex-col ${
@@ -144,7 +144,7 @@ const CMSHome = () => {
           </section>
         </>
       ) : (
-        <Loader />
+        <Loader loaderClass="!h-[calc(100vh-103px)] !top-[103px] " />
       )}
     </>
   );

@@ -80,7 +80,6 @@ export interface Combination {
     name: string;
     value: string;
   }>;
-  images: Array<File>; // Assuming images are File objects
 }
 
 export interface IImageUpload {
@@ -137,7 +136,6 @@ export interface VariantImageProps {
   setValue: UseFormSetValue<any>;
   watch: any;
   categoriesId: string | number;
-  productType: string;
   propertyOptions: SelectOption[] | any;
   allPropertyOptions: SelectOption[];
   allOptions: { [key: string]: string[] };
