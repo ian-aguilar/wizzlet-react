@@ -3,13 +3,13 @@ import * as yup from "yup";
 export const productBasisFormValidationSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
   description: yup.string().required("Description is required"),
-  productType: yup
-    .object()
-    .shape({
-      value: yup.string().required(),
-      label: yup.string().required(),
-    })
-    .required("Product Type is required"),
+  // productType: yup
+  //   .object()
+  //   .shape({
+  //     value: yup.string().required(),
+  //     label: yup.string().required(),
+  //   })
+  //   .required("Product Type is required"),
   image: yup.mixed().required("Image is required"),
   tagOptions: yup
     .array()
