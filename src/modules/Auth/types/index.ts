@@ -18,7 +18,7 @@ export const PrivateRoutesPath = {
   setting: {
     view: "/setting",
     profile: { view: "/setting/profile" },
-    labelManager: { view: "/setting/label-manager" },
+    labelManager: { view: "/setting/label-manager", viewLabel : { view:"/setting/label-manager/view-label/:labelId"} },
     changePassword: { view: "/setting/change-password" },
   },
   inventoryManagement: { view: "/inventory-management" },
