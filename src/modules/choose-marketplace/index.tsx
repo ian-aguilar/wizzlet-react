@@ -7,9 +7,12 @@ import Button from "@/components/form-fields/components/Button";
 
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { useGetProductMarketplaceAPI, useSetProductMarketplaceAPI } from "./services";
+import {
+  useGetProductMarketplaceAPI,
+  useSetProductMarketplaceAPI,
+} from "./services";
 import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { VITE_APP_API_URL } from "@/config";
 
 // ** Types **
@@ -29,12 +32,12 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     notConnectedMarketplace: [],
   });
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { setProductMarketplace } = useSetProductMarketplaceAPI();
   const { getProductMarketplace } = useGetProductMarketplaceAPI();
-  
 
   // Fetch the marketplace listing
   const marketplaceListing = async () => {
@@ -45,11 +48,11 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   };
 
   const getSelectedMarketplace = async () => {
-    const {data, error} = await getProductMarketplace(productId as string)
+    const { data, error } = await getProductMarketplace(productId as string);
     if (!error && data) {
       setSelectedMarketplaces(data?.data);
     }
-  }
+  };
 
   useEffect(() => {
     setErrorShow(false);
@@ -96,7 +99,8 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           marketplace.connectedMarketplace.map((item) => (
             <div
               key={item.id}
-              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  ">
+              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  "
+            >
               <img
                 src={VITE_APP_API_URL + item.logo}
                 className="max-w-[77px] h-[23px] object-contain "
@@ -127,7 +131,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
         <Button
           btnName="Back"
           btnClass="!w-auto !px-6 border !border-black/20 bg-white !text-grayText !rounded-md "
-          onClickHandler={handleSubmit}
+          onClickHandler={() => {
+            navigate(`/product-form/1/${productId}`);
+          }}
         />
         <Button
           btnName="Save & Next"
@@ -144,7 +150,8 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
               return (
                 <div
                   key={item.id}
-                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center">
+                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center"
+                >
                   <img
                     src={VITE_APP_API_URL + item.logo}
                     className="max-w-[77px] h-[23px] object-contain mx-auto"
