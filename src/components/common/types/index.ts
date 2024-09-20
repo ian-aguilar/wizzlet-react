@@ -89,3 +89,13 @@ export enum MARKETPLACE {
   EBAY = "ebay",
   AMAZON = "amazon",
 }
+
+
+export interface IInputBox {
+  type:string;
+  value?: string | number | Date;
+  name: string;
+  placeholder: string;
+  className?: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}

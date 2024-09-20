@@ -11,6 +11,7 @@ import { Loader } from "@/components/common/Loader";
 const ChangePassword = React.lazy(() => import("./pages/ChangePassword"));
 const LabelManager = React.lazy(() => import("./pages/LabelManager"));
 const Profile = React.lazy(() => import("./pages/Profile"));
+const LabelView = React.lazy(() => import("./pages/LabelView"));
 
 const applySuspense = (routes: RouteObjType[]): RouteObjType[] => {
   return routes.map((route) => ({
@@ -41,5 +42,9 @@ export const SettingRoutes = applySuspense([
   {
     path: PrivateRoutesPath.setting.changePassword.view,
     element: <ChangePassword />,
+  },
+  {
+    path: PrivateRoutesPath.setting.labelManager.viewLabel.view,
+    element: <LabelView />,
   },
 ]);

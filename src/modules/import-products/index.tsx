@@ -17,6 +17,7 @@ import {
   useImportProductsFromEbayApi,
 } from "./services/importProducts.service";
 import { AutoSyncIcon } from "@/assets/Svg";
+import { DataNotFound } from "@/components/svgIcons";
 
 const ImportProducts = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<IOption>();
@@ -278,7 +279,7 @@ const ImportProducts = () => {
           </div>
           <div className="max-h-[calc(100vh_-_500px)] overflow-y-auto scroll-design ">
             {items &&
-              items.length > 0 &&
+              items.length > 0 ? 
               items.map((item) => {
                 return (
                   <ItemCard
@@ -288,7 +289,11 @@ const ImportProducts = () => {
                     key={item.id}
                   />
                 );
-              })}
+              }) : 
+              <div className="justify-center flex">
+                <DataNotFound />
+              </div>
+              }
           </div>
         </div>
       </div>

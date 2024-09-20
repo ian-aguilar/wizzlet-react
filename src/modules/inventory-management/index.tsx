@@ -34,11 +34,11 @@ import { useGetCategoriesAPI, useProductListingAPI } from "./services";
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { btnShowType } from "@/components/form-fields/types";
-import {
-  E_PRODUCT_STATUS,
-  Option,
-  productProps,
-} from "./types";
+import { E_PRODUCT_STATUS, Option, productProps } from "./types";
+
+// Top corner filter
+// import { FilterBox } from "./components/FilterBox";
+// import { InputBox } from "@/components/common/InputBox";
 
 const InventoryManagement = () => {
   // ** States **
@@ -46,6 +46,11 @@ const InventoryManagement = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
+  // const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
+  //   undefined
+  // );
+  // const [filterDate, setFilterDate] = useState<Date>();
   const [productStatus, setProductStatus] = useState<string>(
     E_PRODUCT_STATUS.active
   );
@@ -66,30 +71,41 @@ const InventoryManagement = () => {
   }>({
     products: [],
   });
-  
+
   const navigate = useNavigate();
 
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
-  const { getCategoriesAPI, isLoading: categoryLoading } = useGetCategoriesAPI();
-  const { getProductsDetailsAPI } = useProductListingAPI();
+  const { getCategoriesAPI, isLoading: categoryLoading } =
+    useGetCategoriesAPI();
+  const { getProductsDetailsAPI, isLoading: productListLoading } =
+    useProductListingAPI();
 
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
-      setSelectedMarketplace(data?.data.connectedMarketplace.map((item: IMarketplace) => item.id));
+      setSelectedMarketplace(
+        data?.data.connectedMarketplace.map((item: IMarketplace) => item.id)
+      );
     }
   };
+
   useEffect(() => {
     marketplaceListing();
   }, []);
 
   // ** Function for list products by API
-  const getProductsDetails = async (search: string = "", marketplace: number[] = []) => {
+  const getProductsDetails = async (
+    search: string = searchTerm,
+    marketplace: number[] = [],
+    status: string = "",
+    page: number = Number(currentPage),
+    limit: number = Number(itemPerPage.value)
+  ) => {
     const { data, error } = await getProductsDetailsAPI({
-      productStatus: productStatus,
+      productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
         marketplace: marketplace.length ? marketplace : selectedMarketplace,
       },
@@ -97,8 +113,8 @@ const InventoryManagement = () => {
         categories: category?.length ? category.map((item) => item.label) : [],
       },
       search: search,
-      currentPage: currentPage,
-      itemPerPage: itemPerPage.value,
+      currentPage: page,
+      itemPerPage: limit,
     });
     if (!error && data) {
       setProducts(data?.data);
@@ -108,11 +124,19 @@ const InventoryManagement = () => {
 
   // ** Page change event function
   const onPageChanged = useCallback(
-    (event: MouseEvent<HTMLElement, globalThis.MouseEvent>, page: number | string) => {
-      event.preventDefault();
-      setCurrentPage(page);
+    (selectedItem: { selected: number }): void => {
+      const newPage = selectedItem.selected + 1;
+      console.log("selectedItem.selected: ", newPage);
+      setCurrentPage(newPage);
+      getProductsDetails(
+        searchTerm,
+        selectedMarketplace,
+        productStatus,
+        newPage,
+        Number(itemPerPage.value)
+      );
     },
-    [setCurrentPage, setItemPerPage]
+    [searchTerm, selectedMarketplace, productStatus, itemPerPage.value]
   );
 
   // ** Categories fetch **
@@ -134,46 +158,95 @@ const InventoryManagement = () => {
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
-      const newSelectedMarket = selectedMarketplace.filter((market) => market !== id);
+      const newSelectedMarket = selectedMarketplace.filter(
+        (market) => market !== id
+      );
       setSelectedMarketplace(newSelectedMarket);
     }
   };
 
   // ** handle product status **
   const handleProductStatus = (item: E_PRODUCT_STATUS) => {
+    setCurrentPage(1);
     setProductStatus(item);
   };
 
   // ** search box with debouncing **
-  const request = debounce((value, selectedMarketplace) => {
-    getProductsDetails(value, selectedMarketplace);
-  }, 500);
+  const request = debounce(
+    (value, selectedMarketplace, status, page, itemPerPage) => {
+      setCurrentPage(1);
+      getProductsDetails(value, selectedMarketplace, status, page, itemPerPage);
+    },
+    500
+  );
 
   const debounceRequest = useCallback(
-    (value: string, selectedMarketplace: number[]) => request(value, selectedMarketplace),
-    []
+    (value: string, selectedMarketplace: number[], status: string) =>
+      request(value, selectedMarketplace, status, 1, itemPerPage.value),
+    [itemPerPage]
   );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
-    debounceRequest(event.currentTarget.value.trim(), selectedMarketplace);
+    debounceRequest(
+      event.currentTarget.value.trim(),
+      selectedMarketplace,
+      productStatus
+    );
   };
 
   useEffect(() => {
-    getProductsDetails();
+    getProductsDetails(searchTerm, selectedMarketplace, productStatus, Number(currentPage), Number(itemPerPage.value));
   }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
 
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Inventory Management</h2>
+        <h2 className="text-blackPrimary font-bold text-3xl pb-2">
+          Inventory Management
+        </h2>
         <div className="flex gap-2">
-          <Button
-            btnName="Filters"
-            showType={btnShowType.primary}
-            btnClass="!text-base bg-white  "
-            BtnIconLeft={<CategoryBtnIcon />}
-          />
+          <div>
+            <Button
+              onClickHandler={() => setIsFilterBoxOpen(!isFilterBoxOpen)}
+              btnName="Filters"
+              showType={btnShowType.primary}
+              btnClass="!text-base bg-white "
+              BtnIconLeft={<CategoryBtnIcon />}
+            />
+            {/* Top corner filter  */}
+            {/*
+            <div className="relative ">
+              <FilterBox label="FILTER BY" isOpen={isFilterBoxOpen}>
+                <DropDown
+                  value={currentFilter}
+                  onChange={(e) => {
+                    if (e) {
+                      setCurrentFilter(e);
+                    }
+                  }}
+                  isSearchable={false}
+                  dropdownClass="!font-medium hover:border-blackPrimary/20 bg-slate-300 text-black min-w-80 !text-base"
+                  options={[{ id: 1, name: "Date Created" }]}
+                />
+                {currentFilter?.value === "Date Created" ? (
+                  <div>
+                    <InputBox
+                      type="date"
+                      name="dateCreated"
+                      onChange={(e) => {
+                        setFilterDate(e.currentTarget.value as unknown as Date);
+                      }}
+                      value={filterDate}
+                      placeholder="Select date"
+                    />
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </FilterBox>
+            </div> */}
+          </div>
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
@@ -190,28 +263,32 @@ const InventoryManagement = () => {
               SELECT Your Marketplace
             </span>
             <div className="flex gap-2">
-              {marketplace.connectedMarketplace.map((item) => {
-                return (
-                  <Button
-                    key={item.id}
-                    btnName={item.name}
-                    showType={btnShowType.primary}
-                    onClickHandler={() => handleMarketplace(item.id)}
-                    btnClass={`!rounded-full capitalize ${
-                      selectedMarketplace.includes(item.id)
-                        ? `!bg-black text-white`
-                        : `border !text-grayText hover:!text-white`
-                    } !text-lg  !px-4 !py-1 !w-auto hover:!bg-greenPrimary`}
-                    BtnIconLeft={
-                      selectedMarketplace.includes(item.id) ? (
-                        <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
-                      ) : (
-                        <></>
-                      )
-                    }
-                  />
-                );
-              })}
+              {marketplace.connectedMarketplace.length > 0 ? (
+                marketplace.connectedMarketplace.map((item) => {
+                  return (
+                    <Button
+                      key={item.id}
+                      btnName={item.name}
+                      showType={btnShowType.primary}
+                      onClickHandler={() => handleMarketplace(item.id)}
+                      btnClass={`!rounded-full capitalize ${
+                        selectedMarketplace.includes(item.id)
+                          ? `!bg-black text-white`
+                          : `border !text-grayText hover:!text-white`
+                      } !text-lg  !px-4 !py-1 !w-auto hover:!bg-greenPrimary`}
+                      BtnIconLeft={
+                        selectedMarketplace.includes(item.id) ? (
+                          <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
+                        ) : (
+                          <></>
+                        )
+                      }
+                    />
+                  );
+                })
+              ) : (
+                <p>No marketplaces connected</p>
+              )}
             </div>
           </div>
           <div className="RightItems flex gap-4 items-center">
@@ -234,7 +311,7 @@ const InventoryManagement = () => {
           </div>
         </div>
       </section>
-      <section className=" w-full bg-white p-5 mb-5 ">
+      <section className=" w-full bg-white p-4 mb-5 ">
         <div className="TopTabsBtns flex justify-between items-center gap-4 flex-wrap ">
           <div className="TopLEftTabs flex">
             {status.map((item) => {
@@ -311,7 +388,9 @@ const InventoryManagement = () => {
           <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
             <div className="flex gap-5 items-center ">
               <h3 className="text-[26px] font-medium ">
-                {productStatus === E_PRODUCT_STATUS.active ? `Active Items` : `Draft Items`}
+                {productStatus === E_PRODUCT_STATUS.active
+                  ? `Active Items`
+                  : `Draft Items`}
               </h3>
               <Checkbox checkLabel="Check All" />
             </div>
@@ -330,10 +409,16 @@ const InventoryManagement = () => {
                     { id: 5, name: "100" },
                   ]}
                   onChange={(e) => {
-                    setSearchTerm("");
                     setCurrentPage(1);
                     if (e) {
                       setItemPerPage(e);
+                      getProductsDetails(
+                        searchTerm,
+                        selectedMarketplace,
+                        productStatus,
+                        1,
+                        Number(e.value)
+                      );
                     }
                   }}
                 />
@@ -348,21 +433,23 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div>
-            <Product currentData={products.products} />
+            <Product
+              isLoading={productListLoading}
+              currentData={products.products}
+            />
           </div>
         </div>
-        <div className="flex-row">
+        <div className="flex justify-end pt-2">
           {totalItem ? (
             <Pagination
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={2}
               pageLimit={Number(itemPerPage.value)}
-              pageNeighbors={2}
               currentPage={currentPage}
               totalRecords={Number(totalItem)}
               onPageChanged={onPageChanged}
             />
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
       </section>
     </div>
