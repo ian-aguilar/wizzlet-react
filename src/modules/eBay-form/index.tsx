@@ -110,7 +110,10 @@ const EbayForm: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const validation = getValidation(propertiesState.nullCategory);
+  const validation = getValidation([
+    ...propertiesState.nullCategory,
+    ...propertiesState.categorized,
+  ]);
   const finalValidationSchema =
     productEbayFormValidationSchema.concat(validation);
 
