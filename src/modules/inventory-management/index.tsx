@@ -1,5 +1,5 @@
 // ** Packages **
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 
@@ -196,7 +196,13 @@ const InventoryManagement = () => {
   };
 
   useEffect(() => {
-    getProductsDetails(searchTerm, selectedMarketplace, productStatus, Number(currentPage), Number(itemPerPage.value));
+    getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      Number(currentPage),
+      Number(itemPerPage.value)
+    );
   }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
 
   return (
