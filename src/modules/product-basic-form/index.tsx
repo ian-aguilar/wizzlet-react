@@ -44,7 +44,10 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     defaultValues: {
       title: "",
       description: "",
-      // productType: "",
+      productType: {
+        label: "Normal",
+        value: "NORMAL",
+      },
       tagOptions: [],
       image: null,
       price: undefined,

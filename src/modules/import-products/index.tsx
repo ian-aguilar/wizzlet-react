@@ -25,6 +25,8 @@ const ImportProducts = () => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [isCheck, setIsCheck] = useState<number[]>([]);
 
+  const [sync, setSync] = useState(false);
+
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
   const { getImportedEbayProductsApi } = useGetImportedEbayProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -35,6 +37,7 @@ const ImportProducts = () => {
       switch (selectedMarketplace.value) {
         case MARKETPLACE.EBAY: {
           await importEbayProductsApi();
+          setSync((prev) => !prev);
           break;
         }
       }
@@ -62,7 +65,7 @@ const ImportProducts = () => {
 
   useEffect(() => {
     getImportProductsHandler();
-  }, [selectedMarketplace]);
+  }, [selectedMarketplace, sync]);
 
   const selectAllHandler = () => {
     setIsAllChecked(!isAllChecked);
@@ -140,7 +143,7 @@ const ImportProducts = () => {
                 paddingLeft: "0px",
                 color: "#fff",
               }),
-              placeholder: (base) => ({
+              placeholder: (base: any) => ({
                 ...base,
                 color: "#fff",
               }),

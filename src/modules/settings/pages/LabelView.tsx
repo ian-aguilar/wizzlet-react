@@ -35,12 +35,16 @@ const LabelView = () => {
   const { labelId } = useParams();
   const navigate = useNavigate();
 
-  const getLabelProducts = async (search: string = "") => {
+  const getLabelProducts = async (
+    search: string = "",
+    page: number = Number(currentPage),
+    limit: number = Number(itemPerPage.value)
+  ) => {
     const { data, error } = await getLabelProductListingAPI({
       labelId: labelId,
       search: search,
-      currentPage: currentPage,
-      itemPerPage: itemPerPage.value,
+      currentPage: page,
+      itemPerPage: limit,
     });
     console.log("data: ", data?.data);
     if (data && !error) {
@@ -51,17 +55,25 @@ const LabelView = () => {
   };
 
   // ** Page change event function
-  const onPageChanged = (selectedItem: { selected: number }): void => {
-    console.log("selectedItem.selected: ", selectedItem.selected + 1);
-    setCurrentPage(selectedItem.selected + 1);
-  };
-
+  const onPageChanged = useCallback(
+    (selectedItem: { selected: number }): void => {
+      const newPage = selectedItem.selected + 1;
+      console.log("selectedItem.selected: ", newPage);
+      setCurrentPage(newPage);
+      getLabelProducts(searchTerm, newPage, Number(itemPerPage.value));
+    },
+    [searchTerm, Number(itemPerPage.value)]
+  );
   // ** search box with debouncing **
-  const request = debounce((value) => {
-    getLabelProducts(value);
+  const request = debounce((value, page, itemPerPage) => {
+    setCurrentPage(1);
+    getLabelProducts(value, page, itemPerPage);
   }, 500);
 
-  const debounceRequest = useCallback((value: string) => request(value), []);
+  const debounceRequest = useCallback(
+    (value: string) => request(value, 1, itemPerPage.value),
+    [itemPerPage]
+  );
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
@@ -69,7 +81,11 @@ const LabelView = () => {
   };
 
   useEffect(() => {
-    getLabelProducts();
+    getLabelProducts(
+      searchTerm,
+      Number(currentPage),
+      Number(itemPerPage.value)
+    );
   }, [itemPerPage, currentPage]);
 
   return (
@@ -108,11 +124,12 @@ const LabelView = () => {
             Show
             <DropDown
               dropdownName="Limit"
+              isSearchable={false}
               value={itemPerPage}
               dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
               options={[
                 { id: 1, name: "1" },
-                { id: 2, name: "20" },
+                { id: 2, name: "2" },
                 { id: 3, name: "25" },
                 { id: 4, name: "50" },
                 { id: 5, name: "100" },
@@ -122,6 +139,11 @@ const LabelView = () => {
                 setCurrentPage(1);
                 if (e) {
                   setItemPerPage(e);
+                  getLabelProducts(
+                    searchTerm,
+                    Number(currentPage),
+                    Number(e.value)
+                  );
                 }
               }}
             />
