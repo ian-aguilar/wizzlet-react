@@ -42,7 +42,7 @@ const LabelItems = ({
                     {item?.images !== undefined || null ? (
                       <div className="prodImg">
                         <img
-                          src={`${VITE_APP_API_URL}${item?.images?.PictureURL}`}
+                          src={`${VITE_APP_API_URL}${item?.images}`}
                           className="max-w-[170px] max-h-[132px] "
                           alt=""
                         />

@@ -128,8 +128,8 @@ const LabelView = () => {
               value={itemPerPage}
               dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
               options={[
-                { id: 1, name: "1" },
-                { id: 2, name: "2" },
+                { id: 1, name: "10" },
+                { id: 2, name: "20" },
                 { id: 3, name: "25" },
                 { id: 4, name: "50" },
                 { id: 5, name: "100" },
