@@ -175,7 +175,7 @@ const AboutUs = () => {
           </section>
         </>
       ) : (
-        <Loader />
+        <Loader loaderClass="!h-[calc(100vh-103px)] !top-[103px] " />
       )}
     </>
   );

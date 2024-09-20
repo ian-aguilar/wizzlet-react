@@ -42,6 +42,11 @@ export type IOption = {
   value: string | number;
 };
 
+export type ClearOption = {
+  label: string;
+  value: string;
+};
+
 export type INameOption = {
   name: string;
   value: string | number;
