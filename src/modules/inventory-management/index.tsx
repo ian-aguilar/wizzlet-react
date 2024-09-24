@@ -1,5 +1,5 @@
 // ** Packages **
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 
@@ -102,15 +102,19 @@ const InventoryManagement = () => {
     marketplace: number[] = [],
     status: string = "",
     page: number = Number(currentPage),
-    limit: number = Number(itemPerPage.value)
+    limit: number = Number(itemPerPage.value),
+    categoryName: Option[] | undefined = category
   ) => {
+    const categoryLabels = categoryName?.map((item) => item.label) || undefined;
+    
+    console.log('categoryLabels: ', categoryLabels);
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
         marketplace: marketplace.length ? marketplace : selectedMarketplace,
       },
       category: {
-        categories: category?.length ? category.map((item) => item.label) : [],
+        categories: categoryLabels,
       },
       search: search,
       currentPage: page,
@@ -126,17 +130,23 @@ const InventoryManagement = () => {
   const onPageChanged = useCallback(
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
-      console.log("selectedItem.selected: ", newPage);
       setCurrentPage(newPage);
       getProductsDetails(
         searchTerm,
         selectedMarketplace,
         productStatus,
         newPage,
-        Number(itemPerPage.value)
+        Number(itemPerPage.value),
+        category
       );
     },
-    [searchTerm, selectedMarketplace, productStatus, itemPerPage.value]
+    [
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      itemPerPage.value,
+      category,
+    ]
   );
 
   // ** Categories fetch **
@@ -154,7 +164,6 @@ const InventoryManagement = () => {
   // ** Handle filter market places **
   const handleMarketplace = (id: number) => {
     setCurrentPage(1);
-    setCategory(undefined);
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
@@ -173,16 +182,35 @@ const InventoryManagement = () => {
 
   // ** search box with debouncing **
   const request = debounce(
-    (value, selectedMarketplace, status, page, itemPerPage) => {
+    (value, selectedMarketplace, status, page, itemPerPage, category) => {
       setCurrentPage(1);
-      getProductsDetails(value, selectedMarketplace, status, page, itemPerPage);
+      getProductsDetails(
+        value,
+        selectedMarketplace,
+        status,
+        page,
+        itemPerPage,
+        category
+      );
     },
     500
   );
 
   const debounceRequest = useCallback(
-    (value: string, selectedMarketplace: number[], status: string) =>
-      request(value, selectedMarketplace, status, 1, itemPerPage.value),
+    (
+      value: string,
+      selectedMarketplace: number[],
+      status: string,
+      category: Option[] | undefined
+    ) =>
+      request(
+        value,
+        selectedMarketplace,
+        status,
+        1,
+        itemPerPage.value,
+        category
+      ),
     [itemPerPage]
   );
 
@@ -191,12 +219,20 @@ const InventoryManagement = () => {
     debounceRequest(
       event.currentTarget.value.trim(),
       selectedMarketplace,
-      productStatus
+      productStatus,
+      category
     );
   };
 
   useEffect(() => {
-    getProductsDetails(searchTerm, selectedMarketplace, productStatus, Number(currentPage), Number(itemPerPage.value));
+    getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      Number(currentPage),
+      Number(itemPerPage.value),
+      category
+    );
   }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
 
   return (
@@ -250,7 +286,9 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate("/product-form/1/0")}
+            onClickHandler={() =>
+              navigate("/inventory-management/product-form/1/0")
+            }
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -366,16 +404,27 @@ const InventoryManagement = () => {
               name="Categories select box"
               serveSideSearch={true}
               getOnChange={(e) => {
-                setSearchTerm("");
                 setCurrentPage(1);
+                if(!e.length){
+                  setCategory(undefined);
+                  return;
+                }
                 if (e) {
                   setCategory(e);
+                  getProductsDetails(
+                    searchTerm,
+                    selectedMarketplace,
+                    productStatus,
+                    1,
+                    Number(itemPerPage.value),
+                    category
+                  );
                 }
               }}
               isLoading={categoryLoading}
               isMulti={true}
               isSearchable={true}
-              notClearable={false}
+              notClearable={true}
               getOptions={getCategories}
               value={category !== undefined || null ? category : undefined}
               className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
@@ -417,7 +466,8 @@ const InventoryManagement = () => {
                         selectedMarketplace,
                         productStatus,
                         1,
-                        Number(e.value)
+                        Number(e.value),
+                        category
                       );
                     }
                   }}
