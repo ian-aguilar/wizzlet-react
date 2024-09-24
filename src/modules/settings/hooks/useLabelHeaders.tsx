@@ -7,8 +7,10 @@ import { IUseLabelHeadersProps } from "../types/label";
 
 // ** Icons **
 import { DeleteIcon, EyeIconSettings } from "@/assets/Svg";
+import { useNavigate } from "react-router-dom";
 
 const useLabelHeaders = ({ onDelete }: IUseLabelHeadersProps) => {
+  const navigate = useNavigate();
   const columns: TableColumn<Label>[] = [
     {
       name: "Name",
@@ -19,6 +21,7 @@ const useLabelHeaders = ({ onDelete }: IUseLabelHeadersProps) => {
     {
       name: "Items with the label",
       selector: () => "0",
+      cell: (row: Label) => <div className="text-gray-500 font-jost font-medium text-lg m-4">{row.productTagCount}</div>,
       sortable: false,
     },
     {
@@ -27,7 +30,7 @@ const useLabelHeaders = ({ onDelete }: IUseLabelHeadersProps) => {
         <div className="flex">
           <div className="mr-16">
             <button
-              onClick={() => console.log(`View Clicked Id <><><> ${row?.id}`)}
+              onClick={() => { navigate(`/setting/label-manager/view-label/${row?.id}`) }}
             >
               <EyeIconSettings className="text-greenPrimary hover:brightness-125 " />
             </button>

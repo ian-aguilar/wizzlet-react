@@ -37,3 +37,15 @@ export const useDeleteLabelDataAPI = () => {
 
   return { deleteLabelAPI, isLoading, isError, isSuccess };
 };
+
+export const useFetchLabelProductDataAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getLabelProductListingAPI = async (data: object) => {
+    return callApi(`${AUTH_API_BASE_PATH}/label-product/list`, {
+      params: data,
+    });
+  };
+
+  return { getLabelProductListingAPI, isLoading, isError, isSuccess };
+};

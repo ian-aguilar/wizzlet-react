@@ -69,6 +69,7 @@ const FormBuilder = <T extends FieldValues>({
               label={data.title !== null ? data.title : data.name}
               placeholder=""
               options={data.option || []}
+              isClearable={true}
             />
           </div>
         );

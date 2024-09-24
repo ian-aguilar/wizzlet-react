@@ -13,13 +13,11 @@ import {
 
 export interface IPaginationProps {
   pageLimit: number;
-  pageNeighbors: number;
+  pageRangeDisplayed?: number;
+  marginPagesDisplayed?:number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-    page: number | string
-  ) => void;
+  onPageChanged: (selectedItem: { selected: number }) => void;
 }
 
 export interface IDropDown {
@@ -217,3 +215,9 @@ export type AsyncSelectGetOptionsType = {
   search?: string;
   page?: number;
 };
+
+export type FilterBoxProps = {
+  label?:string;
+  isOpen?:boolean;
+  children?: ReactNode
+}

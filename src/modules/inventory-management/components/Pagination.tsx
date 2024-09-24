@@ -1,136 +1,45 @@
 // ** Packages **
-import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 
 // ** Types **
 import { IPaginationProps } from "../types";
+import { LeftArrowIcon } from "@/assets/Svg";
 
-const LEFT_PAGE = "LEFT";
-const RIGHT_PAGE = "RIGHT";
-const range = (from: number, to: number, step = 1): (number | string)[] => {
-  let i = from;
-  const range: (number | string)[] = [];
-  while (i <= to) {
-    range.push(i);
-    i += step;
-  }
-  return range;
-};
 export const Pagination = ({
   totalRecords,
   pageLimit,
-  pageNeighbors,
+  pageRangeDisplayed = 3,
+  marginPagesDisplayed = 2,
   onPageChanged,
   currentPage,
 }: IPaginationProps) => {
-  const [totalPages, setTotalPages] = useState(0);
-  useEffect(() => {
-    setTotalPages(Math.ceil(totalRecords / pageLimit));
-  }, [setTotalPages, pageLimit, totalRecords]);
-  const fetchPageNumbers = () => {
-    const totalNumbers = pageNeighbors * 2 + 1;
-    const totalBlocks = totalNumbers + 2;
-
-    if (totalPages > totalBlocks) {
-      const startPage = Math.max(2, Number(currentPage) - pageNeighbors);
-      const endPage = Math.min(totalPages - 1, Number(currentPage) + pageNeighbors);
-
-      let pages = range(startPage, endPage);
-
-      const hasLeftSpill = startPage > 2;
-      const hasRightSpill = totalPages - endPage > 1;
-      const spillOffset = totalNumbers - (pages.length + 1);
-
-      switch (true) {
-        case hasLeftSpill && !hasRightSpill: {
-          const extraPages = range(startPage - spillOffset, startPage - 1);
-          pages = [LEFT_PAGE, ...extraPages, ...pages];
-          break;
-        }
-        case !hasLeftSpill && hasRightSpill: {
-          pages = [...pages, RIGHT_PAGE];
-          break;
-        }
-        case hasLeftSpill && hasRightSpill:
-        default: {
-          pages = [LEFT_PAGE, ...pages, RIGHT_PAGE];
-          break;
-        }
-      }
-      return [1, ...pages, totalPages];
-    }
-    return range(1, totalPages);
-  };
-  const pages = fetchPageNumbers() || [];
   return (
-    <div className="my-4">
-      <nav>
-        <ul className="flex">
-          {pages.map((page, index) => {
-            if (page === LEFT_PAGE)
-              return (
-                <li
-                  key={index}
-                  aria-hidden="true"
-                  onClick={(e) => onPageChanged(e, Number(currentPage) - 1)}
-                  className="cursor-pointer p-2 border border-1"
-                >
-                  <span>&lt; Prev</span>
-                </li>
-              );
-
-            if (page === RIGHT_PAGE)
-              return (
-                <li
-                  key={index}
-                  aria-hidden="true"
-                  onClick={(e) => onPageChanged(e, Number(currentPage) + 1)}
-                  className="cursor-pointer p-2 border border-1"
-                >
-                  <span>Next &gt;</span>
-                </li>
-              );
-
-            return (
-              <>
-                {page === totalPages && page !== 1 ? (
-                  <li
-                    key={index+totalRecords+1}
-                    aria-hidden="true"
-                    onClick={(e) => onPageChanged(e, page)}
-                    className={`${
-                      currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
-                    } "cursor-pointer rounded-sm p-2 border border-1"`}
-                  >
-                    <span>{totalPages}</span>
-                  </li>
-                ) : null}
-                <li
-                  key={index}
-                  aria-hidden="true"
-                  onClick={(e) => onPageChanged(e, page)}
-                  className={`${
-                    currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
-                  } "cursor-pointer rounded-sm p-2 border border-1"`}
-                >
-                  <span>{page == 1 ? `First` : page === totalPages ? `Last` : page}</span>
-                </li>
-                {page === 1 ? (
-                  <li
-                    key={index+totalRecords}
-                    aria-hidden="true"
-                    onClick={(e) => onPageChanged(e, page)}
-                    className={`${
-                      currentPage === page ? "bg-green-500 text-white" : "cursor-pointer p-2 border border-1"
-                    } "cursor-pointer rounded-sm p-2 border border-1"`}
-                  >
-                    <span>{page}</span>
-                  </li>
-                ) : null}
-              </>
-            );
-          })}
-        </ul>
-      </nav>
-    </div>
+    <ReactPaginate
+      pageCount={Math.ceil(totalRecords / pageLimit)}
+      onPageChange={onPageChanged}
+      forcePage={Number(currentPage) - 1} 
+      pageRangeDisplayed={pageRangeDisplayed}
+      marginPagesDisplayed={marginPagesDisplayed}
+      previousLabel={
+        <LeftArrowIcon
+          className={`min-h-10 ml-4 ${
+            Number(currentPage) === 1 ? `opacity-50 cursor-not-allowed` : ``
+          }`}
+        />
+      }
+      nextLabel={
+        <LeftArrowIcon
+          className={`min-h-10 rotate-180 mr-4 ${
+            Number(currentPage) === Math.ceil(totalRecords / pageLimit)
+              ? `opacity-50 cursor-not-allowed`
+              : ``
+          }`}
+        />
+      }
+      pageClassName="px-4 py-2"
+      activeClassName="bg-greenPrimary text-white rounded-md"
+      disabledClassName="opacity-50 cursor-none"
+      containerClassName="flex bg-inputAuthBg/60 space-x-2 my-2 py-1 rounded-md"
+    />
   );
 };
