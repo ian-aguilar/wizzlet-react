@@ -132,7 +132,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           btnName="Back"
           btnClass="!w-auto !px-6 border !border-black/20 bg-white !text-grayText !rounded-md "
           onClickHandler={() => {
-            navigate(`/product-form/1/${productId}`);
+            navigate(`/inventory-management/product-form/1/${productId}`);
           }}
         />
         <Button

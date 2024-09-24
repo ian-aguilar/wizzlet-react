@@ -21,6 +21,7 @@ const useLabelHeaders = ({ onDelete }: IUseLabelHeadersProps) => {
     {
       name: "Items with the label",
       selector: () => "0",
+      cell: (row: Label) => <div className="text-gray-500 font-jost font-medium text-lg m-4">{row.productTagCount}</div>,
       sortable: false,
     },
     {
