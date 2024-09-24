@@ -25,7 +25,8 @@ import Variation from "./component/Variation";
 const EbayForm: React.FC = () => {
   const { productId } = useParams();
 
-  const { ebayFormSubmitApi } = useEbayFormHandleApi();
+  const { ebayFormSubmitApi, isLoading: ebayFormSubmitApiLoading } =
+    useEbayFormHandleApi();
   const { editProductValueApi } = useEditProductValuesApi();
   const { createEbayProductApi } = useCreateEbayProductApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
@@ -49,6 +50,8 @@ const EbayForm: React.FC = () => {
   });
   const [generatedCombinations, setGeneratedCombinations] =
     useState<variantOptionType>([]);
+
+  const [listInEbayLoading, setListInEbayLoading] = useState(false);
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -307,15 +310,19 @@ const EbayForm: React.FC = () => {
               btnName="Save"
               type="submit"
               btnClass="mt-6 !text-base"
+              isLoading={ebayFormSubmitApiLoading}
             />
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Ebay"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
+              isLoading={listInEbayLoading}
               type="button"
-              onClickHandler={() =>
-                handleSubmit(onSubmit.bind(this, "SaveInEbay"))()
-              }
+              onClickHandler={async () => {
+                setListInEbayLoading(true);
+                await handleSubmit(onSubmit.bind(this, "SaveInEbay"))();
+                setListInEbayLoading(false);
+              }}
             />
           </div>
         </form>
