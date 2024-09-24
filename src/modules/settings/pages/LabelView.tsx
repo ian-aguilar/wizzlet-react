@@ -58,7 +58,6 @@ const LabelView = () => {
   const onPageChanged = useCallback(
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
-      console.log("selectedItem.selected: ", newPage);
       setCurrentPage(newPage);
       getLabelProducts(searchTerm, newPage, Number(itemPerPage.value));
     },

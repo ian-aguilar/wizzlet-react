@@ -5,6 +5,7 @@ export interface IAddLabelInputs {
 export interface Label {
   id: number;
   name: string;
+  productTagCount:number
 }
 
 export interface IUseLabelHeadersProps {

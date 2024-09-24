@@ -1,5 +1,5 @@
 // ** Packages **
-import React, { MouseEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
 
@@ -48,9 +48,9 @@ const InventoryManagement = () => {
   const [category, setCategory] = useState<Option[] | undefined>(undefined);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
   // const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
-  //   undefined
-  // );
-  // const [filterDate, setFilterDate] = useState<Date>();
+    //   undefined
+    // );
+    // const [filterDate, setFilterDate] = useState<Date>();
   const [productStatus, setProductStatus] = useState<string>(
     E_PRODUCT_STATUS.active
   );
@@ -71,16 +71,16 @@ const InventoryManagement = () => {
   }>({
     products: [],
   });
-
+  
   const navigate = useNavigate();
-
+  
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { getCategoriesAPI, isLoading: categoryLoading } =
-    useGetCategoriesAPI();
+  useGetCategoriesAPI();
   const { getProductsDetailsAPI, isLoading: productListLoading } =
-    useProductListingAPI();
-
+  useProductListingAPI();
+  
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
@@ -88,13 +88,13 @@ const InventoryManagement = () => {
       setMarketplace(data?.data);
       setSelectedMarketplace(
         data?.data.connectedMarketplace.map((item: IMarketplace) => item.id)
-      );
-    }
-  };
-
-  useEffect(() => {
-    marketplaceListing();
-  }, []);
+        );
+      }
+    };
+    
+    useEffect(() => {
+      marketplaceListing();
+    }, []);
 
   // ** Function for list products by API
   const getProductsDetails = async (
@@ -103,14 +103,15 @@ const InventoryManagement = () => {
     status: string = "",
     page: number = Number(currentPage),
     limit: number = Number(itemPerPage.value)
-  ) => {
+    ) => {
+    const categoryLabels = category?.map((item) => item.label) || []
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
         marketplace: marketplace.length ? marketplace : selectedMarketplace,
       },
       category: {
-        categories: category?.length ? category.map((item) => item.label) : [],
+        categories: categoryLabels,
       },
       search: search,
       currentPage: page,
@@ -126,7 +127,6 @@ const InventoryManagement = () => {
   const onPageChanged = useCallback(
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
-      console.log("selectedItem.selected: ", newPage);
       setCurrentPage(newPage);
       getProductsDetails(
         searchTerm,
@@ -154,7 +154,7 @@ const InventoryManagement = () => {
   // ** Handle filter market places **
   const handleMarketplace = (id: number) => {
     setCurrentPage(1);
-    setCategory(undefined);
+    setCategory([]);
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
@@ -250,7 +250,7 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate("/product-form/1/0")}
+            onClickHandler={() => navigate("/inventory-management/product-form/1/0")}
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -366,10 +366,15 @@ const InventoryManagement = () => {
               name="Categories select box"
               serveSideSearch={true}
               getOnChange={(e) => {
-                setSearchTerm("");
                 setCurrentPage(1);
                 if (e) {
                   setCategory(e);
+                  getProductsDetails(
+                    searchTerm,
+                    selectedMarketplace,
+                    productStatus,
+                    1
+                  );
                 }
               }}
               isLoading={categoryLoading}
@@ -402,7 +407,7 @@ const InventoryManagement = () => {
                   value={itemPerPage}
                   dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
                   options={[
-                    { id: 1, name: "10" },
+                    { id: 1, name: "2" },
                     { id: 2, name: "20" },
                     { id: 3, name: "25" },
                     { id: 4, name: "50" },
