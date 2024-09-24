@@ -48,9 +48,9 @@ const InventoryManagement = () => {
   const [category, setCategory] = useState<Option[] | undefined>(undefined);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
   // const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
-    //   undefined
-    // );
-    // const [filterDate, setFilterDate] = useState<Date>();
+  //   undefined
+  // );
+  // const [filterDate, setFilterDate] = useState<Date>();
   const [productStatus, setProductStatus] = useState<string>(
     E_PRODUCT_STATUS.active
   );
@@ -71,16 +71,16 @@ const InventoryManagement = () => {
   }>({
     products: [],
   });
-  
+
   const navigate = useNavigate();
-  
+
   // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { getCategoriesAPI, isLoading: categoryLoading } =
-  useGetCategoriesAPI();
+    useGetCategoriesAPI();
   const { getProductsDetailsAPI, isLoading: productListLoading } =
-  useProductListingAPI();
-  
+    useProductListingAPI();
+
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
@@ -88,13 +88,13 @@ const InventoryManagement = () => {
       setMarketplace(data?.data);
       setSelectedMarketplace(
         data?.data.connectedMarketplace.map((item: IMarketplace) => item.id)
-        );
-      }
-    };
-    
-    useEffect(() => {
-      marketplaceListing();
-    }, []);
+      );
+    }
+  };
+
+  useEffect(() => {
+    marketplaceListing();
+  }, []);
 
   // ** Function for list products by API
   const getProductsDetails = async (
@@ -102,9 +102,12 @@ const InventoryManagement = () => {
     marketplace: number[] = [],
     status: string = "",
     page: number = Number(currentPage),
-    limit: number = Number(itemPerPage.value)
-    ) => {
-    const categoryLabels = category?.map((item) => item.label) || []
+    limit: number = Number(itemPerPage.value),
+    categoryName: Option[] | undefined = category
+  ) => {
+    const categoryLabels = categoryName?.map((item) => item.label) || undefined;
+    
+    console.log('categoryLabels: ', categoryLabels);
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
@@ -133,10 +136,17 @@ const InventoryManagement = () => {
         selectedMarketplace,
         productStatus,
         newPage,
-        Number(itemPerPage.value)
+        Number(itemPerPage.value),
+        category
       );
     },
-    [searchTerm, selectedMarketplace, productStatus, itemPerPage.value]
+    [
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      itemPerPage.value,
+      category,
+    ]
   );
 
   // ** Categories fetch **
@@ -154,7 +164,6 @@ const InventoryManagement = () => {
   // ** Handle filter market places **
   const handleMarketplace = (id: number) => {
     setCurrentPage(1);
-    setCategory([]);
     if (!selectedMarketplace.includes(id)) {
       setSelectedMarketplace([...selectedMarketplace, id]);
     } else {
@@ -173,16 +182,35 @@ const InventoryManagement = () => {
 
   // ** search box with debouncing **
   const request = debounce(
-    (value, selectedMarketplace, status, page, itemPerPage) => {
+    (value, selectedMarketplace, status, page, itemPerPage, category) => {
       setCurrentPage(1);
-      getProductsDetails(value, selectedMarketplace, status, page, itemPerPage);
+      getProductsDetails(
+        value,
+        selectedMarketplace,
+        status,
+        page,
+        itemPerPage,
+        category
+      );
     },
     500
   );
 
   const debounceRequest = useCallback(
-    (value: string, selectedMarketplace: number[], status: string) =>
-      request(value, selectedMarketplace, status, 1, itemPerPage.value),
+    (
+      value: string,
+      selectedMarketplace: number[],
+      status: string,
+      category: Option[] | undefined
+    ) =>
+      request(
+        value,
+        selectedMarketplace,
+        status,
+        1,
+        itemPerPage.value,
+        category
+      ),
     [itemPerPage]
   );
 
@@ -191,12 +219,20 @@ const InventoryManagement = () => {
     debounceRequest(
       event.currentTarget.value.trim(),
       selectedMarketplace,
-      productStatus
+      productStatus,
+      category
     );
   };
 
   useEffect(() => {
-    getProductsDetails(searchTerm, selectedMarketplace, productStatus, Number(currentPage), Number(itemPerPage.value));
+    getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      Number(currentPage),
+      Number(itemPerPage.value),
+      category
+    );
   }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
 
   return (
@@ -250,7 +286,9 @@ const InventoryManagement = () => {
           <Button
             btnName="Add New"
             showType={btnShowType.greenRound}
-            onClickHandler={() => navigate("/inventory-management/product-form/1/0")}
+            onClickHandler={() =>
+              navigate("/inventory-management/product-form/1/0")
+            }
             btnClass=" !text-base bg-greenPrimary text-white "
             BtnIconLeft={<AddIconBtn />}
           />
@@ -367,20 +405,26 @@ const InventoryManagement = () => {
               serveSideSearch={true}
               getOnChange={(e) => {
                 setCurrentPage(1);
+                if(!e.length){
+                  setCategory(undefined);
+                  return;
+                }
                 if (e) {
                   setCategory(e);
                   getProductsDetails(
                     searchTerm,
                     selectedMarketplace,
                     productStatus,
-                    1
+                    1,
+                    Number(itemPerPage.value),
+                    category
                   );
                 }
               }}
               isLoading={categoryLoading}
               isMulti={true}
               isSearchable={true}
-              notClearable={false}
+              notClearable={true}
               getOptions={getCategories}
               value={category !== undefined || null ? category : undefined}
               className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
@@ -407,7 +451,7 @@ const InventoryManagement = () => {
                   value={itemPerPage}
                   dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
                   options={[
-                    { id: 1, name: "2" },
+                    { id: 1, name: "10" },
                     { id: 2, name: "20" },
                     { id: 3, name: "25" },
                     { id: 4, name: "50" },
@@ -422,7 +466,8 @@ const InventoryManagement = () => {
                         selectedMarketplace,
                         productStatus,
                         1,
-                        Number(e.value)
+                        Number(e.value),
+                        category
                       );
                     }
                   }}
