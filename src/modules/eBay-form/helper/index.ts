@@ -34,7 +34,7 @@ export const transformData = async (
 }> => {
   const firstArray = data
     ?.map((item) => {
-      if (item?.option) {
+      if (item?.option && item?.meta?.aspectEnabledForVariations === true) {
         return {
           label: item?.name,
           value: item?.name,

@@ -45,6 +45,9 @@ export type InputData = {
   type: string;
   name: string;
   required: boolean;
+  meta?: {
+    aspectEnabledForVariations?: boolean;
+  };
   option: Option[];
 }[];
 
