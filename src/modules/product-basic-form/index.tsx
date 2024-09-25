@@ -124,7 +124,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
 
   useEffect(() => {
     tagOptionApi();
-  }, [productType]);
+  }, []);
 
   const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
     setProductType(value);
