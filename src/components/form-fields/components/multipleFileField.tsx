@@ -155,21 +155,21 @@ const MultipleImageUpload = <T extends FieldValues>(
       <div
         className={`attachments__up__wrapper   w-full flex gap-4  flex-wrap ${
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
-        }    rounded-md`}
-      >
+        }    rounded-md`}>
         {defaultValue.map((value, index) => {
           const isUrl = typeof value === "string";
 
           return (
             <div
               className="attachments__box flex  flex-col  items-center relative mt-5 border border-black/10 rounded-md  "
-              key={`url-${index}`}
-            >
+              key={`url-${index}`}>
               <div className="attachments__details flex gap-4 items-center h-full">
                 <img
                   src={
                     isUrl
-                      ? VITE_APP_API_URL + value
+                      ? value.indexOf("http") !== -1
+                        ? value
+                        : VITE_APP_API_URL + value
                       : URL.createObjectURL(value as File)
                   }
                   alt={`attachment-url-${index + 1}`}
@@ -180,8 +180,7 @@ const MultipleImageUpload = <T extends FieldValues>(
                 className="action__btn__SD bg-redAlert/10 rounded-b-md w-full flex justify-center p-1"
                 name="Delete"
                 title="Delete"
-                onClick={() => deleteAttachment(index)}
-              >
+                onClick={() => deleteAttachment(index)}>
                 <DeleteIcon className="text-redAlert" />
               </button>
               <div className="attachments__details absolute left-0 -top-6   ">
