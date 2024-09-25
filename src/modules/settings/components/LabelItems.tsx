@@ -23,7 +23,7 @@ const LabelItems = ({
 }) => {
   const navigate = useNavigate();
   const handleEditProduct = (productId: number) => {
-    navigate(`/product-form/1/${productId}`);
+    navigate(`/inventory-management/product-form/1/${productId}`);
   };
   if (isLoading) {
     return <Loader />;

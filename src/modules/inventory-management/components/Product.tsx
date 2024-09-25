@@ -22,7 +22,7 @@ const Product = ({
 }) => {
   const navigate = useNavigate();
   const handleEditProduct = (productId: number) => {
-    navigate(`/product-form/1/${productId}`);
+    navigate(`/inventory-management/product-form/1/${productId}`);
   };
   if (isLoading) {
     return <Loader />;
@@ -35,8 +35,7 @@ const Product = ({
               return (
                 <div
                   key={index}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
-                >
+                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3">
                   <div>
                     <Checkbox checkLabel=" " />
                   </div>
@@ -44,8 +43,12 @@ const Product = ({
                     {item?.images !== undefined || null ? (
                       <div className="prodImg">
                         <img
-                          src={`${VITE_APP_API_URL}${item?.images}`}
-                          className="max-w-[170px] max-h-[132px] "
+                          src={
+                            item.images.indexOf("http") !== -1
+                              ? `${item?.images}`
+                              : `${VITE_APP_API_URL}${item?.images}`
+                          }
+                          className="max-w-[170px] max-h-[132px]"
                           alt=""
                         />
                       </div>
@@ -68,8 +71,7 @@ const Product = ({
                             return (
                               <div
                                 key={category?.id}
-                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
-                              >
+                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
                                 {category?.name}
                               </div>
                             );
@@ -128,8 +130,7 @@ const Product = ({
                           return (
                             <div
                               key={index}
-                              className=" rounded-md  border border-grayText/20 p-1"
-                            >
+                              className=" rounded-md  border border-grayText/20 p-1">
                               <img
                                 src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                                 className="w-14 h-auto"
