@@ -24,7 +24,7 @@ const ProductForm: React.FC = () => {
         return;
       }
     }
-    navigate(`/product-form/${newStep}/${productId}`);
+    navigate(`/inventory-management/product-form/${newStep}/${productId}`);
   };
 
   const handleBasicFormComplete = (data: number) => {

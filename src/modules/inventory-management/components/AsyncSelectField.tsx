@@ -51,7 +51,6 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
 
   const fetchOption = async ({ pageNo = page, optionValue = search } = {}) => {
     const data = await getOptions?.(optionValue, pageNo);
-    console.log("data: ", data);
 
     if (data) {
       setTotal(data.count || 0);

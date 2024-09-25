@@ -20,8 +20,6 @@ import { setCredentials } from "@/redux/slices/authSlice";
 import { setUser } from "@/redux/slices/userSlice";
 import { btnShowType } from "@/components/form-fields/types";
 
-import Img404 from "/images/404Svg.svg";
-
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -93,8 +91,7 @@ const Login = () => {
             <div className="flex gap-2 justify-center items-center">
               <Link
                 className="my-4 cursor-pointer text-greenPrimary bg-transparent p-0 border-none font-normal text-base leading-4 hover:underline hover:underline-offset-2  duration-300 transition-all"
-                to={RoutesPath.ForgotPassword}
-              >
+                to={RoutesPath.ForgotPassword}>
                 Forgot Password?
               </Link>
             </div>
@@ -113,8 +110,7 @@ const Login = () => {
             Don’t have an account yet?{" "}
             <Link
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
-              to={RoutesPath.SignUp}
-            >
+              to={RoutesPath.SignUp}>
               Signup
             </Link>
           </p>

@@ -1,6 +1,5 @@
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import SelectField from "@/components/form-fields/components/SelectField";
-import { ClearOption } from "@/modules/inventory-management/types";
 import { VariantProperty } from "@/modules/product-basic-form/types";
 import React, { useState } from "react";
 import {
@@ -13,7 +12,6 @@ import Button from "@/components/form-fields/components/Button";
 import { DeleteIcon } from "@/assets/Svg";
 import { useFieldArray } from "react-hook-form";
 import { generateCombinations } from "../helper";
-import ImageUpload from "./ImageUpload";
 import Input from "@/components/form-fields/components/Input";
 
 const Variation: React.FC<VariantImageProps> = ({
@@ -24,7 +22,6 @@ const Variation: React.FC<VariantImageProps> = ({
   setValue,
   watch,
   categoriesId,
-  productType,
   propertyOptions,
   allPropertyOptions,
   allOptions,
@@ -33,8 +30,7 @@ const Variation: React.FC<VariantImageProps> = ({
   generatedCombinations,
 }) => {
   //** STATE **//
-  const [selectedOption, setSelectedOption] = useState<ClearOption[]>([]);
-  const [imageIndex, setImageIndex] = useState<string>("");
+  const [imageIndex, setImageIndex] = useState(0);
 
   const {
     fields: variantFields,
@@ -56,6 +52,8 @@ const Variation: React.FC<VariantImageProps> = ({
   });
   const combinations = watch("combinations");
 
+  const variantImage = watch("variantimage");
+
   const handlePropertyOnChange = (index: number) => {
     if (propertiesValues[index].multiSelect) {
       propertiesValues[index].multiSelect = [];
@@ -63,35 +61,32 @@ const Variation: React.FC<VariantImageProps> = ({
     setValue("variantProperties", propertiesValues);
     setValue("combinations", []);
 
-    if (productType === "VARIANT") {
-      const selectedOptions = propertiesValues?.map(
-        (item: {
-          singleSelect: { value: string };
-          multiSelect: SelectOption[];
-        }) => ({
-          name: item?.singleSelect?.value,
-          value: item?.multiSelect?.map((opt: { value: string }) => opt?.value),
-        })
-      );
+    const selectedOptions = propertiesValues?.map(
+      (item: {
+        singleSelect: { value: string };
+        multiSelect: SelectOption[];
+      }) => ({
+        name: item?.singleSelect?.value,
+        value: item?.multiSelect?.map((opt: { value: string }) => opt?.value),
+      })
+    );
 
-      const filteredData = allPropertyOptions?.filter(
-        (item) =>
-          !selectedOptions.some(
-            (secondItem: { name: string }) => secondItem.name === item.name
-          )
-      );
+    const filteredData = allPropertyOptions?.filter(
+      (item) =>
+        !selectedOptions.some(
+          (secondItem: { name: string }) => secondItem.name === item.name
+        )
+    );
 
-      setPropertiesState((prevState: any) => ({
-        ...prevState,
-        categorized: filteredData || [],
-      }));
-    }
+    setPropertiesState((prevState: any) => ({
+      ...prevState,
+      categorized: filteredData || [],
+    }));
   };
 
   const handleOptionOnChange = () => {
     setValue("combinations", []);
-    setSelectedOption([]);
-    setImageIndex("");
+    setImageIndex(0);
     setGeneratedCombinations([]);
   };
 
@@ -174,15 +169,19 @@ const Variation: React.FC<VariantImageProps> = ({
       (item: VariantProperty) => item.singleSelect.value === option
     );
     if (result) {
-      setSelectedOption(result.multiSelect);
-    } else {
-      setSelectedOption([]);
+      setValue("variantimage", {
+        property: option || "",
+        data: result.multiSelect.map((e: any) => ({
+          value: e.value,
+          images: [],
+        })),
+      });
     }
   };
 
   return (
     <>
-      {categoriesId !== 0 && productType === "VARIANT" && (
+      {categoriesId !== 0 && (
         <div>
           {variantFields.map((item, index) => (
             <div key={item.id} className="my-4 flex gap-4 items-center">
@@ -225,8 +224,7 @@ const Variation: React.FC<VariantImageProps> = ({
                 <button
                   type="button"
                   className="p-1 text-red-500"
-                  onClick={() => removeVariant(index)}
-                >
+                  onClick={() => removeVariant(index)}>
                   <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                 </button>
               )}
@@ -242,19 +240,17 @@ const Variation: React.FC<VariantImageProps> = ({
               }
             />
 
-            {productType === "VARIANT" && (
-              <Button
-                btnName=" Save Variant"
-                type="button"
-                btnClass=" !w-auto p-2 border !border-black/20 bg-white !text-grayText !rounded-md   "
-                onClickHandler={handleSaveVariant}
-              />
-            )}
+            <Button
+              btnName=" Save Variant"
+              type="button"
+              btnClass=" !w-auto p-2 border !border-black/20 bg-white !text-grayText !rounded-md   "
+              onClickHandler={handleSaveVariant}
+            />
           </div>
         </div>
       )}
 
-      {productType === "VARIANT" && generatedCombinations?.length > 0 && (
+      {generatedCombinations?.length > 0 && (
         <div className="mt-6 mb-6">
           {combinations?.length > 0 ? (
             <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
@@ -264,8 +260,7 @@ const Variation: React.FC<VariantImageProps> = ({
           {combinationFields.map((item: any, index) => (
             <div
               key={item.id}
-              className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md "
-            >
+              className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md ">
               <div className="min-w-[180px] mt-9 ">
                 {item?.combination
                   ?.map((e: { value: string }) => e.value)
@@ -295,21 +290,11 @@ const Variation: React.FC<VariantImageProps> = ({
                 control={control}
                 errors={errors}
               />
-              <ImageUpload
-                name={`combinations.${index}.images`}
-                watch={watch}
-                control={control}
-                setError={setError}
-                clearErrors={clearErrors}
-                errors={errors}
-                setValue={setValue}
-              />
 
               <button
                 type="button"
                 className="p-1 text-red-500"
-                onClick={() => removeCombination(index)}
-              >
+                onClick={() => removeCombination(index)}>
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
             </div>
@@ -325,7 +310,7 @@ const Variation: React.FC<VariantImageProps> = ({
         </div>
       )}
 
-      {productType === "VARIANT" && generatedCombinations?.length > 0 && (
+      {generatedCombinations?.length > 0 && (
         <>
           <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
             Variant Images
@@ -344,32 +329,33 @@ const Variation: React.FC<VariantImageProps> = ({
                   name="variant"
                   control={control}
                   errors={errors}
-                  onChange={(selectedOption) =>
+                  onChange={(selectedOption) => {
                     handleOptionChange(
                       selectedOption ? selectedOption.value : ""
-                    )
-                  }
+                    );
+                  }}
                 />
-                {selectedOption.map((item, index) => (
-                  <div className="flex" key={index}>
-                    <div
-                      onClick={() => setImageIndex(item.value)}
-                      className={`mr-2 mb-2 cursor-pointer p-2 border rounded ${
-                        imageIndex === item.value
-                          ? "bg-greenPrimary text-white"
-                          : "bg-gray-200"
-                      }`}
-                    >
-                      {item.value}
+                {variantImage?.data?.map(
+                  (item: { value: string }, index: number) => (
+                    <div className="flex" key={index}>
+                      <div
+                        onClick={() => setImageIndex(index)}
+                        className={`mr-2 mb-2 cursor-pointer p-2 border rounded ${
+                          imageIndex === index
+                            ? "bg-greenPrimary text-white"
+                            : "bg-gray-200"
+                        }`}>
+                        {item.value}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
               <div className="col-span-9">
                 <h4> Select Photos </h4>
-                {imageIndex && (
+                {variantImage?.data?.length > 0 && (
                   <MultipleImageUpload
-                    name={`variantimage.${imageIndex}.images`}
+                    name={`variantimage.data.${imageIndex}.images`}
                     control={control}
                     setError={setError}
                     clearErrors={clearErrors}

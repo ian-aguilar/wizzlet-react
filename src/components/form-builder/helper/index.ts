@@ -23,10 +23,13 @@ export const getValidation = <T extends FieldValues>(data: FieldsType<T>[]) => {
           validationSchema[e.name] = yup.string();
           break;
       }
-      if (e.required)
+      if (e.required) {
         validationSchema[e.name] = validationSchema[e.name].required(
           `${e.name} is required`
         );
+      } else {
+        validationSchema[e.name] = validationSchema[e.name].nullable();
+      }
     }
   });
 

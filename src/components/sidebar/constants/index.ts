@@ -54,7 +54,7 @@ export const userSidebar = [
   {
     navIcon: UserMgtIcon,
     navName: "Inventory Management",
-    path: PrivateRoutesPath.inventoryManagement.view,
+    path: PrivateRoutesPath.inventoryManagement.view ,
     key: sidebarList.inventory,
   },
   {

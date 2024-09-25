@@ -25,7 +25,8 @@ import Variation from "./component/Variation";
 const EbayForm: React.FC = () => {
   const { productId } = useParams();
 
-  const { ebayFormSubmitApi } = useEbayFormHandleApi();
+  const { ebayFormSubmitApi, isLoading: ebayFormSubmitApiLoading } =
+    useEbayFormHandleApi();
   const { editProductValueApi } = useEditProductValuesApi();
   const { createEbayProductApi } = useCreateEbayProductApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
@@ -49,6 +50,8 @@ const EbayForm: React.FC = () => {
   });
   const [generatedCombinations, setGeneratedCombinations] =
     useState<variantOptionType>([]);
+
+  const [listInEbayLoading, setListInEbayLoading] = useState(false);
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -107,9 +110,13 @@ const EbayForm: React.FC = () => {
   useEffect(() => {
     handleCategoryOptionAPi();
     handleCommonField();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const validation = getValidation(propertiesState.nullCategory);
+  const validation = getValidation([
+    ...propertiesState.nullCategory,
+    ...propertiesState.categorized,
+  ]);
   const finalValidationSchema =
     productEbayFormValidationSchema.concat(validation);
 
@@ -127,7 +134,7 @@ const EbayForm: React.FC = () => {
   });
   console.log("🚀 ~ errors:", errors);
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
     const formData = new FormData();
 
@@ -157,6 +164,20 @@ const EbayForm: React.FC = () => {
           });
         }
       );
+
+      // if (payload?.variantimage?.data?.some((e: any) => e.images.length > 0)) {
+      formData.append(
+        "variantimage[property]",
+        payload?.variantimage?.property
+      );
+
+      payload?.variantimage?.data?.forEach((item: any, index: number) => {
+        formData.append(`variantimage[data][${index}][value]`, item.value);
+        item?.images?.forEach((image: any) => {
+          formData.append(`variantimage[data][${index}][images]`, image);
+        });
+      });
+      // }
     }
 
     payload = Object.entries(payload).reduce((prev: any, current) => {
@@ -193,7 +214,10 @@ const EbayForm: React.FC = () => {
         productId,
       });
       console.log("🚀 ~ onSubmit ~ result:", result);
-      await createEbayProductApi(Number(productId));
+
+      if (type === "SaveInEbay") {
+        await createEbayProductApi(Number(productId));
+      }
     }
   };
 
@@ -245,7 +269,7 @@ const EbayForm: React.FC = () => {
         {fieldsLoading || optionsLoading ? (
           <Loader loaderClass=" !fixed " />
         ) : null}
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit.bind(this, "Save"))}>
           <Select
             options={categories}
             defaultValue={id}
@@ -261,7 +285,6 @@ const EbayForm: React.FC = () => {
               setValue={setValue}
               watch={watch}
               categoriesId={categoriesId}
-              productType={productType}
               allPropertyOptions={allPropertyOptions}
               propertyOptions={propertyOptions}
               allOptions={allOptions}
@@ -287,11 +310,19 @@ const EbayForm: React.FC = () => {
               btnName="Save"
               type="submit"
               btnClass="mt-6 !text-base"
+              isLoading={ebayFormSubmitApiLoading}
             />
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Ebay"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
+              isLoading={listInEbayLoading}
+              type="button"
+              onClickHandler={async () => {
+                setListInEbayLoading(true);
+                await handleSubmit(onSubmit.bind(this, "SaveInEbay"))();
+                setListInEbayLoading(false);
+              }}
             />
           </div>
         </form>

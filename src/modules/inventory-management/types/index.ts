@@ -13,13 +13,11 @@ import {
 
 export interface IPaginationProps {
   pageLimit: number;
-  pageNeighbors: number;
+  pageRangeDisplayed?: number;
+  marginPagesDisplayed?: number;
   currentPage: number | string;
   totalRecords: number;
-  onPageChanged: (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-    page: number | string
-  ) => void;
+  onPageChanged: (selectedItem: { selected: number }) => void;
 }
 
 export interface IDropDown {
@@ -71,10 +69,7 @@ export interface IItemFilter {
 export type productProps = {
   id: number;
   title: string;
-  images?: {
-    PictureURL?: string;
-    url: string;
-  };
+  images?: string;
   categories: {
     id: number;
     name: string;
@@ -216,4 +211,10 @@ export type AsyncSelectGetOptionsType = {
   marketplace?: number[];
   search?: string;
   page?: number;
+};
+
+export type FilterBoxProps = {
+  label?: string;
+  isOpen?: boolean;
+  children?: ReactNode;
 };
