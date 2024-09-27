@@ -14,7 +14,7 @@ import {
 export interface IPaginationProps {
   pageLimit: number;
   pageRangeDisplayed?: number;
-  marginPagesDisplayed?:number;
+  marginPagesDisplayed?: number;
   currentPage: number | string;
   totalRecords: number;
   onPageChanged: (selectedItem: { selected: number }) => void;
@@ -69,10 +69,7 @@ export interface IItemFilter {
 export type productProps = {
   id: number;
   title: string;
-  images?: {
-    PictureURL?: string;
-    url: string;
-  };
+  images?: string;
   categories: {
     id: number;
     name: string;
@@ -217,7 +214,7 @@ export type AsyncSelectGetOptionsType = {
 };
 
 export type FilterBoxProps = {
-  label?:string;
-  isOpen?:boolean;
-  children?: ReactNode
-}
+  label?: string;
+  isOpen?: boolean;
+  children?: ReactNode;
+};
