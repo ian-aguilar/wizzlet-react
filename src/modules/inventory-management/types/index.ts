@@ -69,10 +69,7 @@ export interface IItemFilter {
 export type productProps = {
   id: number;
   title: string;
-  images?: {
-    PictureURL?: string;
-    url: string;
-  };
+  images?: string;
   categories: {
     id: number;
     name: string;

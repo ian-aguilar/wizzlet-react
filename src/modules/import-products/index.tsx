@@ -63,7 +63,6 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          return;
           await importAmazonProductsApi();
           setSync((prev) => !prev);
           break;
@@ -86,7 +85,6 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          return;
           const { data } = await getImportedProductsApi({
             currentPage: currentPage,
             limit: itemPerPage.value,
@@ -154,7 +152,6 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
-        return;
         await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
