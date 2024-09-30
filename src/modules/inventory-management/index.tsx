@@ -107,7 +107,7 @@ const InventoryManagement = () => {
   ) => {
     const categoryLabels = categoryName?.map((item) => item.label) || undefined;
     
-    console.log('categoryLabels: ', categoryLabels);
+    // console.log('categoryLabels: ', categoryLabels);
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
