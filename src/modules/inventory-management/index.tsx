@@ -106,8 +106,7 @@ const InventoryManagement = () => {
     categoryName: Option[] | undefined = category
   ) => {
     const categoryLabels = categoryName?.map((item) => item.label) || undefined;
-    
-    // console.log('categoryLabels: ', categoryLabels);
+
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
@@ -361,16 +360,14 @@ const InventoryManagement = () => {
                       ? `text-greenPrimary border-greenPrimary`
                       : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}
-                >
+                  onClick={() => handleProductStatus(item)}>
                   {item}
                   <span
                     className={`text-base ${
                       productStatus === item
                         ? `bg-greenPrimary/10`
                         : `bg-greyBorder/50`
-                    } px-1 rounded-md`}
-                  >
+                    } px-1 rounded-md`}>
                     {productStatus === item
                       ? totalItem
                       : products.otherStatusTotal}
@@ -405,7 +402,7 @@ const InventoryManagement = () => {
               serveSideSearch={true}
               getOnChange={(e) => {
                 setCurrentPage(1);
-                if(!e.length){
+                if (!e.length) {
                   setCategory(undefined);
                   return;
                 }

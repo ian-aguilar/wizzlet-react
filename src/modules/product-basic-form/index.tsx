@@ -21,6 +21,7 @@ import { useEditProductAPi } from "../inventory-management/services";
 import { useParams } from "react-router-dom";
 import Button from "@/components/form-fields/components/Button";
 import { INameOption, IOption } from "../inventory-management/types";
+import { productTypes } from "./constant";
 
 const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
@@ -44,10 +45,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     defaultValues: {
       title: "",
       description: "",
-      productType: {
-        label: "Normal",
-        value: "NORMAL",
-      },
+      productType: "",
       tagOptions: [],
       image: null,
       price: undefined,
@@ -126,16 +124,16 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
 
   useEffect(() => {
     tagOptionApi();
-  }, [productType]);
+  }, []);
 
-  // const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
-  //   setProductType(value);
-  //   if (value === "NORMAL") {
-  //     setValue("variantProperties", []);
-  //   } else {
-  //     setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
-  //   }
-  // };
+  const handleProductTypeChange = (value: "NORMAL" | "VARIANT") => {
+    setProductType(value);
+    if (value === "NORMAL") {
+      setValue("variantProperties", []);
+    } else {
+      setValue("variantProperties", [{ singleSelect: null, multiSelect: [] }]);
+    }
+  };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
     console.log(
@@ -146,10 +144,6 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
     const newPayload = {
       ...payload,
       productId: productId,
-      productType: {
-        label: "Normal",
-        value: "NORMAL",
-      },
     };
 
     const {
@@ -194,7 +188,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
           <div className="border-l border-r border-b mb-2 rounded-b-md">
             <div className="grid grid-cols-12 w-full p-4">
               <div className="col-span-12   ">
-                {/* <SelectField
+                <SelectField
                   className="mb-3"
                   label="Product Type"
                   options={productTypes}
@@ -206,7 +200,7 @@ const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
                       selectedOption ? selectedOption.value : ""
                     )
                   }
-                /> */}
+                />
                 <Input
                   textLabelName="Title"
                   placeholder="Enter Title"
