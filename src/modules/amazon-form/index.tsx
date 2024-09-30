@@ -4,6 +4,7 @@ import { FieldsType } from "@/components/form-builder/types";
 import { FieldValues, useForm } from "react-hook-form";
 import FormBuilder from "@/components/form-builder";
 import { getAppendField } from "@/components/form-builder/helper";
+import "./validations/index";
 
 const AmazonForm = <T extends FieldValues>() => {
   const [categoryId, setCategoryId] = useState<number>(1);

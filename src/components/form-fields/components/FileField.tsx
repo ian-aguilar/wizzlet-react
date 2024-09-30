@@ -161,11 +161,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
             >
               <div className="attachments__details flex items-center h-full">
                 <img
-                  src={
-                    isUrl
-                      ? VITE_APP_API_URL + value
-                      : URL.createObjectURL(value)
-                  }
+                  src={isUrl ? value : URL.createObjectURL(value)}
                   alt={`attachment-url-${index + 1}`}
                   className="attachment-img !w-auto !max-h-full object-contain mx-auto"
                 />
