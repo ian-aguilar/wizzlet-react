@@ -405,18 +405,18 @@ const ImportProducts = () => {
             )}
           </div>
         </div>
-          <div className="flex justify-end pt-2">
-            {totalItem ? (
-              <Pagination
-                pageRangeDisplayed={3}
-                marginPagesDisplayed={2}
-                pageLimit={Number(itemPerPage.value)}
-                currentPage={currentPage}
-                totalRecords={Number(totalItem)}
-                onPageChanged={onPageChanged}
-              />
-            ) : null}
-          </div>
+        <div className="flex justify-end pt-2">
+          {totalItem ? (
+            <Pagination
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={2}
+              pageLimit={Number(itemPerPage.value)}
+              currentPage={currentPage}
+              totalRecords={Number(totalItem)}
+              onPageChanged={onPageChanged}
+            />
+          ) : null}
+        </div>
       </div>
     </div>
   );

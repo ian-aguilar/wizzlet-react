@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { steps } from "./constant";
+// import AmazonForm from "../amazon-form";
 
 // Lazy load components
 const ProductBasicForm = lazy(() => import("../product-basic-form"));
@@ -113,6 +114,7 @@ const ProductForm: React.FC = () => {
             {currentStep === 3 && (
               <Suspense fallback={<div>Loading eBay Form...</div>}>
                 <EbayForm />
+                {/* <AmazonForm /> */}
               </Suspense>
             )}
           </div>
