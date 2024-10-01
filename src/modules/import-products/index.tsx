@@ -15,7 +15,7 @@ import {
   useGetImportedProductsApi,
   useImportAmazonProductsApi,
   useImportEbayProductsApi,
-  useImportProductsFromAmazonApi,
+  // useImportProductsFromAmazonApi,
   useImportProductsFromEbayApi,
 } from "./services/importProducts.service";
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
@@ -48,7 +48,7 @@ const ImportProducts = () => {
   const { getImportedProductsApi } = useGetImportedProductsApi();
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { importProductsFromAmazonApi } = useImportProductsFromAmazonApi();
+  // const { importProductsFromAmazonApi } = useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
