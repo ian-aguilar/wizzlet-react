@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
-import { VITE_APP_API_URL } from "@/config";
 
 // ** Types **
 import { IAboutusForm } from "@/modules/Admin/Aboutus/types";
@@ -62,7 +61,7 @@ const AboutUs = () => {
                     <div className="flex md:flex-nowrap flex-wrap gap-5">
                       <div className="border border-dashed border-blackPrimary/50 inline-block p-1 w-12 h-12 min-w-12">
                         <img
-                          src={(VITE_APP_API_URL + data.icon) as string}
+                          src={data.icon as string}
                           className="w-full h-full"
                           alt=""
                         />
@@ -101,10 +100,7 @@ const AboutUs = () => {
               <div className="lg:w-[45%]">
                 <div className="relative z-10 before:z-0 before:absolute  before:w-full  before:h-full  before:right-[-7px] before:bottom-[-7px]  before:bg-greenPrimary  before:rounded-md ">
                   <img
-                    src={
-                      (VITE_APP_API_URL +
-                        aboutus?.visionSection.image) as string
-                    }
+                    src={aboutus?.visionSection.image as string}
                     className="w-full h-auto rounded-md relative z-10"
                     alt=""
                   />
@@ -123,9 +119,7 @@ const AboutUs = () => {
               </p>
               <img
                 className="w-full h-auto rounded-md mt-10 md:mt-12"
-                src={
-                  (VITE_APP_API_URL + aboutus?.missionSection.image) as string
-                }
+                src={aboutus?.missionSection.image as string}
                 alt=""
               />
             </div>
@@ -150,7 +144,7 @@ const AboutUs = () => {
                   >
                     <div className="border border-dashed border-blackPrimary/50 inline-block p-1 w-10 h-10">
                       <img
-                        src={(VITE_APP_API_URL + data.icon) as string}
+                        src={data.icon as string}
                         className="w-full h-full"
                         alt=""
                       />
