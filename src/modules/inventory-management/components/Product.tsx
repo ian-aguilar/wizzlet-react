@@ -45,7 +45,7 @@ const Product = ({
                       <div className="prodImg">
                         <img
                           src={
-                            item.images.indexOf("http") !== -1
+                            item?.images?.indexOf("http") !== -1
                               ? `${item?.images}`
                               : `${VITE_APP_API_URL}${item?.images}`
                           }
