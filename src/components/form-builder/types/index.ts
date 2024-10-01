@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { FieldErrors, FieldValues, Path } from "react-hook-form";
+import { FieldErrors, FieldValues, Path, UseFormWatch } from "react-hook-form";
 
 import { FormControlProp, Option } from "@/components/form-fields/types";
 
@@ -7,6 +7,8 @@ export type FromBuilderPropsType<T extends FieldValues> = {
   fields: FieldsType<T>[];
   errors?: FieldErrors;
   control?: FormControlProp<T>;
+  fieldArrayName?: any;
+  watch?: UseFormWatch<FieldValues>;
 };
 
 export type FieldsType<T extends FieldValues> = {
@@ -15,6 +17,7 @@ export type FieldsType<T extends FieldValues> = {
   title?: string;
   required: boolean;
   option?: Option[];
+  items?: FieldsType<T>[];
 };
 
 export enum FieldsTypeEnum {
@@ -23,10 +26,23 @@ export enum FieldsTypeEnum {
   OPTIONS = "OPTIONS",
   NUMBER = "NUMBER",
   DOUBLE = "DOUBLE",
+  ARRAY = "ARRAY",
+  OBJECT = "OBJECT",
+  BOOLEAN = "BOOLEAN",
+  INTEGER = "INTEGER",
 }
 
 export type ValidationType = {
   [key: string]:
     | yup.AnySchema<any, yup.AnyObject, undefined, "">
     | yup.ObjectSchema<any, yup.AnyObject, any, "">;
+};
+
+export type FieldArrayComponentType<T extends FieldValues> = {
+  fields: FieldsType<T>[];
+  errors?: FieldErrors;
+  control?: FormControlProp<T>;
+  fieldArrayName?: any;
+  watch: UseFormWatch<FieldValues>;
+  data: any;
 };

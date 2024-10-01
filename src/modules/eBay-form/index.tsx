@@ -16,11 +16,12 @@ import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
 import { PropertiesState, SelectOption } from "./types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { generateCombinations, transformData } from "./helper";
 import { productEbayFormValidationSchema } from "./validation-schema";
 import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
+import { PrivateRoutesPath } from "../Auth/types";
 
 const EbayForm: React.FC = () => {
   const { productId } = useParams();
@@ -52,6 +53,8 @@ const EbayForm: React.FC = () => {
     useState<variantOptionType>([]);
 
   const [listInEbayLoading, setListInEbayLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -209,15 +212,24 @@ const EbayForm: React.FC = () => {
     });
 
     if (productId) {
-      const { data: result } = await ebayFormSubmitApi(formData, {
-        categoryId: categoriesId,
-        productId,
-      });
-      console.log("🚀 ~ onSubmit ~ result:", result);
+      const { data: result, error: ebayFormError } = await ebayFormSubmitApi(
+        formData,
+        {
+          categoryId: categoriesId,
+          productId,
+        }
+      );
 
-      if (type === "SaveInEbay") {
-        await createEbayProductApi(Number(productId));
+      if (!ebayFormError) {
+        if (type === "SaveInEbay") {
+          const { error } = await createEbayProductApi(Number(productId));
+          if (!error) navigate(PrivateRoutesPath.inventoryManagement.view);
+        } else {
+          navigate(PrivateRoutesPath.inventoryManagement.view);
+        }
       }
+
+      console.log("🚀 ~ onSubmit ~ result:", result);
     }
   };
 
@@ -265,9 +277,9 @@ const EbayForm: React.FC = () => {
 
   return (
     <>
-      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design  ">
+      <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design relative">
         {fieldsLoading || optionsLoading ? (
-          <Loader loaderClass=" !fixed " />
+          <Loader loaderClass="!absolute" />
         ) : null}
         <form onSubmit={handleSubmit(onSubmit.bind(this, "Save"))}>
           <Select
