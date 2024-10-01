@@ -8,6 +8,7 @@ export type ISelectCategoryProps = {
   customStyles?: any;
   StylesConfig: any;
   onChange?: any;
+  isDisabled?:boolean;
 };
 
 export type IOption = {
@@ -19,10 +20,7 @@ export type IItems = {
   id: number;
   marketplace_id: number;
   title: string;
-  picture_url?: {
-    PictureURL: string;
-    GalleryType: string;
-  };
+  picture_url?: string;
   listed_at: Date;
   price?: number;
   product_portal_id: string;
