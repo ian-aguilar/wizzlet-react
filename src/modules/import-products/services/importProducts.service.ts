@@ -12,14 +12,24 @@ export const useImportEbayProductsApi = () => {
   return { importEbayProductsApi, isLoading, isError, isSuccess };
 };
 
-export const useGetImportedEbayProductsApi = () => {
+export const useImportAmazonProductsApi = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const getImportedEbayProductsApi = async () => {
-    return callApi(`${BASE_PATH}/ebay/get`, {});
+  const importAmazonProductsApi = async () => {
+    return callApi(`${BASE_PATH}/amazon`, {});
   };
 
-  return { getImportedEbayProductsApi, isLoading, isError, isSuccess };
+  return { importAmazonProductsApi, isLoading, isError, isSuccess };
+};
+
+export const useGetImportedProductsApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const getImportedProductsApi = async (data:object) => {
+    return callApi(`${BASE_PATH}/marketplace/get`, data);
+  };
+
+  return { getImportedProductsApi, isLoading, isError, isSuccess };
 };
 
 export const useImportProductsFromEbayApi = () => {
@@ -30,4 +40,15 @@ export const useImportProductsFromEbayApi = () => {
   };
 
   return { importProductsFromEbayApi, isLoading, isError, isSuccess };
+};
+
+
+export const useImportProductsFromAmazonApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const importProductsFromAmazonApi = async (data: object) => {
+    return callApi(`${BASE_PATH}/amazon-migration`, { productId: data });
+  };
+
+  return { importProductsFromAmazonApi, isLoading, isError, isSuccess };
 };

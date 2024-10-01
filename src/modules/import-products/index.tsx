@@ -1,34 +1,56 @@
 // ** Packages **
-import { useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 
 // ** Common **
-import { markeplaces } from "./constants";
 import Button from "@/components/form-fields/components/Button";
 import { SelectMarketplace } from "./components/SelectMarketplace";
 import { IItems, IOption } from "./types";
 import { MARKETPLACE } from "@/components/common/types";
 import { ItemCard } from "./components/ItemCard";
 import Checkbox from "@/components/form-fields/components/Checkbox";
+import { Pagination } from "../inventory-management/components/Pagination";
 
 // ** Services **
 import {
-  useGetImportedEbayProductsApi,
+  useGetImportedProductsApi,
+  useImportAmazonProductsApi,
   useImportEbayProductsApi,
+  useImportProductsFromAmazonApi,
   useImportProductsFromEbayApi,
 } from "./services/importProducts.service";
+import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
+
+// ** Icon **
 import { AutoSyncIcon } from "@/assets/Svg";
 import { DataNotFound } from "@/components/svgIcons";
 
+// ** Types **
+import { IMarketplace } from "../marketplace/types";
+
 const ImportProducts = () => {
-  const [selectedMarketplace, setSelectedMarketplace] = useState<IOption>();
   const [items, setItems] = useState<IItems[]>();
+  const [totalItem, setTotalItem] = useState<number>();
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+  const [countCheckbox, setCountCheckbox] = useState<number>(0);
   const [isCheck, setIsCheck] = useState<number[]>([]);
-
+  const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [sync, setSync] = useState(false);
+  const [itemPerPage, setItemPerPage] = useState<IOption>({
+    label: "10",
+    value: "10",
+  });
+  const [selectedMarketplace, setSelectedMarketplace] = useState<IOption>();
+  const [marketplace, setMarketplace] = useState<{
+    connectedMarketplace: IMarketplace[];
+    notConnectedMarketplace: IMarketplace[];
+  }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
 
+  const { getImportedProductsApi } = useGetImportedProductsApi();
+  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { getImportedEbayProductsApi } = useGetImportedEbayProductsApi();
+  const { importProductsFromAmazonApi } = useImportProductsFromAmazonApi();
+  const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
+    useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
     useImportProductsFromEbayApi();
 
@@ -40,6 +62,11 @@ const ImportProducts = () => {
           setSync((prev) => !prev);
           break;
         }
+        case MARKETPLACE.AMAZON: {
+          await importAmazonProductsApi();
+          setSync((prev) => !prev);
+          break;
+        }
       }
     }
   };
@@ -48,24 +75,60 @@ const ImportProducts = () => {
     if (selectedMarketplace) {
       switch (selectedMarketplace.value) {
         case MARKETPLACE.EBAY: {
-          const { data } = await getImportedEbayProductsApi();
+          const { data } = await getImportedProductsApi({
+            currentPage: currentPage,
+            limit: itemPerPage.value,
+            marketplace: MARKETPLACE.EBAY,
+          });
           setItems(data?.data);
+          setTotalItem(data?.data?.totalRecord);
           break;
         }
         case MARKETPLACE.AMAZON: {
-          setItems([]);
+          const { data } = await getImportedProductsApi({
+            currentPage: currentPage,
+            limit: itemPerPage.value,
+            marketplace: MARKETPLACE.AMAZON,
+          });
+          setItems(data?.data?.products);
+          setTotalItem(data?.data?.totalRecord);
           break;
         }
       }
-    } else {
-      const { data } = await getImportedEbayProductsApi();
-      setItems(data?.data);
+    }
+  };
+
+  const marketplaceListing = async () => {
+    const { data, error } = await getMarketplaceListingAPI({});
+    if (!error && data) {
+      setMarketplace(data?.data);
+      setSelectedMarketplace(
+        data?.data.connectedMarketplace.map((item: IMarketplace) => {
+          if (item.name === MARKETPLACE.EBAY) {
+            return {
+              label: item.name.toUpperCase(),
+              value: item.name.toLowerCase(),
+            };
+          }
+        })
+      );
     }
   };
 
   useEffect(() => {
+    marketplaceListing();
+  }, []);
+
+  const marketplaces = marketplace?.connectedMarketplace?.map((item) => {
+    return {
+      label: item?.name.toUpperCase(),
+      value: item?.name.toLowerCase(),
+    };
+  });
+
+  useEffect(() => {
     getImportProductsHandler();
-  }, [selectedMarketplace, sync]);
+  }, [selectedMarketplace, sync, itemPerPage, currentPage]);
 
   const selectAllHandler = () => {
     setIsAllChecked(!isAllChecked);
@@ -85,11 +148,35 @@ const ImportProducts = () => {
 
   const importProductsFromEbayHandler = async () => {
     if (isCheck.length > 0) {
-      await importProductsFromEbayApi(isCheck);
+      if (selectedMarketplace?.value === MARKETPLACE.EBAY) {
+        await importProductsFromEbayApi(isCheck);
+      }
+      if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
+        await importProductsFromAmazonApi(isCheck);
+      }
       await getImportProductsHandler();
       setIsCheck([]);
     }
   };
+
+  const onPageChanged = useCallback(
+    (selectedItem: { selected: number }): void => {
+      const newPage = selectedItem.selected + 1;
+      setCurrentPage(newPage);
+    },
+    [selectedMarketplace, itemPerPage.value]
+  );
+
+  useEffect(() => {
+    if (items && items.length > 0) {
+      const importedItemsCount = items.filter(
+        (item) => !item.is_imported
+      ).length;
+      setCountCheckbox(importedItemsCount);
+    } else {
+      setCountCheckbox(0);
+    }
+  }, [items]);
 
   return (
     <div>
@@ -148,10 +235,11 @@ const ImportProducts = () => {
                 color: "#fff",
               }),
             }}
-            isSearchable={true}
+            isDisabled={isLoading || syncAmazonLoading}
+            isSearchable={false}
             value={selectedMarketplace}
             placeholder="Select Marketplace"
-            options={markeplaces}
+            options={marketplaces}
             onChange={(result: IOption) => {
               setSelectedMarketplace(result as IOption);
             }}
@@ -159,17 +247,19 @@ const ImportProducts = () => {
           <Button
             btnName={"Sync All Products"}
             onClickHandler={importProductsHandler}
-            isLoading={isLoading}
+            isLoading={isLoading || syncAmazonLoading}
             btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
           />
-          {isCheck.length > 0 && (
-            <Button
-              btnName={`Import ${isCheck.length} Products`}
-              onClickHandler={importProductsFromEbayHandler}
-              isLoading={importLoading}
-              btnClass="!w-auto !ml-auto "
-            />
-          )}
+          <div>
+            {isCheck.length > 0 && (
+              <Button
+                btnName={`Import ${isCheck.length} Products`}
+                onClickHandler={importProductsFromEbayHandler}
+                isLoading={importLoading}
+                btnClass="!w-auto !ml-auto "
+              />
+            )}
+          </div>
         </div>
         {/* <div className="flex gap-4 items-start pt-5">
           <div className="flex flex-col gap-2 ">
@@ -206,7 +296,7 @@ const ImportProducts = () => {
                   StylesConfig={{
                     singleValue: (base: any) => ({
                       ...base,
-                      color: "#ddd",
+                      color: "#000000",
                       fontSize: "16px",
                       lineHeight: "18px",
                     }),
@@ -236,12 +326,26 @@ const ImportProducts = () => {
                       text: "#fff",
                     },
                   }}
+                  isDisabled={isLoading || syncAmazonLoading}
+                  options={[
+                    { label: "10", value: "10" },
+                    { label: "20", value: "20" },
+                    { label: "25", value: "25" },
+                    { label: "50", value: "50" },
+                    { label: "100", value: "100" },
+                  ]}
+                  onChange={(e: SetStateAction<IOption>) => {
+                    setCurrentPage(1);
+                    if (e) {
+                      setItemPerPage(e);
+                    }
+                  }}
                   placeholder="10"
                 />
                 Entries
               </div>
 
-              <SelectMarketplace
+              {/* <SelectMarketplace
                 StylesConfig={{
                   singleValue: (base: any) => ({
                     ...base,
@@ -273,13 +377,14 @@ const ImportProducts = () => {
                   }),
                 }}
                 placeholder="Newest"
-              />
-              <Checkbox checkLabel="All" onChange={selectAllHandler} />
+              /> */}
+              {countCheckbox > 0 && (
+                <Checkbox checkLabel="All" onChange={selectAllHandler} />
+              )}
             </div>
           </div>
           <div className="max-h-[calc(100vh_-_500px)] overflow-y-auto scroll-design ">
-            {items &&
-              items.length > 0 ? 
+            {items && items.length > 0 ? (
               items.map((item) => {
                 return (
                   <ItemCard
@@ -289,12 +394,25 @@ const ImportProducts = () => {
                     key={item.id}
                   />
                 );
-              }) : 
+              })
+            ) : (
               <div className="justify-center flex">
                 <DataNotFound />
               </div>
-              }
+            )}
           </div>
+        </div>
+        <div className="flex justify-end pt-2">
+          {totalItem ? (
+            <Pagination
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={2}
+              pageLimit={Number(itemPerPage.value)}
+              currentPage={currentPage}
+              totalRecords={Number(totalItem)}
+              onPageChanged={onPageChanged}
+            />
+          ) : null}
         </div>
       </div>
     </div>
