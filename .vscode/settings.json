@@ -1,7 +1,7 @@
 {
   "editor.codeActionsOnSave": {
     // "source.organizeImports": "explicit",
-    "source.fixAll": "explicit"
+    // "source.fixAll": "explicit"
   },
   // "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
   "editor.formatOnPaste": false, // required
