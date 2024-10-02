@@ -103,7 +103,7 @@ const ImportProducts = () => {
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.EBAY,
           });
-          setItems(data?.data);
+          setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
           break;
         }
@@ -113,9 +113,9 @@ const ImportProducts = () => {
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.AMAZON,
           });
-          setItems(data?.data?.products);
+          setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
-          break;
+          return;
         }
       }
     }
@@ -125,15 +125,15 @@ const ImportProducts = () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
-      const place = data?.data.connectedMarketplace
-        .filter((item: IMarketplace) => item.name === MARKETPLACE.EBAY)
-        .map((item: IMarketplace) => {
-          return {
-            label: item.name.toUpperCase(),
-            value: item.name.toLowerCase(),
-          };
+      const tempMarketplace = data?.data.connectedMarketplace.find(
+        (item: IMarketplace) => item.name === MARKETPLACE.EBAY
+      );
+      if (tempMarketplace) {
+        setSelectedMarketplace({
+          label: tempMarketplace.name.toUpperCase(),
+          value: tempMarketplace.name.toLowerCase(),
         });
-      setSelectedMarketplace(place[0]);
+      }
       setIsCheck([]);
     }
   };
