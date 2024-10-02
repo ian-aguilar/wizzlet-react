@@ -45,7 +45,11 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
               <p className="font-normal inline-block text-grayText">
                 DATE
               </p>{" "}
-              {item.price}
+              {new Date(item?.listed_at).toLocaleDateString("en-GB", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </span>
             <span className="text-[#D8DCE4]">|</span>
             <span className="font-medium flex items-center gap-2">
