@@ -22,7 +22,7 @@ export interface IPaginationProps {
 
 export interface IDropDown {
   isSearchable?: boolean;
-  value?: Option;
+  value?: Option | null;
   placeholder?: string;
   dropdownName?: string;
   dropdownClass?: string;
@@ -217,4 +217,11 @@ export type FilterBoxProps = {
   label?: string;
   isOpen?: boolean;
   children?: ReactNode;
+  clearButton?:ReactNode
 };
+
+export enum TopFilter{
+  dateCreated="Date Created",
+  productTag="Product Tags",
+  productType="Product Type"
+}
