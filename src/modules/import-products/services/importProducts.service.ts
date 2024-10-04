@@ -25,7 +25,7 @@ export const useImportAmazonProductsApi = () => {
 export const useGetImportedProductsApi = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const getImportedProductsApi = async (data:object) => {
+  const getImportedProductsApi = async (data: object) => {
     return callApi(`${BASE_PATH}/marketplace/get`, data);
   };
 
@@ -42,7 +42,6 @@ export const useImportProductsFromEbayApi = () => {
   return { importProductsFromEbayApi, isLoading, isError, isSuccess };
 };
 
-
 export const useImportProductsFromAmazonApi = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
@@ -51,4 +50,14 @@ export const useImportProductsFromAmazonApi = () => {
   };
 
   return { importProductsFromAmazonApi, isLoading, isError, isSuccess };
+};
+
+export const useFetchSyncDetailsAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const fetchSyncDetailsApi = async (market:string) => {
+    return callApi(`${BASE_PATH}/sync-details`, { marketplace: market });
+  };
+
+  return { fetchSyncDetailsApi, isLoading, isError, isSuccess };
 };
