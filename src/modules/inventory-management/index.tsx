@@ -293,10 +293,10 @@ const InventoryManagement = () => {
           />
         </div>
       </div>
-      <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
+      <section className="InventoryMgtStripe   w-full bg-white   py-3 px-5 mb-2 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
+            <span className="block text-grayText text-base font-normal uppercase pb-2 ">
               SELECT Your Marketplace
             </span>
             <div className="flex gap-2">
@@ -348,8 +348,8 @@ const InventoryManagement = () => {
           </div>
         </div>
       </section>
-      <section className=" w-full bg-white p-4 mb-5 ">
-        <div className="TopTabsBtns flex justify-between items-center gap-4 flex-wrap ">
+      <section className=" w-full bg-white px-4 py-3 mb-5 ">
+        <div className="TopTabsBtns flex justify-between items-center gap-2 flex-wrap ">
           <div className="TopLEftTabs flex">
             {status.map((item) => {
               return (
@@ -360,14 +360,16 @@ const InventoryManagement = () => {
                       ? `text-greenPrimary border-greenPrimary`
                       : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}>
+                  onClick={() => handleProductStatus(item)}
+                >
                   {item}
                   <span
                     className={`text-base ${
                       productStatus === item
                         ? `bg-greenPrimary/10`
                         : `bg-greyBorder/50`
-                    } px-1 rounded-md`}>
+                    } px-1 rounded-md`}
+                  >
                     {productStatus === item
                       ? totalItem
                       : products.otherStatusTotal}
@@ -376,7 +378,7 @@ const InventoryManagement = () => {
               );
             })}
           </div>
-          <div className="RightBtnsTop flex gap-2">
+          <div className="RightBtnsTop flex gap-2 items-center">
             <SearchBox
               value={searchTerm}
               name="search"
@@ -387,13 +389,13 @@ const InventoryManagement = () => {
             />
             <Button
               showType={btnShowType.primary}
-              btnClass=" bg-grayText text-white !font-medium  !text-base   !py-2 !px-3 "
+              btnClass=" bg-grayText text-white !font-medium  !text-sm my-2.5  "
               btnName="Bulk Import CSV"
               BtnIconLeft={<BulkImportIcon className="text-white" />}
             />
             <Button
               showType={btnShowType.primary}
-              btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-base   !py-2 !px-3 "
+              btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-sm  my-2.5   "
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
             />
@@ -424,14 +426,14 @@ const InventoryManagement = () => {
               notClearable={true}
               getOptions={getCategories}
               value={category !== undefined || null ? category : undefined}
-              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
+              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-52 !text-base  "
               placeholder="By Category"
             />
           </div>
         </div>
 
-        <div className="ActiveItemsBox p-5 bg-grayLightBody/5 mt-7">
-          <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
+        <div className="ActiveItemsBox px-5 py-2 bg-grayLightBody/5 mt-2">
+          <div className="flex gap-5 justify-between items-center flex-wrap mb-3">
             <div className="flex gap-5 items-center ">
               <h3 className="text-[26px] font-medium ">
                 {productStatus === E_PRODUCT_STATUS.active
@@ -446,7 +448,7 @@ const InventoryManagement = () => {
                 <DropDown
                   dropdownName="Limit"
                   value={itemPerPage}
-                  dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
+                  dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3     "
                   options={[
                     { id: 1, name: "10" },
                     { id: 2, name: "20" },
@@ -472,7 +474,7 @@ const InventoryManagement = () => {
                 Entries
               </div>
               <Button
-                btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-3 "
+                btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-2 "
                 btnName="Newest"
                 showType={btnShowType.primary}
                 btnEndIcon={<DownArrowIcon />}

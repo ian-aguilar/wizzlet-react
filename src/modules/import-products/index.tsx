@@ -193,7 +193,7 @@ const ImportProducts = () => {
         </div>
       </div>
 
-      <div className="bg-white p-7 mb-4">
+      <div className="bg-white py-3 px-7 mb-4">
         <p className="uppercase text-base font-normal text-grayText mb-2">
           Select the source to import from
         </p>
@@ -284,9 +284,9 @@ const ImportProducts = () => {
           </div>
         </div> */}
       </div>
-      <div className="bg-white p-5">
-        <div className="bg-[#F7F8FA] p-7">
-          <div className="flex justify-between mb-3 ">
+      <div className="bg-white p-3">
+        <div className="bg-[#F7F8FA] py-4 px-7">
+          <div className="flex justify-between mb-1 ">
             <h3 className="font-medium text-[26px]">Items</h3>
 
             <div className="flex gap-5 items-center pr-8">
@@ -383,7 +383,7 @@ const ImportProducts = () => {
               )}
             </div>
           </div>
-          <div className="max-h-[calc(100vh_-_500px)] overflow-y-auto scroll-design ">
+          <div className="max-h-[calc(100vh_-_450px)] overflow-y-auto scroll-design ">
             {items && items.length > 0 ? (
               items.map((item) => {
                 return (
