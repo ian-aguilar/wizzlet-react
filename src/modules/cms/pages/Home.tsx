@@ -15,9 +15,6 @@ import { RoutesPath } from "@/modules/Auth/types";
 // ** Services **
 import { usefetchHomeAPI } from "@/modules/Admin/Home/services/home.service";
 
-//**  config
-import { VITE_APP_API_URL } from "@/config";
-
 const CMSHome = () => {
   const [homeData, setHomeData] = useState<IForm>();
 
@@ -89,7 +86,7 @@ const CMSHome = () => {
                       </div>
                       <div className="px-5 mt-auto">
                         <img
-                          src={VITE_APP_API_URL + data.image}
+                          src={data.image as string}
                           className="w-full max-w-full h-auto"
                           alt=""
                         />
@@ -114,7 +111,7 @@ const CMSHome = () => {
               </div>
               <div className=" pt-10 sm:pt-20">
                 <img
-                  src={VITE_APP_API_URL + homeData.middleSection.image}
+                  src={homeData.middleSection.image as string}
                   className="w-full max-w-full h-auto bg-cover"
                   alt=""
                 />
