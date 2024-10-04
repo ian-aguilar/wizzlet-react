@@ -29,7 +29,7 @@ const LabelItems = ({
     return <Loader />;
   } else {
     return (
-      <div className="grid gap-y-5  h-[calc(100vh_-_620px)] max-h-[calc(100vh_-_685px)] items-start lg:max-h-[calc(100vh_-_620px)] overflow-y-auto scroll-design">
+      <div className="grid gap-y-5  h-[calc(100vh_-_400px)]  items-start  overflow-y-auto scroll-design">
         {currentData?.length ? (
           <>
             {currentData?.map((item, index) => {

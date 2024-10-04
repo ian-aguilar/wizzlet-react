@@ -14,6 +14,12 @@
 // import AmazonImg from "/images/Amazon_logo.png";
 // import EbayImg from "/images/ebay_logo.png";
 // import ProductImg from "/images/labelMAnager.png";
+
+import { Input } from "react-select/animated";
+import { InputText } from "../cms/common/InputText";
+import { Link } from "react-router-dom";
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
+
 // import Button from "@/components/form-fields/components/Button";
 const Dashboard = () => {
   return (
@@ -504,6 +510,89 @@ const Dashboard = () => {
     // </>
     <>
       <h2 className="text-blackPrimary font-bold text-3xl pb-2">Dashboard</h2>
+      <section className="RepeatSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
+        <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
+          MAin Section
+        </h2>
+        <div className=" py-3 px-5 border-l border-r border-b  mb-6 rounded-b-md ">
+          <div className="flex gap-4 mb-4">
+            <div className="grid grid-cols-12 sm:gap-x-4 gap-y-4 w-full border p-4 rounded-md">
+              {" "}
+              <h2 className=" col-span-12 font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md -mx-4 -mt-4">
+                one Section
+              </h2>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-12">
+                <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
+                  two Section
+                </h2>
+                <div className=" py-3 px-5 border-l border-r border-b mb-4  rounded-b-md ">
+                  <div className="grid grid-cols-12 sm:gap-x-4 gap-y-4 ">
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                    <div className="col-span-4">Input</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="ActionBtns flex flex-col gap-2 ">
+              <Link
+                to=""
+                className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+              >
+                {" "}
+                <DeleteIcon className=" text-redAlert " />{" "}
+              </Link>
+              <Link
+                to=""
+                className="flex justify-center items-center w-8 h-8 border bg-greenPrimary/10 border-greenPrimary rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
+              >
+                {" "}
+                <AddIconBtn className="  text-greenPrimary " />{" "}
+              </Link>
+            </div>
+          </div>
+
+          <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md ">
+            five Section
+          </h2>
+          <div className=" py-3 px-5 border-l border-r border-b  mb-6 rounded-b-md ">
+            <div className="grid grid-cols-12 sm:gap-x-4 gap-y-4 ">
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+              <div className="col-span-4">Input</div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 };
