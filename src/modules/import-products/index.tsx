@@ -28,6 +28,7 @@ import { DataNotFound } from "@/components/svgIcons";
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { pageLimitStyle, selectedMarketplaceStyle } from "./constants";
+import moment from "moment";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
@@ -78,7 +79,6 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING
@@ -181,6 +181,7 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
+        return;
         await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
@@ -265,21 +266,11 @@ const ImportProducts = () => {
             <div className="text-black font-medium">Last Sync</div>
             <p className="text-grayText">
               {syncDetails?.status === SyncStatus.PENDING
-                ? SyncStatus.PENDING
+                ? "In Progress"
                 : syncDetails?.status === SyncStatus.INPROGRESS
-                ? SyncStatus.INPROGRESS
+                ? "In Progress"
                 : syncDetails?.end_time
-                ? `${syncDetails?.status} on ${new Date(
-                    syncDetails?.end_time
-                  ).toLocaleDateString("en-GB", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                    second: "numeric",
-                    hour12: true,
-                  })}`
+                ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
                 : `Not sync yet`}
             </p>
           </div>
