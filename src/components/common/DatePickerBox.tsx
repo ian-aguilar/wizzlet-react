@@ -1,8 +1,8 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { IDatePickerBoxProps } from "./types";
 import { FieldValues } from "react-hook-form";
 import { useRef } from "react";
+import { IDatePickerBoxProps } from "./types";
 
 const DatePickerBox = <T extends FieldValues>({
   placeholder,

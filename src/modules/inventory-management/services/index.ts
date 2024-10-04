@@ -1,5 +1,5 @@
 // ** Custom hook **
-import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosDelete, useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 const CATEGORIES_PATH = "/categories";
 const PRODUCT_LIST_PATH = "/products";
 export const useGetCategoriesAPI = () => {
@@ -36,4 +36,22 @@ export const useEditProductAPi = () => {
     return callApi(`${PRODUCT_LIST_PATH}/${productId}`);
   };
   return { getEditProductsDetailsAPI, isLoading, isError, isSuccess };
+};
+
+export const useProductsDeleteAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
+
+  const deleteProductsAPI = async (data: object) => {
+    return callApi(`${PRODUCT_LIST_PATH}/products-delete`, { params: data });
+  };
+  return { deleteProductsAPI, isLoading, isError, isSuccess };
+};
+
+export const useProductDeleteAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
+
+  const deleteProductAPI = async (id: number) => {
+    return callApi(`${PRODUCT_LIST_PATH}/products-delete/${id}`);
+  };
+  return { deleteProductAPI, isLoading, isError, isSuccess };
 };

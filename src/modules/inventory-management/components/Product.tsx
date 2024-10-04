@@ -1,8 +1,12 @@
+import { useState } from "react";
 // ** Icons **
 import { DeleteIcon, EditLabelIcon } from "@/assets/Svg";
+import { DataNotFound } from "@/components/svgIcons";
 
 // ** Components **
 import Checkbox from "@/components/form-fields/components/Checkbox";
+import { Loader } from "@/components/common/Loader";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 // ** Config **
 import { VITE_APP_API_URL } from "@/config";
@@ -10,16 +14,41 @@ import { VITE_APP_API_URL } from "@/config";
 // ** Types **
 import { productProps } from "../types";
 import { useNavigate } from "react-router-dom";
-import { DataNotFound } from "@/components/svgIcons";
-import { Loader } from "@/components/common/Loader";
+
+// ** Services **
+import { useProductDeleteAPI } from "../services";
 
 const Product = ({
   currentData,
   isLoading,
+  checkboxes,
+  checkboxOnChange,
 }: {
   currentData: productProps[];
   isLoading?: boolean;
+  checkboxes: number[] | null;
+  checkboxOnChange: (id: number) => void;
 }) => {
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [deleteProduct, setDeleteProduct] = useState<number | null>(null);
+  const closeDeleteModel = () => setDeleteProduct(null);
+
+  const { deleteProductAPI, isLoading: deleteLoading } = useProductDeleteAPI();
+
+  const handleRemove = async () => {
+    closeDeleteModel();
+    setIsDeleteModel(false);
+    return;
+    if (deleteProduct) {
+      const { error } = await deleteProductAPI(Number(deleteProduct) );
+      if (error) console.log(error);
+      else {
+        closeDeleteModel();
+        setIsDeleteModel(false);
+        navigate(`/inventory-management`);
+      }
+    }
+  };
   const navigate = useNavigate();
   const handleEditProduct = (productId: number) => {
     navigate(`/inventory-management/product-form/1/${productId}`);
@@ -38,7 +67,10 @@ const Product = ({
                   className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
                 >
                   <div>
-                    <Checkbox checkLabel=" " />
+                    <Checkbox
+                      isChecked={checkboxes?.includes(item.id)}
+                      onChange={() => checkboxOnChange(item.id)}
+                    />
                   </div>
                   <div className="IBox flex gap-6 w-full ">
                     {item?.images ? (
@@ -59,7 +91,12 @@ const Product = ({
                         <div onClick={() => handleEditProduct(item?.id)}>
                           <EditLabelIcon className="cursor-pointer" />
                         </div>
-                        <div>
+                        <div
+                          onClick={() => {
+                            setIsDeleteModel(true);
+                            setDeleteProduct(item.id);
+                          }}
+                        >
                           <DeleteIcon className="text-redAlert cursor-pointer" />
                         </div>
                       </div>
@@ -148,6 +185,19 @@ const Product = ({
                 </div>
               );
             })}
+            <div>
+              {isDeleteModel && (
+                <ErrorModal
+                  onClose={() => {
+                    setIsDeleteModel(false);
+                  }}
+                  isLoading={deleteLoading}
+                  onSave={handleRemove}
+                  heading="Are you sure?"
+                  subText="This will delete your product from list"
+                />
+              )}
+            </div>
           </>
         ) : (
           <>
