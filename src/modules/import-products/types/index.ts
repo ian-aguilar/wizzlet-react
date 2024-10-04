@@ -32,3 +32,19 @@ export type IItemsProps = {
   isCheck: number[];
   setIsCheck: React.Dispatch<React.SetStateAction<number[]>>;
 };
+
+export enum SyncStatus {
+  PENDING = "Pending",
+  INPROGRESS = "Inprogress",
+  COMPLETED = "Completed",
+  FAILED = "Failed"
+}
+
+export type ISyncDetails = {
+  id?:number;
+  marketplace_id: number;
+  start_time?: Date;
+  end_time?: Date;
+  status: SyncStatus;
+  failure_reason?: JSON;
+}

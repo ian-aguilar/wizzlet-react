@@ -4,7 +4,7 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 // ** Common **
 import Button from "@/components/form-fields/components/Button";
 import { SelectMarketplace } from "./components/SelectMarketplace";
-import { IItems, IOption } from "./types";
+import { IItems, IOption, ISyncDetails, SyncStatus } from "./types";
 import { MARKETPLACE } from "@/components/common/types";
 import { ItemCard } from "./components/ItemCard";
 import Checkbox from "@/components/form-fields/components/Checkbox";
@@ -12,10 +12,11 @@ import { Pagination } from "../inventory-management/components/Pagination";
 
 // ** Services **
 import {
+  useFetchSyncDetailsAPI,
   useGetImportedProductsApi,
   useImportAmazonProductsApi,
   useImportEbayProductsApi,
-  // useImportProductsFromAmazonApi,
+  useImportProductsFromAmazonApi,
   useImportProductsFromEbayApi,
 } from "./services/importProducts.service";
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
@@ -26,6 +27,7 @@ import { DataNotFound } from "@/components/svgIcons";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
+import { pageLimitStyle, selectedMarketplaceStyle } from "./constants";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
@@ -34,7 +36,10 @@ const ImportProducts = () => {
   const [countCheckbox, setCountCheckbox] = useState<number>(0);
   const [isCheck, setIsCheck] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [sync, setSync] = useState(false);
+  const [synced, setSynced] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [amazonSyncStatus, setAmazonSyncStatus] = useState<SyncStatus>();
+  const [ebaySyncStatus, setEbaySyncStatus] = useState<SyncStatus>();
   const [itemPerPage, setItemPerPage] = useState<IOption>({
     label: "10",
     value: "10",
@@ -44,11 +49,14 @@ const ImportProducts = () => {
     connectedMarketplace: IMarketplace[];
     notConnectedMarketplace: IMarketplace[];
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
-
+  const [syncDetails, setSyncDetails] = useState<ISyncDetails>();
+  const [counter, setCounter] = useState(0);
   const { getImportedProductsApi } = useGetImportedProductsApi();
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  // const { importProductsFromAmazonApi } = useImportProductsFromAmazonApi();
+  const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
+    useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -58,14 +66,28 @@ const ImportProducts = () => {
     if (selectedMarketplace) {
       switch (selectedMarketplace.value) {
         case MARKETPLACE.EBAY: {
+          if (
+            ebaySyncStatus === SyncStatus.INPROGRESS ||
+            ebaySyncStatus === SyncStatus.PENDING
+          ) {
+            return;
+          }
           await importEbayProductsApi();
-          setSync((prev) => !prev);
+          setSyncing((sync) => !sync);
+          setSynced((prev) => !prev);
           break;
         }
         case MARKETPLACE.AMAZON: {
           return;
+          if (
+            amazonSyncStatus === SyncStatus.INPROGRESS ||
+            amazonSyncStatus === SyncStatus.PENDING
+          ) {
+            return;
+          }
           await importAmazonProductsApi();
-          setSync((prev) => !prev);
+          setSyncing((sync) => !sync);
+          setSynced((prev) => !prev);
           break;
         }
       }
@@ -112,12 +134,18 @@ const ImportProducts = () => {
           value: tempMarketplace.name.toLowerCase(),
         });
       }
+      setIsCheck([]);
     }
   };
 
   useEffect(() => {
     marketplaceListing();
+    getSyncData(selectedMarketplace?.value as string);
   }, []);
+
+  useEffect(() => {
+    getSyncData(selectedMarketplace?.value as string);
+  }, [selectedMarketplace]);
 
   const marketplaces = marketplace?.connectedMarketplace?.map((item) => {
     return {
@@ -128,10 +156,10 @@ const ImportProducts = () => {
 
   useEffect(() => {
     getImportProductsHandler();
-  }, [selectedMarketplace, sync, itemPerPage, currentPage]);
+  }, [selectedMarketplace, synced, itemPerPage, currentPage]);
 
   const selectAllHandler = () => {
-    setIsAllChecked(!isAllChecked);
+    setIsAllChecked((prev) => !prev);
     if (items) {
       const selectedItems: number[] = [];
       items.forEach((item) => {
@@ -144,6 +172,7 @@ const ImportProducts = () => {
     if (isAllChecked) {
       setIsCheck([]);
     }
+    console.log("IsAllChecked: ", isAllChecked);
   };
 
   const importProductsFromEbayHandler = async () => {
@@ -152,7 +181,7 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
-        return;
+        await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);
@@ -178,6 +207,52 @@ const ImportProducts = () => {
     }
   }, [items]);
 
+  const getSyncData = async (currentMarketplace: string) => {
+    if (currentMarketplace) {
+      const { data } = await fetchSyncDetailsApi(currentMarketplace);
+      if (data) {
+        const market = marketplace.connectedMarketplace
+          .filter((item) => item.id === data?.data?.marketplace_id)
+          .map((item) => item.name);
+        if (market[0] === MARKETPLACE.AMAZON) {
+          setAmazonSyncStatus(data?.data?.status);
+        } else if (market[0] === MARKETPLACE.EBAY) {
+          setEbaySyncStatus(data?.data?.status);
+        }
+        if (
+          data?.data?.status === SyncStatus.COMPLETED ||
+          data?.data?.status === SyncStatus.FAILED
+        ) {
+          setSyncing(false);
+          await getImportProductsHandler();
+        } else if (
+          data?.data?.status === SyncStatus.INPROGRESS ||
+          data?.data?.status === SyncStatus.PENDING
+        ) {
+          setSyncing(true);
+        } else {
+          setSyncing(false);
+        }
+        setSyncDetails(data?.data);
+      } else {
+        setSyncing(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (syncing) {
+      getSyncData(selectedMarketplace?.value as string);
+    }
+  }, [counter, synced]);
+
   return (
     <div>
       <div className="flex justify-between gap-4 mb-2 items-center">
@@ -187,8 +262,26 @@ const ImportProducts = () => {
             <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
           </span>
           <div className="whitespace-nowrap text-sm">
-            <div className="text-black font-medium">Last Auto Sync</div>
-            <p className="text-grayText">15 May 2020 9:30 am</p>
+            <div className="text-black font-medium">Last Sync</div>
+            <p className="text-grayText">
+              {syncDetails?.status === SyncStatus.PENDING
+                ? SyncStatus.PENDING
+                : syncDetails?.status === SyncStatus.INPROGRESS
+                ? SyncStatus.INPROGRESS
+                : syncDetails?.end_time
+                ? `${syncDetails?.status} on ${new Date(
+                    syncDetails?.end_time
+                  ).toLocaleDateString("en-GB", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                    hour12: true,
+                  })}`
+                : `Not sync yet`}
+            </p>
           </div>
         </div>
       </div>
@@ -199,42 +292,7 @@ const ImportProducts = () => {
         </p>
         <div className="flex gap-4 items-center ">
           <SelectMarketplace
-            StylesConfig={{
-              singleValue: (base: any) => ({
-                ...base,
-                color: "#fff !important",
-                fontSize: "16px",
-                lineHeight: "18px",
-              }),
-              indicatorSeparator: (base: any) => ({
-                ...base,
-                display: "none",
-              }),
-              dropdownIndicator: (base: any) => ({
-                ...base,
-                color: "#fff  !important",
-                paddingRight: "0px",
-              }),
-              control: (base: any) => ({
-                ...base,
-                background: "#09A17A",
-                border: "1px solid rgb(31 77 161 / 0.2) !important",
-                padding: "3px 14px",
-                boxSizing: "border-box",
-                borderRadius: "5px",
-                boxShadow: "none",
-                color: "#fff ",
-              }),
-              valueContainer: (base: any) => ({
-                ...base,
-                paddingLeft: "0px",
-                color: "#fff",
-              }),
-              placeholder: (base: any) => ({
-                ...base,
-                color: "#fff",
-              }),
-            }}
+            StylesConfig={selectedMarketplaceStyle}
             isDisabled={isLoading || syncAmazonLoading}
             isSearchable={false}
             value={selectedMarketplace}
@@ -242,24 +300,32 @@ const ImportProducts = () => {
             options={marketplaces}
             onChange={(result: IOption) => {
               setSelectedMarketplace(result as IOption);
+              setIsCheck([]);
             }}
           />
           <Button
             btnName={"Sync All Products"}
             onClickHandler={importProductsHandler}
-            isLoading={isLoading || syncAmazonLoading}
+            isLoading={
+              isLoading ||
+              syncAmazonLoading ||
+              (selectedMarketplace?.value === MARKETPLACE.AMAZON &&
+                (amazonSyncStatus === SyncStatus.INPROGRESS ||
+                  amazonSyncStatus === SyncStatus.PENDING)) ||
+              (selectedMarketplace?.value === MARKETPLACE.EBAY &&
+                (ebaySyncStatus === SyncStatus.INPROGRESS ||
+                  ebaySyncStatus === SyncStatus.PENDING))
+            }
             btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
           />
-          <div>
-            {isCheck.length > 0 && (
-              <Button
-                btnName={`Import ${isCheck.length} Products`}
-                onClickHandler={importProductsFromEbayHandler}
-                isLoading={importLoading}
-                btnClass="!w-auto !ml-auto "
-              />
-            )}
-          </div>
+          {isCheck.length > 0 && (
+            <Button
+              btnName={`Import ${isCheck.length} Products`}
+              onClickHandler={importProductsFromEbayHandler}
+              isLoading={importLoading || storeAmazonLoading}
+              btnClass="!w-auto !ml-auto "
+            />
+          )}
         </div>
         {/* <div className="flex gap-4 items-start pt-5">
           <div className="flex flex-col gap-2 ">
@@ -293,39 +359,7 @@ const ImportProducts = () => {
               <div className="inline-flex gap-2 items-center text-grayText">
                 Show
                 <SelectMarketplace
-                  StylesConfig={{
-                    singleValue: (base: any) => ({
-                      ...base,
-                      color: "#000000",
-                      fontSize: "16px",
-                      lineHeight: "18px",
-                    }),
-                    indicatorSeparator: (base: any) => ({
-                      ...base,
-                      display: "none",
-                    }),
-                    dropdownIndicator: (base: any) => ({
-                      ...base,
-                      color: "#ddd",
-                      paddingRight: "0px",
-                    }),
-                    control: (base: any) => ({
-                      ...base,
-                      background: "transparent",
-                      border: "1px solid rgb(31 77 161 / 0.2) !important",
-                      padding: "3px 7px",
-                      boxSizing: "border-box",
-                      borderRadius: "5px",
-                      boxShadow: "none",
-                    }),
-                    valueContainer: (base: any) => ({
-                      ...base,
-                      paddingLeft: "0px",
-                    }),
-                    colors: {
-                      text: "#fff",
-                    },
-                  }}
+                  StylesConfig={pageLimitStyle}
                   isDisabled={isLoading || syncAmazonLoading}
                   options={[
                     { label: "10", value: "10" },
@@ -346,36 +380,7 @@ const ImportProducts = () => {
               </div>
 
               {/* <SelectMarketplace
-                StylesConfig={{
-                  singleValue: (base: any) => ({
-                    ...base,
-                    color: "#fff",
-                    fontSize: "16px",
-                    lineHeight: "18px",
-                  }),
-                  indicatorSeparator: (base: any) => ({
-                    ...base,
-                    display: "none",
-                  }),
-                  dropdownIndicator: (base: any) => ({
-                    ...base,
-                    color: "#ddd",
-                    paddingRight: "0px",
-                  }),
-                  control: (base: any) => ({
-                    ...base,
-                    background: "transparent",
-                    border: "1px solid rgb(31 77 161 / 0.2) !important",
-                    padding: "3px 7px",
-                    boxSizing: "border-box",
-                    borderRadius: "5px",
-                    boxShadow: "none",
-                  }),
-                  valueContainer: (base: any) => ({
-                    ...base,
-                    paddingLeft: "0px",
-                  }),
-                }}
+                StylesConfig={newestBoxStyle}
                 placeholder="Newest"
               /> */}
               {countCheckbox > 0 && (
