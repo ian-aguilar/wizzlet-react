@@ -105,3 +105,17 @@ export interface IInputBox {
   className?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
+
+export type IDatePickerBoxProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  placeholder?: string;
+  label?: string;
+  isDisabled?: boolean;
+  value?: Date;
+  maxDate?: Date;
+  icon?: ReactNode;
+  InputRightIcon?: ReactNode;
+  dateFormat?: string;
+  onChange: (...event: any[]) => void;
+};
