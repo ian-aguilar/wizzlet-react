@@ -12,6 +12,7 @@ import {
 import SelectField from "../form-fields/components/SelectField";
 import Input from "../form-fields/components/Input";
 import { getAppendField } from "./helper";
+import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
 
 const FormBuilder = <T extends FieldValues>({
   fields,
@@ -28,7 +29,7 @@ const FormBuilder = <T extends FieldValues>({
     switch (data.type) {
       case FieldsTypeEnum.DATE:
         return (
-          <div className="py-1">
+          <div className="col-span-4 px-2">
             <DateInput
               name={name}
               className="mb-2"
@@ -46,7 +47,7 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.BOOLEAN:
       case FieldsTypeEnum.INTEGER:
         return (
-          <div className="py-1">
+          <div className="col-span-4 px-2">
             <Input
               name={name}
               className="mb-2"
@@ -59,17 +60,19 @@ const FormBuilder = <T extends FieldValues>({
         );
 
       case FieldsTypeEnum.OPTIONS:
+      case FieldsTypeEnum.MULTI_SELECT:
         return (
-          <div className="py-1">
+          <div className="col-span-4 px-2">
             <SelectField<T>
               name={name}
               className="mb-2"
               control={control}
               errors={errors}
-              label={data.title?data.title : data.name}
+              label={data?.title ? data?.title : data?.name}
               placeholder=""
               options={data.option || []}
               isClearable={true}
+              isMulti={data?.isMulti ? true : false}
             />
           </div>
         );
@@ -93,7 +96,6 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.OBJECT:
         return (
           <>
-            <h2 className="text-red-500">{data.title}</h2>
             <div className="flex ml-[20px]">
               <FormBuilder
                 watch={watch}
@@ -115,9 +117,13 @@ const FormBuilder = <T extends FieldValues>({
 
   return (
     <>
-      {fields.map((field) => (
-        <Fragment key={field.name}>{getField(field)}</Fragment>
-      ))}
+      <section className="RepeatSection w-full bg-white">
+        <div className="">
+          {fields.map((field) => (
+            <Fragment key={field.name}>{getField(field)}</Fragment>
+          ))}
+        </div>
+      </section>
     </>
   );
 };
@@ -140,39 +146,55 @@ const FieldArrayComponent = <T extends FieldValues>({
   const values = watch(fieldArrayName);
   return (
     <>
-      <h2 className="text-blue-500">{data.title}</h2>
+      <div>
+        <section className="RepeatSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design  mb-4">
+          <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+            {data?.title || data?.name}
+          </h2>
+          <div className="py-3 px-5 border-l border-r border-b rounded-b-md">
+            <div className="grid  sm:gap-x-4 gap-y-4 max-h-[400px] scroll-design overflow-y-auto ">
+              {values &&
+                values.map((_: any, index: number) => (
+                  <div key={index} className="flex">
+                    <FormBuilder
+                      control={control}
+                      errors={errors}
+                      fields={data.items as FieldsType<T>[]}
+                      fieldArrayName={`${fieldArrayName}[${index}]`}
+                      watch={watch}
+                    />
 
-      {values &&
-        values.map((_: any, index: number) => (
-          <div key={index} className="flex">
-            <FormBuilder
-              control={control}
-              errors={errors}
-              fields={data.items as FieldsType<T>[]}
-              fieldArrayName={`${fieldArrayName}[${index}]`}
-              watch={watch}
-            />
-            <span
-              onClick={() => {
-                if (data.items) {
-                  const field = getAppendField(data.items);
-                  append(field);
-                }
-              }}
-            >
-              Add
-            </span>
-            {index > 0 && (
-              <span
-                onClick={() => {
-                  remove(index);
-                }}
-              >
-                Remove
-              </span>
-            )}
+                    {(data?.addMore === undefined ||
+                      data?.addMore === true) && (
+                      <div className="ActionBtns flex flex-col gap-2 mt-8 ml-2">
+                        <span
+                          className="     flex justify-center items-center w-8 h-8 border bg-greenPrimary/10 border-greenPrimary rounded-md cursor-pointer hover:brightness-125 transition-all duration-300"
+                          onClick={() => {
+                            if (data.items) {
+                              const field = getAppendField(data.items);
+                              append(field);
+                            }
+                          }}>
+                          <AddIconBtn className="  text-greenPrimary " />
+                        </span>
+
+                        {index > 0 && (
+                          <span
+                            className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300"
+                            onClick={() => {
+                              remove(index);
+                            }}>
+                            <DeleteIcon className=" text-redAlert " />
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
-        ))}
+        </section>
+      </div>
     </>
   );
 };

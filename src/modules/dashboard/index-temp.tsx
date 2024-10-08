@@ -15,11 +15,6 @@
 // import EbayImg from "/images/ebay_logo.png";
 // import ProductImg from "/images/labelMAnager.png";
 
-import { Input } from "react-select/animated";
-import { InputText } from "../cms/common/InputText";
-import { Link } from "react-router-dom";
-import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
-
 // import Button from "@/components/form-fields/components/Button";
 const Dashboard = () => {
   return (
@@ -553,22 +548,6 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="ActionBtns flex flex-col gap-2 ">
-              <Link
-                to=""
-                className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-              >
-                {" "}
-                <DeleteIcon className=" text-redAlert " />{" "}
-              </Link>
-              <Link
-                to=""
-                className="flex justify-center items-center w-8 h-8 border bg-greenPrimary/10 border-greenPrimary rounded-md cursor-pointer hover:brightness-125 transition-all duration-300 "
-              >
-                {" "}
-                <AddIconBtn className="  text-greenPrimary " />{" "}
-              </Link>
             </div>
           </div>
 
