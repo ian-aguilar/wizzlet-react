@@ -23,22 +23,21 @@ import { Pagination } from "./components/Pagination";
 import DropDown from "./components/DropDown";
 import Product from "./components/Product";
 import AsyncSelectField from "./components/AsyncSelectField";
+import DatePickerBox from "@/components/common/DatePickerBox";
+import { FilterBox } from "./components/FilterBox";
 
 // ** Helper **
-import { status } from "./helper/inventryData";
+import { status } from "./helper/constant";
 
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 import { useGetCategoriesAPI, useProductListingAPI } from "./services";
+import { useFetchLabelDataAPI } from "../settings/services/label.service";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { btnShowType } from "@/components/form-fields/types";
-import { E_PRODUCT_STATUS, Option, productProps } from "./types";
-
-// Top corner filter
-// import { FilterBox } from "./components/FilterBox";
-// import { InputBox } from "@/components/common/InputBox";
+import { E_PRODUCT_STATUS, Option, TopFilter, productProps } from "./types";
 
 const InventoryManagement = () => {
   // ** States **
@@ -46,11 +45,12 @@ const InventoryManagement = () => {
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [productTag, setProductTag] = useState<Option[] | null>(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
-  // const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
-  //   undefined
-  // );
-  // const [filterDate, setFilterDate] = useState<Date>();
+  const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
+    undefined
+  );
+  const [filterDate, setFilterDate] = useState<Date>();
   const [productStatus, setProductStatus] = useState<string>(
     E_PRODUCT_STATUS.active
   );
@@ -64,6 +64,7 @@ const InventoryManagement = () => {
     label: "10",
     value: "10",
   });
+  const [productType, setProductType] = useState<Option | null>(null);
   const [products, setProducts] = useState<{
     products: productProps[];
     totalRecord?: number;
@@ -78,6 +79,8 @@ const InventoryManagement = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
+  const { getLabelListingAPI, isLoading: productTagLoading } =
+    useFetchLabelDataAPI();
   const { getProductsDetailsAPI, isLoading: productListLoading } =
     useProductListingAPI();
 
@@ -103,10 +106,14 @@ const InventoryManagement = () => {
     status: string = "",
     page: number = Number(currentPage),
     limit: number = Number(itemPerPage.value),
-    categoryName: Option[] | undefined = category
+    categoryName: Option[] | undefined = category,
+    filterCreatedDate: Date | undefined = filterDate,
+    productTypeData: Option | null = productType,
+    productLabel: Option[] | null = productTag
   ) => {
     const categoryLabels = categoryName?.map((item) => item.label) || undefined;
-
+    const productTags = productLabel?.map((item) => item.label) || undefined;
+    console.log("productTags: ", productTags);
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
@@ -118,6 +125,11 @@ const InventoryManagement = () => {
       search: search,
       currentPage: page,
       itemPerPage: limit,
+      filterDate: filterCreatedDate,
+      productType: productTypeData?.value,
+      productTags: {
+        labels: productTags,
+      },
     });
     if (!error && data) {
       setProducts(data?.data);
@@ -136,7 +148,10 @@ const InventoryManagement = () => {
         productStatus,
         newPage,
         Number(itemPerPage.value),
-        category
+        category,
+        filterDate,
+        productType,
+        productTag
       );
     },
     [
@@ -156,7 +171,24 @@ const InventoryManagement = () => {
       page
     );
     if (!error && data) {
+      console.log(data?.data);
       return data?.data;
+    }
+  };
+
+  const getProductTags = async (search: string, page: number) => {
+    const { data, error } = await getLabelListingAPI({
+      search: search,
+      page: page,
+      limit: 15,
+    });
+    if (!error && data) {
+      const tags = data?.data?.data.map(
+        (item: { id: number; name: string }) => {
+          return { value: item.id, label: item.name };
+        }
+      );
+      return { option: tags, count: data.data?.count };
     }
   };
 
@@ -181,7 +213,17 @@ const InventoryManagement = () => {
 
   // ** search box with debouncing **
   const request = debounce(
-    (value, selectedMarketplace, status, page, itemPerPage, category) => {
+    (
+      value,
+      selectedMarketplace,
+      status,
+      page,
+      itemPerPage,
+      category,
+      filterDate,
+      productType,
+      productTag
+    ) => {
       setCurrentPage(1);
       getProductsDetails(
         value,
@@ -189,7 +231,10 @@ const InventoryManagement = () => {
         status,
         page,
         itemPerPage,
-        category
+        category,
+        filterDate,
+        productType,
+        productTag
       );
     },
     500
@@ -200,7 +245,10 @@ const InventoryManagement = () => {
       value: string,
       selectedMarketplace: number[],
       status: string,
-      category: Option[] | undefined
+      category: Option[] | undefined,
+      filterDate: Date | undefined,
+      productType: Option | null,
+      productTag: Option[] | null
     ) =>
       request(
         value,
@@ -208,7 +256,10 @@ const InventoryManagement = () => {
         status,
         1,
         itemPerPage.value,
-        category
+        category,
+        filterDate,
+        productType,
+        productTag
       ),
     [itemPerPage]
   );
@@ -219,7 +270,10 @@ const InventoryManagement = () => {
       event.currentTarget.value.trim(),
       selectedMarketplace,
       productStatus,
-      category
+      category,
+      filterDate,
+      productType,
+      productTag
     );
   };
 
@@ -230,9 +284,21 @@ const InventoryManagement = () => {
       productStatus,
       Number(currentPage),
       Number(itemPerPage.value),
-      category
+      category,
+      filterDate,
+      productType,
+      productTag
     );
-  }, [currentPage, productStatus, itemPerPage, category, selectedMarketplace]);
+  }, [
+    currentPage,
+    productStatus,
+    itemPerPage,
+    category,
+    selectedMarketplace,
+    filterDate,
+    productType,
+    productTag,
+  ]);
 
   return (
     <div>
@@ -246,41 +312,129 @@ const InventoryManagement = () => {
               onClickHandler={() => setIsFilterBoxOpen(!isFilterBoxOpen)}
               btnName="Filters"
               showType={btnShowType.primary}
-              btnClass="!text-base bg-white "
+              btnClass={`!text-base ${
+                filterDate || productTag?.length || productType
+                  ? `bg-greenPrimary text-white`
+                  : `bg-white`
+              }`}
               BtnIconLeft={<CategoryBtnIcon />}
             />
             {/* Top corner filter  */}
-            {/*
             <div className="relative ">
-              <FilterBox label="FILTER BY" isOpen={isFilterBoxOpen}>
+              <FilterBox
+                label="FILTER BY"
+                isOpen={isFilterBoxOpen}
+                clearButton={
+                  (filterDate || productTag?.length || productType) && (
+                    <Button
+                      showType={btnShowType.greenRound}
+                      btnName="CLEAR FILTER"
+                      btnClass="!bg-greenPrimary text-white !text-base h-8 w-34 text-sm"
+                      onClickHandler={() => {
+                        setFilterDate(undefined);
+                        setProductType(null);
+                        setProductTag(null);
+                      }}
+                    />
+                  )
+                }
+              >
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
                     if (e) {
+                      setFilterDate(undefined);
+                      setProductType(null);
+                      setProductTag(null);
                       setCurrentFilter(e);
                     }
                   }}
                   isSearchable={false}
                   dropdownClass="!font-medium hover:border-blackPrimary/20 bg-slate-300 text-black min-w-80 !text-base"
-                  options={[{ id: 1, name: "Date Created" }]}
+                  options={[
+                    { id: 1, name: TopFilter.dateCreated },
+                    { id: 2, name: TopFilter.productTag },
+                    { id: 3, name: TopFilter.productType },
+                  ]}
                 />
                 {currentFilter?.value === "Date Created" ? (
                   <div>
-                    <InputBox
-                      type="date"
+                    <DatePickerBox
+                      // label="Filter by Date"
+                      icon={true}
+                      className="!font-medium hover:border-blackPrimary/20 border text-grayText  !text-base min-w-80  !py-2 !px-3 "
+                      dateFormat="dd/MM/yyyy"
+                      maxDate={new Date()}
                       name="dateCreated"
                       onChange={(e) => {
-                        setFilterDate(e.currentTarget.value as unknown as Date);
+                        console.log("Date:", e);
+                        setCurrentPage(1);
+                        setFilterDate(new Date(e));
                       }}
                       value={filterDate}
-                      placeholder="Select date"
+                      placeholder="DD/MM/YYYY"
                     />
                   </div>
-                ) : (
-                  <div></div>
-                )}
+                ) : null}
+                {currentFilter?.value === "Product Type" ? (
+                  <div>
+                    <DropDown
+                      placeholder="Select type"
+                      value={productType || null}
+                      dropdownClass="hover:!border-grayText/30 !text-base !font-medium  !py-3 bg-white "
+                      options={[
+                        { id: 1, name: "Normal" },
+                        { id: 2, name: "Variant" },
+                      ]}
+                      onChange={(e) => {
+                        console.log("Product type:", e);
+                        setCurrentPage(1);
+                        if (e) {
+                          setProductType(e);
+                        }
+                      }}
+                    />
+                  </div>
+                ) : null}
+                {currentFilter?.value === "Product Tags" ? (
+                  <div>
+                    <AsyncSelectField
+                      name="selectTag"
+                      serveSideSearch={true}
+                      getOnChange={(e) => {
+                        setCurrentPage(1);
+                        if (!e.length) {
+                          setProductTag(null);
+                          return;
+                        }
+                        if (e) {
+                          setProductTag(e);
+                          getProductsDetails(
+                            searchTerm,
+                            selectedMarketplace,
+                            productStatus,
+                            1,
+                            Number(itemPerPage.value),
+                            category,
+                            filterDate,
+                            productType,
+                            productTag
+                          );
+                        }
+                      }}
+                      isLoading={productTagLoading}
+                      isMulti={true}
+                      isSearchable={true}
+                      notClearable={true}
+                      getOptions={getProductTags}
+                      value={productTag ? productTag : null}
+                      className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 "
+                      placeholder="Select Tag"
+                    />
+                  </div>
+                ) : null}
               </FilterBox>
-            </div> */}
+            </div>
           </div>
           <Button
             btnName="Add New"
@@ -416,7 +570,10 @@ const InventoryManagement = () => {
                     productStatus,
                     1,
                     Number(itemPerPage.value),
-                    category
+                    category,
+                    filterDate,
+                    productType,
+                    productTag
                   );
                 }
               }}
@@ -466,7 +623,10 @@ const InventoryManagement = () => {
                         productStatus,
                         1,
                         Number(e.value),
-                        category
+                        category,
+                        filterDate,
+                        productType,
+                        productTag
                       );
                     }
                   }}
