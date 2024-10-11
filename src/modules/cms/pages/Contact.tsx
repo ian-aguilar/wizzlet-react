@@ -89,6 +89,7 @@ const Contact = () => {
                 <div className="grid grid-cols-12 md:gap-x-7">
                   <div className=" col-span-12 md:col-span-6">
                     <Input
+                      className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                       placeholder="Enter First Name"
                       name="firstName"
                       textLabelName="First Name *"
@@ -100,6 +101,7 @@ const Contact = () => {
                   </div>
                   <div className=" col-span-12 md:col-span-6">
                     <Input
+                      className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                       placeholder="Enter Last Name"
                       name="lastName"
                       textLabelName="Last Name *"
@@ -111,6 +113,7 @@ const Contact = () => {
                   </div>
                   <div className=" col-span-12 md:col-span-6">
                     <Input
+                      className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                       placeholder="Enter Email Address"
                       name="email"
                       textLabelName="Email Address *"
@@ -122,6 +125,7 @@ const Contact = () => {
                   </div>
                   <div className=" col-span-12 md:col-span-6">
                     <Input
+                      className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                       placeholder="Enter Phone Number"
                       name="phoneNo"
                       textLabelName="Phone Number"
@@ -133,6 +137,7 @@ const Contact = () => {
                   </div>
                 </div>
                 <Input
+                  className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                   placeholder="Enter Company Name"
                   name="companyName"
                   textLabelName="Company Name"
@@ -142,6 +147,7 @@ const Contact = () => {
                   autoComplete={""}
                 />
                 <TextArea
+                  className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
                   placeholder="Enter Message"
                   name="message"
                   textLabelName="Message"
@@ -162,7 +168,7 @@ const Contact = () => {
             </form>
           </div>
         ) : (
-          <Loader loaderClass="!h-[calc(100vh-103px)] !top-[103px] " />
+          <Loader loaderClass="lg:!h-[calc(100vh-103px)] lg:!top-[103px] " />
         )}
       </section>
     </>

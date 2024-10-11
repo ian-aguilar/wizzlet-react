@@ -9,12 +9,12 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
     }
   };
   return (
-    <div className="flex bg-white items-center mt-2 p-5  gap-4 border border-grayLightBody/20 rounded-md ">
+    <div className="flex bg-white items-center mt-2 py-2 px-5  gap-4 border border-grayLightBody/20 rounded-md ">
       <div className="flex gap-4 items-start">
         <div>
           <img
             src={item.picture_url}
-            className="w-[171px] h-[132px] object-cover rounded-md "
+            className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
           />
         </div>
         <div>
@@ -30,7 +30,7 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
             )}
           </div>
           <h2 className="text-[19px] font-medium py-2 ">{item.title}</h2>
-          <div className="flex gap-4 text-sm ">
+          <div className="flex flex-wrap gap-4 text-sm ">
             <span className="font-medium flex items-center gap-2">
               {" "}
               <p className="font-normal inline-block text-grayText">

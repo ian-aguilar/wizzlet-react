@@ -28,32 +28,33 @@ const Product = ({
     return <Loader />;
   } else {
     return (
-      <div className="grid grid-cols-12 items-start xl:gap-x-5 gap-y-5  max-h-[calc(100vh_-_685px)] h-[calc(100vh_-_620px)] lg:max-h-[calc(100vh_-_620px)] overflow-y-auto scroll-design ">
+      <div className="grid grid-cols-12 items-start xl:gap-x-3 gap-y-3  h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_510px)]  overflow-y-auto scroll-design ">
         {currentData?.length ? (
           <>
             {currentData?.map((item, index) => {
               return (
                 <div
                   key={index}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-5 flex items-center gap-3"
+                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3"
                 >
                   <div>
                     <Checkbox checkLabel=" " />
                   </div>
                   <div className="IBox flex gap-6 w-full ">
-                    {item?.images ? (
-                      <div className="prodImg">
+                    <div className="prodImg w-[170px]">
+                      {item?.images ? (
                         <img
                           src={
                             item?.images?.indexOf("http") !== -1
                               ? `${item?.images}`
                               : `${VITE_APP_API_URL}${item?.images}`
                           }
-                          className="max-w-[170px] max-h-[132px]"
+                          className="max-w-[170px] min-w-[170px]  max-h-[132px] object-contain "
                           alt=""
                         />
-                      </div>
-                    ) : null}
+                      ) : null}
+                    </div>
+
                     <div className="relative w-full">
                       <div className="absolute right-1 top-1 flex gap-2 ">
                         <div onClick={() => handleEditProduct(item?.id)}>
