@@ -18,10 +18,13 @@ export const PrivateRoutesPath = {
   setting: {
     view: "/setting",
     profile: { view: "/setting/profile" },
-    labelManager: { view: "/setting/label-manager", viewLabel : { view:"/setting/label-manager/view-label/:labelId"} },
+    labelManager: {
+      view: "/setting/label-manager",
+      viewLabel: { view: "/setting/label-manager/view-label/:labelId" },
+    },
     changePassword: { view: "/setting/change-password" },
   },
-  inventoryManagement: { view: "/inventory-management",  },
+  inventoryManagement: { view: "/inventory-management" },
   productForm: { view: "/inventory-management/product-form/:step/:productId" },
   import: { view: "/import" },
   userManagement: { view: "/user-management" },
