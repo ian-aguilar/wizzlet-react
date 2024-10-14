@@ -24,7 +24,6 @@ const FormBuilder = <T extends FieldValues>({
     const name = (
       fieldArrayName ? fieldArrayName + "." + data.name : data.name
     ) as any;
-
     switch (data.type) {
       case FieldsTypeEnum.DATE:
         return (
@@ -34,7 +33,7 @@ const FormBuilder = <T extends FieldValues>({
               className="mb-2"
               control={control}
               errors={errors}
-              label={data.title !== null ? data.title : data.name}
+              label={data.title ? data.title : data.name}
               placeholder=""
             />
           </div>
@@ -52,7 +51,7 @@ const FormBuilder = <T extends FieldValues>({
               className="mb-2"
               control={control}
               errors={errors}
-              textLabelName={data.title !== null ? data.title : data.name}
+              textLabelName={data.title ? data.title : data.name}
               placeholder=""
             />
           </div>
@@ -66,7 +65,7 @@ const FormBuilder = <T extends FieldValues>({
               className="mb-2"
               control={control}
               errors={errors}
-              label={data.title !== null ? data.title : data.name}
+              label={data.title ? data.title : data.name}
               placeholder=""
               options={data.option || []}
               isClearable={true}
