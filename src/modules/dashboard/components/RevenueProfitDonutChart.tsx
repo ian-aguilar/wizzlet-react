@@ -13,26 +13,38 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
 }) => {
   ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
+  const [dataType, setDataType] = useState<string>("Profit"); // State for dropdown
   const [ebayProfit, setEbayProfit] = useState<number>(55238); // Initial profit for eBay
   const [amazonProfit, setAmazonProfit] = useState<number>(55238); // Initial profit for Amazon
+  const [ebayRevenue, setEbayRevenue] = useState<number>(120000); // Initial revenue for eBay
+  const [amazonRevenue, setAmazonRevenue] = useState<number>(135000); // Initial revenue for Amazon
 
-  // Mock function to fetch data based on date range
-  const fetchDataByDateRange = (start: Date, end: Date) => {
-    // Implement your logic to fetch or calculate profits based on date range
-    setEbayProfit(Math.floor(Math.random() * 100000));
-    setAmazonProfit(Math.floor(Math.random() * 100000));
+  // Mock function to fetch data based on date range and data type (Profit or Revenue)
+  const fetchDataByDateRange = (start: Date, end: Date, type: string) => {
+    // Logic to fetch or calculate profits/revenue based on date range and type
+    if (type === "Profit") {
+      setEbayProfit(Math.floor(Math.random() * 100000));
+      setAmazonProfit(Math.floor(Math.random() * 100000));
+    } else if (type === "Revenue") {
+      setEbayRevenue(Math.floor(Math.random() * 200000));
+      setAmazonRevenue(Math.floor(Math.random() * 200000));
+    }
   };
 
   useEffect(() => {
-    // Fetch new data whenever startDate or endDate changes
-    fetchDataByDateRange(startDate, endDate);
-  }, [startDate, endDate]);
+    // Fetch new data whenever startDate, endDate, or dataType changes
+    fetchDataByDateRange(startDate, endDate, dataType);
+  }, [startDate, endDate, dataType]);
 
+  // Data for the Doughnut chart based on the selected dataType
   const data = {
     labels: ["eBay", "Amazon"],
     datasets: [
       {
-        data: [ebayProfit, amazonProfit],
+        data:
+          dataType === "Profit"
+            ? [ebayProfit, amazonProfit]
+            : [ebayRevenue, amazonRevenue],
         backgroundColor: ["#E1E1E1", "#34B2A0"], // Adjust colors as needed
         borderWidth: 0,
       },
@@ -45,64 +57,37 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
       legend: {
         position: "top" as const,
       },
-      // title: {
-      //   display: true,
-      //   text: "Revenue & Profit",
-      // },
       tooltip: {
-        enabled: false, // Disable default tooltips
-        // external: (context: any) => {
-        //   const { chart, tooltip } = context;
-        //   let tooltipEl = document.getElementById("chartjs-tooltip");
-
-        //   if (!tooltipEl) {
-        //     tooltipEl = document.createElement("div");
-        //     tooltipEl.id = "chartjs-tooltip";
-        //     tooltipEl.style.opacity = "0";
-        //     tooltipEl.style.position = "absolute";
-        //     tooltipEl.style.background = "#fff";
-        //     tooltipEl.style.border = "1px solid #ccc";
-        //     tooltipEl.style.padding = "8px";
-        //     tooltipEl.style.borderRadius = "4px";
-        //     tooltipEl.style.pointerEvents = "none";
-        //     tooltipEl.style.zIndex = "1000";
-        //     document.body.appendChild(tooltipEl);
-        //   }
-
-        //   if (tooltip.opacity === 0) {
-        //     tooltipEl.style.opacity = "1";
-        //     return;
-        //   }
-
-        //   if (tooltip.body) {
-        //     const bodyLines = tooltip.body.map((b: any) => b.lines);
-        //     const title = tooltip.title || [];
-
-        //     tooltipEl.innerHTML = `
-        //       <div style="font-weight: bold;">${title[0]}</div>
-        //       <div>Profit: $${bodyLines[0]}</div>
-        //     `;
-        //   }
-
-        //   const position = chart.canvas.getBoundingClientRect();
-
-        //   tooltipEl.style.opacity = "1";
-        //   // tooltipEl.style.left =
-        //   //   position.left + window.pageXOffset + tooltip.caretX + "px";
-        //   // tooltipEl.style.top =
-        //   //   position.top + window.pageYOffset + tooltip.caretY + "px";
-        // },
+        enabled: true,
       },
     },
   };
 
   return (
     <div>
+      {/* Dropdown to switch between Profit and Revenue */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <label htmlFor="dataType">Select Data: </label>
+        <select
+          id="dataType"
+          value={dataType}
+          onChange={(e) => setDataType(e.target.value)}>
+          <option value="Profit">Profit</option>
+          <option value="Revenue">Revenue</option>
+        </select>
+      </div>
+
+      {/* Doughnut Chart */}
       <div style={{ maxWidth: "100%", margin: "0 auto" }}>
         <Doughnut data={data} options={options} />
         <div style={{ textAlign: "center" }}>
-          <h4>eBay Profit: ${ebayProfit}</h4>
-          <h4>Amazon Profit: ${amazonProfit}</h4>
+          <h4>
+            eBay {dataType}: ${dataType === "Profit" ? ebayProfit : ebayRevenue}
+          </h4>
+          <h4>
+            Amazon {dataType}: $
+            {dataType === "Profit" ? amazonProfit : amazonRevenue}
+          </h4>
         </div>
       </div>
 

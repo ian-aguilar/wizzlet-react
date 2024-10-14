@@ -10,6 +10,7 @@ interface DatePickerWithMonthSelectProps {
   onMonthChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onStartDateChange: (date: Date) => void;
   onEndDateChange: (date: Date) => void;
+  userFullName?: string;
 }
 
 const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
@@ -19,11 +20,14 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
   onMonthChange,
   onStartDateChange,
   onEndDateChange,
+  userFullName,
 }) => {
   return (
     <div className="flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10">
       <div>
-        <h2 className="text-3xl font-bold line-clamp-1">Hello, Devid!</h2>
+        <h2 className="text-3xl font-bold line-clamp-1">
+          {`Hello, ${userFullName}!`}
+        </h2>
         <p className="text-grayText text-lg line-clamp-1">
           Explore Marketplace Information and activity
         </p>
@@ -35,8 +39,7 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
             className="bg-black text-white py-2 lg:px-2 !rounded-r-none "
             id="month-select"
             value={selectedMonth}
-            onChange={onMonthChange}
-          >
+            onChange={onMonthChange}>
             {Array.from({ length: 12 }, (_, i) => {
               const monthName = new Date(0, i).toLocaleString("en-US", {
                 month: "long",

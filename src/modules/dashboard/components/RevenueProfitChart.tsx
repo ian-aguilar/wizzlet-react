@@ -113,54 +113,55 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
+        position: "top",
       },
-      // title: {
-      //   display: true,
-      //   text: "Revenue & Profit",
-      // },
       tooltip: {
-        enabled: true,
-
-        // external: (context: any) => {
+        enabled: true, // Disable the default tooltip
+        // external: (context) => {
         //   const { chart, tooltip } = context;
-        //   const tooltipEl = document.getElementById("chartjs-tooltip");
+        //   let tooltipEl = document.getElementById("chartjs-tooltip");
 
+        //   // Create tooltip element if it doesn't exist
         //   if (!tooltipEl) {
-        //     return;
+        //     tooltipEl = document.createElement("div");
+        //     tooltipEl.id = "chartjs-tooltip";
+        //     tooltipEl.style.position = "absolute";
+        //     tooltipEl.style.background = "white";
+        //     tooltipEl.style.borderRadius = "4px";
+        //     tooltipEl.style.pointerEvents = "none";
+        //     tooltipEl.style.boxShadow = "0px 0px 12px rgba(0, 0, 0, 0.1)";
+        //     tooltipEl.style.padding = "8px";
+        //     document.body.appendChild(tooltipEl);
         //   }
 
+        //   // Hide if no tooltip
         //   if (tooltip.opacity === 0) {
         //     tooltipEl.style.opacity = "0";
         //     return;
         //   }
 
+        //   // Set content for the tooltip
         //   tooltipEl.innerHTML = `
-        //     <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);">
-        //       <div style="font-weight: bold;">${tooltip.body[0].lines[0]}</div>
-        //       <div>Date: ${tooltip.dataPoints[0].label}</div>
-        //     </div>
+        //     <div style="font-weight: bold;">${tooltip.body[0]?.lines[0]}</div>
+        //     <div>Date: ${tooltip.dataPoints[0].label}</div>
         //   `;
 
-        //   const position = chart.canvas.getBoundingClientRect();
+        //   // Position tooltip near the data point
+        //   const canvasRect = chart.canvas.getBoundingClientRect();
         //   tooltipEl.style.opacity = "1";
-        //   tooltipEl.style.position = "absolute";
-        //   // tooltipEl.style.left =
-        //   //   position.left + window.pageXOffset + tooltip.caretX + "px";
-        //   // tooltipEl.style.top =
-        //   //   position.top + window.pageYOffset + tooltip.caretY + "px";
-        //   tooltipEl.style.pointerEvents = "none";
+        //   tooltipEl.style.left = `${
+        //     canvasRect.left + window.pageXOffset + tooltip.caretX
+        //   }px`;
+        //   tooltipEl.style.top = `${
+        //     canvasRect.top + window.pageYOffset + tooltip.caretY
+        //   }px`;
+        //   tooltipEl.style.transform = "translate(-50%, -50%)"; // Center the tooltip
         // },
       },
     },
     scales: {
       x: {
         display: true,
-        // title: {
-        //   display: true,
-        //   text: "Time [µs]",
-        //   font: { size: 12, weight: "bold" },
-        // },
         grid: {
           drawOnChartArea: false,
         },
@@ -168,9 +169,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       y: {
         beginAtZero: true,
         ticks: {
-          callback: function (value: number) {
-            return `$${value / 1000}K`;
-          },
+          callback: (value) => `$${value / 1000}K`,
         },
       },
     },
