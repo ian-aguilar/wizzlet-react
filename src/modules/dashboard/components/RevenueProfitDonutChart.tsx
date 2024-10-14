@@ -45,60 +45,60 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
       legend: {
         position: "top" as const,
       },
-      title: {
-        display: true,
-        text: "Revenue & Profit",
-      },
+      // title: {
+      //   display: true,
+      //   text: "Revenue & Profit",
+      // },
       tooltip: {
         enabled: false, // Disable default tooltips
-        external: (context: any) => {
-          const { chart, tooltip } = context;
-          let tooltipEl = document.getElementById("chartjs-tooltip");
+        // external: (context: any) => {
+        //   const { chart, tooltip } = context;
+        //   let tooltipEl = document.getElementById("chartjs-tooltip");
 
-          if (!tooltipEl) {
-            tooltipEl = document.createElement("div");
-            tooltipEl.id = "chartjs-tooltip";
-            tooltipEl.style.opacity = "0";
-            tooltipEl.style.position = "absolute";
-            tooltipEl.style.background = "#fff";
-            tooltipEl.style.border = "1px solid #ccc";
-            tooltipEl.style.padding = "8px";
-            tooltipEl.style.borderRadius = "4px";
-            tooltipEl.style.pointerEvents = "none";
-            tooltipEl.style.zIndex = "1000";
-            document.body.appendChild(tooltipEl);
-          }
+        //   if (!tooltipEl) {
+        //     tooltipEl = document.createElement("div");
+        //     tooltipEl.id = "chartjs-tooltip";
+        //     tooltipEl.style.opacity = "0";
+        //     tooltipEl.style.position = "absolute";
+        //     tooltipEl.style.background = "#fff";
+        //     tooltipEl.style.border = "1px solid #ccc";
+        //     tooltipEl.style.padding = "8px";
+        //     tooltipEl.style.borderRadius = "4px";
+        //     tooltipEl.style.pointerEvents = "none";
+        //     tooltipEl.style.zIndex = "1000";
+        //     document.body.appendChild(tooltipEl);
+        //   }
 
-          if (tooltip.opacity === 0) {
-            tooltipEl.style.opacity = "0";
-            return;
-          }
+        //   if (tooltip.opacity === 0) {
+        //     tooltipEl.style.opacity = "1";
+        //     return;
+        //   }
 
-          if (tooltip.body) {
-            const bodyLines = tooltip.body.map((b: any) => b.lines);
-            const title = tooltip.title || [];
+        //   if (tooltip.body) {
+        //     const bodyLines = tooltip.body.map((b: any) => b.lines);
+        //     const title = tooltip.title || [];
 
-            tooltipEl.innerHTML = `
-              <div style="font-weight: bold;">${title[0]}</div>
-              <div>Profit: $${bodyLines[0]}</div>
-            `;
-          }
+        //     tooltipEl.innerHTML = `
+        //       <div style="font-weight: bold;">${title[0]}</div>
+        //       <div>Profit: $${bodyLines[0]}</div>
+        //     `;
+        //   }
 
-          const position = chart.canvas.getBoundingClientRect();
+        //   const position = chart.canvas.getBoundingClientRect();
 
-          tooltipEl.style.opacity = "1";
-          tooltipEl.style.left =
-            position.left + window.pageXOffset + tooltip.caretX + "px";
-          tooltipEl.style.top =
-            position.top + window.pageYOffset + tooltip.caretY + "px";
-        },
+        //   tooltipEl.style.opacity = "1";
+        //   // tooltipEl.style.left =
+        //   //   position.left + window.pageXOffset + tooltip.caretX + "px";
+        //   // tooltipEl.style.top =
+        //   //   position.top + window.pageYOffset + tooltip.caretY + "px";
+        // },
       },
     },
   };
 
   return (
     <div>
-      <div style={{ maxWidth: "400px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "100%", margin: "0 auto" }}>
         <Doughnut data={data} options={options} />
         <div style={{ textAlign: "center" }}>
           <h4>eBay Profit: ${ebayProfit}</h4>

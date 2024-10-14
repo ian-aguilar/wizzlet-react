@@ -12,6 +12,8 @@ import {
   Filler,
 } from "chart.js";
 import { RevenueProfitChartProps } from "../types";
+import { color } from "chart.js/helpers";
+import { fill } from "lodash";
 
 ChartJS.register(
   CategoryScale,
@@ -61,6 +63,19 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
+    function getGradient(ctx, chartArea) {
+      let gradient = ctx.createLinearGradient(
+        0,
+        chartArea.bottom,
+        0,
+        chartArea.top
+      );
+
+      gradient.addColorStop(0.9, "rgba(9, 161, 122, 0.20)");
+      gradient.addColorStop(0.1, "transparent");
+      return gradient;
+    }
+
     return {
       labels,
       datasets: [
@@ -70,16 +85,24 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
           borderColor: "rgba(75, 192, 192, 1)",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           tension: 0.4,
-          pointBackgroundColor: "rgba(75, 192, 192, 1)",
+          pointBackgroundColor: "rgba(9, 161, 122, 1)",
           fill: true,
+          backgroundColor: function (context) {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+
+            // This case happens on initial chart load
+            if (!chartArea) return;
+            return getGradient(ctx, chartArea);
+          },
         },
         {
           label: "Profit",
           data: profitData,
-          borderColor: "rgba(54, 162, 235, 1)",
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
+          borderColor: "#6C778B",
+          backgroundColor: "rgba(54, 162, 235,  0)",
           tension: 0.4,
-          pointBackgroundColor: "rgba(54, 162, 235, 1)",
+          pointBackgroundColor: "#6C778B",
           fill: true,
         },
       ],
@@ -92,44 +115,56 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       legend: {
         position: "top" as const,
       },
-      title: {
-        display: true,
-        text: "Revenue & Profit",
-      },
+      // title: {
+      //   display: true,
+      //   text: "Revenue & Profit",
+      // },
       tooltip: {
-        enabled: false,
-        external: (context: any) => {
-          const { chart, tooltip } = context;
-          const tooltipEl = document.getElementById("chartjs-tooltip");
+        enabled: true,
 
-          if (!tooltipEl) {
-            return;
-          }
+        // external: (context: any) => {
+        //   const { chart, tooltip } = context;
+        //   const tooltipEl = document.getElementById("chartjs-tooltip");
 
-          if (tooltip.opacity === 0) {
-            tooltipEl.style.opacity = "0";
-            return;
-          }
+        //   if (!tooltipEl) {
+        //     return;
+        //   }
 
-          tooltipEl.innerHTML = `
-            <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);">
-              <div style="font-weight: bold;">${tooltip.body[0].lines[0]}</div>
-              <div>Date: ${tooltip.dataPoints[0].label}</div>
-            </div>
-          `;
+        //   if (tooltip.opacity === 0) {
+        //     tooltipEl.style.opacity = "0";
+        //     return;
+        //   }
 
-          const position = chart.canvas.getBoundingClientRect();
-          tooltipEl.style.opacity = "1";
-          tooltipEl.style.position = "absolute";
-          tooltipEl.style.left =
-            position.left + window.pageXOffset + tooltip.caretX + "px";
-          tooltipEl.style.top =
-            position.top + window.pageYOffset + tooltip.caretY + "px";
-          tooltipEl.style.pointerEvents = "none";
-        },
+        //   tooltipEl.innerHTML = `
+        //     <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);">
+        //       <div style="font-weight: bold;">${tooltip.body[0].lines[0]}</div>
+        //       <div>Date: ${tooltip.dataPoints[0].label}</div>
+        //     </div>
+        //   `;
+
+        //   const position = chart.canvas.getBoundingClientRect();
+        //   tooltipEl.style.opacity = "1";
+        //   tooltipEl.style.position = "absolute";
+        //   // tooltipEl.style.left =
+        //   //   position.left + window.pageXOffset + tooltip.caretX + "px";
+        //   // tooltipEl.style.top =
+        //   //   position.top + window.pageYOffset + tooltip.caretY + "px";
+        //   tooltipEl.style.pointerEvents = "none";
+        // },
       },
     },
     scales: {
+      x: {
+        display: true,
+        // title: {
+        //   display: true,
+        //   text: "Time [µs]",
+        //   font: { size: 12, weight: "bold" },
+        // },
+        grid: {
+          drawOnChartArea: false,
+        },
+      },
       y: {
         beginAtZero: true,
         ticks: {
@@ -143,7 +178,11 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
 
   return (
     <div>
-      <Line data={getDynamicData()} options={options} />
+      <Line
+        data={getDynamicData()}
+        options={options}
+        className="w-full h-full   "
+      />
     </div>
   );
 };
