@@ -124,7 +124,7 @@ const FormBuilder = <T extends FieldValues>({
 export default FormBuilder;
 
 const FieldArrayComponent = <T extends FieldValues>({
-  fields,
+  // fields,
   control,
   errors,
   fieldArrayName,
@@ -142,7 +142,7 @@ const FieldArrayComponent = <T extends FieldValues>({
       <h2 className="text-blue-500">{data.title}</h2>
 
       {values &&
-        values.map((value: any, index: number) => (
+        values.map((_: any, index: number) => (
           <div key={index} className="flex">
             <FormBuilder
               control={control}

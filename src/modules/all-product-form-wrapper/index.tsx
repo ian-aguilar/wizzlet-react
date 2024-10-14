@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { steps } from "./constant";
-import AmazonForm from "../amazon-form";
+// import AmazonForm from "../amazon-form";
 
 // Lazy load components
 const ProductBasicForm = lazy(() => import("../product-basic-form"));

@@ -5,7 +5,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { FilePropsType } from "../types";
 import { checkFileFormat } from "@/utils";
 import { CameraBgIcon } from "@/assets/Svg";
-import { VITE_APP_API_URL } from "@/config";
+// import { VITE_APP_API_URL } from "@/config";
 
 const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   const {

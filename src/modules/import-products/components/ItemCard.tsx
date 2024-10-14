@@ -13,7 +13,7 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
       <div className="flex gap-4 items-start">
         <div>
           <img
-            src={item.picture_url?.PictureURL}
+            src={item.picture_url}
             className="w-[171px] h-[132px] object-cover rounded-md "
           />
         </div>

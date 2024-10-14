@@ -9,6 +9,7 @@ export const SelectMarketplace = ({
   isSearchable,
   onChange,
   StylesConfig,
+  isDisabled,
 }: ISelectCategoryProps) => {
   const customStyles: StylesConfig = {
     ...StylesConfig,
@@ -19,6 +20,7 @@ export const SelectMarketplace = ({
   };
   return (
     <Select
+      isDisabled={isDisabled}
       styles={customStyles}
       options={options}
       isSearchable={isSearchable}

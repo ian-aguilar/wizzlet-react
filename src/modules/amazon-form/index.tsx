@@ -7,7 +7,7 @@ import { getAppendField } from "@/components/form-builder/helper";
 import "./validations/index";
 
 const AmazonForm = <T extends FieldValues>() => {
-  const [categoryId, setCategoryId] = useState<number>(1);
+  // const [categoryId, setCategoryId] = useState<number>(1);
   const [properties, setProperties] = useState<FieldsType<T>[]>();
 
   const {
@@ -20,7 +20,8 @@ const AmazonForm = <T extends FieldValues>() => {
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
 
   const getProperties = async () => {
-    const { data } = await getAllAmazonPropertiesApi(categoryId);
+    const { data } = await getAllAmazonPropertiesApi(1);
+    // const { data } = await getAllAmazonPropertiesApi(categoryId);
     setProperties(data?.data);
     const defaultValues = getAppendField(data?.data);
     reset(defaultValues);
