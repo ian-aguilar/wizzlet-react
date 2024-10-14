@@ -47,7 +47,9 @@ export interface CategoryOptions {
 export interface SelectCategoryProps {
   options: ICategory[];
   defaultValue?: string | number;
-  setValue?: Dispatch<SetStateAction<{ id: number | string; value: string } | undefined>>;
+  setValue?: Dispatch<
+    SetStateAction<{ id: number | string; value: string } | undefined>
+  >;
   onChange?: (selectedOption: CategoryOptions) => void;
 }
 
@@ -90,12 +92,30 @@ export enum MARKETPLACE {
   AMAZON = "amazon",
 }
 
+export enum MARKETPLACEID {
+  EBAY = 2,
+  AMAZON = 1,
+}
 
 export interface IInputBox {
-  type:string;
+  type: string;
   value?: string | number | Date;
   name: string;
   placeholder: string;
   className?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
+
+export type IDatePickerBoxProps<T extends FieldValues> = {
+  name: Path<T>;
+  className?: string;
+  placeholder?: string;
+  label?: string;
+  isDisabled?: boolean;
+  value?: Date;
+  maxDate?: Date;
+  icon?: ReactNode;
+  InputRightIcon?: ReactNode;
+  dateFormat?: string;
+  onChange: (...event: any[]) => void;
+};
