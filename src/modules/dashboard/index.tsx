@@ -83,7 +83,10 @@ const Dashboard: React.FC = () => {
               CONNECTED
             </span>
           </div>
-          <div className="bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 ">
+          <div className="bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 relative  ">
+            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-0  rounded-md  ">
+              Coming Soon
+            </div>
             <img
               src={LogoAmazon}
               className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
@@ -114,54 +117,15 @@ const Dashboard: React.FC = () => {
             {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
-            <div className="flex justify-between gap-4 flex-wrap">
-              <p className="font-bold text-base">Revenue & Profit</p>
-              <div className="flex gap-2 text-grayText">
-                <div>
-                  Total Revenue:{" "}
-                  <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-                </div>
-                <div>
-                  Total Profit:{" "}
-                  <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <p className="flex items-center gap-2 font-medium text-blackPrimary">
-                  <span className="w-3 h-3 min-w-3 inline-block rounded-full bg-greenPrimary">
-                    &nbsp;
-                  </span>{" "}
-                  Revenue
-                </p>
-                <p className="flex items-center gap-2 font-medium text-blackPrimary">
-                  <span className="w-3 h-3 min-w-3 inline-block rounded-full bg-grayText">
-                    &nbsp;
-                  </span>{" "}
-                  Profit
-                </p>
-              </div>
-            </div>
+
             <RevenueProfitChart startDate={startDate} endDate={endDate} />
           </div>
           <div className="flex flex-col    w-full h-full col-span-12 lg:col-span-3 border p-5 relative  rounded-md ">
             {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
-            <div className="flex gap-4 justify-between">
-              <p className="font-bold text-base">
-                Marketplace Revenue & Profit
-              </p>
-              <div>
-                Profit
-                {/* <SelectField name="Profit" options={} /> */}
-              </div>
-            </div>
-            <div className="flex flex-col justify-center w-full h-full  ">
-              <RevenueProfitDonutChart
-                startDate={startDate}
-                endDate={endDate}
-              />
-            </div>
+
+            <RevenueProfitDonutChart startDate={startDate} endDate={endDate} />
           </div>
         </div>
         <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">

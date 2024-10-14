@@ -82,7 +82,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
         {
           label: "Revenue",
           data: revenueData,
-          borderColor: "rgba(75, 192, 192, 1)",
+          borderColor: "#09A17A",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           tension: 0.4,
           pointBackgroundColor: "rgba(9, 161, 122, 1)",
@@ -114,6 +114,15 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
     plugins: {
       legend: {
         position: "top" as const,
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+          font: {
+            size: 16,
+            family: "Jost",
+          },
+        },
       },
       // title: {
       //   display: true,
@@ -177,13 +186,28 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   };
 
   return (
-    <div>
-      <Line
-        data={getDynamicData()}
-        options={options}
-        className="w-full h-full   "
-      />
-    </div>
+    <>
+      <div className="flex justify-between gap-4 flex-wrap">
+        <p className="font-bold text-base">Revenue & Profit</p>
+        <div className="flex gap-2 text-grayText">
+          <div>
+            Total Revenue:{" "}
+            <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
+          </div>
+          <div>
+            Total Profit:{" "}
+            <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
+          </div>
+        </div>
+      </div>
+      <div>
+        <Line
+          data={getDynamicData()}
+          options={options}
+          className="w-full h-full   "
+        />
+      </div>
+    </>
   );
 };
 
