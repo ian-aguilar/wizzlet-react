@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import RevenueProfitChart from "./components/RevenueProfitChart";
 import DatePickerWithMonthSelect from "./components/GlobalDatePicker";
-import RevenueProfitDonutChart from "./components/RevenueProfitDonutChart";
 import WorldMap from "/images/mapWorld.png";
 import { ListedIcon, SalesIcon, SoldIcon } from "@/assets/Svg";
 import ProgressBar from "@/components/common/ProgressBar";
@@ -12,6 +11,7 @@ import { useGetAllDashboardDataApi } from "./services/dashboard.service";
 import Select, { MultiValue } from "react-select";
 import { capitalizeFirstLetter } from "../choose-marketplace/helper";
 import { OptionType } from "./types";
+import RevenueProfitDonutChart from "./components/RevenueProfitDonutChart";
 
 const Dashboard: React.FC = () => {
   const currentDate = new Date();
@@ -23,8 +23,10 @@ const Dashboard: React.FC = () => {
     1
   );
 
+  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+
   // ================= States ====================
-  const [selectedMonth, setSelectedMonth] = useState<string>("December");
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
 
   const [userFullName, setUserFullName] = useState<string>("");
 
@@ -95,7 +97,11 @@ const Dashboard: React.FC = () => {
       const marketplaceIds =
         selectedOptions?.map((option) => option.value) || null;
 
-      const data = await getAllDashboardDataAPI(start, end, marketplaceIds);
+      const data = await getAllDashboardDataAPI(
+        start.toLocaleDateString("en-CA"),
+        end.toLocaleDateString("en-CA"),
+        marketplaceIds
+      );
       console.log("Fetched data:", data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -192,50 +198,18 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="grid grid-cols-12 lg:gap-x-4 gap-y-4 mb-5 ">
           <div className=" w-full h-full col-span-12 lg:col-span-9 border p-5 relative rounded-md ">
-            <div className="flex justify-between gap-4 flex-wrap">
-              <p className="font-bold text-base">Revenue & Profit</p>
-              <div className="flex gap-2 text-grayText">
-                <div>
-                  Total Revenue:{" "}
-                  <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-                </div>
-                <div>
-                  Total Profit:{" "}
-                  <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <p className="flex items-center gap-2 font-medium text-blackPrimary">
-                  <span className="w-3 h-3 min-w-3 inline-block rounded-full bg-greenPrimary">
-                    &nbsp;
-                  </span>{" "}
-                  Revenue
-                </p>
-                <p className="flex items-center gap-2 font-medium text-blackPrimary">
-                  <span className="w-3 h-3 min-w-3 inline-block rounded-full bg-grayText">
-                    &nbsp;
-                  </span>{" "}
-                  Profit
-                </p>
-              </div>
-            </div>
+            {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+              Coming Soon
+            </div> */}
+
             <RevenueProfitChart startDate={startDate} endDate={endDate} />
           </div>
           <div className="flex flex-col    w-full h-full col-span-12 lg:col-span-3 border p-5 relative  rounded-md ">
             {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
-            <div className="flex gap-4 justify-between">
-              <p className="font-bold text-base">
-                Marketplace Revenue & Profit
-              </p>
-            </div>
-            <div className="flex flex-col justify-center w-full h-full  ">
-              <RevenueProfitDonutChart
-                startDate={startDate}
-                endDate={endDate}
-              />
-            </div>
+
+            <RevenueProfitDonutChart startDate={startDate} endDate={endDate} />
           </div>
         </div>
         <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">

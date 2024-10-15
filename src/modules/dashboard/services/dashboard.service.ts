@@ -5,8 +5,8 @@ export const useGetAllDashboardDataApi = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
 
   const getAllDashboardDataAPI = async (
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     marketplaceIds: string[] | number[] | null
   ) => {
     const marketplaceIdsParam = marketplaceIds
@@ -14,7 +14,7 @@ export const useGetAllDashboardDataApi = () => {
       : null;
 
     return callApi(
-      `/dashboard/sale-details?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&marketplaceIds=${marketplaceIdsParam}`
+      `/dashboard/sale-details?startDate=${startDate}&endDate=${endDate}&marketplaceIds=${marketplaceIdsParam}`
     );
   };
 
