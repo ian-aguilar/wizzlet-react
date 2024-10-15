@@ -1,56 +1,8 @@
-// // import { z } from "zod";
-
 import { z } from "zod";
 import { ResType, validationEnum } from "../types";
+import { IConditions } from "@/components/form-builder/types";
 
-// const getObjectWithPath = (
-//   theObject: any,
-//   targetKey: string,
-//   currentPath: string[] = []
-// ): { result: any; path: string[] } | null => {
-//   let result = null;
-
-//   if (theObject instanceof Array) {
-//     for (let i = 0; i < theObject.length; i++) {
-//       result = getObjectWithPath(theObject[i], targetKey, [
-//         ...currentPath,
-//         `${i}`,
-//       ]);
-//       if (result) {
-//         if (result?.result === undefined || result?.result === "") {
-//           return null;
-//         }
-//         return result;
-//       }
-//     }
-//   } else {
-//     for (const prop in theObject) {
-//       const value = theObject[prop];
-//       const newPath = [...currentPath, prop]; // Add current key to the path
-
-//       if (prop === targetKey) {
-//         if (theObject[prop] === undefined || theObject[prop] === "") {
-//           return null;
-//         }
-//         return { result: theObject[prop], path: newPath }; // Return the result and path when found
-//       }
-
-//       if (value instanceof Object || value instanceof Array) {
-//         result = getObjectWithPath(value, targetKey, newPath);
-//         if (result) {
-//           if (result?.result === undefined || result?.result === "") {
-//             return null;
-//           }
-//           return result;
-//         }
-//       }
-//     }
-//   }
-
-//   return null;
-// };
-
-const getValue = (data: any, path: string[]) => {
+const getValue = (data: any, path: string[]): any => {
   const newPath = [...path];
   if (newPath.length > 0) {
     const key = newPath.shift();
@@ -84,253 +36,13 @@ function separateBracketedString(str: string): {
   };
 }
 
-// let amazonJson = {
-//   // allOf: [
-//   //   {
-//   if: {
-//     anyOf: [
-//       {
-//         not: {
-//           properties: {
-//             temp: {
-//               items: {
-//                 required: ["demo"],
-//               },
-//               // contains: {
-//               //   required: ["demo"],
-//               //   properties: { demo: { enum: ["Testing"] } },
-//               // },
-//             },
-//           },
-//         },
-//       },
-// {
-//   not: {
-//     properties: {
-//       personalInfo: {
-//         contains: {
-//           required: ["name"],
-//           properties: { name: { enum: ["Name"] } },
-//         },
-//       },
-//     },
-//   },
-// },
-//     ],
-//   },
-//   then: {
-//     required: ["email"],
-//   },
-//   else: {
-//     required: ["contact"],
-//   },
-//   //   },
-//   // ],
-// };
-
-let amazonJson = {
-  allOf: [
-    {
-      if: {
-        anyOf: [
-          {
-            allOf: [
-              {
-                not: {
-                  required: ["merchant_suggested_asin"],
-                  properties: {
-                    merchant_suggested_asin: { required: ["value"] },
-                  },
-                },
-              },
-              {
-                not: {
-                  required: ["parentage_level"],
-                  properties: {
-                    parentage_level: { items: { required: ["value"] } },
-                  },
-                },
-              },
-              {
-                required: [
-                  "supplier_declared_has_product_identifier_exemption",
-                ],
-                properties: {
-                  supplier_declared_has_product_identifier_exemption: {
-                    contains: {
-                      required: ["value"],
-                      properties: { value: { enum: [false] } },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-          {
-            allOf: [
-              {
-                required: ["merchant_suggested_asin"],
-                properties: {
-                  merchant_suggested_asin: { required: ["value"] },
-                },
-              },
-              {
-                not: {
-                  required: ["parentage_level"],
-                  properties: {
-                    parentage_level: { items: { required: ["value"] } },
-                  },
-                },
-              },
-              {
-                required: [
-                  "supplier_declared_has_product_identifier_exemption",
-                ],
-                properties: {
-                  supplier_declared_has_product_identifier_exemption: {
-                    contains: {
-                      required: ["value"],
-                      properties: { value: { enum: [true] } },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-      then: {
-        properties: {
-          sleeve: {
-            // items: {
-            properties: {
-              type: {
-                properties: {
-                  value: {
-                    enum: ["Sleeveless"],
-                  },
-                },
-              },
-              // },
-            },
-          },
-        },
-      },
-      else: {
-        properties: {
-          closure: {
-            // items: {
-            properties: {
-              type: {
-                properties: {
-                  value: {
-                    enum: [
-                      "Buckle",
-                      "Button",
-                      "Double Ring",
-                      "Drawstring",
-                      "Hook and Eye",
-                      "Hook and Loop",
-                      "Magnetic",
-                      "Pull On",
-                      "Snap",
-                      "Zipper",
-                    ],
-                  },
-                },
-              },
-            },
-            // },
-          },
-        },
-        if: {
-          allOf: [
-            {
-              required: ["shirt_form_type"],
-              properties: {
-                shirt_form_type: {
-                  // contains: {
-                  required: ["value"],
-                  properties: {
-                    value: {
-                      enum: ["tank_top"],
-                    },
-                  },
-                  // },
-                },
-              },
-            },
-            {
-              required: ["test"],
-              properties: {
-                test: {
-                  contains: {
-                    required: ["demo"],
-                    properties: { demo: { enum: ["Testing"] } },
-                  },
-                },
-              },
-            },
-          ],
-        },
-        then: {
-          properties: {
-            collar_style: {
-              // items: {
-              properties: {
-                value: {
-                  enum: ["Collarless"],
-                },
-              },
-              // },
-            },
-          },
-        },
-        else: {
-          properties: {
-            collar_style: {
-              // items: {
-              properties: {
-                value: {
-                  enum: [
-                    "Band Collar",
-                    "Button Down",
-                    "Camp Collar",
-                    "Club Collar",
-                    // "Collarless",
-                    "Cutaway",
-                    "Extreme Cutaway Collar",
-                    "Eyelet Collar",
-                    "Flat Collar",
-                    "Hidden Button Down Collar",
-                    "Lapel Collar",
-                    "Mandarin Collar",
-                    "One Piece Collar",
-                    "Pajama Collar",
-                    "Point Collar",
-                    "Polo Collar",
-                    "Semi Cutaway Collar",
-                    "Shawl Collar",
-                    "Spear Collar",
-                    "Spread Collar",
-                    "Tab Collar",
-                    "Wingtip Collar",
-                  ],
-                },
-              },
-              // },
-            },
-          },
-        },
-      },
-    },
-  ],
-  // },
-};
-
-// export const testValidations = (amazonJson: any, data: any) => {
-export const schema = z.any().superRefine((data, ctx) => {
-  function parseSchema(amazonJson: any, path: any = []) {
+function parseSchema(
+  data: any,
+  ctx: z.RefinementCtx,
+  amazonJson: any,
+  path: any = []
+) {
+  if (amazonJson) {
     if (amazonJson["if"]) {
       const array = [];
 
@@ -401,26 +113,6 @@ export const schema = z.any().superRefine((data, ctx) => {
 
       const success = array.every((e) => e?.success);
 
-      /**
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       *
-       */
-
       if (success) {
         if (amazonJson["then"]) {
           const thenArray: ResType[] = [];
@@ -467,7 +159,7 @@ export const schema = z.any().superRefine((data, ctx) => {
             );
             elseArray.push(...(temp || []));
           }
-          parseSchema(amazonJson["else"]);
+          parseSchema(data, ctx, amazonJson["else"]);
 
           elseArray?.forEach((e: any) => {
             if (!e.success) {
@@ -492,8 +184,12 @@ export const schema = z.any().superRefine((data, ctx) => {
         path
       );
 
+      console.log(temp, "<<<<<<<<<<<<<<<");
       temp?.forEach((e: ResType) => {
         if (!e.success) {
+          if (e.path.includes("size")) {
+            console.log(e, "<<<<<<<<<");
+          }
           ctx.addIssue({
             path: [...path, ...e.path],
             message: e.message
@@ -512,6 +208,7 @@ export const schema = z.any().superRefine((data, ctx) => {
         data,
         path
       );
+
       temp?.forEach((e: any) => {
         if (!e.success) {
           ctx.addIssue({
@@ -525,13 +222,75 @@ export const schema = z.any().superRefine((data, ctx) => {
       });
     }
   }
-  parseSchema(amazonJson);
-});
+}
+
+// export const testValidations = (amazonJson: any, data: any) => {
+export const schema = (amazonJson: IConditions | undefined) =>
+  z.any().superRefine((data, ctx) => {
+    parseSchema(data, ctx, {
+      allOf: Array.isArray(amazonJson?.allOf) ? amazonJson.allOf : [],
+    });
+    if (amazonJson?.required) {
+      amazonJson?.required?.forEach((item) => {
+        const value = getValue(data, [item]);
+
+        if (Array.isArray(value)) {
+          value?.forEach((innerItem, index) => {
+            checkMainRequired(data, ctx, [`${item}[${index}]`], innerItem);
+          });
+        } else if (typeof value === "object") {
+          Object.keys(value).forEach((objectItem) => {
+            checkMainRequired(data, ctx, [...item, objectItem]);
+          });
+        } else {
+          if (!value || value === "") {
+            ctx.addIssue({
+              path: [item],
+              message: ` ${item} is required`,
+              code: "custom",
+            });
+          }
+        }
+      });
+    }
+  });
+
+const checkMainRequired = (
+  data: any,
+  ctx: z.RefinementCtx,
+  path: string[],
+  value: Object | undefined = undefined
+) => {
+  if (!value) {
+    value = getValue(data, path);
+  }
+
+  if (Array.isArray(value)) {
+    value?.forEach((innerItem, index) => {
+      checkMainRequired(data, ctx, [path[index]], innerItem);
+    });
+  } else if (typeof value === "object") {
+    Object.keys(value).forEach((objectItem) => {
+      checkMainRequired(data, ctx, [...path, objectItem]);
+    });
+  } else {
+    if (!value || value === "") {
+      ctx.addIssue({
+        path: path,
+        message: ` ${path[path.length - 1]} is required`,
+        code: "custom",
+      });
+    }
+  }
+};
 
 const checkIf = (amazonJson: any, data: any, path: string[]) => {
   const tempArray: ResType[] = [];
+
   const temp = parseProperties(validationEnum.If, amazonJson["if"], data, path);
+  console.log("🚀 ~ checkIf ~ temp:", temp);
   const success = temp?.every((e) => e.success);
+
   if (success) {
     if (amazonJson["then"]) {
       const temp = parseProperties(
@@ -540,6 +299,8 @@ const checkIf = (amazonJson: any, data: any, path: string[]) => {
         data,
         path
       );
+
+      console.log("🚀 ~ checkIf ~ temp:22222", temp);
       tempArray.push(...(temp || []));
     }
   } else {
@@ -585,7 +346,6 @@ const parseProperties = (
           data,
           path
         );
-
         array.push(...(temp || []));
       }
       if (amazonJson["properties"]) {
@@ -602,51 +362,233 @@ const parseProperties = (
       return array.map((e) => ({ ...e, success: !tempValue }));
 
     case validationEnum.Properties:
-      const array2: ResType[] = [];
-      Object.entries(amazonJson).map(([key, value]: any) => {
-        if (value["items"]) {
-          const tempValue = getValue(data, [...path, key]);
+      const propertiesValue = getValue(data, path);
+      if (Array.isArray(propertiesValue)) {
+        const temp2: ResType[] =
+          parseProperties(
+            validationEnum.Items,
+            { properties: amazonJson },
+            data,
+            path
+          )?.filter(Boolean) || [];
 
-          if (tempValue !== null && Array.isArray(tempValue.result)) {
-            if (value["items"]["required"]) {
-              const temp1 = tempValue.result.flatMap(
-                (_: any, index: number) => {
-                  return (
-                    parseProperties(
-                      validationEnum.Required,
-                      value["items"]["required"],
-                      data,
-                      [...path, `${key}[${index}]`]
-                    )?.filter(Boolean) || []
-                  );
-                }
-              );
+        return temp2;
+      } else {
+        const array2: ResType[] = [];
+        Object.entries(amazonJson).map(([key, value]: any) => {
+          if (value["items"]) {
+            const temp: ResType[] =
+              parseProperties(validationEnum.Items, value["items"], data, [
+                ...path,
+                key,
+              ])?.filter(Boolean) || [];
+            array2.push(...temp);
+            // const tempValue = getValue(data, [...path, key]);
+
+            // if (tempValue !== null && Array.isArray(tempValue)) {
+            //   if (value["items"]["required"]) {
+            //     const temp1 = tempValue.flatMap((_: any, index: number) => {
+            //       return (
+            //         parseProperties(
+            //           validationEnum.Required,
+            //           value["items"]["required"],
+            //           data,
+            //           [...path, `${key}[${index}]`]
+            //         )?.filter(Boolean) || []
+            //       );
+            //     });
+            //     array2.push(...temp1);
+            //   }
+            //   if (value["items"]["properties"]) {
+            //     const temp1 = tempValue.flatMap((_: any, index: number) => {
+            //       return (
+            //         parseProperties(
+            //           validationEnum.Properties,
+            //           value["items"]["properties"],
+            //           data,
+            //           [...path, `${key}[${index}]`]
+            //         )?.filter(Boolean) || []
+            //       );
+            //     });
+            //     array2.push(...temp1);
+            //   }
+            // }
+            // if (value["items"]["anyOf"]) {
+            //   const temp1 =
+            //     parseProperties(
+            //       validationEnum.Anyof,
+            //       value["items"]["anyOf"],
+            //       data,
+            //       [...path, `${key}`]
+            //     )?.filter(Boolean) || [];
+            //   const tempArray = temp1?.some((e) => e?.success);
+            //   if (tempArray) {
+            //     array2.push(...[{ success: true, path: [] }]);
+            //   } else {
+            //     array2.push(...[{ success: false, path: [] }]);
+            //   }
+            // }
+            // if (value["items"]["if"]) {
+            //   array2.push(...(checkIf(value["items"], data, path) || []));
+            // }
+          } else {
+            if (value["required"]) {
+              const temp1 =
+                parseProperties(
+                  validationEnum.Required,
+                  value["required"],
+                  data,
+                  [...path, `${key}`]
+                )?.filter(Boolean) || [];
+
               array2.push(...temp1);
             }
-            if (value["items"]["properties"]) {
-              const temp1 = tempValue.result.flatMap(
-                (_: any, index: number) => {
-                  return (
-                    parseProperties(
-                      validationEnum.Properties,
-                      value["items"]["properties"],
-                      data,
-                      [...path, `${key}[${index}]`]
-                    )?.filter(Boolean) || []
-                  );
-                }
-              );
+            if (value["properties"]) {
+              const temp1 =
+                parseProperties(
+                  validationEnum.Properties,
+                  value["properties"],
+                  data,
+                  [...path, `${key}`]
+                )?.filter(Boolean) || [];
+
               array2.push(...temp1);
             }
           }
-          if (value["items"]["anyOf"]) {
+
+          if (value["contains"]) {
+            const tempValue = getValue(data, [...path, key]);
+
+            let temp2: any = [];
+            if (Array.isArray(tempValue)) {
+              temp2 =
+                parseProperties(validationEnum.Items, value["contains"], data, [
+                  ...path,
+                  key,
+                ])?.filter(Boolean) || [];
+
+              array2.push(...temp2);
+            } else if (typeof tempValue === "object") {
+              if (value["contains"]?.properties) {
+                temp2 =
+                  parseProperties(
+                    validationEnum.Properties,
+                    value["contains"]["properties"],
+                    data,
+                    [...path, key]
+                  )?.filter(Boolean) || [];
+                array2.push(...temp2);
+              }
+              if (value["contains"]?.required) {
+                const temp2 =
+                  parseProperties(
+                    validationEnum.Required,
+                    value["contains"]["required"],
+                    data,
+                    [...path, key]
+                  )?.filter(Boolean) || [];
+
+                array2.push(...temp2);
+              }
+            }
+          }
+          if (value["minItems"] || value["minUniqueItems"]) {
+            const minValue = value["minItems"] || value["minUniqueItems"];
+            const tempValue = getValue(data, [...path, key]);
+            if (Array.isArray(tempValue)) {
+              if (tempValue.length < minValue) {
+                array2.push(
+                  ...[
+                    {
+                      success: false,
+                      path: [...path, key],
+                      message: `${key} should have minimum ${minValue} items`,
+                    },
+                  ]
+                );
+              } else {
+                array2.push(...[{ success: true, path: [...path, key] }]);
+              }
+            } else {
+              array2.push(
+                ...[
+                  {
+                    success: false,
+                    path: [...path, key],
+                    message: `${key} should be an array`,
+                  },
+                ]
+              );
+            }
+          }
+          if (value["maxItems"] || value["maxUniqueItems"]) {
+            const maxValue = value["maxItems"] || value["maxUniqueItems"];
+            const tempValue = getValue(data, [...path, key]);
+            if (Array.isArray(tempValue)) {
+              if (tempValue.length > maxValue) {
+                array2.push(
+                  ...[
+                    {
+                      success: false,
+                      path: [...path, key],
+                      message: `${key} should have maximum ${maxValue} items`,
+                    },
+                  ]
+                );
+              } else {
+                array2.push(...[{ success: true, path: [...path, key] }]);
+              }
+            } else {
+              array2.push(
+                ...[
+                  {
+                    success: false,
+                    path: [...path, key],
+                    message: `${key} should be an array`,
+                  },
+                ]
+              );
+            }
+          }
+          if (value["enum"]) {
+            const isObject = getValue(data, [...path, key]);
+
+            if (!isObject) {
+              // array2.push(
+              //   ...[
+              //     {
+              //       success: false,
+              //       path: [...path, key],
+              //     },
+              //   ]
+              // );
+            } else {
+              const enumValues = value["enum"].map((e: any) => e.toString());
+
+              if (enumValues.includes(isObject)) {
+                array2.push(...[{ success: true, path: [...path, key] }]);
+              } else {
+                array2.push(
+                  ...[
+                    {
+                      success: false,
+                      path: [...path, key],
+                      message:
+                        value["enum"].length > 0
+                          ? `Only one of ${value["enum"].join(",")} is allowed`
+                          : `Only  ${value["enum"].join(",")} is allowed`,
+                    },
+                  ]
+                );
+              }
+            }
+          }
+          if (value["anyOf"]) {
             const temp1 =
-              parseProperties(
-                validationEnum.Anyof,
-                value["items"]["anyOf"],
-                data,
-                [...path, `${key}`]
-              )?.filter(Boolean) || [];
+              parseProperties(validationEnum.Anyof, value["anyOf"], data, [
+                ...path,
+                `${key}`,
+              ])?.filter(Boolean) || [];
             const tempArray = temp1?.some((e) => e?.success);
             if (tempArray) {
               array2.push(...[{ success: true, path: [] }]);
@@ -654,171 +596,10 @@ const parseProperties = (
               array2.push(...[{ success: false, path: [] }]);
             }
           }
-          if (value["items"]["if"]) {
-            array2.push(...(checkIf(value["items"], data, path) || []));
-          }
-        } else {
-          if (value["required"]) {
-            const temp1 =
-              parseProperties(
-                validationEnum.Required,
-                value["required"],
-                data,
-                [...path, `${key}`]
-              )?.filter(Boolean) || [];
+        });
 
-            array2.push(...temp1);
-          }
-          if (value["properties"]) {
-            const temp1 =
-              parseProperties(
-                validationEnum.Properties,
-                value["properties"],
-                data,
-                [...path, `${key}`]
-              )?.filter(Boolean) || [];
-
-            array2.push(...temp1);
-          }
-        }
-
-        if (value["contains"]) {
-          if (value["contains"]?.properties) {
-            const tempValue = getValue(data, [...path, key]);
-            let temp2: any = [];
-            if (Array.isArray(tempValue)) {
-              temp2 =
-                parseProperties(
-                  validationEnum.Properties,
-                  { items: value["contains"]["properties"] },
-                  data,
-                  [...path, key]
-                )?.filter(Boolean) || [];
-            } else if (typeof tempValue === "object") {
-              temp2 =
-                parseProperties(
-                  validationEnum.Properties,
-                  value["contains"]["properties"],
-                  data,
-                  [...path, key]
-                )?.filter(Boolean) || [];
-            }
-
-            array2.push(...temp2);
-          }
-          if (value["contains"]?.required) {
-            const temp2 =
-              parseProperties(
-                validationEnum.Required,
-                value["contains"]["required"],
-                data,
-                [...path, key]
-              )?.filter(Boolean) || [];
-
-            array2.push(...temp2);
-          }
-        }
-        if (value["minItems"] || value["minUniqueItems"]) {
-          const minValue = value["minItems"] || value["minUniqueItems"];
-          const tempValue = getValue(data, [...path, key]);
-          if (Array.isArray(tempValue)) {
-            if (tempValue.length < minValue) {
-              array2.push(
-                ...[
-                  {
-                    success: false,
-                    path: [...path, key],
-                    message: `${key} should have minimum ${minValue} items`,
-                  },
-                ]
-              );
-            } else {
-              array2.push(...[{ success: true, path: [...path, key] }]);
-            }
-          } else {
-            array2.push(
-              ...[
-                {
-                  success: false,
-                  path: [...path, key],
-                  message: `${key} should be an array`,
-                },
-              ]
-            );
-          }
-        }
-        if (value["maxItems"] || value["maxUniqueItems"]) {
-          const maxValue = value["maxItems"] || value["maxUniqueItems"];
-          const tempValue = getValue(data, [...path, key]);
-          if (Array.isArray(tempValue)) {
-            if (tempValue.length > maxValue) {
-              array2.push(
-                ...[
-                  {
-                    success: false,
-                    path: [...path, key],
-                    message: `${key} should have maximum ${maxValue} items`,
-                  },
-                ]
-              );
-            } else {
-              array2.push(...[{ success: true, path: [...path, key] }]);
-            }
-          } else {
-            array2.push(
-              ...[
-                {
-                  success: false,
-                  path: [...path, key],
-                  message: `${key} should be an array`,
-                },
-              ]
-            );
-          }
-        }
-        if (value["enum"]) {
-          const isObject = getValue(data, [...path, key]);
-          if (!isObject) {
-            array2.push(
-              ...[
-                {
-                  success: false,
-                  path: [...path, key],
-                },
-              ]
-            );
-          } else {
-            const enumValues = value["enum"].map((e: any) => e.toString());
-            if (enumValues.includes(isObject)) {
-              array2.push(...[{ success: true, path: [...path, key] }]);
-            } else {
-              array2.push(
-                ...[
-                  {
-                    success: false,
-                    path: [...path, key],
-                    message: `${key} has invalid value`,
-                  },
-                ]
-              );
-            }
-          }
-        }
-        if (value["anyOf"]) {
-          const temp1 =
-            parseProperties(validationEnum.Anyof, value["anyOf"], data, [
-              ...path,
-              `${key}`,
-            ])?.filter(Boolean) || [];
-          const tempArray = temp1?.some((e) => e?.success);
-          if (tempArray) {
-            array2.push(...[{ success: true, path: [] }]);
-          } else {
-            array2.push(...[{ success: false, path: [] }]);
-          }
-        }
-      });
-      return array2;
+        return array2;
+      }
 
     case validationEnum.AllOf:
     case validationEnum.Anyof:
@@ -832,7 +613,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["required"],
+            }))
+          );
         }
         if (e["properties"]) {
           const temp = parseProperties(
@@ -841,7 +627,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["properties"],
+            }))
+          );
         }
 
         if (e["not"]) {
@@ -851,7 +642,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["not"],
+            }))
+          );
         }
 
         if (e["allOf"]) {
@@ -861,34 +657,45 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["allOf"],
+            }))
+          );
         }
 
         if (e["if"]) {
-          tempArray.push(...(checkIf(e, data, path) || []));
-        }
-        const tempValue = tempArray.every((e) => e.success);
-        if (tempValue) {
-          array3.push(
-            ...(tempArray.map((e) => {
-              return {
-                success: true,
-                path: e.path,
-                message: e.message,
-              };
-            }) || [])
-          );
-        } else {
-          array3.push(
-            ...(tempArray.map((e) => {
-              return {
-                success: false,
-                path: e.path,
-                message: e.message,
-              };
-            }) || [])
+          tempArray.push(
+            ...(checkIf(e, data, path) || []).map((item) => ({
+              ...item,
+              json: (e as any)["if"],
+            }))
           );
         }
+        // const tempValue = tempArray.every((e) => e.success);
+        // if (tempValue) {
+        //   array3.push(
+        //     ...(tempArray.map((e) => {
+        //       return {
+        //         success: true,
+        //         path: e.path,
+        //         message: e.message,
+        //       };
+        //     }) || [])
+        //   );
+        // } else {
+        //   array3.push(
+        //     ...(tempArray.map((e) => {
+        //       return {
+        //         success: false,
+        //         path: e.path,
+        //         message: e.message,
+        //       };
+        //     }) || [])
+        //   );
+        // }
+        array3.push(...tempArray);
       });
       return array3;
 
@@ -903,6 +710,7 @@ const parseProperties = (
           data,
           path
         );
+
         array4.push(...(temp || []));
       }
       if (amazonJson["properties"]) {
@@ -912,6 +720,7 @@ const parseProperties = (
           data,
           path
         );
+
         array4.push(...(temp || []));
       }
       if (amazonJson["not"]) {
@@ -921,7 +730,18 @@ const parseProperties = (
           data,
           path
         );
-        array4.push(...(temp || []));
+
+        if (type === validationEnum.Then) {
+          const newTemp = temp?.map((e) => {
+            return {
+              ...e,
+              message: "You're not allowed to enter this value",
+            };
+          });
+          array4.push(...(newTemp || []));
+        } else {
+          array4.push(...(temp || []));
+        }
       }
       if (amazonJson["allOf"]) {
         const temp = parseProperties(
@@ -951,7 +771,90 @@ const parseProperties = (
           array4.push(...[{ success: false, path: [] }]);
         }
       }
+      if (amazonJson["if"]) {
+        array4.push(...(checkIf(amazonJson, data, path) || []));
+      }
+
       return array4;
+
+    case validationEnum.Items:
+      const array5: ResType[] = [];
+      const tempPath = [...path];
+      const lastEle = tempPath.pop();
+
+      const tempValueForItems = getValue(data, path);
+
+      if (tempValueForItems !== null && Array.isArray(tempValueForItems)) {
+        if (amazonJson["required"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return (
+              parseProperties(
+                validationEnum.Required,
+                amazonJson["required"],
+                data,
+                [...tempPath, `${lastEle}[${index}]`]
+              )?.filter(Boolean) || []
+            );
+          });
+          array5.push(...temp1);
+        }
+        if (amazonJson["properties"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return (
+              parseProperties(
+                validationEnum.Properties,
+                amazonJson["properties"],
+                data,
+                [...tempPath, `${lastEle}[${index}]`]
+              )?.filter(Boolean) || []
+            );
+          });
+          array5.push(...temp1);
+        }
+        if (amazonJson["allOf"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return (
+              parseProperties(validationEnum.AllOf, amazonJson["allOf"], data, [
+                ...tempPath,
+                `${lastEle}[${index}]`,
+              ])?.filter(Boolean) || []
+            );
+          });
+          const tempArray = temp1?.every((e: ResType) => e?.success);
+          if (tempArray) {
+            array5.push(...[{ success: true, path: [] }]);
+          } else {
+            array5.push(...[{ success: false, path: [] }]);
+          }
+        }
+        if (amazonJson["anyOf"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return (
+              parseProperties(validationEnum.Anyof, amazonJson["anyOf"], data, [
+                ...tempPath,
+                `${lastEle}[${index}]`,
+              ])?.filter(Boolean) || []
+            );
+          });
+          const tempArray = temp1?.some((e: ResType) => e?.success);
+          if (tempArray) {
+            array5.push(...[{ success: true, path: [] }]);
+          } else {
+            array5.push(...[{ success: false, path: [] }]);
+          }
+        }
+        if (amazonJson["if"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return checkIf(amazonJson, data, [
+              ...tempPath,
+              `${lastEle}[${index}]`,
+            ]);
+          });
+          array5.push(...temp1);
+        }
+      }
+      return array5;
+
     default:
       break;
   }
