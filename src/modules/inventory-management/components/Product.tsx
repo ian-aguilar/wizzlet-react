@@ -40,7 +40,7 @@ const Product = ({
     setIsDeleteModel(false);
     return;
     if (deleteProduct) {
-      const { error } = await deleteProductAPI(Number(deleteProduct) );
+      const { error } = await deleteProductAPI(Number(deleteProduct));
       if (error) console.log(error);
       else {
         closeDeleteModel();
@@ -200,13 +200,7 @@ const Product = ({
               )}
             </div>
           </>
-        ) : (
-          <>
-            <div>
-              <DataNotFound />
-            </div>
-          </>
-        )}
+        ) : null}
       </div>
     );
   }

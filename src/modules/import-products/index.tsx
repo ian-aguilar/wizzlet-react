@@ -78,7 +78,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          return;
+          // return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING
@@ -108,6 +108,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
+          // return;
           const { data } = await getImportedProductsApi({
             currentPage: currentPage,
             limit: itemPerPage.value,
@@ -115,7 +116,7 @@ const ImportProducts = () => {
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
-          return;
+          break;
         }
       }
     }
@@ -188,7 +189,8 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
-        await importProductsFromAmazonApi(isCheck);
+        return;
+        // await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);

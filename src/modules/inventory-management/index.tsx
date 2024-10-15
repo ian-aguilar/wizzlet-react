@@ -44,13 +44,14 @@ import { IMarketplace } from "../marketplace/types";
 import { btnShowType } from "@/components/form-fields/types";
 import { E_PRODUCT_STATUS, Option, TopFilter, productProps } from "./types";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import { DataNotFound } from "@/components/svgIcons";
 
 const InventoryManagement = () => {
   // ** States **
   const [totalItem, setTotalItem] = useState<number>();
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [category, setCategory] = useState<Option[] | null>(null);
   const [productTag, setProductTag] = useState<Option[] | null>(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -117,11 +118,12 @@ const InventoryManagement = () => {
     status: string = "",
     page: number = Number(currentPage),
     limit: number = Number(itemPerPage.value),
-    categoryName: Option[] | undefined = category,
+    categoryName: Option[] | null = category,
     filterCreatedDate: Date | undefined = filterDate,
     productTypeData: Option | null = productType,
     productLabel: Option[] | null = productTag
   ) => {
+
     const categoryLabels = categoryName?.map((item) => item.label) || null;
     const productTags = productLabel?.map((item) => item.label) || null;
     const { data, error } = await getProductsDetailsAPI({
@@ -152,6 +154,8 @@ const InventoryManagement = () => {
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
       setCurrentPage(newPage);
+      setCheckboxes([]);
+      setSelectAll(false);
       getProductsDetails(
         searchTerm,
         selectedMarketplace,
@@ -217,6 +221,10 @@ const InventoryManagement = () => {
   // ** handle product status **
   const handleProductStatus = (item: E_PRODUCT_STATUS) => {
     setCurrentPage(1);
+    if (item !== productStatus) {
+      setCheckboxes([]);
+      setSelectAll(false);
+    }
     setProductStatus(item);
   };
 
@@ -254,7 +262,7 @@ const InventoryManagement = () => {
       value: string,
       selectedMarketplace: number[],
       status: string,
-      category: Option[] | undefined,
+      category: Option[] | null,
       filterDate: Date | undefined,
       productType: Option | null,
       productTag: Option[] | null
@@ -601,11 +609,11 @@ const InventoryManagement = () => {
               getOnChange={(e) => {
                 setCurrentPage(1);
                 if (!e.length) {
-                  setCategory(undefined);
+                  setCategory(null);
                   return;
                 }
                 if (e) {
-                  setCategory(e);
+                  setCategory(() => [...e]);
                   getProductsDetails(
                     searchTerm,
                     selectedMarketplace,
@@ -624,7 +632,7 @@ const InventoryManagement = () => {
               isSearchable={true}
               notClearable={true}
               getOptions={getCategories}
-              value={category !== undefined || null ? category : undefined}
+              value={category ? category : null}
               className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-52 !text-base  "
               placeholder="By Category"
             />
@@ -703,12 +711,18 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div>
-            <Product
-              isLoading={productListLoading}
-              currentData={products.products}
-              checkboxes={checkboxes}
-              checkboxOnChange={handleProductCheckboxChange}
-            />
+            {products && products.products.length > 0 ? (
+              <Product
+                isLoading={productListLoading}
+                currentData={products.products}
+                checkboxes={checkboxes}
+                checkboxOnChange={handleProductCheckboxChange}
+              />
+            ) : (
+              <div>
+                <DataNotFound />
+              </div>
+            )}
           </div>
         </div>
         <div className="flex justify-end pt-2">

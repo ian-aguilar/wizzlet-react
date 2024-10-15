@@ -23,6 +23,7 @@ const DatePickerBox = <T extends FieldValues>({
       datePickerRef.current.setOpen(false);
     }
   };
+  
   return (
     <div className="relative mb-2">
       <label className="pt-1 block">{label}</label>
