@@ -1,57 +1,8 @@
-// // import { z } from "zod";
-
 import { z } from "zod";
 import { ResType, validationEnum } from "../types";
 import { IConditions } from "@/components/form-builder/types";
 
-// const getObjectWithPath = (
-//   theObject: any,
-//   targetKey: string,
-//   currentPath: string[] = []
-// ): { result: any; path: string[] } | null => {
-//   let result = null;
-
-//   if (theObject instanceof Array) {
-//     for (let i = 0; i < theObject.length; i++) {
-//       result = getObjectWithPath(theObject[i], targetKey, [
-//         ...currentPath,
-//         `${i}`,
-//       ]);
-//       if (result) {
-//         if (result?.result === undefined || result?.result === "") {
-//           return null;
-//         }
-//         return result;
-//       }
-//     }
-//   } else {
-//     for (const prop in theObject) {
-//       const value = theObject[prop];
-//       const newPath = [...currentPath, prop]; // Add current key to the path
-
-//       if (prop === targetKey) {
-//         if (theObject[prop] === undefined || theObject[prop] === "") {
-//           return null;
-//         }
-//         return { result: theObject[prop], path: newPath }; // Return the result and path when found
-//       }
-
-//       if (value instanceof Object || value instanceof Array) {
-//         result = getObjectWithPath(value, targetKey, newPath);
-//         if (result) {
-//           if (result?.result === undefined || result?.result === "") {
-//             return null;
-//           }
-//           return result;
-//         }
-//       }
-//     }
-//   }
-
-//   return null;
-// };
-
-const getValue = (data: any, path: string[]) => {
+const getValue = (data: any, path: string[]): any => {
   const newPath = [...path];
   if (newPath.length > 0) {
     const key = newPath.shift();
@@ -84,250 +35,6 @@ function separateBracketedString(str: string): {
     value: null,
   };
 }
-
-// let amazonJson = {
-//   // allOf: [
-//   //   {
-//   if: {
-//     anyOf: [
-//       {
-//         not: {
-//           properties: {
-//             temp: {
-//               items: {
-//                 required: ["demo"],
-//               },
-//               // contains: {
-//               //   required: ["demo"],
-//               //   properties: { demo: { enum: ["Testing"] } },
-//               // },
-//             },
-//           },
-//         },
-//       },
-// {
-//   not: {
-//     properties: {
-//       personalInfo: {
-//         contains: {
-//           required: ["name"],
-//           properties: { name: { enum: ["Name"] } },
-//         },
-//       },
-//     },
-//   },
-// },
-//     ],
-//   },
-//   then: {
-//     required: ["email"],
-//   },
-//   else: {
-//     required: ["contact"],
-//   },
-//   //   },
-//   // ],
-// };
-
-let amazonJson = {
-  allOf: [
-    {
-      if: {
-        anyOf: [
-          {
-            allOf: [
-              {
-                not: {
-                  required: ["merchant_suggested_asin"],
-                  properties: {
-                    merchant_suggested_asin: { required: ["value"] },
-                  },
-                },
-              },
-              {
-                not: {
-                  required: ["parentage_level"],
-                  properties: {
-                    parentage_level: { items: { required: ["value"] } },
-                  },
-                },
-              },
-              {
-                required: [
-                  "supplier_declared_has_product_identifier_exemption",
-                ],
-                properties: {
-                  supplier_declared_has_product_identifier_exemption: {
-                    contains: {
-                      required: ["value"],
-                      properties: { value: { enum: [false] } },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-          {
-            allOf: [
-              {
-                required: ["merchant_suggested_asin"],
-                properties: {
-                  merchant_suggested_asin: { required: ["value"] },
-                },
-              },
-              {
-                not: {
-                  required: ["parentage_level"],
-                  properties: {
-                    parentage_level: { items: { required: ["value"] } },
-                  },
-                },
-              },
-              {
-                required: [
-                  "supplier_declared_has_product_identifier_exemption",
-                ],
-                properties: {
-                  supplier_declared_has_product_identifier_exemption: {
-                    contains: {
-                      required: ["value"],
-                      properties: { value: { enum: [true] } },
-                    },
-                  },
-                },
-              },
-            ],
-          },
-        ],
-      },
-      then: {
-        properties: {
-          sleeve: {
-            // items: {
-            properties: {
-              type: {
-                properties: {
-                  value: {
-                    enum: ["Sleeveless"],
-                  },
-                },
-              },
-              // },
-            },
-          },
-        },
-      },
-      else: {
-        properties: {
-          closure: {
-            // items: {
-            properties: {
-              type: {
-                properties: {
-                  value: {
-                    enum: [
-                      "Buckle",
-                      "Button",
-                      "Double Ring",
-                      "Drawstring",
-                      "Hook and Eye",
-                      "Hook and Loop",
-                      "Magnetic",
-                      "Pull On",
-                      "Snap",
-                      "Zipper",
-                    ],
-                  },
-                },
-              },
-            },
-            // },
-          },
-        },
-        if: {
-          allOf: [
-            {
-              required: ["shirt_form_type"],
-              properties: {
-                shirt_form_type: {
-                  // contains: {
-                  required: ["value"],
-                  properties: {
-                    value: {
-                      enum: ["tank_top"],
-                    },
-                  },
-                  // },
-                },
-              },
-            },
-            {
-              required: ["test"],
-              properties: {
-                test: {
-                  contains: {
-                    required: ["demo"],
-                    properties: { demo: { enum: ["Testing"] } },
-                  },
-                },
-              },
-            },
-          ],
-        },
-        then: {
-          properties: {
-            collar_style: {
-              // items: {
-              properties: {
-                value: {
-                  enum: ["Collarless"],
-                },
-              },
-              // },
-            },
-          },
-        },
-        else: {
-          properties: {
-            collar_style: {
-              // items: {
-              properties: {
-                value: {
-                  enum: [
-                    "Band Collar",
-                    "Button Down",
-                    "Camp Collar",
-                    "Club Collar",
-                    // "Collarless",
-                    "Cutaway",
-                    "Extreme Cutaway Collar",
-                    "Eyelet Collar",
-                    "Flat Collar",
-                    "Hidden Button Down Collar",
-                    "Lapel Collar",
-                    "Mandarin Collar",
-                    "One Piece Collar",
-                    "Pajama Collar",
-                    "Point Collar",
-                    "Polo Collar",
-                    "Semi Cutaway Collar",
-                    "Shawl Collar",
-                    "Spear Collar",
-                    "Spread Collar",
-                    "Tab Collar",
-                    "Wingtip Collar",
-                  ],
-                },
-              },
-              // },
-            },
-          },
-        },
-      },
-    },
-  ],
-  // },
-};
 
 function parseSchema(
   data: any,
@@ -477,6 +184,7 @@ function parseSchema(
         path
       );
 
+      console.log(temp, "<<<<<<<<<<<<<<<");
       temp?.forEach((e: ResType) => {
         if (!e.success) {
           if (e.path.includes("size")) {
@@ -521,102 +229,30 @@ export const schema = (amazonJson: IConditions | undefined) =>
   z.any().superRefine((data, ctx) => {
     parseSchema(data, ctx, {
       allOf: Array.isArray(amazonJson?.allOf) ? amazonJson.allOf : [],
-      // allOf: [
-      //   {
-      //     if: {
-      //       required: ["shirt_size"],
-      //       properties: {
-      //         shirt_size: {
-      //           items: {
-      //             allOf: [
-      //               {
-      //                 required: ["size_class"],
-      //                 properties: {
-      //                   size_class: {
-      //                     enum: ["age"],
-      //                   },
-      //                 },
-      //               },
-      //               {
-      //                 required: ["size_system"],
-      //                 properties: {
-      //                   size_system: {
-      //                     enum: ["as5"],
-      //                   },
-      //                 },
-      //               },
-      //             ],
-      //           },
-      //         },
-      //       },
-      //       allOf: [
-      //         {
-      //           required: ["age_range_description"],
-      //           properties: {
-      //             age_range_description: {
-      //               contains: {
-      //                 required: ["value"],
-      //                 properties: {
-      //                   value: {
-      //                     enum: ["Baby", "Kid"],
-      //                   },
-      //                 },
-      //               },
-      //             },
-      //           },
-      //         },
-      //         {
-      //           required: ["target_gender"],
-      //           properties: {
-      //             target_gender: {
-      //               contains: {
-      //                 required: ["value"],
-      //                 properties: {
-      //                   value: {
-      //                     enum: ["male", "female", "unisex"],
-      //                   },
-      //                 },
-      //               },
-      //             },
-      //           },
-      //         },
-      //       ],
-      //     },
-      //     then: {
-      //       properties: {
-      //         shirt_size: {
-      //           items: {
-      //             required: ["size_to"],
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      // ],
     });
-    // if (amazonJson?.required) {
-    //   amazonJson?.required?.forEach((item) => {
-    //     const value = getValue(data, [item]);
+    if (amazonJson?.required) {
+      amazonJson?.required?.forEach((item) => {
+        const value = getValue(data, [item]);
 
-    //     if (Array.isArray(value)) {
-    //       value?.forEach((innerItem, index) => {
-    //         checkMainRequired(data, ctx, [`${item}[${index}]`], innerItem);
-    //       });
-    //     } else if (typeof value === "object") {
-    //       Object.keys(value).forEach((objectItem) => {
-    //         checkMainRequired(data, ctx, [...item, objectItem]);
-    //       });
-    //     } else {
-    //       if (!value || value === "") {
-    //         ctx.addIssue({
-    //           path: [item],
-    //           message: ` ${item} is required`,
-    //           code: "custom",
-    //         });
-    //       }
-    //     }
-    //   });
-    // }
+        if (Array.isArray(value)) {
+          value?.forEach((innerItem, index) => {
+            checkMainRequired(data, ctx, [`${item}[${index}]`], innerItem);
+          });
+        } else if (typeof value === "object") {
+          Object.keys(value).forEach((objectItem) => {
+            checkMainRequired(data, ctx, [...item, objectItem]);
+          });
+        } else {
+          if (!value || value === "") {
+            ctx.addIssue({
+              path: [item],
+              message: ` ${item} is required`,
+              code: "custom",
+            });
+          }
+        }
+      });
+    }
   });
 
 const checkMainRequired = (
@@ -652,6 +288,7 @@ const checkIf = (amazonJson: any, data: any, path: string[]) => {
   const tempArray: ResType[] = [];
 
   const temp = parseProperties(validationEnum.If, amazonJson["if"], data, path);
+  console.log("🚀 ~ checkIf ~ temp:", temp);
   const success = temp?.every((e) => e.success);
 
   if (success) {
@@ -663,6 +300,7 @@ const checkIf = (amazonJson: any, data: any, path: string[]) => {
         path
       );
 
+      console.log("🚀 ~ checkIf ~ temp:22222", temp);
       tempArray.push(...(temp || []));
     }
   } else {
@@ -916,14 +554,14 @@ const parseProperties = (
             const isObject = getValue(data, [...path, key]);
 
             if (!isObject) {
-              array2.push(
-                ...[
-                  {
-                    success: false,
-                    path: [...path, key],
-                  },
-                ]
-              );
+              // array2.push(
+              //   ...[
+              //     {
+              //       success: false,
+              //       path: [...path, key],
+              //     },
+              //   ]
+              // );
             } else {
               const enumValues = value["enum"].map((e: any) => e.toString());
 
@@ -975,7 +613,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["required"],
+            }))
+          );
         }
         if (e["properties"]) {
           const temp = parseProperties(
@@ -984,7 +627,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["properties"],
+            }))
+          );
         }
 
         if (e["not"]) {
@@ -994,7 +642,12 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["not"],
+            }))
+          );
         }
 
         if (e["allOf"]) {
@@ -1004,11 +657,21 @@ const parseProperties = (
             data,
             path
           );
-          tempArray.push(...(temp || []));
+          tempArray.push(
+            ...(temp || []).map((item) => ({
+              ...item,
+              json: (e as any)["allOf"],
+            }))
+          );
         }
 
         if (e["if"]) {
-          tempArray.push(...(checkIf(e, data, path) || []));
+          tempArray.push(
+            ...(checkIf(e, data, path) || []).map((item) => ({
+              ...item,
+              json: (e as any)["if"],
+            }))
+          );
         }
         // const tempValue = tempArray.every((e) => e.success);
         // if (tempValue) {
@@ -1067,7 +730,18 @@ const parseProperties = (
           data,
           path
         );
-        array4.push(...(temp || []));
+
+        if (type === validationEnum.Then) {
+          const newTemp = temp?.map((e) => {
+            return {
+              ...e,
+              message: "You're not allowed to enter this value",
+            };
+          });
+          array4.push(...(newTemp || []));
+        } else {
+          array4.push(...(temp || []));
+        }
       }
       if (amazonJson["allOf"]) {
         const temp = parseProperties(
@@ -1105,7 +779,6 @@ const parseProperties = (
 
     case validationEnum.Items:
       const array5: ResType[] = [];
-
       const tempPath = [...path];
       const lastEle = tempPath.pop();
 
