@@ -7,6 +7,7 @@ export enum validationEnum {
   If = "if",
   Then = "then",
   Else = "else",
+  Items = "items",
 }
 
 export interface ResType {

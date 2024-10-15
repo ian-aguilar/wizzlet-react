@@ -4,8 +4,8 @@ import {
   useAmazonFormHandleApi,
   useGetAllAmazonPropertiesApi,
 } from "./services/amazonForm.service";
-import { FieldsType } from "@/components/form-builder/types";
-import { useForm } from "react-hook-form";
+import { FieldsType, IConditions } from "@/components/form-builder/types";
+import { useForm, useWatch } from "react-hook-form";
 import FormBuilder from "@/components/form-builder";
 import { getAppendField } from "@/components/form-builder/helper";
 import Button from "@/components/form-fields/components/Button";
@@ -24,12 +24,15 @@ import AsyncSelectField from "../inventory-management/components/AsyncSelectFiel
 import { Option } from "../settings/types/label";
 import { useGetCategoriesAPI } from "../inventory-management/services";
 import { MARKETPLACEID } from "@/components/common/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { schema } from "./validations";
 
 const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
+  const [conditions, setConditions] = useState<IConditions>();
 
   const {
     control,
@@ -37,7 +40,20 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    trigger,
+  } = useForm({
+    resolver: zodResolver(schema(conditions)),
+  });
+
+  const fields = useWatch({ control });
+
+  useEffect(() => {
+    if (fields) {
+      trigger();
+    }
+  }, [fields]);
+
+  // console.log(errors, "Errors <<<<<<<<<", fields);
 
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
@@ -49,13 +65,20 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     value: number;
     label: string;
   }) => {
+    if (!categoryData?.value) {
+      return;
+    }
     // const { data } = await getAllAmazonPropertiesApi(17104);
     const { data } = await getAllAmazonPropertiesApi(categoryData?.value);
     setCategory(categoryData);
-    setProperties(data?.data);
-    const defaultValues = getAppendField(data?.data);
+    setProperties(data?.data?.properties);
+    setConditions(data?.data?.conditions);
+    const defaultValues = getAppendField(data?.data?.properties);
     reset(defaultValues);
-    return { propertyData: data?.data, defaultValue: defaultValues };
+    return {
+      propertyData: data?.data?.properties,
+      defaultValue: defaultValues,
+    };
   };
 
   const handleAmazonEditApiResponse = async () => {
