@@ -97,15 +97,6 @@ export enum MARKETPLACEID {
   AMAZON = 1,
 }
 
-export interface IInputBox {
-  type: string;
-  value?: string | number | Date;
-  name: string;
-  placeholder: string;
-  className?: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
-
 export type IDatePickerBoxProps<T extends FieldValues> = {
   name: Path<T>;
   className?: string;

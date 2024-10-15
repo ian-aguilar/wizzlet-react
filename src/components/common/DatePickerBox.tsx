@@ -1,8 +1,8 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { IDatePickerBoxProps } from "./types";
 import { FieldValues } from "react-hook-form";
 import { useRef } from "react";
+import { IDatePickerBoxProps } from "./types";
 
 const DatePickerBox = <T extends FieldValues>({
   placeholder,
@@ -23,6 +23,7 @@ const DatePickerBox = <T extends FieldValues>({
       datePickerRef.current.setOpen(false);
     }
   };
+  
   return (
     <div className="relative mb-2">
       <label className="pt-1 block">{label}</label>

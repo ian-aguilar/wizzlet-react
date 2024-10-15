@@ -713,7 +713,7 @@ export const InfoIcon = ({ className }: any) => {
         height="83"
         rx="41.5"
         fill="#6C778B"
-        fill-opacity="0.1"
+        fillOpacity="0.1"
       />
       <path
         d="M41.5 36.5V45.6667"
@@ -749,13 +749,7 @@ export const DeleteModalIcon = ({ className }: any) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect
-        width="83"
-        height="83"
-        rx="41.5"
-        fill="#FC5F5F"
-        fill-opacity="0.1"
-      />
+      <rect width="83" height="83" rx="41.5" fill="#FC5F5F" fillOpacity="0.1" />
       <path
         d="M58 30.4633C51.895 29.8583 45.7533 29.5466 39.63 29.5466C36 29.5466 32.37 29.73 28.74 30.0966L25 30.4633"
         stroke="#FC5F5F"
@@ -805,13 +799,7 @@ export const RightIcon = ({ className }: any) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect
-        width="83"
-        height="83"
-        rx="41.5"
-        fill="#09A17A"
-        fill-opacity="0.1"
-      />
+      <rect width="83" height="83" rx="41.5" fill="#09A17A" fillOpacity="0.1" />
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"

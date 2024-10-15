@@ -35,7 +35,7 @@ const ImportProducts = () => {
   const [totalItem, setTotalItem] = useState<number>();
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [countCheckbox, setCountCheckbox] = useState<number>(0);
-  const [isCheck, setIsCheck] = useState<number[]>([]);
+  const [isCheck, setIsCheck] = useState<number[] | null>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [synced, setSynced] = useState(false);
   const [syncing, setSyncing] = useState(false);
@@ -79,6 +79,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
+          return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING
@@ -108,6 +109,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
+          // return;
           const { data } = await getImportedProductsApi({
             currentPage: currentPage,
             limit: itemPerPage.value,
@@ -115,7 +117,7 @@ const ImportProducts = () => {
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
-          return;
+          break;
         }
       }
     }
@@ -159,30 +161,37 @@ const ImportProducts = () => {
   }, [selectedMarketplace, synced, itemPerPage, currentPage]);
 
   const selectAllHandler = () => {
-    setIsAllChecked((prev) => !prev);
-    if (items) {
-      const selectedItems: number[] = [];
-      items.forEach((item) => {
-        if (!item.is_imported) {
-          selectedItems.push(item.id);
-        }
-      });
-      setIsCheck(selectedItems);
+    const newSelectAll = !isAllChecked;
+    setIsAllChecked(newSelectAll);
+    const selectedBox = items
+      ?.map((item) => (newSelectAll && !item.is_imported ? item?.id : null))
+      .filter((item): item is number => item !== null);
+    if (selectedBox) {
+      setIsCheck(selectedBox);
+    } else {
+      setIsCheck(null);
     }
-    if (isAllChecked) {
-      setIsCheck([]);
-    }
-    console.log("IsAllChecked: ", isAllChecked);
+  };
+
+  const handleProductCheckboxChange = (id: number) => {
+    const isChecked = isCheck ? isCheck!.includes(id) : null;
+    const updatedCheckboxes = isChecked
+      ? isCheck!.filter((itemId) => itemId !== id)
+      : isCheck
+      ? [...isCheck, id]
+      : [id];
+    setIsCheck(updatedCheckboxes);
+    setIsAllChecked(updatedCheckboxes.length === countCheckbox);
   };
 
   const importProductsFromEbayHandler = async () => {
-    if (isCheck.length > 0) {
+    if (isCheck && isCheck.length > 0) {
       if (selectedMarketplace?.value === MARKETPLACE.EBAY) {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
         return;
-        await importProductsFromAmazonApi(isCheck);
+        // await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);
@@ -309,9 +318,9 @@ const ImportProducts = () => {
             }
             btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
           />
-          {isCheck.length > 0 && (
+          {isCheck && isCheck.length > 0 && (
             <Button
-              btnName={`Import ${isCheck.length} Products`}
+              btnName={`Import ${isCheck?.length} Products`}
               onClickHandler={importProductsFromEbayHandler}
               isLoading={importLoading || storeAmazonLoading}
               btnClass="!w-auto !ml-auto "
@@ -375,7 +384,11 @@ const ImportProducts = () => {
                 placeholder="Newest"
               /> */}
               {countCheckbox > 0 && (
-                <Checkbox checkLabel="All" onChange={selectAllHandler} />
+                <Checkbox
+                  checkLabel="All"
+                  onChange={selectAllHandler}
+                  isChecked={isCheck?.length === countCheckbox}
+                />
               )}
             </div>
           </div>
@@ -385,8 +398,8 @@ const ImportProducts = () => {
                 return (
                   <ItemCard
                     item={item}
-                    isCheck={isCheck}
-                    setIsCheck={setIsCheck}
+                    isCheck={isCheck ? isCheck : []}
+                    checkboxOnChange={handleProductCheckboxChange}
                     key={item.id}
                   />
                 );

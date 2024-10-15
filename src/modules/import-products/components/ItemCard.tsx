@@ -1,13 +1,7 @@
 import Checkbox from "@/components/form-fields/components/Checkbox";
-import { IItems, IItemsProps } from "../types";
+import { IItemsProps } from "../types";
 
-export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
-  const checkHandler = (item: IItems, isChecked: boolean) => {
-    setIsCheck([...isCheck, item.id]);
-    if (!isChecked) {
-      setIsCheck(isCheck.filter((element) => element !== item.id));
-    }
-  };
+export const ItemCard = ({ item, isCheck,checkboxOnChange }: IItemsProps) => {
   return (
     <div className="flex bg-white items-center mt-2 py-2 px-5  gap-4 border border-grayLightBody/20 rounded-md ">
       <div className="flex gap-4 items-start">
@@ -66,11 +60,8 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
       {!item.is_imported && (
         <div className="ml-auto  pr-8">
           <Checkbox
-            checkLabel=""
-            isChecked={isCheck.includes(item.id)}
-            onChange={(e) => {
-              checkHandler(item, e.target.checked);
-            }}
+            isChecked={isCheck?.includes(item.id)}
+            onChange={() => checkboxOnChange(item.id)}
           />
         </div>
       )}
