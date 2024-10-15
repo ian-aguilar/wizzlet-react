@@ -12,8 +12,7 @@ import {
   Filler,
 } from "chart.js";
 import { RevenueProfitChartProps } from "../types";
-import { color } from "chart.js/helpers";
-import { fill } from "lodash";
+import { getRevenueAndLabels } from "../helper";
 
 ChartJS.register(
   CategoryScale,
@@ -29,6 +28,9 @@ ChartJS.register(
 const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   startDate,
   endDate,
+  totalRevenue,
+  data,
+  selectedMarketplace,
 }) => {
   useEffect(() => {
     const createCustomTooltip = () => {
@@ -45,43 +47,33 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
 
   // Dynamically generate chart data based on selected month or date range
   const getDynamicData = () => {
-    const labels = [];
-    const revenueData = [];
-    const profitData = [];
+    const selectedMarketplaceIds =
+      selectedMarketplace?.map((item) => Number(item?.value)) || [];
+    const { revenues, labels } = getRevenueAndLabels(
+      data,
+      startDate?.toLocaleDateString("en-CA"),
+      endDate?.toLocaleDateString("en-CA"),
+      selectedMarketplaceIds.length > 0 ? selectedMarketplaceIds : undefined
+    );
 
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      labels.push(
-        currentDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        })
-      );
-      revenueData.push(Math.floor(Math.random() * 20000) + 30000);
-      profitData.push(Math.floor(Math.random() * 20000) + 25000);
-
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    function getGradient(ctx, chartArea) {
-      let gradient = ctx.createLinearGradient(
+    const getGradient = (ctx, chartArea) => {
+      const gradient = ctx.createLinearGradient(
         0,
         chartArea.bottom,
         0,
         chartArea.top
       );
-
       gradient.addColorStop(0.9, "rgba(9, 161, 122, 0.20)");
       gradient.addColorStop(0.1, "transparent");
       return gradient;
-    }
+    };
 
     return {
       labels,
       datasets: [
         {
           label: "Revenue",
-          data: revenueData,
+          data: revenues,
           borderColor: "#09A17A",
           backgroundColor: "rgba(75, 192, 192, 0.2)",
           tension: 0.4,
@@ -96,15 +88,15 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
             return getGradient(ctx, chartArea);
           },
         },
-        {
-          label: "Profit",
-          data: profitData,
-          borderColor: "#6C778B",
-          backgroundColor: "rgba(54, 162, 235,  0)",
-          tension: 0.4,
-          pointBackgroundColor: "#6C778B",
-          fill: true,
-        },
+        // {
+        //   label: "Profit",
+        //   data: profitData,
+        //   borderColor: "#6C778B",
+        //   backgroundColor: "rgba(54, 162, 235,  0)",
+        //   tension: 0.4,
+        //   pointBackgroundColor: "#6C778B",
+        //   fill: true,
+        // },
       ],
     };
   };
@@ -178,7 +170,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value) => `$${value / 1000}K`,
+          callback: (value) => `${value}K`, // Scale tick values for display
         },
       },
     },
@@ -187,16 +179,17 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   return (
     <>
       <div className="flex justify-between gap-4 flex-wrap">
-        <p className="font-bold text-base">Revenue & Profit</p>
+        {/* <p className="font-bold text-base">Revenue & Profit</p> */}
+        <p className="font-bold text-base">Revenue</p>
         <div className="flex gap-2 text-grayText">
           <div>
             Total Revenue:{" "}
-            <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
+            <span className="font-bold text-blackPrimary">{totalRevenue}</span>{" "}
           </div>
-          <div>
+          {/* <div>
             Total Profit:{" "}
             <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-          </div>
+          </div> */}
         </div>
       </div>
       <div>
