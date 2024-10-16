@@ -44,9 +44,10 @@ const CategoryUsedChart: React.FC = () => {
       {
         label: "Category Used",
         data: [10, 20, 15, 25, 30, 20, 35, 30, 40, 25, 30, 35], // Data points
-        borderColor: "#1CC88A", // Line color
-        backgroundColor: "rgba(28, 200, 138, 0.2)", // Area fill color
+        borderColor: "#09A17A", // Line color
+        backgroundColor: "#09A17A", // Area fill color
         borderWidth: 2,
+
         tension: 0, // Set to 0 for sharp lines
         fill: true, // Fills the area under the line
       },
@@ -57,10 +58,11 @@ const CategoryUsedChart: React.FC = () => {
     responsive: true,
     plugins: {
       legend: {
+        display: false,
         position: "top" as const,
       },
       title: {
-        display: true,
+        display: false,
         text: "Category Used",
       },
     },
@@ -74,18 +76,27 @@ const CategoryUsedChart: React.FC = () => {
           display: true,
           text: "Usage in meters",
         },
+        grid: {
+          color: "#d8dce4",
+        },
+        border: {
+          dash: [6, 4],
+        },
       },
       x: {
         title: {
           display: true,
           text: "Months",
         },
+        grid: {
+          drawOnChartArea: false,
+        },
       },
     },
   };
 
   return (
-    <div style={{ width: "800px", height: "400px" }}>
+    <div className="w-full h-full">
       <Line data={data} options={options} />
     </div>
   );

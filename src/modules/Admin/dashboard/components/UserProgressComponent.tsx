@@ -11,43 +11,62 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
   const percentage = (onlineUsers / totalUsers) * 100;
 
   return (
-    <div
-      className="progress-container"
-      style={{ width: "200px", textAlign: "center" }}>
-      <div style={{ width: "100px", margin: "0 auto" }}>
-        <CircularProgressbar
-          value={percentage}
-          maxValue={totalUsers}
-          text={`${totalUsers}`}
-          styles={buildStyles({
-            pathColor: "#00b894",
-            textColor: "#333",
-            trailColor: "#dfe6e9",
-            backgroundColor: "#00b894",
-          })}
-        />
+    <>
+      <div className="TitleHolder pb-9">
+        <h3 className="font-medium text-xl text-blackPrimary ">
+          Today’s Users
+        </h3>
       </div>
-      <div className="user-stats" style={{ marginTop: "10px" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "5px",
-          }}>
-          <span style={{ color: "#00b894" }}>Online</span>
-          <span>{onlineUsers} Users</span>
+      <div className="progress-container flex gap-10 w-full   items-center">
+        <div className="max-w-[190px]">
+          <CircularProgressbar
+            value={percentage}
+            maxValue={totalUsers}
+            text={`${totalUsers}`}
+            styles={buildStyles({
+              pathColor: "#09A17A",
+              textColor: "#333",
+              trailColor: "#D8DCE4",
+              backgroundColor: "#00b894",
+            })}
+          />
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "5px",
-          }}>
-          <span style={{ color: "#636e72" }}>Offline</span>
-          <span>{offlineUsers} Users</span>
+        <div className="user-stats w-full ">
+          <div className="flex gap-4 font-medium text-grayText pt-6 ">
+            <div className="max-w-[12px] rounded-full  bg-[#D8DCE4] w-full ">
+              &nbsp;
+            </div>
+            <div>
+              <span>Online</span>
+              <div>
+                {" "}
+                <span className="text-blackPrimary text-2xl ">
+                  {" "}
+                  {onlineUsers}
+                </span>{" "}
+                Users
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-4 font-medium text-grayText pt-6 ">
+            <div className="max-w-[12px] rounded-full  bg-greenPrimary w-full ">
+              &nbsp;
+            </div>
+            <div>
+              <span>Online</span>
+              <div>
+                {" "}
+                <span className="text-blackPrimary text-2xl ">
+                  {" "}
+                  {offlineUsers}
+                </span>{" "}
+                Users
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
