@@ -16,6 +16,7 @@ export type FieldsType<T extends FieldValues> = {
   name: Path<T>;
   title?: string;
   required: boolean;
+  isMulti?: boolean;
   option?: Option[];
   items?: FieldsType<T>[];
 };
@@ -30,6 +31,7 @@ export enum FieldsTypeEnum {
   OBJECT = "OBJECT",
   BOOLEAN = "BOOLEAN",
   INTEGER = "INTEGER",
+  MULTI_SELECT = "MULTI_SELECT",
 }
 
 export type ValidationType = {

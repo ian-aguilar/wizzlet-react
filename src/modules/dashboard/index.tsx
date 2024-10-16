@@ -1,35 +1,215 @@
-import {
-  AutoSyncIcon,
-  CheckIconBtn,
-  DownArrowBlack,
-  ListedIcon,
-  SalesIcon,
-  SoldIcon,
-} from "@/assets/Svg";
-import Button from "@/components/form-fields/components/Button";
-import BrandLogo from "/images/Amazon_logo.png";
-import BrandLogo2 from "/images/ebay_logo.png";
-import BrandLogo3 from "/images/Walmart_logo.png";
-import Graph1 from "/images/revenueProfit.png";
-import Graph2 from "/images/PieChart.png";
-// import Input from "@/components/form-fields/components/Input";
-const Dashboard = () => {
+import React, { useEffect, useState } from "react";
+import RevenueProfitChart from "./components/RevenueProfitChart";
+import DatePickerWithMonthSelect from "./components/GlobalDatePicker";
+import WorldMap from "/images/mapWorld.png";
+import { ListedIcon, SalesIcon, SoldIcon } from "@/assets/Svg";
+import ProgressBar from "@/components/common/ProgressBar";
+import { IMarketplace } from "../marketplace/types";
+import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
+import { VITE_APP_API_URL } from "@/config";
+import { useGetAllDashboardDataApi } from "./services/dashboard.service";
+import Select, { MultiValue } from "react-select";
+import { capitalizeFirstLetter } from "../choose-marketplace/helper";
+import { OptionType } from "./types";
+import RevenueProfitDonutChart from "./components/RevenueProfitDonutChart";
+
+const Dashboard: React.FC = () => {
+  const currentDate = new Date();
+
+  // Set the first day of the current month
+  const firstDayOfCurrentMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1
+  );
+
+  const currentMonth = new Date().toLocaleString("default", { month: "long" });
+
+  // ================= States ====================
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+
+  const [userFullName, setUserFullName] = useState<string>("");
+
+  const [startDate, setStartDate] = useState<Date>(firstDayOfCurrentMonth);
+
+  const [endDate, setEndDate] = useState<Date>(currentDate);
+
+  const [marketplace, setMarketplace] = useState<{
+    connectedMarketplace: IMarketplace[];
+    notConnectedMarketplace: IMarketplace[];
+  }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
+
+  const [connectedMarketplace, setConnectedMarketplace] =
+    useState<OptionType[]>();
+
+  const [selectedOptions, setSelectedOptions] = useState<
+    MultiValue<OptionType> | undefined
+  >();
+
+  // ================= Custom hooks ====================
+  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { getAllDashboardDataAPI } = useGetAllDashboardDataApi();
+
+  useEffect(() => {
+    marketplaceListing();
+  }, []);
+
+  const marketplaceListing = async () => {
+    const { data, error } = await getMarketplaceListingAPI({});
+    if (!error && data) {
+      setMarketplace(data?.data);
+      setUserFullName(data?.data?.userFullName);
+      const options = data?.data?.connectedMarketplace.map(
+        (e: {
+          id: number;
+          name: string;
+          coming_soon: boolean;
+          logo: string;
+        }) => {
+          return {
+            label: capitalizeFirstLetter(e?.name),
+            value: e?.id,
+          };
+        }
+      );
+      setConnectedMarketplace(options);
+    }
+  };
+
+  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedMonth = event.target.value;
+    setSelectedMonth(selectedMonth);
+
+    const year = currentDate.getFullYear(); // Static year for simplicity
+    const monthIndex = new Date(`${selectedMonth} 1, ${year}`).getMonth();
+    const newStartDate = new Date(year, monthIndex, 1);
+    const newEndDate = new Date(year, monthIndex + 1, 0);
+
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+    // Fetch data when month changes
+    fetchAllData(newStartDate, newEndDate);
+  };
+
+  // Function to handle the API call for /getAllData
+  const fetchAllData = async (start: Date, end: Date) => {
+    try {
+      const marketplaceIds =
+        selectedOptions?.map((option) => option.value) || null;
+
+      const data = await getAllDashboardDataAPI(
+        start.toLocaleDateString("en-CA"),
+        end.toLocaleDateString("en-CA"),
+        marketplaceIds
+      );
+      console.log("Fetched data:", data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // Effect to call fetchAllData when startDate or endDate changes
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchAllData(startDate, endDate);
+    }
+  }, [startDate, endDate, selectedOptions]);
+
+  const handleChange = (newValue: MultiValue<OptionType>) => {
+    setSelectedOptions(newValue);
+    console.log("Selected options:", newValue);
+  };
+
   return (
     <>
-      <section className=" w-full bg-white  p-5 mb-5">
-        <h3 className="font-medim text-[26px] pb-7 ">Analytics</h3>
-        <div className="grid grid-cols-12 gap-4 mb-5 ">
-          <div className="flex justify-center items-center w-full h-full col-span-9 border p-5 relative rounded-md ">
-            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
-              Coming Soon
+      <DatePickerWithMonthSelect
+        selectedMonth={selectedMonth}
+        startDate={startDate}
+        endDate={endDate}
+        onMonthChange={handleMonthChange}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+        userFullName={userFullName}
+      />
+      <section className="w-full bg-white   py-3 px-5 mb-2  ">
+        <p className="text-lg font-medium  ">Connect Your Marketplace</p>
+        <div className="grid grid-cols-12 gap-x-4  gap-y-4 w-full  max-h-[73px] overflow-y-auto scroll-design">
+          {marketplace?.connectedMarketplace.map((item) => (
+            <div
+              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 ${
+                item?.coming_soon ? "relative" : ""
+              }`}
+              key={item?.id}>
+              {item?.coming_soon ? (
+                <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+                  Coming Soon
+                </div>
+              ) : null}
+              <img
+                src={VITE_APP_API_URL + item.logo}
+                className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
+                alt=""
+              />
+              <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
+                <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
+                  &nbsp;
+                </span>
+                CONNECTED
+              </span>
             </div>
-            <img src={Graph1} className="w-full max-w-full " alt="" />
+          ))}
+          {marketplace?.notConnectedMarketplace.map((item) => (
+            <div
+              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 ${
+                item?.coming_soon ? "relative" : ""
+              }`}
+              key={item?.id}>
+              {item?.coming_soon ? (
+                <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+                  Coming Soon
+                </div>
+              ) : null}
+
+              <img
+                src={VITE_APP_API_URL + item.logo}
+                className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
+                alt=""
+              />
+              <span className="inline-flex items-center px-4 gap-2  bg-grayText/10   text-sm  rounded-full py-1 text-grayText border border-grayText ">
+                <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayText ">
+                  &nbsp;
+                </span>
+                NOT&nbsp;CONNECTED
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section className=" w-full bg-white  p-5 mb-5 max-h-[calc(100vh_-_365px)] lg:max-h-[calc(100vh_-_350px)] overflow-y-auto scroll-design ">
+        <div className="flex gap-6 justify-between flex-wrap items-center  pb-1">
+          <h3 className="font-medium text-[26px] ">Analytics</h3>
+          <Select
+            isMulti
+            value={selectedOptions}
+            onChange={handleChange}
+            options={connectedMarketplace}
+            placeholder="Filter By Marketplace"
+          />
+        </div>
+        <div className="grid grid-cols-12 lg:gap-x-4 gap-y-4 mb-5 ">
+          <div className=" w-full h-full col-span-12 lg:col-span-9 border p-5 relative rounded-md ">
+            {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+              Coming Soon
+            </div> */}
+
+            <RevenueProfitChart startDate={startDate} endDate={endDate} />
           </div>
-          <div className="flex justify-center items-center w-full h-full col-span-3 border p-5 relative  rounded-md ">
-            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+          <div className="flex flex-col    w-full h-full col-span-12 lg:col-span-3 border p-5 relative  rounded-md ">
+            {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
-            </div>
-            <img src={Graph2} className="w-full max-w-full " alt="" />
+            </div> */}
+
+            <RevenueProfitDonutChart startDate={startDate} endDate={endDate} />
           </div>
         </div>
         <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">
@@ -82,302 +262,27 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="grid grid-cols-11 gap-4 mb-5">
-          <div className="flex justify-center items-center w-full h-full col-span-5 border  rounded-md  ">
-            5
-          </div>
-          <div className="flex justify-center items-center w-full h-full col-span-3 border  rounded-md  ">
-            3
-          </div>
-          <div className="flex justify-center items-center w-full h-full col-span-3 border  rounded-md  ">
-            3
-          </div>
-        </div>
-      </section>
-
-      <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
-        <div className="py-24 px-20 bg-grayLightBody/10 sm:bg-MarketPlaceDB bg-right bg-no-repeat mb-14">
-          <h3 className=" text-5xl md:text-[58px] font-bold text-grayText/50 pb-6 bg-cover ">
-            No Marketplace Connected
-          </h3>
-          <Button
-            btnClass=" flex gap-2 items-center !text-2xl !w-auto bg-transparent border !border-blackPrimary/20 !py-2 !px-4 !text-blackPrimary font-semibold "
-            btnName="Connect Now"
-            BtnIconRight={<DownArrowBlack />}
-          />
-        </div>
-
-        <div>
-          <h4 className="text-center pb-7 text-[26px] font-medium ">
-            Connect Marketplaces
-          </h4>
-          <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8 flex flex-col ">
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo2}
-                    className="max-w-[150px]  w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8  flex flex-col ">
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo3}
-                    className="max-w-[150px] w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8  flex flex-col ">
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo}
-                    className="max-w-[150px]  w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8 flex flex-col ">
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo2}
-                    className="max-w-[150px]  w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8  flex flex-col ">
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo3}
-                    className="max-w-[150px] w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-            <div className=" col-span-6 sm:col-span-4 bg-grayLightBody/10  p-8  flex flex-col relative">
-              <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
-                Coming Soon
-              </div>
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={BrandLogo}
-                    className="max-w-[150px]  w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button btnName="Connect " btnClass="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Inventory Management */}
-      <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
-        <div className="flex justify-between items-center gap-6 flex-wrap">
-          <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
-              SELECT Your Marketplace
-            </span>
-            <div className="flex gap-2">
-              <Button
-                btnName="Amazon"
-                btnClass="rounded-full !bg-black text-white !px-4 !py-1 !w-auto hover:!bg-greenPrimary "
-                BtnIconLeft={
-                  <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
-                }
-              />
-              <Button
-                btnName="Ebay"
-                btnClass="rounded-full !bg-black text-white !px-4 !py-1 !w-auto hover:!bg-greenPrimary "
-                BtnIconLeft={
-                  <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
-                }
-              />
-              <Button
-                btnName="Fizno"
-                btnClass="rounded-full border !text-grayText bg-white !px-4 !py-1 !w-auto hover:bg-greenPrimary  hover:!text-white "
-              />
-              <Button
-                btnName="Walmart"
-                btnClass="rounded-full border !text-grayText bg-white !px-4 !py-1 !w-auto hover:bg-greenPrimary  hover:!text-white "
-              />
-            </div>
-          </div>
-          <div className="RightItems flex gap-4 items-center">
-            <Button
-              btnName="Sync Now"
-              btnClass=""
-              BtnIconLeft={
-                <AutoSyncIcon className="text-white w-5 h-5 min-w-5 inline-block mr-2" />
-              }
-            />
-            <div className="flex gap-2 items-center ">
-              <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
-                <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
-              </span>
-              <div className="whitespace-nowrap text-sm">
-                <div className="text-black font-medium">Last Auto Sync</div>
-                <p className="text-grayText">15 May 2020 9:30 am</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className=" w-full bg-white  p-5 mb-5">
-        <div className="TopTabsBtns flex justify-between items-center gap-4 flex-wrap ">
-          <div className="TopLEftTabs flex  ">
-            <div className="activeTab px-7 py-2 flex items-center text-greenPrimary text-lg gap-2 border-b-2 border-greenPrimary cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300  ">
-              Active{" "}
-              <span className="text-base bg-greenPrimary/10 px-1 rounded-md">
-                {" "}
-                100{" "}
-              </span>{" "}
-            </div>
-            <div className=" Tab px-7 py-2 flex items-center text-black text-lg gap-2 border-b-2 border-greyBorder cursor-pointer  font-medium hover:bg-greenPrimary/10 transition-all duration-300 hover:transition-all hover:duration-300 ">
-              Active{" "}
-              <span className="text-base bg-greyBorder/50 px-1 rounded-md">
-                {" "}
-                0{" "}
-              </span>{" "}
-            </div>
-            <div className=" Tab px-7 py-2 flex items-center text-black text-lg gap-2 border-b-2 border-greyBorder cursor-pointer  font-medium hover:bg-greenPrimary/10 transition-all duration-300 hover:transition-all hover:duration-300 ">
-              Active{" "}
-              <span className="text-base bg-greyBorder/50 px-1 rounded-md">
-                {" "}
-                5{" "}
-              </span>{" "}
-            </div>
-          </div>
-          <div className="RightBtnsTop flex gap-2 ">sdefg </div>
-        </div>
-      </section>
-      {/* Inventory Management */}
-      <section className="ConnectYourMarketplace w-full bg-white  p-5 mb-5">
-        <p className="font-medium text-xl text-blackPrimary pb-7">
-          Connect Your Marketplace
-        </p>
-        <div className="grid grid-cols-12 gap-6 ">
-          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
-            <div>
-              <img
-                src={BrandLogo}
-                className="max-w-[114px] w-full h-auto"
-                alt=""
-              />
-            </div>
-            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
-              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
-              Connected
-            </div>
-          </div>
-          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
-            <div>
-              <img
-                src={BrandLogo2}
-                className="max-w-[114px] w-full h-auto"
-                alt=""
-              />
-            </div>
-            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
-              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
-              Connected
-            </div>
-          </div>
-          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md  ">
-            <div>
-              <img
-                src={BrandLogo3}
-                className="max-w-[114px] w-full h-auto"
-                alt=""
-              />
-            </div>
-            <div className="bg-grayText/10 border border-graybg-grayText/50 text-graybg-grayText/80 py-1 px-2 rounded-full flex gap-2 items-center uppercase text-sm">
-              <span className="w-2 min-w-2  h-2 bg-grayText  rounded-full"></span>
-              Not Connected
-            </div>
-          </div>
-          <div className=" col-span-6 xl:col-span-3 flex gap-4 flex-wrap justify-between items-center p-5 bg-grayLightBody/10 rounded-md relative ">
-            <div className="absolute inset-0 rounded-md bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10 ">
+          <div className="flex justify-center items-center w-full h-full col-span-11 lg:col-span-5 border  rounded-md p-4 relative">
+            <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div>
-            <div>
-              <img
-                src={BrandLogo}
-                className="max-w-[114px] w-full h-auto"
-                alt=""
-              />
-            </div>
-            <div className="bg-greenPrimary/10 border border-greenPrimary/50 text-greenPrimary/80 py-1 px-2 rounded-full flex gap-2 items-center  uppercase text-sm ">
-              <span className="w-2 min-w-2  h-2 bg-greenPrimary/80 rounded-full"></span>
-              Connected
-            </div>
+            <img src={WorldMap} alt="" />
+          </div>
+          <div className="flex flex-col justify-center   w-full h-full col-span-6 lg:col-span-3 border  rounded-md p-4 ">
+            <h3 className="text-xl font-bold mb-4">Top Selling Category</h3>
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+          </div>
+          <div className="flex flex-col justify-center  w-full h-full col-span-5 lg:col-span-3 border  rounded-md p-4 ">
+            <h3 className="text-xl font-bold mb-4">Top Selling Sub-Category</h3>
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
+            <ProgressBar Progress="45%" LabelName="Computers" />
           </div>
         </div>
       </section>

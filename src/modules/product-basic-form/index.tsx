@@ -16,14 +16,16 @@ import {
   useProductBasicFormApi,
   useTagOptionsApi,
 } from "./services/productBasicForm.service";
-import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
+import { ProductBasicFormSingleProps } from "../all-product-form-wrapper/types";
 import { useEditProductAPi } from "../inventory-management/services";
 import { useParams } from "react-router-dom";
 import Button from "@/components/form-fields/components/Button";
 import { INameOption, IOption } from "../inventory-management/types";
 import { productTypes } from "./constant";
 
-const ProductBasicForm: React.FC<ProductBasicFormProps> = ({ onComplete }) => {
+const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
+  onComplete,
+}) => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
   const { basicFormSubmitApi } = useProductBasicFormApi();

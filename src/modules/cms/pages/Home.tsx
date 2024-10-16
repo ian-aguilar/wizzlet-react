@@ -141,7 +141,7 @@ const CMSHome = () => {
           </section>
         </>
       ) : (
-        <Loader loaderClass="!h-[calc(100vh-103px)] !top-[103px] " />
+        <Loader loaderClass="lg:!h-[calc(100vh-103px)] lg:!top-[103px] " />
       )}
     </>
   );

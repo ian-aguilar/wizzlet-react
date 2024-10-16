@@ -16,14 +16,14 @@ import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
 import { PropertiesState, SelectOption } from "./types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { generateCombinations, transformData } from "./helper";
 import { productEbayFormValidationSchema } from "./validation-schema";
 import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
-import { PrivateRoutesPath } from "../Auth/types";
+import { ProductBasicFormSingleProps } from "../all-product-form-wrapper/types";
 
-const EbayForm: React.FC = () => {
+const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
 
   const { ebayFormSubmitApi, isLoading: ebayFormSubmitApiLoading } =
@@ -53,8 +53,6 @@ const EbayForm: React.FC = () => {
     useState<variantOptionType>([]);
 
   const [listInEbayLoading, setListInEbayLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -223,9 +221,9 @@ const EbayForm: React.FC = () => {
       if (!ebayFormError) {
         if (type === "SaveInEbay") {
           const { error } = await createEbayProductApi(Number(productId));
-          if (!error) navigate(PrivateRoutesPath.inventoryManagement.view);
+          if (!error) onComplete(productId);
         } else {
-          navigate(PrivateRoutesPath.inventoryManagement.view);
+          onComplete(productId);
         }
       }
 
@@ -235,6 +233,8 @@ const EbayForm: React.FC = () => {
 
   useEffect(() => {
     handleEditApiResponse().then((data) => {
+      console.log(data, "========================");
+
       setId(data?.categoryId);
 
       let temp: any = { ...data };
