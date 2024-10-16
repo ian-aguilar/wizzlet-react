@@ -4,6 +4,10 @@ import {
   TotalMarketplaceAdminSVG,
   TotalUSerAdminSVG,
 } from "@/assets/Svg";
+import UserProgressComponent from "./components/UserProgressComponent";
+import MarketplaceActivityChart from "./components/AdminChartMarketplaceActivity";
+import CategoriesProgress from "./components/CategoriesProgressComponent";
+import CategoryUsedChart from "./components/AdminCategoryUsedChart";
 
 const AdminDashboard = () => {
   return (
@@ -46,16 +50,28 @@ const AdminDashboard = () => {
         </article>
         <article className="grid grid-cols-12 gap-y-3 lg:gap-x-3 ">
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-4 ">
-            Today’s Users ( ProgressBar )
+            <UserProgressComponent
+              totalUsers={573}
+              onlineUsers={179}
+              offlineUsers={394}
+            />
           </div>
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-8 ">
             revenue by location ( WorldChart )
           </div>
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-8 ">
-            Marketplace Activity / ( BarChart )
+            <MarketplaceActivityChart />
           </div>
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-4 ">
-            Categories ( LineChart )
+            <CategoriesProgress
+              categoryPercentage={40}
+              subCategoryPercentage={30}
+              categoriesUsed={14855}
+              subCategoriesUsed={211348}
+            />
+            <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-8 ">
+              <CategoryUsedChart />
+            </div>
           </div>
         </article>
       </section>

@@ -184,7 +184,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
         <div className="flex gap-2 text-grayText">
           <div>
             Total Revenue:{" "}
-            <span className="font-bold text-blackPrimary">{totalRevenue}</span>{" "}
+            <span className="font-bold text-blackPrimary">${totalRevenue}</span>{" "}
           </div>
           {/* <div>
             Total Profit:{" "}

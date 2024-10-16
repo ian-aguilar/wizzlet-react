@@ -1,4 +1,5 @@
 import { IMarketplace } from "@/modules/marketplace/types";
+import { Dispatch, SetStateAction } from "react";
 import { MultiValue } from "react-select";
 
 export interface RevenueProfitChartProps {
@@ -23,7 +24,7 @@ export interface DatePickerWithMonthSelectProps {
   onMonthChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   userFullName?: string;
   isDatePickerOpen: boolean;
-  setIsDatePickerOpen: (value: boolean) => boolean;
+  setIsDatePickerOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface MarketplaceRevenue {
