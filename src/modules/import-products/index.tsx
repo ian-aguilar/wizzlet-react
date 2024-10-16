@@ -92,7 +92,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          // return;
+          return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING

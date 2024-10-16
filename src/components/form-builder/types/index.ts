@@ -48,3 +48,8 @@ export type FieldArrayComponentType<T extends FieldValues> = {
   watch: UseFormWatch<FieldValues>;
   data: any;
 };
+
+export type IConditions = {
+  required: string[];
+  allOf: any[];
+};

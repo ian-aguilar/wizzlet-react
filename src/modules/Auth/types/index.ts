@@ -15,6 +15,7 @@ export enum RoutesPath {
 
 export const PrivateRoutesPath = {
   dashboard: { view: "/dashboard" },
+  adminDashboard: { view: "/admin-dashboard" },
   setting: {
     view: "/setting",
     profile: { view: "/setting/profile" },

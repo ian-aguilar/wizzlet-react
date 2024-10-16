@@ -29,7 +29,7 @@ const RequiresAuth = ({ children }: { children: ReactNode }) => {
         <div className="w-full flex h-[calc(100vh_-_83px)]">
           <Sidebar />
 
-          <article className="dashboardRight w-full h-full bg-authPattern bg-[length:30px_30px] p-5">
+          <article className="dashboardRight w-[calc(100%_-_91px)] h-full bg-authPattern bg-[length:30px_30px] p-5">
             {children}
           </article>
         </div>

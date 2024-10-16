@@ -2,25 +2,17 @@ import { CalendarMainSVG } from "@/assets/Svg";
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
-interface DatePickerWithMonthSelectProps {
-  selectedMonth: string;
-  startDate: Date;
-  endDate: Date;
-  onMonthChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onStartDateChange: (date: Date) => void;
-  onEndDateChange: (date: Date) => void;
-  userFullName?: string;
-}
+import { DatePickerWithMonthSelectProps } from "../types";
 
 const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
   selectedMonth,
   startDate,
   endDate,
   onMonthChange,
-  onStartDateChange,
-  onEndDateChange,
+  onDateRangeChange,
   userFullName,
+  isDatePickerOpen,
+  setIsDatePickerOpen,
 }) => {
   return (
     <div className="flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10">
@@ -32,9 +24,8 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
           Explore Marketplace Information and activity
         </p>
       </div>
-      <div className="flex gap-2 border border-grayLightBody rounded-md items-center">
+      <div className="flex gap-2 border border-grayLightBody rounded-md items-center pr-2">
         <div className="flex gap-4">
-          {/* <label htmlFor="month-select">Select Month: </label> */}
           <select
             className="bg-black text-white py-2 lg:px-2 !rounded-r-none "
             id="month-select"
@@ -53,32 +44,41 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
           </select>
         </div>
 
-        <div className="rounded-r-md flex  ">
-          {/* <label htmlFor="date-range">Select Date Range: </label> */}
-          <div>
-            <CalendarMainSVG />
+        <div className="rounded-r-md flex items-center">
+          <div
+            className="flex items-center gap-2"
+            onClick={() => setIsDatePickerOpen((prev: boolean) => !prev)}>
+            {!isDatePickerOpen ? (
+              <>
+                <CalendarMainSVG />
+                {startDate && endDate ? (
+                  <span>
+                    {`${startDate.toLocaleString("en-US", {
+                      month: "short",
+                    })} ${String(startDate.getDate()).padStart(
+                      2,
+                      "0"
+                    )} - ${endDate.toLocaleString("en-US", {
+                      month: "short",
+                    })} ${String(endDate.getDate()).padStart(2, "0")}`}
+                  </span>
+                ) : null}
+              </>
+            ) : null}
           </div>
-          <DatePicker
-            className="  focus:outline-none text-center"
-            selected={startDate}
-            onChange={onStartDateChange}
-            startDate={startDate}
-            endDate={endDate}
-            dateFormat={"dd/MM/YYYY "}
-            selectsStart
-            inline={false}
-          />
-          <DatePicker
-            className="   focus:outline-none text-center "
-            selected={endDate}
-            onChange={onEndDateChange}
-            startDate={startDate}
-            endDate={endDate}
-            selectsEnd
-            minDate={startDate}
-            dateFormat={"dd/MM/YYYY "}
-            inline={false}
-          />
+
+          {isDatePickerOpen && (
+            <DatePicker
+              className="focus:outline-none text-center"
+              selected={startDate}
+              onChange={onDateRangeChange}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange={true}
+              inline={false}
+              dateFormat={"dd/MM/yyyy"}
+            />
+          )}
         </div>
       </div>
     </div>
