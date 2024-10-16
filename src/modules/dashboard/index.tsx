@@ -162,15 +162,16 @@ const Dashboard: React.FC = () => {
         isDatePickerOpen={isDatePickerOpen}
         setIsDatePickerOpen={setIsDatePickerOpen}
       />
-      <section className="w-full bg-white   py-3 px-5 mb-2  ">
+      <section className="w-full bg-white   py-3 px-5 mb-2 ">
         <p className="text-lg font-medium  ">Connect Your Marketplace</p>
-        <div className="grid grid-cols-12 gap-x-4  gap-y-4 w-full  max-h-[80px] overflow-y-auto scroll-design">
+        <div className="flex   gap-4  max-h-[80px] overflow-x-auto scroll-design">
           {marketplace?.connectedMarketplace.map((item) => (
             <div
-              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 ${
+              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5  gap-4 min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}>
+              key={item?.id}
+            >
               {item?.coming_soon ? (
                 <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
                   Coming Soon
@@ -191,10 +192,11 @@ const Dashboard: React.FC = () => {
           ))}
           {marketplace?.notConnectedMarketplace.map((item) => (
             <div
-              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5 w-full gap-4 ${
+              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5   gap-4  min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}>
+              key={item?.id}
+            >
               {item?.coming_soon ? (
                 <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
                   Coming Soon
