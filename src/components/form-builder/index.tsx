@@ -13,6 +13,7 @@ import SelectField from "../form-fields/components/SelectField";
 import Input from "../form-fields/components/Input";
 import { getAppendField } from "./helper";
 import { AddIconBtn, DeleteIcon } from "@/assets/Svg";
+import { AmazonSelectField } from "@/modules/amazon-form/common/AmazonSelectField";
 
 const FormBuilder = <T extends FieldValues>({
   fields,
@@ -35,7 +36,7 @@ const FormBuilder = <T extends FieldValues>({
               control={control}
               errors={errors}
               label={data.title ? data.title : data.name}
-              placeholder=""
+              placeholder={data.description ? data.description : ""}
             />
           </div>
         );
@@ -49,12 +50,27 @@ const FormBuilder = <T extends FieldValues>({
           <div className="col-span-4 px-2">
             <Input
               name={name}
+              type={
+                data.type === FieldsTypeEnum.NUMBER ||
+                data.type === FieldsTypeEnum.INTEGER ||
+                data.type === FieldsTypeEnum.DOUBLE
+                  ? "number"
+                  : "text"
+              }
               className="mb-2"
               control={control}
               errors={errors}
               textLabelName={data.title ? data.title : data.name}
-              placeholder=""
+              placeholder={data.description ? data.description : ""}
             />
+            <div className="flex gap-[15px]">
+              {(data.minLength as number) > 0 && (
+                <p>Minimum length: {data.minLength}</p>
+              )}
+              {(data.maxLength as number) > 0 && (
+                <p>Maximum length: {data.maxLength}</p>
+              )}
+            </div>
           </div>
         );
 
@@ -62,17 +78,31 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.MULTI_SELECT:
         return (
           <div className="col-span-4 px-2">
-            <SelectField<T>
-              name={name}
-              className="mb-2"
-              control={control}
-              errors={errors}
-              label={data?.title ? data?.title : data?.name}
-              placeholder=""
-              options={data.option || []}
-              isClearable={true}
-              isMulti={data?.isMulti ? true : false}
-            />
+            {data.marketplace ? (
+              <AmazonSelectField<T>
+                name={name}
+                className="mb-2"
+                control={control}
+                errors={errors}
+                label={data?.title ? data?.title : data?.name}
+                placeholder={data.description ? data.description : ""}
+                options={data.option || []}
+                isClearable={true}
+                isMulti={data?.isMulti ? true : false}
+              />
+            ) : (
+              <SelectField<T>
+                name={name}
+                className="mb-2"
+                control={control}
+                errors={errors}
+                label={data?.title ? data?.title : data?.name}
+                placeholder={data.description ? data.description : ""}
+                options={data.option || []}
+                isClearable={true}
+                isMulti={data?.isMulti ? true : false}
+              />
+            )}
           </div>
         );
 

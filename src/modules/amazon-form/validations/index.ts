@@ -40,7 +40,8 @@ function parseSchema(
   data: any,
   ctx: z.RefinementCtx,
   amazonJson: any,
-  path: any = []
+  path: any = [],
+  properties: any
 ) {
   if (amazonJson) {
     if (amazonJson["if"]) {
@@ -51,6 +52,7 @@ function parseSchema(
           validationEnum.AllOf,
           amazonJson["if"]["allOf"],
           data,
+          properties,
           []
         );
         const tempArray = temp?.every((e) => e?.success);
@@ -66,6 +68,7 @@ function parseSchema(
           validationEnum.Anyof,
           amazonJson["if"]["anyOf"],
           data,
+          properties,
           []
         );
         const tempArray = temp?.some((e) => e?.success);
@@ -82,6 +85,7 @@ function parseSchema(
           validationEnum.Required,
           amazonJson["if"]["required"],
           data,
+          properties,
           []
         );
         array.push(...(temp || []));
@@ -91,6 +95,7 @@ function parseSchema(
           validationEnum.Properties,
           amazonJson["if"]["properties"],
           data,
+          properties,
           []
         );
         const tempArray = temp?.every((e) => e.success);
@@ -106,6 +111,7 @@ function parseSchema(
           validationEnum.Not,
           amazonJson["if"]["not"],
           data,
+          properties,
           []
         );
         array.push(...(temp || []));
@@ -121,6 +127,7 @@ function parseSchema(
               validationEnum.Required,
               amazonJson["then"]["required"],
               data,
+              properties,
               path
             );
             thenArray.push(...(temp || []));
@@ -130,6 +137,7 @@ function parseSchema(
               validationEnum.Properties,
               amazonJson["then"]["properties"],
               data,
+              properties,
               path
             );
             thenArray.push(...(temp || []));
@@ -155,11 +163,12 @@ function parseSchema(
               validationEnum.Required,
               amazonJson["else"]["required"],
               data,
+              properties,
               path
             );
             elseArray.push(...(temp || []));
           }
-          parseSchema(data, ctx, amazonJson["else"]);
+          parseSchema(data, ctx, amazonJson["else"], [], properties);
 
           elseArray?.forEach((e: any) => {
             if (!e.success) {
@@ -181,15 +190,12 @@ function parseSchema(
         validationEnum.AllOf,
         amazonJson["allOf"],
         data,
+        properties,
         path
       );
-
-      console.log(temp, "<<<<<<<<<<<<<<<");
+      console.log("🚀 ~ temp:", temp);
       temp?.forEach((e: ResType) => {
         if (!e.success) {
-          if (e.path.includes("size")) {
-            console.log(e, "<<<<<<<<<");
-          }
           ctx.addIssue({
             path: [...path, ...e.path],
             message: e.message
@@ -206,6 +212,7 @@ function parseSchema(
         validationEnum.Properties,
         amazonJson["properties"],
         data,
+        properties,
         path
       );
 
@@ -225,11 +232,54 @@ function parseSchema(
 }
 
 // export const testValidations = (amazonJson: any, data: any) => {
-export const schema = (amazonJson: IConditions | undefined) =>
+export const schema = (amazonJson: IConditions | undefined, properties: any) =>
   z.any().superRefine((data, ctx) => {
-    parseSchema(data, ctx, {
-      allOf: Array.isArray(amazonJson?.allOf) ? amazonJson.allOf : [],
-    });
+    parseSchema(
+      data,
+      ctx,
+      {
+        allOf: Array.isArray(amazonJson?.allOf) ? amazonJson.allOf : [],
+        // allOf: [
+        //   {
+        //     properties: {
+        //       shirt_size: {
+        //         items: {
+        //           if: {
+        //             not: {
+        //               allOf: [
+        //                 {
+        //                   required: ["size_class"],
+        //                   properties: {
+        //                     size_class: {
+        //                       enum: ["age", "alpha", "numeric"],
+        //                     },
+        //                   },
+        //                 },
+        //                 {
+        //                   required: ["size_system"],
+        //                   properties: {
+        //                     size_system: {
+        //                       enum: ["as5"],
+        //                     },
+        //                   },
+        //                 },
+        //               ],
+        //             },
+        //           },
+        //           then: {
+        //             not: {
+        //               required: ["size"],
+        //             },
+        //           },
+        //         },
+        //       },
+        //     },
+        //   },
+        // ],
+      },
+      [],
+      properties
+    );
     if (amazonJson?.required) {
       amazonJson?.required?.forEach((item) => {
         const value = getValue(data, [item]);
@@ -284,23 +334,33 @@ const checkMainRequired = (
   }
 };
 
-const checkIf = (amazonJson: any, data: any, path: string[]) => {
+const checkIf = (
+  amazonJson: any,
+  data: any,
+  properties: any,
+  path: string[]
+) => {
   const tempArray: ResType[] = [];
 
-  const temp = parseProperties(validationEnum.If, amazonJson["if"], data, path);
-  console.log("🚀 ~ checkIf ~ temp:", temp);
+  const temp = parseProperties(
+    validationEnum.If,
+    amazonJson["if"],
+    data,
+    properties,
+    path
+  );
   const success = temp?.every((e) => e.success);
-
+  console.log(success, "success >>>>>", temp);
   if (success) {
     if (amazonJson["then"]) {
       const temp = parseProperties(
         validationEnum.Then,
         amazonJson["then"],
         data,
+        properties,
         path
       );
 
-      console.log("🚀 ~ checkIf ~ temp:22222", temp);
       tempArray.push(...(temp || []));
     }
   } else {
@@ -309,6 +369,7 @@ const checkIf = (amazonJson: any, data: any, path: string[]) => {
         validationEnum.Else,
         amazonJson["else"],
         data,
+        properties,
         path
       );
       tempArray.push(...(temp || []));
@@ -318,10 +379,93 @@ const checkIf = (amazonJson: any, data: any, path: string[]) => {
   return tempArray;
 };
 
+const getNestedValue = (properties: any, path: string[]) => {
+  let current = properties;
+
+  for (let i = 0; i < path.length; i++) {
+    const key = path[i];
+    if (i === 0) {
+      current = current[key];
+    } else {
+      if (current) {
+        if (
+          current.type === "array" &&
+          current.items &&
+          current.items.properties
+        ) {
+          current = current.items.properties[key];
+        } else if (current.type === "object" && current.properties) {
+          current = current.properties[key];
+        } else if (i < path.length - 1) {
+          return undefined;
+        }
+      }
+    }
+  }
+
+  return current;
+};
+
+const findProperties = (path: string[], data: any, properties: any) => {
+  let tempArray: ResType[] = [];
+
+  const tempPath = [...path];
+  const lastEle = tempPath.pop();
+
+  const tempValue = getValue(data, path);
+
+  if (tempValue) {
+    const newPath: string[] = [];
+    path.forEach((e) => {
+      const { prefix }: any = separateBracketedString(e);
+      newPath.push(prefix);
+    });
+    const nestedProperties = getNestedValue(properties, newPath);
+    if (nestedProperties?.type === "array") {
+      if (nestedProperties?.items?.required?.length > 0) {
+        nestedProperties?.items?.required?.forEach((e: string) => {
+          if (e !== "marketplace_id" && e !== "language_tag") {
+            const temp1 = tempValue.flatMap((_: any, index: number) => {
+              return findProperties(
+                [...tempPath, `${lastEle}[${index}]`, e],
+                data,
+                properties
+              );
+            });
+            tempArray.push(...temp1);
+          }
+        });
+      }
+    } else if (nestedProperties?.type === "object") {
+      if (nestedProperties?.required?.length > 0) {
+        nestedProperties?.required?.forEach((e: string) => {
+          if (e !== "marketplace_id" && e !== "language_tag") {
+            tempArray.push(...findProperties([...path, e], data, properties));
+          }
+        });
+      }
+    } else {
+      // return tempArray;
+      tempArray.push({
+        path,
+        success: true,
+      });
+    }
+  } else {
+    tempArray.push({
+      path,
+      success: false,
+      message: ` ${path[path.length - 1]} is required`,
+    });
+  }
+  return tempArray;
+};
+
 const parseProperties = (
   type: validationEnum,
   amazonJson: any,
   data: any,
+  properties: any,
   path: string[]
 ) => {
   switch (type) {
@@ -340,24 +484,63 @@ const parseProperties = (
       const array: ResType[] = [];
 
       if (amazonJson["required"]) {
-        const temp = parseProperties(
-          validationEnum.Required,
-          amazonJson["required"],
-          data,
-          path
-        );
-        array.push(...(temp || []));
+        // const temp = parseProperties(
+        //   validationEnum.Required,
+        //   amazonJson["required"],
+        //   data,
+        //   properties,
+        //   path
+        // );
+        // array.push(...(temp || []));
+        if (!amazonJson["properties"]) {
+          amazonJson["required"].forEach((e: string) => {
+            array.push(...findProperties([...path, e], data, properties));
+            console.log(
+              array,
+              "NOTTTT >>>>>",
+              ...findProperties([...path, e], data, properties)
+            );
+          });
+        } else {
+          amazonJson["required"].forEach((e: string) => {
+            if (!Object.keys(amazonJson["properties"]).includes(e)) {
+              array.push(...findProperties([...path, e], data, properties));
+            } else {
+              const temp = parseProperties(
+                validationEnum.Required,
+                [e],
+                data,
+                properties,
+                path
+              );
+              array.push(...(temp || []));
+            }
+          });
+        }
       }
       if (amazonJson["properties"]) {
         const temp = parseProperties(
           validationEnum.Properties,
           amazonJson["properties"],
           data,
+          properties,
           path
         );
 
         array.push(...(temp || []));
       }
+
+      if (amazonJson["allOf"]) {
+        const temp = parseProperties(
+          validationEnum.AllOf,
+          amazonJson["allOf"],
+          data,
+          properties,
+          path
+        );
+        array.push(...(temp || []));
+      }
+
       const tempValue = array.every((e) => e.success);
       return array.map((e) => ({ ...e, success: !tempValue }));
 
@@ -369,6 +552,7 @@ const parseProperties = (
             validationEnum.Items,
             { properties: amazonJson },
             data,
+            properties,
             path
           )?.filter(Boolean) || [];
 
@@ -378,10 +562,13 @@ const parseProperties = (
         Object.entries(amazonJson).map(([key, value]: any) => {
           if (value["items"]) {
             const temp: ResType[] =
-              parseProperties(validationEnum.Items, value["items"], data, [
-                ...path,
-                key,
-              ])?.filter(Boolean) || [];
+              parseProperties(
+                validationEnum.Items,
+                value["items"],
+                data,
+                properties,
+                [...path, key]
+              )?.filter(Boolean) || [];
             array2.push(...temp);
             // const tempValue = getValue(data, [...path, key]);
 
@@ -438,6 +625,7 @@ const parseProperties = (
                   validationEnum.Required,
                   value["required"],
                   data,
+                  properties,
                   [...path, `${key}`]
                 )?.filter(Boolean) || [];
 
@@ -449,6 +637,7 @@ const parseProperties = (
                   validationEnum.Properties,
                   value["properties"],
                   data,
+                  properties,
                   [...path, `${key}`]
                 )?.filter(Boolean) || [];
 
@@ -458,14 +647,16 @@ const parseProperties = (
 
           if (value["contains"]) {
             const tempValue = getValue(data, [...path, key]);
-
             let temp2: any = [];
             if (Array.isArray(tempValue)) {
               temp2 =
-                parseProperties(validationEnum.Items, value["contains"], data, [
-                  ...path,
-                  key,
-                ])?.filter(Boolean) || [];
+                parseProperties(
+                  validationEnum.Items,
+                  value["contains"],
+                  data,
+                  properties,
+                  [...path, key]
+                )?.filter(Boolean) || [];
 
               array2.push(...temp2);
             } else if (typeof tempValue === "object") {
@@ -475,6 +666,7 @@ const parseProperties = (
                     validationEnum.Properties,
                     value["contains"]["properties"],
                     data,
+                    properties,
                     [...path, key]
                   )?.filter(Boolean) || [];
                 array2.push(...temp2);
@@ -485,6 +677,7 @@ const parseProperties = (
                     validationEnum.Required,
                     value["contains"]["required"],
                     data,
+                    properties,
                     [...path, key]
                   )?.filter(Boolean) || [];
 
@@ -585,10 +778,13 @@ const parseProperties = (
           }
           if (value["anyOf"]) {
             const temp1 =
-              parseProperties(validationEnum.Anyof, value["anyOf"], data, [
-                ...path,
-                `${key}`,
-              ])?.filter(Boolean) || [];
+              parseProperties(
+                validationEnum.Anyof,
+                value["anyOf"],
+                data,
+                properties,
+                [...path, `${key}`]
+              )?.filter(Boolean) || [];
             const tempArray = temp1?.some((e) => e?.success);
             if (tempArray) {
               array2.push(...[{ success: true, path: [] }]);
@@ -603,14 +799,17 @@ const parseProperties = (
 
     case validationEnum.AllOf:
     case validationEnum.Anyof:
-      const array3: ResType[] = [];
-      amazonJson.forEach((e: any) => {
+      const array3: any[] = [];
+      // const array3: ResType[] = [];
+
+      amazonJson.forEach((e: any, index: any) => {
         const tempArray: ResType[] = [];
         if (e["required"]) {
           const temp = parseProperties(
             validationEnum.Required,
             e["required"],
             data,
+            properties,
             path
           );
           tempArray.push(
@@ -620,11 +819,15 @@ const parseProperties = (
             }))
           );
         }
+
+        console.log([...tempArray], "first>>>>>>>>>>>>>>>>>>>>>>>", index);
+
         if (e["properties"]) {
           const temp = parseProperties(
             validationEnum.Properties,
             e["properties"],
             data,
+            properties,
             path
           );
           tempArray.push(
@@ -634,12 +837,14 @@ const parseProperties = (
             }))
           );
         }
+        console.log([...tempArray], "second>>>>>>>>>>>>>>>>>>>>>>>", index);
 
         if (e["not"]) {
           const temp = parseProperties(
             validationEnum.Not,
             e["not"],
             data,
+            properties,
             path
           );
           tempArray.push(
@@ -655,6 +860,7 @@ const parseProperties = (
             validationEnum.AllOf,
             e["allOf"],
             data,
+            properties,
             path
           );
           tempArray.push(
@@ -667,35 +873,56 @@ const parseProperties = (
 
         if (e["if"]) {
           tempArray.push(
-            ...(checkIf(e, data, path) || []).map((item) => ({
+            ...(checkIf(e, data, properties, path) || []).map((item) => ({
               ...item,
               json: (e as any)["if"],
             }))
           );
         }
+
+        let tempValue = true;
+
+        if (type === validationEnum.AllOf) {
+          tempValue = tempArray.every((e) => e.success);
+        } else {
+          tempValue = tempArray.some((e) => e.success);
+        }
+        array3.push(
+          ...(tempArray.map((item) => {
+            return {
+              success: tempValue,
+              path: item.path,
+              message: item.message,
+              json: e,
+            };
+          }) || [])
+        );
+
         // const tempValue = tempArray.every((e) => e.success);
         // if (tempValue) {
         //   array3.push(
-        //     ...(tempArray.map((e) => {
+        //     ...(tempArray.map((item) => {
         //       return {
         //         success: true,
-        //         path: e.path,
-        //         message: e.message,
+        //         path: item.path,
+        //         message: item.message,
+        //         json: e,
         //       };
         //     }) || [])
         //   );
         // } else {
         //   array3.push(
-        //     ...(tempArray.map((e) => {
+        //     ...(tempArray.map((item) => {
         //       return {
         //         success: false,
-        //         path: e.path,
-        //         message: e.message,
+        //         path: item.path,
+        //         message: item.message,
+        //         json: e,
         //       };
         //     }) || [])
         //   );
         // }
-        array3.push(...tempArray);
+        // array3.push(...tempArray);
       });
       return array3;
 
@@ -704,20 +931,43 @@ const parseProperties = (
     case validationEnum.Else:
       const array4: ResType[] = [];
       if (amazonJson["required"]) {
-        const temp = parseProperties(
-          validationEnum.Required,
-          amazonJson["required"],
-          data,
-          path
-        );
+        // const temp = parseProperties(
+        //   validationEnum.Required,
+        //   amazonJson["required"],
+        //   data,
+        //   properties,
+        //   path
+        // );
 
-        array4.push(...(temp || []));
+        // array4.push(...(temp || []));
+
+        if (!amazonJson["properties"]) {
+          amazonJson["required"].forEach((e: string) => {
+            array4.push(...findProperties([...path, e], data, properties));
+          });
+        } else {
+          amazonJson["required"].forEach((e: string) => {
+            if (!Object.keys(amazonJson["properties"]).includes(e)) {
+              array4.push(...findProperties([...path, e], data, properties));
+            } else {
+              const temp = parseProperties(
+                validationEnum.Required,
+                [e],
+                data,
+                properties,
+                path
+              );
+              array4.push(...(temp || []));
+            }
+          });
+        }
       }
       if (amazonJson["properties"]) {
         const temp = parseProperties(
           validationEnum.Properties,
           amazonJson["properties"],
           data,
+          properties,
           path
         );
 
@@ -728,10 +978,12 @@ const parseProperties = (
           validationEnum.Not,
           amazonJson["not"],
           data,
+          properties,
           path
         );
 
         if (type === validationEnum.Then) {
+          // console.log(temp, "TEMPPPPPPP >>>>>");
           const newTemp = temp?.map((e) => {
             return {
               ...e,
@@ -748,6 +1000,7 @@ const parseProperties = (
           validationEnum.AllOf,
           amazonJson["allOf"],
           data,
+          properties,
           path
         );
         const tempValue = temp?.every((e) => e.success);
@@ -762,8 +1015,10 @@ const parseProperties = (
           validationEnum.Anyof,
           amazonJson["anyOf"],
           data,
+          properties,
           path
         );
+
         const tempValue = temp?.some((e) => e.success);
         if (tempValue) {
           array4.push(...[{ success: true, path: [] }]);
@@ -772,7 +1027,7 @@ const parseProperties = (
         }
       }
       if (amazonJson["if"]) {
-        array4.push(...(checkIf(amazonJson, data, path) || []));
+        array4.push(...(checkIf(amazonJson, data, properties, path) || []));
       }
 
       return array4;
@@ -786,17 +1041,44 @@ const parseProperties = (
 
       if (tempValueForItems !== null && Array.isArray(tempValueForItems)) {
         if (amazonJson["required"]) {
-          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
-            return (
-              parseProperties(
-                validationEnum.Required,
-                amazonJson["required"],
-                data,
-                [...tempPath, `${lastEle}[${index}]`]
-              )?.filter(Boolean) || []
-            );
+          tempValueForItems.flatMap((_: any, index: number) => {
+            if (!amazonJson["properties"]) {
+              amazonJson["required"].forEach((e: string) => {
+                array5.push(
+                  ...findProperties(
+                    [...tempPath, `${lastEle}[${index}]`, e],
+                    data,
+                    properties
+                  )
+                );
+              });
+            } else {
+              amazonJson["required"].forEach((e: string) => {
+                if (!Object.keys(amazonJson["properties"]).includes(e)) {
+                  return findProperties(
+                    [...tempPath, `${lastEle}[${index}]`, e],
+                    data,
+                    properties
+                  );
+                } else {
+                  const temp1 = tempValueForItems.flatMap(
+                    (_: any, index: number) => {
+                      return (
+                        parseProperties(
+                          validationEnum.Required,
+                          amazonJson["required"],
+                          data,
+                          properties,
+                          [...tempPath, `${lastEle}[${index}]`]
+                        )?.filter(Boolean) || []
+                      );
+                    }
+                  );
+                  array5.push(...temp1);
+                }
+              });
+            }
           });
-          array5.push(...temp1);
         }
         if (amazonJson["properties"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
@@ -805,6 +1087,7 @@ const parseProperties = (
                 validationEnum.Properties,
                 amazonJson["properties"],
                 data,
+                properties,
                 [...tempPath, `${lastEle}[${index}]`]
               )?.filter(Boolean) || []
             );
@@ -814,10 +1097,13 @@ const parseProperties = (
         if (amazonJson["allOf"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
             return (
-              parseProperties(validationEnum.AllOf, amazonJson["allOf"], data, [
-                ...tempPath,
-                `${lastEle}[${index}]`,
-              ])?.filter(Boolean) || []
+              parseProperties(
+                validationEnum.AllOf,
+                amazonJson["allOf"],
+                data,
+                properties,
+                [...tempPath, `${lastEle}[${index}]`]
+              )?.filter(Boolean) || []
             );
           });
           const tempArray = temp1?.every((e: ResType) => e?.success);
@@ -830,10 +1116,13 @@ const parseProperties = (
         if (amazonJson["anyOf"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
             return (
-              parseProperties(validationEnum.Anyof, amazonJson["anyOf"], data, [
-                ...tempPath,
-                `${lastEle}[${index}]`,
-              ])?.filter(Boolean) || []
+              parseProperties(
+                validationEnum.Anyof,
+                amazonJson["anyOf"],
+                data,
+                properties,
+                [...tempPath, `${lastEle}[${index}]`]
+              )?.filter(Boolean) || []
             );
           });
           const tempArray = temp1?.some((e: ResType) => e?.success);
@@ -845,7 +1134,7 @@ const parseProperties = (
         }
         if (amazonJson["if"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
-            return checkIf(amazonJson, data, [
+            return checkIf(amazonJson, data, properties, [
               ...tempPath,
               `${lastEle}[${index}]`,
             ]);

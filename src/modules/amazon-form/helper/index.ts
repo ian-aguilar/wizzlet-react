@@ -89,10 +89,11 @@ export const mapDataWithReference = async (
               );
 
               if (option) {
-                mappedItem[fieldName] = {
-                  label: option.label,
-                  value: option.value,
-                };
+                // mappedItem[fieldName] = {
+                //   label: option.label,
+                //   value: option.value,
+                // };
+                mappedItem[fieldName] = option.value;
               }
             } else if (
               subRef.type === "MULTI_SELECT" &&
@@ -103,9 +104,10 @@ export const mapDataWithReference = async (
                   (opt) => String(opt.value) === val
                 );
 
-                return option
-                  ? { label: option.label, value: option.value }
-                  : { label: "", value: val };
+                // return option
+                //   ? { label: option.label, value: option.value }
+                //   : { label: "", value: val };
+                return option ? option.value : val;
               });
             } else {
               // Directly map the value for other types

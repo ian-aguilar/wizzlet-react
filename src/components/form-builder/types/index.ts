@@ -18,7 +18,11 @@ export type FieldsType<T extends FieldValues> = {
   required: boolean;
   isMulti?: boolean;
   option?: Option[];
+  description?: string;
   items?: FieldsType<T>[];
+  marketplace?: string;
+  minLength?: number;
+  maxLength?: number;
 };
 
 export enum FieldsTypeEnum {
@@ -52,4 +56,9 @@ export type FieldArrayComponentType<T extends FieldValues> = {
 export type IConditions = {
   required: string[];
   allOf: any[];
+};
+
+export type IValidationItem = {
+  properties: any;
+  conditions: IConditions;
 };
