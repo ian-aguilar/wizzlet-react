@@ -1,3 +1,4 @@
+import { color } from "chart.js/helpers";
 import { ImportTab } from "../types";
 
 export const markeplaces = [
@@ -39,6 +40,16 @@ export const pageLimitStyle = {
   colors: {
     text: "#fff",
   },
+  option: (base: any) => ({
+    ...base,
+
+    color: "#000",
+    background: "#eee",
+    "&:hover": {
+      background: "#09A17A",
+      color: "#fff",
+    },
+  }),
 };
 
 export const newestBoxStyle = {
@@ -106,5 +117,31 @@ export const selectedMarketplaceStyle = {
   placeholder: (base: any) => ({
     ...base,
     color: "#fff",
+  }),
+  multiValueLabel: (base: any) => ({
+    ...base,
+    backgroundColor: "#fff",
+    color: "#000",
+  }),
+  multiValueRemove: ({ base }) => ({
+    ...base,
+    color: "#000",
+    paddingLeft: "5px",
+    paddingRight: "5px",
+    paddingTop: "3px",
+    ":hover": {
+      backgroundColor: "#09A17A20",
+      color: "#09A17A",
+    },
+  }),
+  option: (base: any) => ({
+    ...base,
+
+    color: "#000",
+    background: "#eee",
+    "&:hover": {
+      background: "#09A17A",
+      color: "#fff",
+    },
   }),
 };
