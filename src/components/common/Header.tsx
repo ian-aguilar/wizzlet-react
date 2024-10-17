@@ -3,7 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 // ** icons/svg **
-import { HamburgerIcon, NotificationIcon, RightArrowWhite } from "@/assets/Svg";
+import {
+  DoubleTickSVG,
+  HamburgerIcon,
+  NotificationIcon,
+  RightArrowWhite,
+} from "@/assets/Svg";
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
 import Logo from "/images/logo.svg";
@@ -55,13 +60,285 @@ const Header = ({ type }: { type: string }) => {
           </div>
 
           <div className=" flex gap-4 items-center">
-            <div className=" group w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center hover:brightness-110 transition-all duration-300 cursor-pointer relative">
-              <div className="NotificationAlert absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary group-hover:brightness-110 group-hover:transition-all group-hover:duration-300 border border-greyBorder/50 ">
-                {" "}
-                &nbsp;{" "}
+            <div className="group relative z-20">
+              <div className=" group w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center   transition-all duration-300   relative">
+                <div className="NotificationAlertDot absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary group-hover:brightness-110 group-hover:transition-all group-hover:duration-300 border border-greyBorder/50 ">
+                  {" "}
+                  &nbsp;{" "}
+                </div>
+                <NotificationIcon />
+                <div className=" opacity-0 invisible group-hover:visible group-hover:opacity-100  absolute z-20 top-full -right-6 pt-4  ">
+                  <div className="w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[8px] border-r-white rotate-90 absolute top-0 right-10"></div>
+                  <div className="bg-white sm:min-w-[365px] max-w-[90%] w-full shadow-[0px_5px_29px_0px_#00000036] rounded-md">
+                    <div className="notificationHead flex justify-between gap-4 flex-wrap  py-5 px-4 ">
+                      <h2 className="font-semibold text-base text-blackPrimary">
+                        {" "}
+                        Notifications{" "}
+                      </h2>
+                      <Link
+                        to=""
+                        className="inline-flex text-greenPrimary gap-1 items-center"
+                      >
+                        {" "}
+                        <DoubleTickSVG className="text-greenPrimary" /> Mark as
+                        read
+                      </Link>
+                    </div>
+                    <div className="TabLinksContainer border-b border-black/20 flex  font-medium gap-[2px] ">
+                      <Link
+                        to=""
+                        className="px-7 pb-3 inline-block text-blackPrimary border-b-[2px] border-b-greenPrimary mb-[-2px] hover:text-blackPrimary hover:border-b-[2px] hover:border-b-greenPrimary hover:mb-[-2px] "
+                      >
+                        View All
+                      </Link>
+                      <Link
+                        to=""
+                        className="px-7 pb-3  inline-block hover:border-b-[2px] hover:border-b-greenPrimary hover:mb-[-2px] "
+                      >
+                        Alerts
+                      </Link>
+                    </div>
+                    <div className="TabContent py-5 px-4 max-h-[50vh] overflow-y-auto scroll-design ">
+                      <h3 className="text-sm font-medium text-grayText">
+                        Today
+                      </h3>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-grayLightBody/50 ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium"
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium "
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3 className="text-sm font-medium text-grayText">
+                        Yesterday
+                      </h3>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium"
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium "
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium"
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium "
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium"
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium "
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium"
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
+                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
+                          &nbsp;
+                        </div>
+                        <div className="w-full">
+                          <div>
+                            <Link
+                              to=""
+                              className="underline text-blackPrimary font-medium "
+                            >
+                              @user123
+                            </Link>{" "}
+                            Registered
+                          </div>
+                          <div className="flex gap-2 justify-between items-center">
+                            <p className="line-clamp-1">
+                              use123 has added a new register{" "}
+                            </p>
+                            <p className="text-xs"> 1m ago </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <NotificationIcon />
             </div>
+
             <div className=" testtttt rounded-full border border-greyBorder cursor-pointer relative group transition-all duration-300">
               <div className="absolute z-10 opacity-0 invisible group-hover:visible group-hover:opacity-100 top-14 right-0 bg-white rounded-lg p-1  text-center min-w-[150px] w-[150px]  text-base font-semibold shadow-md ">
                 <span
