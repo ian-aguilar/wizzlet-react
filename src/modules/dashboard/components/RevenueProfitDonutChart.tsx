@@ -4,6 +4,10 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import { MarketplaceRevenue, RevenueProfitDonutChartProps } from "../types";
 import { calculateMarketplaceRevenue } from "../helper";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
+import {
+  newestBoxStyle,
+  pageLimitStyle,
+} from "@/modules/import-products/constants";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
@@ -80,19 +84,21 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
   return (
     <>
       <div className="flex gap-4 justify-between">
-        <p className="font-bold text-base">Marketplace Revenue & Profit</p>
+        <p className="font-bold text-base pt-2">Marketplace Revenue & Profit</p>
         <div>
           <select
-            className="text-black bg-white py-2 lg:px-2 border border-grayText focus:outline-none rounded-md -my-2 cursor-pointer"
+            className="text-black bg-white py-2 lg:px-2 border border-grayText focus:outline-none rounded-md   cursor-pointer"
             id="dataType"
             value={dataType}
-            onChange={(e) => setDataType(e.target.value)}>
+            onChange={(e) => setDataType(e.target.value)}
+            style={pageLimitStyle}
+          >
             <option value="Revenue">Revenue</option>
           </select>
         </div>
       </div>
       <div className="flex flex-col justify-center w-full h-full">
-        <div style={{ maxWidth: "100%", margin: "0 auto" }}>
+        <div className="max-w-[195px] mx-auto">
           {chartData && <Doughnut data={chartData} options={options} />}
         </div>
         <div className="text-center pt-6 text-grayText text-base">
