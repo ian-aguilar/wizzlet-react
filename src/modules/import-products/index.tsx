@@ -4,7 +4,14 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 // ** Common **
 import Button from "@/components/form-fields/components/Button";
 import { SelectMarketplace } from "./components/SelectMarketplace";
-import { IItems, IOption, ISyncDetails, SyncStatus } from "./types";
+import {
+  IItems,
+  IOption,
+  ISyncDetails,
+  ImportTab,
+  SyncStatus,
+  TotalImportDataType,
+} from "./types";
 import { MARKETPLACE } from "@/components/common/types";
 import { ItemCard } from "./components/ItemCard";
 import Checkbox from "@/components/form-fields/components/Checkbox";
@@ -22,13 +29,15 @@ import {
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 
 // ** Icon **
-import { AutoSyncIcon } from "@/assets/Svg";
+import { AutoSyncIcon, SearchIcon } from "@/assets/Svg";
 import { DataNotFound } from "@/components/svgIcons";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { pageLimitStyle, selectedMarketplaceStyle } from "./constants";
 import moment from "moment";
+import { SearchBox } from "@/components/common/SearchBox";
+import InputSearch from "./components/InputSearch";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
@@ -40,7 +49,11 @@ const ImportProducts = () => {
   const [synced, setSynced] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [amazonSyncStatus, setAmazonSyncStatus] = useState<SyncStatus>();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [totalImportData, setTotalImportData] =
+    useState<TotalImportDataType | null>(null);
   const [ebaySyncStatus, setEbaySyncStatus] = useState<SyncStatus>();
+  const [importSelectedTab, setImportSelectedTab] = useState<boolean>(false);
   const [itemPerPage, setItemPerPage] = useState<IOption>({
     label: "10",
     value: "10",
@@ -103,9 +116,12 @@ const ImportProducts = () => {
             currentPage: currentPage,
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.EBAY,
+            imported: importSelectedTab,
+            search: searchQuery,
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
+          setTotalImportData(data?.data?.totalImportData);
           break;
         }
         case MARKETPLACE.AMAZON: {
@@ -114,9 +130,12 @@ const ImportProducts = () => {
             currentPage: currentPage,
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.AMAZON,
+            imported: importSelectedTab,
+            search: searchQuery,
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
+          setTotalImportData(data?.data?.totalImportData);
           break;
         }
       }
@@ -156,9 +175,21 @@ const ImportProducts = () => {
     };
   });
 
+  const handleSearchChange = useCallback((query: string) => {
+    console.log("Debounced search query: ", query);
+    setSearchQuery(query.trim());
+  }, []);
+
   useEffect(() => {
     getImportProductsHandler();
-  }, [selectedMarketplace, synced, itemPerPage, currentPage]);
+  }, [
+    selectedMarketplace,
+    synced,
+    itemPerPage,
+    currentPage,
+    importSelectedTab,
+    searchQuery,
+  ]);
 
   const selectAllHandler = () => {
     const newSelectAll = !isAllChecked;
@@ -287,68 +318,130 @@ const ImportProducts = () => {
       </div>
 
       <div className="bg-white py-3 px-7 mb-4">
-        <p className="uppercase text-base font-normal text-grayText mb-2">
-          Select the source to import from
-        </p>
-        <div className="flex gap-4 items-center ">
-          <SelectMarketplace
-            StylesConfig={selectedMarketplaceStyle}
-            isDisabled={isLoading || syncAmazonLoading}
-            isSearchable={false}
-            value={selectedMarketplace}
-            placeholder="Select Marketplace"
-            options={marketplaces}
-            onChange={(result: IOption) => {
-              setSelectedMarketplace(result as IOption);
-              setIsCheck([]);
-            }}
-          />
-          <Button
-            btnName={"Sync All Products"}
-            onClickHandler={importProductsHandler}
-            isLoading={
-              isLoading ||
-              syncAmazonLoading ||
-              (selectedMarketplace?.value === MARKETPLACE.AMAZON &&
-                (amazonSyncStatus === SyncStatus.INPROGRESS ||
-                  amazonSyncStatus === SyncStatus.PENDING)) ||
-              (selectedMarketplace?.value === MARKETPLACE.EBAY &&
-                (ebaySyncStatus === SyncStatus.INPROGRESS ||
-                  ebaySyncStatus === SyncStatus.PENDING))
-            }
-            btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
-          />
-          {isCheck && isCheck.length > 0 && (
-            <Button
-              btnName={`Import ${isCheck?.length} Products`}
-              onClickHandler={importProductsFromEbayHandler}
-              isLoading={importLoading || storeAmazonLoading}
-              btnClass="!w-auto !ml-auto "
-            />
-          )}
+        <div className="flex justify-between">
+          <p className="uppercase text-base font-normal text-grayText mb-2">
+            Select the source to import from
+          </p>
+          <div className="text-gray-500 text-right">
+            Filtering:{" "}
+            <span className="text-black font-bold">
+              {" "}
+              {importSelectedTab ? ImportTab.IMPORTED : ImportTab.NOT_IMPORTED}
+            </span>
+          </div>
         </div>
-        {/* <div className="flex gap-4 items-start pt-5">
-          <div className="flex flex-col gap-2 ">
-            <label> Search </label>
-            <SearchBox
-              InputLeftIcon={<SearchIcon />}
-              className="pl-14"
-              placeholder="Search"
-              name=""
+        <div className="flex justify-between">
+          <div className="flex gap-4 items-center ">
+            <SelectMarketplace
+              StylesConfig={selectedMarketplaceStyle}
+              isDisabled={isLoading || syncAmazonLoading}
+              isSearchable={false}
+              value={selectedMarketplace}
+              placeholder="Select Marketplace"
+              options={marketplaces}
+              onChange={(result: IOption) => {
+                setSelectedMarketplace(result as IOption);
+                setIsCheck([]);
+              }}
+            />
+            <Button
+              btnName={"Sync All Products"}
+              onClickHandler={importProductsHandler}
+              isLoading={
+                isLoading ||
+                syncAmazonLoading ||
+                (selectedMarketplace?.value === MARKETPLACE.AMAZON &&
+                  (amazonSyncStatus === SyncStatus.INPROGRESS ||
+                    amazonSyncStatus === SyncStatus.PENDING)) ||
+                (selectedMarketplace?.value === MARKETPLACE.EBAY &&
+                  (ebaySyncStatus === SyncStatus.INPROGRESS ||
+                    ebaySyncStatus === SyncStatus.PENDING))
+              }
+              btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
             />
           </div>
-          <div className="flex flex-col gap-2 ">
-            <label> Status </label>
-            <Button
+          <div>
+            <div className="flex items-center space-x-4">
+              <div className="flex bg-gray-100 rounded-full">
+                <button
+                  onClick={() => setImportSelectedTab(false)}
+                  className={`${
+                    !importSelectedTab
+                      ? "bg-gray-600 text-white"
+                      : "text-gray-400"
+                  } px-4 py-2 rounded-full transition-colors`}
+                >
+                  {`${ImportTab.NOT_IMPORTED}(${
+                    totalImportData ? totalImportData.totalNotImported : 0
+                  })`}
+                </button>
+                <button
+                  onClick={() => setImportSelectedTab(true)}
+                  className={`${
+                    importSelectedTab
+                      ? "bg-gray-600 text-white"
+                      : "text-gray-400"
+                  } px-4 py-2 rounded-full transition-colors`}
+                >
+                  {`${ImportTab.IMPORTED}(${
+                    totalImportData ? totalImportData.totalImported : 0
+                  })`}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="my-5">
+          <hr />
+        </div>
+        <div className="flex justify-between items-start ">
+          {items && items?.length > 0 ? (
+            <div>
+              <div className="flex flex-col gap-1 ">
+                <label> Search </label>
+                <InputSearch
+                  InputLeftIcon={<SearchIcon />}
+                  className="pl-12"
+                  placeholder="Search by title"
+                  name="search"
+                  onChange={handleSearchChange}
+                  value={searchQuery}
+                />
+              </div>
+              <div className="flex flex-col gap-2 ">
+                {/* <label> Status </label> */}
+                {/* <Button
               btnName={"Connected"}
               isLoading={isLoading}
               btnClass="!w-auto !bg-white !text-grayText border border-grayLightBody "
               btnEndIcon={
                 <DownArrowIcon className="text-grayText inline-block ml-1" />
               }
-            />
+            /> */}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-8">
+            {isCheck && isCheck.length > 0 && (
+              <div className="flex gap-2">
+                <Button
+                  btnName={"Unselect All"}
+                  onClickHandler={() => {
+                    setIsCheck([]);
+                  }}
+                  btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
+                />
+                <Button
+                  btnName={`Import ${isCheck?.length} Products`}
+                  onClickHandler={importProductsFromEbayHandler}
+                  isLoading={importLoading || storeAmazonLoading}
+                  btnClass="!w-auto !ml-auto "
+                />
+              </div>
+            )}
           </div>
-        </div> */}
+        </div>
       </div>
       <div className="bg-white p-3">
         <div className="bg-[#F7F8FA] py-4 px-7">

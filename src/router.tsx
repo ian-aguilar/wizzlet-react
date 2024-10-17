@@ -25,6 +25,9 @@ const Dashboard = React.lazy(() => import("./modules/dashboard/index"));
 const AdminDashboard = React.lazy(() => import("./modules/Admin/dashboard"));
 
 const UserManagement = React.lazy(() => import("./modules/user-management"));
+const ViewUser = React.lazy(
+  () => import("./modules/user-management/components/ViewUser")
+);
 const Aboutus = React.lazy(() => import("./modules/Admin/Aboutus/Index"));
 const Contactus = React.lazy(() => import("./modules/Admin/Contactus/Index"));
 const ImportProducts = React.lazy(() => import("./modules/import-products"));
@@ -108,6 +111,10 @@ const RouterComponent = () => {
     {
       path: PrivateRoutesPath.userManagement.view,
       element: <UserManagement />,
+    },
+    {
+      path: PrivateRoutesPath.userManagement.viewUser.view,
+      element: <ViewUser />,
     },
     {
       element: <SettingLayout />,

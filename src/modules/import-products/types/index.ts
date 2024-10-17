@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type ISelectCategoryProps = {
   isSearchable?: boolean;
   value?: IOption;
@@ -48,3 +50,22 @@ export type ISyncDetails = {
   status: SyncStatus;
   failure_reason?: JSON;
 };
+
+export enum ImportTab {
+  IMPORTED = "Imported",
+  NOT_IMPORTED = "Not Imported",
+}
+
+export type TotalImportDataType = {
+  totalNotImported: number;
+  totalImported: number;
+};
+
+export interface ISearchBox {
+  value?: string;
+  name: string;
+  placeholder?: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: (value: string) => void;
+}
