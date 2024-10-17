@@ -7,10 +7,8 @@ export const useMarketplaceListingAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
 
   const getMarketplaceListingAPI = async (data?: object) => {
-    return callApi(`${AUTH_API_BASE_PATH}/all`, data);
+    return callApi(`${AUTH_API_BASE_PATH}/all`, { params: data });
   };
 
   return { getMarketplaceListingAPI, isLoading, isError, isSuccess };
 };
-
-

@@ -7,14 +7,15 @@ export const useGetAllDashboardDataApi = () => {
   const getAllDashboardDataAPI = async (
     startDate: string,
     endDate: string,
-    marketplaceIds: string[] | number[] | null
+    marketplaceIds: string[] | number[] | null,
+    userId: number | null = null
   ) => {
     const marketplaceIdsParam = marketplaceIds
       ? marketplaceIds.join(",")
       : null;
 
     return callApi(
-      `/dashboard/sale-details?startDate=${startDate}&endDate=${endDate}&marketplaceIds=${marketplaceIdsParam}`
+      `/dashboard/sale-details?startDate=${startDate}&endDate=${endDate}&marketplaceIds=${marketplaceIdsParam}&adminUserId=${userId}`
     );
   };
 
