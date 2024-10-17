@@ -99,8 +99,6 @@ const Dashboard: React.FC = () => {
 
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    // Fetch data when month changes
-    fetchAllData(newStartDate, newEndDate);
   };
 
   // Function to handle the API call for /getAllData

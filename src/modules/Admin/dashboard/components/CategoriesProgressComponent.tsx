@@ -5,22 +5,19 @@ import { CategoriesProgressProps } from "../types";
 
 const CategoriesProgress: React.FC<CategoriesProgressProps> = ({
   categoryPercentage,
-  subCategoryPercentage,
+  // subCategoryPercentage,
   categoriesUsed,
-  subCategoriesUsed,
+  // subCategoriesUsed,
 }) => {
   return (
     <>
-      <div className="headerText flex justify-between pb-14 items-center">
-        <h3 className="text-xl font-medium text-blackPrimary ">Categories</h3>
-      </div>
-      <div className="categories-progress-container flex gap-14 px-10 pb-5 mb-5 border-b border-grayLightBody/30  ">
+      <div className="categories-progress-container flex justify-center items-center  pb-5 mb-5 border-b border-grayLightBody/30  ">
         {/* Categories Used */}
-        <div className="category-item" style={{ textAlign: "center" }}>
-          <div className="w-full h-auto max-w-[80%] mx-auto">
+        <div className="category-item !text-center">
+          <div className="w-[80%] h-auto max-w-[80%] !mx-auto inline-block">
             <CircularProgressbar
               value={categoryPercentage}
-              text={`${categoryPercentage}%`}
+              text={`${Number(categoryPercentage).toFixed(2)}%`}
               styles={buildStyles({
                 pathColor: "#09A17A",
                 textColor: "#333",
@@ -32,13 +29,13 @@ const CategoriesProgress: React.FC<CategoriesProgressProps> = ({
           <div className="category-info text-base font-medium pt-4">
             <p className=" text-grayText">Categories Used</p>
             <h3 className="text-blackPrimary font-semibold">
-              {categoriesUsed.toLocaleString()}
+              {categoriesUsed.toString()}
             </h3>
           </div>
         </div>
 
         {/* Sub Categories Used */}
-        <div className="category-item" style={{ textAlign: "center" }}>
+        {/* <div className="category-item" style={{ textAlign: "center" }}>
           <div className="w-full h-auto  max-w-[80%] mx-auto">
             <CircularProgressbar
               value={subCategoryPercentage}
@@ -57,7 +54,7 @@ const CategoriesProgress: React.FC<CategoriesProgressProps> = ({
               {subCategoriesUsed.toLocaleString()}
             </h3>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );

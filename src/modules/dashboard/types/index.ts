@@ -25,6 +25,7 @@ export interface DatePickerWithMonthSelectProps {
   userFullName?: string;
   isDatePickerOpen: boolean;
   setIsDatePickerOpen: Dispatch<SetStateAction<boolean>>;
+  className?: string;
 }
 
 export interface MarketplaceRevenue {
