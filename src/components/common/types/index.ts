@@ -27,6 +27,7 @@ export interface FileUploadProps {
 export interface InputSwitchProps {
   id: number;
   status: string;
+  className?: string;
   onToggle: (id: number, status: string) => void;
 }
 

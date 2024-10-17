@@ -32,3 +32,12 @@ export interface User {
 export type AddUserFormProps = {
   onClose: (reload?: boolean, link?: string) => void;
 };
+
+export type UserType = {
+  id?: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  status: string;
+  role: string;
+};

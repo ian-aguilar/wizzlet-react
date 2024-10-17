@@ -53,7 +53,9 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
         <div className="flex gap-4 ">
           <span
             className="text-greenPrimary cursor-pointer"
-            onClick={() => navigate(`/user-management/view/${row.id}`)}
+            onClick={() =>
+              navigate(`/user-management/view/${row.id}`)
+            }
           >
             {" "}
             <EyeIconSettings className="inline-block mr-1 text-greenPrimary" />{" "}

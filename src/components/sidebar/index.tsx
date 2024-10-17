@@ -9,7 +9,7 @@ import { LeftArrowIcon } from "@/assets/Svg";
 // ** Hooks **
 import useSideBarColumn from "./hooks/useSideBarColumn";
 
-const Sidebar = () => {
+const Sidebar = ({ handleIsOpen }: { handleIsOpen: (a: boolean) => void }) => {
   const [active, setActive] = useState(sidebarList.dashboard);
   const [isOpen, setIsOpen] = useState(false);
   const [isToggle, setIsToggle] = useState(false);
@@ -61,6 +61,7 @@ const Sidebar = () => {
                 setIsToggle(false);
               }
               setIsOpen(!isOpen);
+              handleIsOpen(!isOpen);
             }}
           >
             <LeftArrowIcon

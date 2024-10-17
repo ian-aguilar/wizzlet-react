@@ -99,7 +99,11 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
       </div>
       <div className="flex flex-col justify-center w-full h-full">
         <div className="max-w-[195px] mx-auto">
-          {chartData && <Doughnut data={chartData} options={options} />}
+          {chartData && revenueData.length > 0 ? (
+            <Doughnut data={chartData} options={options} />
+          ) : (
+            <div className="text-center">No Data Found!</div>
+          )}
         </div>
         <div className="text-center pt-6 text-grayText text-base">
           {marketplaceData?.map((item) => (
