@@ -3,8 +3,10 @@ import { IUseUserHeadersProps, IUserListing } from "../types";
 import { dateFormatter } from "@/helper";
 import { DeleteIcon, EyeIconSettings } from "@/assets/Svg";
 import { InputSwitch } from "@/components/common/InpiutSwitch";
+import { useNavigate } from "react-router-dom";
 
 const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
+  const navigate = useNavigate();
   const userHeaders: TableColumn<IUserListing>[] = [
     {
       name: "Username",
@@ -49,14 +51,18 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
       id: "action",
       cell: (row: IUserListing) => (
         <div className="flex gap-4 ">
-          <span className="text-greenPrimary cursor-pointer">
+          <span
+            className="text-greenPrimary cursor-pointer"
+            onClick={() => navigate(`/user-management/view/${row.id}`)}
+          >
             {" "}
             <EyeIconSettings className="inline-block mr-1 text-greenPrimary" />{" "}
             view
           </span>
           <span
             className="text-redAlert cursor-pointer"
-            onClick={() => onDelete(row.id)}>
+            onClick={() => onDelete(row.id)}
+          >
             {" "}
             <DeleteIcon className="inline-block mr-1 text-redAlert" /> delete
           </span>

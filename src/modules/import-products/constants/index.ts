@@ -1,7 +1,11 @@
+import { ImportTab } from "../types";
+
 export const markeplaces = [
   { label: "Ebay", value: "ebay" },
   { label: "Amazon", value: "amazon" },
 ];
+
+export const switchButton = [ImportTab.NOT_IMPORTED, ImportTab.IMPORTED];
 
 export const pageLimitStyle = {
   singleValue: (base: any) => ({
@@ -35,7 +39,7 @@ export const pageLimitStyle = {
   colors: {
     text: "#fff",
   },
-}
+};
 
 export const newestBoxStyle = {
   singleValue: (base: any) => ({
@@ -66,7 +70,7 @@ export const newestBoxStyle = {
     ...base,
     paddingLeft: "0px",
   }),
-}
+};
 
 export const selectedMarketplaceStyle = {
   singleValue: (base: any) => ({
@@ -103,4 +107,4 @@ export const selectedMarketplaceStyle = {
     ...base,
     color: "#fff",
   }),
-}
+};

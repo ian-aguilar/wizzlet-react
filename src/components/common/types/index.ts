@@ -81,7 +81,7 @@ export interface ISetSelectOptions {
 export interface ISearchBox {
   value?: string | number;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   className: string;
   InputLeftIcon?: ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement>;

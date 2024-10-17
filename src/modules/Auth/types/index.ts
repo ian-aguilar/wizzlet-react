@@ -28,7 +28,10 @@ export const PrivateRoutesPath = {
   inventoryManagement: { view: "/inventory-management" },
   productForm: { view: "/inventory-management/product-form/:step/:productId" },
   import: { view: "/import" },
-  userManagement: { view: "/user-management" },
+  userManagement: {
+    view: "/user-management",
+    viewUser: { view: "/user-management/view/:userId" },
+  },
   marketplace: { view: "/marketplace" },
   cmsManagement: {
     aboutus: "/cms-management/about-us",
