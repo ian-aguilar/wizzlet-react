@@ -23,9 +23,11 @@ import { Loader } from "@/components/common/Loader";
 import AsyncSelectField from "../inventory-management/components/AsyncSelectField";
 import { Option } from "../settings/types/label";
 import { useGetCategoriesAPI } from "../inventory-management/services";
-import { MARKETPLACEID } from "@/components/common/types";
+import { MARKETPLACE, MARKETPLACEID } from "@/components/common/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validations";
+import { NOTIFICATION_TYPE, Type } from "@/constants";
+import { useCreateUserNotificationInDbApi } from "../eBay-form/services/productBasicForm.service";
 
 const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
@@ -58,6 +60,8 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
   const { editAmazonProductValueApi } = useAmazonEditProductValuesApi();
+  const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
 
@@ -116,6 +120,14 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
       );
 
       if (!amazonFormError) {
+        const notificationPayload = {
+          productId: productId,
+          notification_type: NOTIFICATION_TYPE.LIST,
+          is_read: false,
+          type: Type.NOTIFICATION,
+          marketplace: MARKETPLACE.AMAZON,
+        };
+        createUserNotificationInDbApi(notificationPayload);
         onComplete(productId);
       }
     } else {
