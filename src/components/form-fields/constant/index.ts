@@ -106,7 +106,7 @@ export const customStyles: StylesConfig = {
       textOverflow: "ellipsis",
       width: "100%",
       color: "rgb(0 0 0 / 0.6)",
-      fontSize: " 16px",
+      fontSize: " 14px",
       lineHeight: " 24px",
       fontWeight: " 500",
       letterSpacing: " 0.05em",

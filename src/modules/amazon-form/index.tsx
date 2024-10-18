@@ -4,7 +4,7 @@ import {
   useAmazonFormHandleApi,
   useGetAllAmazonPropertiesApi,
 } from "./services/amazonForm.service";
-import { FieldsType, IConditions } from "@/components/form-builder/types";
+import { FieldsType, IValidationItem } from "@/components/form-builder/types";
 import { useForm, useWatch } from "react-hook-form";
 import FormBuilder from "@/components/form-builder";
 import { getAppendField } from "@/components/form-builder/helper";
@@ -34,7 +34,7 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
-  const [conditions, setConditions] = useState<IConditions>();
+  const [validationItems, setValidationItems] = useState<IValidationItem>();
 
   const {
     control,
@@ -44,7 +44,9 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     formState: { errors },
     trigger,
   } = useForm({
-    resolver: zodResolver(schema(conditions)),
+    resolver: zodResolver(
+      schema(validationItems?.conditions, validationItems?.properties)
+    ),
   });
 
   const fields = useWatch({ control });
@@ -55,7 +57,7 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
   }, [fields]);
 
-  // console.log(errors, "Errors <<<<<<<<<", fields);
+  console.log(errors, "Errors <<<<<");
 
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
@@ -76,7 +78,7 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     const { data } = await getAllAmazonPropertiesApi(categoryData?.value);
     setCategory(categoryData);
     setProperties(data?.data?.properties);
-    setConditions(data?.data?.conditions);
+    setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
     reset(defaultValues);
     return {

@@ -10,10 +10,11 @@ import { ErrorMessage } from "@hookform/error-message";
 import { Controller, FieldValues } from "react-hook-form";
 
 // ** Constant **
-import { customStyles } from "../constant";
+import { customStyles } from "@/components/form-fields/constant";
 
 // ** Types **
-import { ICustomSelect, Option } from "../types";
+import { ICustomSelect } from "@/components/form-fields/types";
+import { Option } from "@/modules/inventory-management/types";
 
 const ValueContainer = (props: ValueContainerProps) => {
   const { children } = props;
@@ -24,7 +25,9 @@ const ValueContainer = (props: ValueContainerProps) => {
   );
 };
 
-export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
+export const AmazonSelectField = <T extends FieldValues>(
+  props: ICustomSelect<T>
+) => {
   const {
     isSearchable,
     onChange: CustomOnChange,
@@ -67,35 +70,6 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             isSearchable={isSearchable}
             components={components}
             onChange={(selectedOption, e) => {
-              console.log("selected option >>>>>>>>>", innerValue);
-              onChange(selectedOption);
-              CustomOnChange?.(selectedOption, e);
-            }}
-            name={name}
-            value={innerValue as MultiValue<Option> | SingleValue<Option>}
-            placeholder={placeholder ? placeholder : ""}
-            options={options}
-            autoFocus={autoFocus}
-            isMulti={isMulti}
-            isClearable={isClearable}
-            menuPlacement="auto"
-            styles={customStyles}
-            isDisabled={disabled}
-            className={`${className}`}
-            menuPosition={"fixed"}
-          />
-        )}
-      />
-
-      {/* <Controller
-        name={name}
-        control={control}
-        render={({ field: { onChange, value: innerValue, ref } }) => (
-          <ReactSelect
-            ref={ref}
-            isSearchable={isSearchable}
-            components={components}
-            onChange={(selectedOption, e) => {
               const selectedValue = isMulti
                 ? (selectedOption as MultiValue<Option>).map(
                     (option) => option.value
@@ -125,7 +99,7 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             menuPosition={"fixed"}
           />
         )}
-      /> */}
+      />
 
       <ErrorMessage
         errors={errors}
@@ -139,5 +113,3 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
     </div>
   );
 };
-
-export default SelectField;
