@@ -123,7 +123,7 @@ export const selectedMarketplaceStyle = {
     backgroundColor: "#fff",
     color: "#000",
   }),
-  multiValueRemove: ({ base }) => ({
+  multiValueRemove: (base: any) => ({
     ...base,
     color: "#000",
     paddingLeft: "5px",

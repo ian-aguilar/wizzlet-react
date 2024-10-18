@@ -176,7 +176,6 @@ const ImportProducts = () => {
   });
 
   const handleSearchChange = useCallback((query: string) => {
-    console.log("Debounced search query: ", query);
     setSearchQuery(query.trim());
   }, []);
 

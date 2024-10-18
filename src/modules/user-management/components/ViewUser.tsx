@@ -1,78 +1,85 @@
-import {
-  LeftArrowIcon,
-  ListedIcon,
-  ProfilePlaceholderSVG,
-  SalesIcon,
-  SoldIcon,
-} from "@/assets/Svg";
-import ProgressBar from "@/components/common/ProgressBar";
+// ** Packages **
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Select, { MultiValue } from "react-select";
+
+// ** Types **
 import { PrivateRoutesPath } from "@/modules/Auth/types";
-import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
-import DatePickerWithMonthSelect from "@/modules/dashboard/components/GlobalDatePicker";
-import RevenueProfitChart from "@/modules/dashboard/components/RevenueProfitChart";
-import RevenueProfitDonutChart from "@/modules/dashboard/components/RevenueProfitDonutChart";
-import { useGetAllDashboardDataApi } from "@/modules/dashboard/services/dashboard.service";
+import { IMarketplace } from "@/modules/marketplace/types";
+import { UserType } from "../types";
 import {
   DashboardData,
   OptionType,
   RevenueMarketDetail,
 } from "@/modules/dashboard/types";
-import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketplace.service";
-import { IMarketplace } from "@/modules/marketplace/types";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Select, { MultiValue } from "react-select";
-import ProfileImg from "/images/profile-placeholder.png";
+
+// ** Components **
+import { LeftArrowIcon, ListedIcon, SalesIcon, SoldIcon } from "@/assets/Svg";
 import { InputSwitch } from "@/components/common/InpiutSwitch";
+import DatePickerWithMonthSelect from "@/modules/dashboard/components/GlobalDatePicker";
+import ProgressBar from "@/components/common/ProgressBar";
+import RevenueProfitChart from "@/modules/dashboard/components/RevenueProfitChart";
+import RevenueProfitDonutChart from "@/modules/dashboard/components/RevenueProfitDonutChart";
+import WarningModal from "./warningModal";
+import ProfileImg from "/images/profile-placeholder.png";
+
+// ** constant **
 import { selectedMarketplaceStyle } from "@/modules/import-products/constants";
+
+// ** Services **
+import { useGetAllDashboardDataApi } from "@/modules/dashboard/services/dashboard.service";
+import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketplace.service";
+import {
+  useGetOneUserListAPI,
+  useUserStatusChangeAPI,
+} from "../services/user.service";
+
+// ** helper **
+import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 
 const ViewUser = () => {
   const currentDate = new Date();
-
-  // Set the first day of the current month
   const firstDayOfCurrentMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
     1
   );
-
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
+
+  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isWarningModelOpen, setIsWarningModelOpen] = useState(false);
+  const [endDate, setEndDate] = useState<Date | null>(currentDate || null);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [reload, setReload] = useState<boolean>(false);
 
   const [selectedOptions, setSelectedOptions] = useState<
     MultiValue<OptionType> | undefined
   >([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
-
   const [connectedMarketplace, setConnectedMarketplace] =
     useState<OptionType[]>();
   const [startDate, setStartDate] = useState<Date | null>(
     firstDayOfCurrentMonth || null
   );
-
-  const [userFullName, setUserFullName] = useState<string>("");
-
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-
-  const [endDate, setEndDate] = useState<Date | null>(currentDate || null);
-
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
     notConnectedMarketplace: IMarketplace[];
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
-
   const [mainData, setMainData] = useState<DashboardData>({
     listedDetails: [],
     saleDetails: [],
     TopSoldCategories: [],
     revenueMarketDetails: [],
-    totalRevenue: 0, // Initialize with 0
+    totalRevenue: 0,
   });
 
-  const { userId } = useParams();
+  let { userId } = useParams();
   const navigate = useNavigate();
 
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { userStatusChangeAPI } = useUserStatusChangeAPI();
   const { getAllDashboardDataAPI } = useGetAllDashboardDataApi();
+  const { getOneUserListAPI } = useGetOneUserListAPI();
 
   const handleChange = (newValue: MultiValue<OptionType>) => {
     setSelectedOptions(newValue);
@@ -80,7 +87,8 @@ const ViewUser = () => {
 
   useEffect(() => {
     marketplaceListing();
-  }, []);
+    getUserDetails();
+  }, [reload]);
 
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({
@@ -88,8 +96,6 @@ const ViewUser = () => {
     });
     if (!error && data) {
       setMarketplace(data?.data);
-      setUserFullName(data?.data?.userFullName);
-      console.log("data?.data?.connectedMarketplace: ", data?.data);
       const options = data?.data?.connectedMarketplace.map(
         (e: {
           id: number;
@@ -106,22 +112,26 @@ const ViewUser = () => {
       setConnectedMarketplace(options);
     }
   };
+
+  const getUserDetails = async () => {
+    const { data, error } = await getOneUserListAPI(Number(userId));
+    if (data && !error) {
+      setUser(data?.data);
+    }
+  };
+
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedMonth = event.target.value;
     setSelectedMonth(selectedMonth);
-
-    const year = currentDate.getFullYear(); // Static year for simplicity
+    const year = currentDate.getFullYear();
     const monthIndex = new Date(`${selectedMonth} 1, ${year}`).getMonth();
     const newStartDate = new Date(year, monthIndex, 1);
     const newEndDate = new Date(year, monthIndex + 1, 0);
-
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    // Fetch data when month changes
     fetchAllData(newStartDate, newEndDate);
   };
 
-  // Function to handle the API call for /getAllData
   const fetchAllData = async (start: Date, end: Date) => {
     try {
       const marketplaceIds =
@@ -134,7 +144,6 @@ const ViewUser = () => {
         Number(userId)
       );
       if (data && !error) {
-        // Calculate total revenue
         const totalRevenue: number = data?.data?.revenueMarketDetails.reduce(
           (acc: number, curr: RevenueMarketDetail) => acc + curr.revenue,
           0
@@ -146,7 +155,6 @@ const ViewUser = () => {
     }
   };
 
-  // Effect to call fetchAllData when startDate or endDate changes
   useEffect(() => {
     if (startDate && endDate) {
       fetchAllData(startDate, endDate);
@@ -158,15 +166,24 @@ const ViewUser = () => {
     setStartDate(start);
     setEndDate(end);
 
-    // Close the calendar once the range is selected
     if (start && end) {
       setIsDatePickerOpen(false);
     }
   };
 
-  // console.log("selectedOptions: ", selectedOptions);
-  // console.log("marketplace: ", marketplace);
-  // console.log("mainData: ", mainData);
+  const onInactive = () => {
+    setIsWarningModelOpen(true);
+  };
+
+  const onStatusChange = async () => {
+    if (userId) {
+      const { error } = await userStatusChangeAPI(Number(userId));
+      if (!error) {
+        setIsWarningModelOpen(false);
+        setReload((load) => !load);
+      }
+    }
+  };
 
   return (
     <div className="h-full">
@@ -195,14 +212,34 @@ const ViewUser = () => {
             alt=""
           />
           <h3 className="font-bold text-xl text-white text-center pt-10 ">
-            Eleanor Pena
+            {user && user?.first_name + " " + user?.last_name}
           </h3>
           <p className="text-base text-white text-center break-all">
-            willie.jennings@example.com
+            {user && user.email}
           </p>
           <div className="flex justify-center gap-2 text-white items-center pt-5 ">
-            <InputSwitch className="bg-white rounded-full" /> Inactive
+            <InputSwitch
+              id={Number(userId)}
+              status={user?.status as string}
+              onToggle={onInactive}
+              className="bg-white rounded-full"
+            />
+            {user?.status === "ACTIVE" ? "Active" : "Inactive"}
           </div>
+          {isWarningModelOpen && (
+            <div className="text-black">
+              <WarningModal
+                heading={`Are you sure you want to ${
+                  user?.status !== "ACTIVE" ? "activate" : "inactivate"
+                } this user?`}
+                confirmButtonText={
+                  user?.status !== "ACTIVE" ? "Active" : "Inactive"
+                }
+                onClose={() => setIsWarningModelOpen(false)}
+                onSave={onStatusChange}
+              />
+            </div>
+          )}
         </div>
         <div className="w-[calc(100%_-_330px)] max-w-full ">
           <div className="flex gap-4 flex-wrap justify-between px-5 py-3 items-center bg-grayLightBody/20">
@@ -214,25 +251,24 @@ const ViewUser = () => {
               value={selectedOptions}
               onChange={handleChange}
               options={connectedMarketplace}
-              placeholder="Filter By Marketplace"
-              styles={selectedMarketplaceStyle}
+              placeholder={"Marketplace"}
+              styles={selectedMarketplaceStyle as any}
             />
           </div>
           <div className=" px-5 py-3 bg-grayLightBody/5">
             <div className="flex gap-6 justify-between flex-wrap items-center pb-4 ">
               <h3 className="font-medium text-[26px] ">Analytics</h3>
-              {/* <div className="flex  ">
-              <DatePickerWithMonthSelect
-                selectedMonth={selectedMonth}
-                startDate={startDate}
-                endDate={endDate}
-                onMonthChange={handleMonthChange}
-                // userFullName={userFullName}
-                onDateRangeChange={handleDateRangeChange}
-                isDatePickerOpen={isDatePickerOpen}
-                setIsDatePickerOpen={setIsDatePickerOpen}
-              />
-            </div> */}
+              <div className="flex  ">
+                <DatePickerWithMonthSelect
+                  selectedMonth={selectedMonth}
+                  startDate={startDate}
+                  endDate={endDate}
+                  onMonthChange={handleMonthChange}
+                  onDateRangeChange={handleDateRangeChange}
+                  isDatePickerOpen={isDatePickerOpen}
+                  setIsDatePickerOpen={setIsDatePickerOpen}
+                />
+              </div>
             </div>
             <div className="grid grid-cols-12 lg:gap-x-4 gap-y-4 mb-5 ">
               <div className=" w-full h-full col-span-12 lg:col-span-6  ">
