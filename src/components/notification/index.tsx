@@ -1,77 +1,94 @@
 import { DoubleTickSVG } from "@/assets/Svg";
-import { Link } from "react-router-dom";
-// import { notificationsData } from "../constant";
-import { Key, useEffect, useState } from "react";
+// import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { notificationType } from "./types";
-import { notificationsData } from "./constant";
+import { NotificationGroup, notificationType } from "./types";
 import { Type } from "@/constants";
-import { useFetchNotificationAPI } from "./services";
+import {
+  useFetchNotificationAPI,
+  useSetMarkReadNotificationAPI,
+} from "./services";
+import { modifiedNotifications } from "./helper";
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true); // Track if there are more notifications to load
   const [page, setPage] = useState(1);
+  const [reload, setReload] = useState<boolean>(false);
+  const [isNotRead, setIsNotRead] = useState<boolean>(true);
   const [notificationType, setNotificationType] = useState<Type>(
     Type.NOTIFICATION
   );
-  const [notifications, setNotifications] = useState<notificationType[] | null>(
-    notificationsData
-  );
+  const [notifications, setNotifications] = useState<notificationType[]>([]);
 
   const { getNotificationAPI } = useFetchNotificationAPI();
+  const { setMarkReadAPI } = useSetMarkReadNotificationAPI();
 
   // Fetch additional notifications
   const fetchMoreNotifications = async () => {
-    const newNotifications = await getNotifications(page); // Simulate API request
-    // const notific = await getNotificationAPI({page});
-    if (newNotifications && newNotifications?.length > 0) {
-      setNotifications((prev: any) => {
-        if (prev && prev?.length > 0) return [...prev, ...newNotifications];
-        else return [];
-      });
+    const { data, error } = await getNotificationAPI({
+      page,
+      notificationType,
+    });
+
+    if (data && !error) {
+      if (notifications && notifications.length > 0) {
+        setNotifications((prev: any) => {
+          if (prev && prev?.length > 0) return [...prev, ...data?.data];
+          else return data?.data;
+        });
+      } else {
+        setNotifications(data?.data);
+      }
       setPage((prevPage) => prevPage + 1);
     } else {
-      setHasMore(false); // No more data to load
+      setHasMore(false);
     }
   };
-  const groupedNotifications = notifications?.reduce(
-    (acc: any, notification: notificationType) => {
-      const { date, id, smallMsg, longMsg, time } = notification;
 
-      const existingGroup = acc.find((group: any) => group.date === date);
+  const groupedNotifications = modifiedNotifications(notifications);
 
-      if (existingGroup) {
-        existingGroup.items.push({ id, smallMsg, longMsg, time });
-      } else {
-        acc.push({ date, items: [{ id, smallMsg, longMsg, time }] });
-      }
-      return acc;
-    },
-    []
-  );
+  const handleMarkRead = async () => {
+    const ids = notifications?.map((item) => item.id);
+    const { data } = await setMarkReadAPI({ ids: ids });
+    if (data) {
+      setReload((prev) => !prev);
+      setNotifications([])
+    }
+  };
+
   useEffect(() => {
-    fetchMoreNotifications();
-  }, []);
+    const fetchNotifications = async () => {
+      await fetchMoreNotifications();
+    };
+
+    fetchNotifications();
+  }, [notificationType, reload]);
+
   return (
     <div>
       <div className="notificationHead flex justify-between gap-4 flex-wrap  py-5 px-4 ">
-        <h2 className="font-semibold text-base text-blackPrimary">
-          {" "}
-          Notifications{" "}
-        </h2>
-        <Link
-          to=""
-          className="inline-flex text-greenPrimary gap-1 items-center"
-        >
-          {" "}
-          <DoubleTickSVG className="text-greenPrimary" /> Mark as read
-        </Link>
+        {isNotRead == true && (
+          <>
+            <h2 className="font-semibold text-base text-blackPrimary">
+              {" "}
+              {/* Notifications{" "} */}
+            </h2>
+            <span
+              onClick={handleMarkRead}
+              className="inline-flex text-greenPrimary gap-1 items-center cursor-pointer"
+            >
+              <DoubleTickSVG className="text-greenPrimary" /> Mark as read
+            </span>
+          </>
+        )}
       </div>
       <div className="TabLinksContainer border-b border-black/20 flex  font-medium gap-[2px] ">
         <span
           onClick={() => {
             if (notificationType === Type.ALERT) {
               setNotificationType(Type.NOTIFICATION);
+              setNotifications([]);
+              setPage(1);
             }
           }}
           className={`px-7 pb-3 inline-block text-blackPrimary border-b-[2px] ${
@@ -86,6 +103,8 @@ const Notifications = () => {
           onClick={() => {
             if (notificationType === Type.NOTIFICATION) {
               setNotificationType(Type.ALERT);
+              setNotifications([]);
+              setPage(1);
             }
           }}
           className={`px-7 pb-3 inline-block text-blackPrimary border-b-[2px] ${
@@ -100,62 +119,72 @@ const Notifications = () => {
         {notifications && notifications.length > 0 ? (
           <InfiniteScroll
             className="max-h-[50vh] h-[397px]; scroll-design"
-            dataLength={notifications ? Number(notifications?.length) : 0} // Current length of the notifications array
-            next={fetchMoreNotifications} // Function to load more data
-            hasMore={hasMore} // Determines if there are more notifications to load
-            loader={<h4>Loading...</h4>} // Loading component
-            height={400} // Specify height for the scrollable area
+            dataLength={notifications ? Number(notifications?.length) : 0}
+            next={fetchMoreNotifications}
+            hasMore={hasMore}
+            loader={""}
+            height={400}
             endMessage={<p className="text-center">No more notifications</p>} // Message when no more data
           >
             {groupedNotifications && groupedNotifications.length > 0 ? (
               <div>
-                {groupedNotifications.map(
-                  (
-                    item: {
-                      date: string;
-                      items: any[];
-                    },
-                    index: Key | null | undefined
-                  ) => {
-                    return (
-                      <div key={index}>
-                        <h3 className="text-sm font-medium text-grayText">
-                          {item.date}
-                        </h3>
-                        {item.items.length > 0 &&
-                          item.items.map((notification) => {
-                            return (
-                              <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                                <div className="flex w-2 h-2 min-w-2 rounded-full bg-grayLightBody/50 ">
-                                  &nbsp;
+                {groupedNotifications.map((item: NotificationGroup, index) => {
+                  return (
+                    <div key={index}>
+                      <h3 className="text-sm font-medium text-grayText">
+                        {item.date}
+                      </h3>
+                      {item.items.length > 0 &&
+                        item.items.map((notification, index) => {
+                          return (
+                            <div
+                              key={index}
+                              onLoad={() => {
+                                setIsNotRead(
+                                  notification.is_read == false ? true : false
+                                );
+                              }}
+                              className={`NotificationBox  flex gap-3 items-center p-2 ${
+                                notification.is_read
+                                  ? `bg-white`
+                                  : `bg-grayLightBody/10`
+                              } rounded-md text-grayText  w-full mb-1`}
+                            >
+                              <div
+                                className={`flex w-2 h-2 min-w-2 rounded-full ${
+                                  notification.type === Type.NOTIFICATION &&
+                                  !notification.is_read
+                                    ? `bg-greenPrimary`
+                                    : notification.type === Type.ALERT &&
+                                      !notification.is_read
+                                    ? `bg-redAlert`
+                                    : `bg-grayLightBody/50`
+                                }`}
+                              >
+                                &nbsp;
+                              </div>
+                              <div className="w-full">
+                                <div>
+                                  <div className="underline text-blackPrimary font-medium">
+                                    {notification.title}
+                                  </div>{" "}
                                 </div>
-                                <div className="w-full">
-                                  <div>
-                                    <Link
-                                      to=""
-                                      className="underline text-blackPrimary font-medium"
-                                    >
-                                      {notification.id}
-                                    </Link>{" "}
-                                    {notification.smallMsg}
-                                  </div>
-                                  <div className="flex gap-2 justify-between items-center">
-                                    <p className="line-clamp-1">
-                                      {notification.longMsg}
-                                    </p>
-                                    <p className="text-xs">
-                                      {" "}
-                                      {notification.time}{" "}
-                                    </p>
-                                  </div>
+                                <div className="flex gap-2 justify-between items-center">
+                                  <p className="line-clamp-1">
+                                    {notification.description}
+                                  </p>
+                                  <p className="text-xs">
+                                    {" "}
+                                    {notification.time}{" "}
+                                  </p>
                                 </div>
                               </div>
-                            );
-                          })}
-                      </div>
-                    );
-                  }
-                )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  );
+                })}
               </div>
             ) : null}
           </InfiniteScroll>

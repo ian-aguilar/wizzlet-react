@@ -74,7 +74,7 @@ const AdminMarketplace = () => {
                   )}
                 </div>
               </div>
-              <div className="max-w-36 mt-3 ml-96">
+              <div className="max-w-36 mt-3 ml-auto">
                 <DropDown
                   value={
                     item?.coming_soon
