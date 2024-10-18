@@ -352,7 +352,3 @@ export const modules = {
   ],
 };
 
-export enum Type {
-  NOTIFICATION = "NOTIFICATION",
-  ALERT = "ALERT",
-}

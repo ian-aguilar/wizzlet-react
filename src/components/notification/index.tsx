@@ -23,7 +23,7 @@ const Notifications = () => {
   // Fetch additional notifications
   const fetchMoreNotifications = async () => {
     const newNotifications = await getNotifications(page); // Simulate API request
-    const notific = await getNotificationAPI({page});
+    // const notific = await getNotificationAPI({page});
     if (newNotifications && newNotifications?.length > 0) {
       setNotifications((prev: any) => {
         if (prev && prev?.length > 0) return [...prev, ...newNotifications];
