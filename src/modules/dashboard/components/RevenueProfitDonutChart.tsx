@@ -107,7 +107,7 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
         </div>
         <div className="text-center pt-6 text-grayText text-base">
           {marketplaceData?.map((item) => (
-            <h4>
+            <h4 key={item.name}>
               {item?.name} Revenue:{" "}
               <span className="font-semibold text-blackPrimary">
                 ${item?.value}

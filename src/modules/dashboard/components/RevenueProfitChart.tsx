@@ -51,8 +51,8 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       selectedMarketplace?.map((item) => Number(item?.value)) || [];
     const { revenues, labels } = getRevenueAndLabels(
       data,
-      startDate?.toLocaleDateString("en-CA"),
-      endDate?.toLocaleDateString("en-CA"),
+      startDate?.toLocaleDateString("en-CA") as string,
+      endDate?.toLocaleDateString("en-CA") as string,
       selectedMarketplaceIds.length > 0 ? selectedMarketplaceIds : undefined
     );
 

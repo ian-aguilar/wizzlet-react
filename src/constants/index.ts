@@ -323,3 +323,8 @@ export const modules = {
     ["clean"],
   ],
 };
+
+export enum Type {
+  NOTIFICATION = "NOTIFICATION",
+  ALERT = "ALERT",
+}

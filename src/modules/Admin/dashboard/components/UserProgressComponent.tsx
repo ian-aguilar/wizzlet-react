@@ -4,11 +4,11 @@ import "react-circular-progressbar/dist/styles.css";
 import { ProgressComponentProps } from "../types";
 
 const UserProgressComponent: React.FC<ProgressComponentProps> = ({
-  totalUsers,
+  todaysUsers,
   onlineUsers,
   offlineUsers,
 }) => {
-  const percentage = (onlineUsers / totalUsers) * 100;
+  const percentage = (onlineUsers / todaysUsers) * 100;
 
   return (
     <>
@@ -21,8 +21,8 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
         <div className="max-w-[190px]">
           <CircularProgressbar
             value={percentage}
-            maxValue={totalUsers}
-            text={`${totalUsers}`}
+            maxValue={todaysUsers}
+            text={`${todaysUsers}`}
             styles={buildStyles({
               pathColor: "#09A17A",
               textColor: "#333",
@@ -53,7 +53,7 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
               &nbsp;
             </div>
             <div>
-              <span>Online</span>
+              <span>Offline</span>
               <div>
                 {" "}
                 <span className="text-blackPrimary text-2xl ">

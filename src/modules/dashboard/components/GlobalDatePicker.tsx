@@ -13,25 +13,29 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
   userFullName,
   isDatePickerOpen,
   setIsDatePickerOpen,
+  className,
 }) => {
   return (
-    <div className="flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10">
-      {/* <div>
-        <h2 className="text-3xl font-bold line-clamp-1">
-          {`Hello, ${userFullName}!`}
-        </h2>
-        <p className="text-grayText text-lg line-clamp-1">
-          Explore Marketplace Information and activity
-        </p>
-      </div> */}
+    <div
+      className={`flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10 ${className} `}>
+      {userFullName ? (
+        <div>
+          <h2 className="text-3xl font-bold line-clamp-1">
+            {`Hello, ${userFullName}!`}
+          </h2>
+          <p className="text-grayText text-lg line-clamp-1">
+            Explore Marketplace Information and activity
+          </p>
+        </div>
+      ) : null}
+
       <div className="flex gap-2 border border-grayLightBody rounded-md items-center pr-2">
         <div className="flex gap-4">
           <select
             className="bg-black text-white py-2 lg:px-2 !rounded-r-none "
             id="month-select"
             value={selectedMonth}
-            onChange={onMonthChange}
-          >
+            onChange={onMonthChange}>
             {Array.from({ length: 12 }, (_, i) => {
               const monthName = new Date(0, i).toLocaleString("en-US", {
                 month: "long",
@@ -48,8 +52,7 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
         <div className="rounded-r-md flex items-center">
           <div
             className="flex items-center gap-2"
-            onClick={() => setIsDatePickerOpen((prev: boolean) => !prev)}
-          >
+            onClick={() => setIsDatePickerOpen((prev: boolean) => !prev)}>
             {!isDatePickerOpen ? (
               <>
                 <CalendarMainSVG />
