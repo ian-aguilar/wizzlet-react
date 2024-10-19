@@ -1,19 +1,27 @@
-import { useAxiosGet } from "@/hooks/useAxios";
-import { userSelector } from "@/redux/slices/userSlice";
-import { useSelector } from "react-redux";
+import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 
-const AUTH_API_BASE_PATH = "/notifications";
+const AUTH_API_BASE_PATH = "/notification";
 //  ** Get All Marketplace Listing **
 export const useFetchNotificationAPI = () => {
   // ** custom Hooks **
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
-  const user = useSelector(userSelector);
 
   const getNotificationAPI = async (data?: object) => {
     return callApi(`${AUTH_API_BASE_PATH}/all`, {
-      params: { ...data, role: user?.role },
+      params: data,
     });
   };
 
   return { getNotificationAPI, isLoading, isError, isSuccess };
+};
+
+export const useSetMarkReadNotificationAPI = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const setMarkReadAPI = async (data: object) => {
+    return callApi(`${AUTH_API_BASE_PATH}/mark-read`, data);
+  };
+
+  return { setMarkReadAPI, isLoading, isError, isSuccess };
 };

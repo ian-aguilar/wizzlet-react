@@ -86,11 +86,6 @@ const UserMarketplace = () => {
                   item?.coming_soon ? "relative" : ""
                 }`}
               >
-                {item?.coming_soon ? (
-                  <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
-                    Coming Soon
-                  </div>
-                ) : null}
                 <div className="flex flex-wrap justify-between items-start gap-4 ">
                   <div>
                     <img
