@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type ISelectCategoryProps = {
   isSearchable?: boolean;
   value?: IOption;
@@ -8,7 +10,7 @@ export type ISelectCategoryProps = {
   customStyles?: any;
   StylesConfig: any;
   onChange?: any;
-  isDisabled?:boolean;
+  isDisabled?: boolean;
 };
 
 export type IOption = {
@@ -30,21 +32,40 @@ export type IItems = {
 export type IItemsProps = {
   item: IItems;
   isCheck: number[];
-  setIsCheck: React.Dispatch<React.SetStateAction<number[]>>;
+  checkboxOnChange: (id: number) => void;
 };
 
 export enum SyncStatus {
   PENDING = "Pending",
   INPROGRESS = "Inprogress",
   COMPLETED = "Completed",
-  FAILED = "Failed"
+  FAILED = "Failed",
 }
 
 export type ISyncDetails = {
-  id?:number;
+  id?: number;
   marketplace_id: number;
   start_time?: Date;
   end_time?: Date;
   status: SyncStatus;
   failure_reason?: JSON;
+};
+
+export enum ImportTab {
+  IMPORTED = "Imported",
+  NOT_IMPORTED = "Not Imported",
+}
+
+export type TotalImportDataType = {
+  totalNotImported: number;
+  totalImported: number;
+};
+
+export interface ISearchBox {
+  value?: string;
+  name: string;
+  placeholder?: string;
+  className: string;
+  InputLeftIcon?: ReactNode;
+  onChange: (value: string) => void;
 }

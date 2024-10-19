@@ -2,6 +2,7 @@
 
 // ** hooks **
 import { useAxiosGet, useAxiosPost, useAxiosPut } from "@/hooks/useAxios";
+import { AxiosRequestConfig } from "axios";
 
 const BASE_PATH = "/property";
 
@@ -71,4 +72,19 @@ export const useEditProductValuesApi = () => {
   };
 
   return { editProductValueApi, isLoading, isError, isSuccess };
+};
+
+// ** create notification in database **
+export const useCreateUserNotificationInDbApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const createUserNotificationInDbApi = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`notification/user-db-create`, data, config);
+  };
+
+  return { createUserNotificationInDbApi, isLoading, isError, isSuccess };
 };

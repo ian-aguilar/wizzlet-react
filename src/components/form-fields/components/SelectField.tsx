@@ -67,6 +67,7 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             isSearchable={isSearchable}
             components={components}
             onChange={(selectedOption, e) => {
+              console.log("selected option >>>>>>>>>", innerValue);
               onChange(selectedOption);
               CustomOnChange?.(selectedOption, e);
             }}
@@ -81,9 +82,50 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             styles={customStyles}
             isDisabled={disabled}
             className={`${className}`}
+            menuPosition={"fixed"}
           />
         )}
       />
+
+      {/* <Controller
+        name={name}
+        control={control}
+        render={({ field: { onChange, value: innerValue, ref } }) => (
+          <ReactSelect
+            ref={ref}
+            isSearchable={isSearchable}
+            components={components}
+            onChange={(selectedOption, e) => {
+              const selectedValue = isMulti
+                ? (selectedOption as MultiValue<Option>).map(
+                    (option) => option.value
+                  )
+                : (selectedOption as SingleValue<Option>)?.value;
+
+              onChange(selectedValue);
+              CustomOnChange?.(selectedOption, e);
+            }}
+            name={name}
+            value={
+              isMulti
+                ? options.filter((option: Option) =>
+                    innerValue?.includes(option.value)
+                  )
+                : options.find((option: Option) => option.value === innerValue)
+            }
+            placeholder={placeholder || ""}
+            options={options}
+            autoFocus={autoFocus}
+            isMulti={isMulti}
+            isClearable={isClearable}
+            menuPlacement="auto"
+            styles={customStyles}
+            isDisabled={disabled}
+            className={`${className}`}
+            menuPosition={"fixed"}
+          />
+        )}
+      /> */}
 
       <ErrorMessage
         errors={errors}

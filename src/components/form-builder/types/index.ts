@@ -16,8 +16,13 @@ export type FieldsType<T extends FieldValues> = {
   name: Path<T>;
   title?: string;
   required: boolean;
+  isMulti?: boolean;
   option?: Option[];
+  description?: string;
   items?: FieldsType<T>[];
+  marketplace?: string;
+  minLength?: number;
+  maxLength?: number;
 };
 
 export enum FieldsTypeEnum {
@@ -30,6 +35,7 @@ export enum FieldsTypeEnum {
   OBJECT = "OBJECT",
   BOOLEAN = "BOOLEAN",
   INTEGER = "INTEGER",
+  MULTI_SELECT = "MULTI_SELECT",
 }
 
 export type ValidationType = {
@@ -45,4 +51,14 @@ export type FieldArrayComponentType<T extends FieldValues> = {
   fieldArrayName?: any;
   watch: UseFormWatch<FieldValues>;
   data: any;
+};
+
+export type IConditions = {
+  required: string[];
+  allOf: any[];
+};
+
+export type IValidationItem = {
+  properties: any;
+  conditions: IConditions;
 };

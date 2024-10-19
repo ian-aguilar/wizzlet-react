@@ -1,20 +1,14 @@
 import Checkbox from "@/components/form-fields/components/Checkbox";
-import { IItems, IItemsProps } from "../types";
+import { IItemsProps } from "../types";
 
-export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
-  const checkHandler = (item: IItems, isChecked: boolean) => {
-    setIsCheck([...isCheck, item.id]);
-    if (!isChecked) {
-      setIsCheck(isCheck.filter((element) => element !== item.id));
-    }
-  };
+export const ItemCard = ({ item, isCheck,checkboxOnChange }: IItemsProps) => {
   return (
-    <div className="flex bg-white items-center mt-2 p-5  gap-4 border border-grayLightBody/20 rounded-md ">
+    <div className="flex bg-white items-center mt-2 py-2 px-5  gap-4 border border-grayLightBody/20 rounded-md ">
       <div className="flex gap-4 items-start">
         <div>
           <img
             src={item.picture_url}
-            className="w-[171px] h-[132px] object-cover rounded-md "
+            className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
           />
         </div>
         <div>
@@ -30,7 +24,7 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
             )}
           </div>
           <h2 className="text-[19px] font-medium py-2 ">{item.title}</h2>
-          <div className="flex gap-4 text-sm ">
+          <div className="flex flex-wrap gap-4 text-sm ">
             <span className="font-medium flex items-center gap-2">
               {" "}
               <p className="font-normal inline-block text-grayText">
@@ -66,11 +60,8 @@ export const ItemCard = ({ item, isCheck, setIsCheck }: IItemsProps) => {
       {!item.is_imported && (
         <div className="ml-auto  pr-8">
           <Checkbox
-            checkLabel=""
-            isChecked={isCheck.includes(item.id)}
-            onChange={(e) => {
-              checkHandler(item, e.target.checked);
-            }}
+            isChecked={isCheck?.includes(item.id)}
+            onChange={() => checkboxOnChange(item.id)}
           />
         </div>
       )}

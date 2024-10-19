@@ -38,6 +38,7 @@ const useAuthGuard = () => {
   };
 
   return {
+    
     isLoading,
     isAuthenticated,
     isAuthInitialized,

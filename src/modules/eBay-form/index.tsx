@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormBuilder from "@/components/form-builder";
 import {
   useCreateEbayProductApi,
+  useCreateUserNotificationInDbApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
@@ -11,19 +12,24 @@ import {
 } from "./services/productBasicForm.service";
 import { useEffect, useState } from "react";
 import { Select } from "@/components/form-fields/components/SelectCategory";
-import { CategoryOptions, ICategory } from "@/components/common/types";
+import {
+  CategoryOptions,
+  ICategory,
+  MARKETPLACE,
+} from "@/components/common/types";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
 import { PropertiesState, SelectOption } from "./types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { generateCombinations, transformData } from "./helper";
 import { productEbayFormValidationSchema } from "./validation-schema";
 import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
-import { PrivateRoutesPath } from "../Auth/types";
+import { ProductBasicFormSingleProps } from "../all-product-form-wrapper/types";
+import { NOTIFICATION_TYPE, Type } from "@/constants";
 
-const EbayForm: React.FC = () => {
+const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
 
   const { ebayFormSubmitApi, isLoading: ebayFormSubmitApiLoading } =
@@ -32,6 +38,7 @@ const EbayForm: React.FC = () => {
   const { createEbayProductApi } = useCreateEbayProductApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
+  const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
 
   //**  STATE **//
   const [id, setId] = useState();
@@ -53,8 +60,6 @@ const EbayForm: React.FC = () => {
     useState<variantOptionType>([]);
 
   const [listInEbayLoading, setListInEbayLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleCategoryOptionAPi = async () => {
     const { data, error } = await getCategoryApi();
@@ -133,7 +138,7 @@ const EbayForm: React.FC = () => {
     clearErrors,
     setValue,
   } = useForm<any>({
-    resolver: yupResolver(finalValidationSchema),
+    // resolver: yupResolver(finalValidationSchema),
   });
   console.log("🚀 ~ errors:", errors);
 
@@ -223,9 +228,19 @@ const EbayForm: React.FC = () => {
       if (!ebayFormError) {
         if (type === "SaveInEbay") {
           const { error } = await createEbayProductApi(Number(productId));
-          if (!error) navigate(PrivateRoutesPath.inventoryManagement.view);
+          if (!error) {
+            const notificationPayload = {
+              productId: productId,
+              notification_type: NOTIFICATION_TYPE.LIST,
+              is_read: false,
+              type: Type.NOTIFICATION,
+              marketplace: MARKETPLACE.EBAY,
+            };
+            createUserNotificationInDbApi(notificationPayload);
+            onComplete(productId);
+          }
         } else {
-          navigate(PrivateRoutesPath.inventoryManagement.view);
+          onComplete(productId);
         }
       }
 

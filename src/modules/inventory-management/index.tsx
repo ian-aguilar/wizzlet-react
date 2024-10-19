@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { debounce } from "lodash";
-import { format } from "date-fns";
 
 // ** Icons **
 import {
@@ -11,6 +10,7 @@ import {
   BulkImportIcon,
   CategoryBtnIcon,
   CheckIconBtn,
+  DeleteIcon,
   DownArrowIcon,
   DownloadCSVIcon,
   SearchIcon,
@@ -32,22 +32,31 @@ import { status } from "./helper/constant";
 
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { useGetCategoriesAPI, useProductListingAPI } from "./services";
+import {
+  useGetCategoriesAPI,
+  useProductListingAPI,
+  useProductsDeleteAPI,
+} from "./services";
 import { useFetchLabelDataAPI } from "../settings/services/label.service";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { btnShowType } from "@/components/form-fields/types";
 import { E_PRODUCT_STATUS, Option, TopFilter, productProps } from "./types";
+import { ErrorModal } from "@/components/common/ErrorModal";
+import { DataNotFound } from "@/components/svgIcons";
 
 const InventoryManagement = () => {
   // ** States **
   const [totalItem, setTotalItem] = useState<number>();
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [category, setCategory] = useState<Option[] | null>(null);
   const [productTag, setProductTag] = useState<Option[] | null>(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
+  const [selectAll, setSelectAll] = useState(false);
+  const [checkboxes, setCheckboxes] = useState<number[] | null>([]);
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
   const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
     undefined
   );
@@ -84,6 +93,8 @@ const InventoryManagement = () => {
     useFetchLabelDataAPI();
   const { getProductsDetailsAPI, isLoading: productListLoading } =
     useProductListingAPI();
+  const { deleteProductsAPI, isLoading: deleteProductLoading } =
+    useProductsDeleteAPI();
 
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
@@ -107,14 +118,14 @@ const InventoryManagement = () => {
     status: string = "",
     page: number = Number(currentPage),
     limit: number = Number(itemPerPage.value),
-    categoryName: Option[] | undefined = category,
+    categoryName: Option[] | null = category,
     filterCreatedDate: Date | undefined = filterDate,
     productTypeData: Option | null = productType,
     productLabel: Option[] | null = productTag
   ) => {
-    const categoryLabels = categoryName?.map((item) => item.label) || undefined;
-    const productTags = productLabel?.map((item) => item.label) || undefined;
-    console.log("productTags: ", productTags);
+
+    const categoryLabels = categoryName?.map((item) => item.label) || null;
+    const productTags = productLabel?.map((item) => item.label) || null;
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
@@ -143,6 +154,8 @@ const InventoryManagement = () => {
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
       setCurrentPage(newPage);
+      setCheckboxes([]);
+      setSelectAll(false);
       getProductsDetails(
         searchTerm,
         selectedMarketplace,
@@ -172,7 +185,6 @@ const InventoryManagement = () => {
       page
     );
     if (!error && data) {
-      console.log(data?.data);
       return data?.data;
     }
   };
@@ -209,6 +221,10 @@ const InventoryManagement = () => {
   // ** handle product status **
   const handleProductStatus = (item: E_PRODUCT_STATUS) => {
     setCurrentPage(1);
+    if (item !== productStatus) {
+      setCheckboxes([]);
+      setSelectAll(false);
+    }
     setProductStatus(item);
   };
 
@@ -246,7 +262,7 @@ const InventoryManagement = () => {
       value: string,
       selectedMarketplace: number[],
       status: string,
-      category: Option[] | undefined,
+      category: Option[] | null,
       filterDate: Date | undefined,
       productType: Option | null,
       productTag: Option[] | null
@@ -264,6 +280,43 @@ const InventoryManagement = () => {
       ),
     [itemPerPage]
   );
+
+  const handleSelectAllChange = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
+    const selectedBox: number[] | null = products?.products
+      .map((item) => (newSelectAll ? item?.id : null))
+      .filter((item): item is number => item !== null);
+    setCheckboxes(selectedBox);
+  };
+
+  const handleProductCheckboxChange = (id: number) => {
+    const isChecked = checkboxes ? checkboxes!.includes(id) : null;
+    const updatedCheckboxes = isChecked
+      ? checkboxes!.filter((itemId) => itemId !== id)
+      : checkboxes
+      ? [...checkboxes, id]
+      : [id];
+    setCheckboxes(updatedCheckboxes);
+    setSelectAll(updatedCheckboxes.length === products?.products.length);
+  };
+
+  const closeDeleteModel = () => setCheckboxes(null);
+
+  const handleRemove = async () => {
+    closeDeleteModel();
+    setIsDeleteModel(false);
+    return;
+    if (checkboxes?.length) {
+      const { error } = await deleteProductsAPI(checkboxes as number[]);
+      if (error) console.log(error);
+      else {
+        closeDeleteModel();
+        setIsDeleteModel(false);
+        setCurrentPage(1);
+      }
+    }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
@@ -368,7 +421,6 @@ const InventoryManagement = () => {
                       maxDate={new Date()}
                       name="dateCreated"
                       onChange={(e) => {
-                        console.log("Date:", e);
                         setCurrentPage(1);
                         setFilterDate(new Date(e));
                       }}
@@ -388,7 +440,6 @@ const InventoryManagement = () => {
                         { id: 2, name: "Variant" },
                       ]}
                       onChange={(e) => {
-                        console.log("Product type:", e);
                         setCurrentPage(1);
                         if (e) {
                           setProductType(e);
@@ -448,10 +499,10 @@ const InventoryManagement = () => {
           />
         </div>
       </div>
-      <section className="InventoryMgtStripe   w-full bg-white   p-5 mb-5 ">
+      <section className="InventoryMgtStripe   w-full bg-white   py-3 px-5 mb-2 ">
         <div className="flex justify-between items-center gap-6 flex-wrap">
           <div className="leftItems">
-            <span className="block text-grayText text-base font-normal uppercase pb-4 ">
+            <span className="block text-grayText text-base font-normal uppercase pb-2 ">
               SELECT Your Marketplace
             </span>
             <div className="flex gap-2">
@@ -471,9 +522,7 @@ const InventoryManagement = () => {
                       BtnIconLeft={
                         selectedMarketplace.includes(item.id) ? (
                           <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
-                        ) : (
-                          <></>
-                        )
+                        ) : null
                       }
                     />
                   );
@@ -503,8 +552,8 @@ const InventoryManagement = () => {
           </div>
         </div>
       </section>
-      <section className=" w-full bg-white p-4 mb-5 ">
-        <div className="TopTabsBtns flex justify-between items-center gap-4 flex-wrap ">
+      <section className=" w-full bg-white px-4 py-3 mb-5 ">
+        <div className="TopTabsBtns flex justify-between items-center gap-2 flex-wrap ">
           <div className="TopLEftTabs flex">
             {status.map((item) => {
               return (
@@ -533,7 +582,7 @@ const InventoryManagement = () => {
               );
             })}
           </div>
-          <div className="RightBtnsTop flex gap-2">
+          <div className="RightBtnsTop flex gap-2 items-center">
             <SearchBox
               value={searchTerm}
               name="search"
@@ -544,13 +593,13 @@ const InventoryManagement = () => {
             />
             <Button
               showType={btnShowType.primary}
-              btnClass=" bg-grayText text-white !font-medium  !text-base   !py-2 !px-3 "
+              btnClass=" bg-grayText text-white !font-medium  !text-sm my-2.5  "
               btnName="Bulk Import CSV"
               BtnIconLeft={<BulkImportIcon className="text-white" />}
             />
             <Button
               showType={btnShowType.primary}
-              btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-base   !py-2 !px-3 "
+              btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-sm  my-2.5   "
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
             />
@@ -560,11 +609,11 @@ const InventoryManagement = () => {
               getOnChange={(e) => {
                 setCurrentPage(1);
                 if (!e.length) {
-                  setCategory(undefined);
+                  setCategory(null);
                   return;
                 }
                 if (e) {
-                  setCategory(e);
+                  setCategory(() => [...e]);
                   getProductsDetails(
                     searchTerm,
                     selectedMarketplace,
@@ -583,22 +632,41 @@ const InventoryManagement = () => {
               isSearchable={true}
               notClearable={true}
               getOptions={getCategories}
-              value={category !== undefined || null ? category : undefined}
-              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
+              value={category ? category : null}
+              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-52 !text-base  "
               placeholder="By Category"
             />
           </div>
         </div>
 
-        <div className="ActiveItemsBox p-5 bg-grayLightBody/5 mt-7">
-          <div className="flex gap-5 justify-between items-center flex-wrap mb-6">
+        <div className="ActiveItemsBox px-5 py-2 bg-grayLightBody/5 mt-2">
+          <div className="flex gap-5 justify-between items-center flex-wrap mb-3">
             <div className="flex gap-5 items-center ">
-              <h3 className="text-[26px] font-medium ">
+              <h3 className="text-[26px] font-medium">
                 {productStatus === E_PRODUCT_STATUS.active
                   ? `Active Items`
                   : `Draft Items`}
               </h3>
-              <Checkbox checkLabel="Check All" />
+              {products?.products.length > 0 && (
+                <Checkbox
+                  checkLabel="Select All"
+                  isChecked={checkboxes?.length === products?.products.length}
+                  onChange={handleSelectAllChange}
+                />
+              )}
+              {checkboxes && checkboxes?.length > 0 && (
+                <div>
+                  <Button
+                    showType={btnShowType.red}
+                    btnClass="text-white !font-medium !text-base flex gap-1"
+                    btnName={`Delete Items ${
+                      checkboxes?.length ? `(${checkboxes?.length})` : null
+                    }`}
+                    BtnIconLeft={<DeleteIcon className="text-white " />}
+                    onClickHandler={() => setIsDeleteModel(true)}
+                  />
+                </div>
+              )}
             </div>
             <div className="flex gap-5 items-center ">
               <div className="inline-flex gap-2 items-center text-grayText">
@@ -606,7 +674,7 @@ const InventoryManagement = () => {
                 <DropDown
                   dropdownName="Limit"
                   value={itemPerPage}
-                  dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3 !py-3 bg-white "
+                  dropdownClass="hover:!border-grayText/30 !text-base !font-medium !px-3     "
                   options={[
                     { id: 1, name: "10" },
                     { id: 2, name: "20" },
@@ -635,7 +703,7 @@ const InventoryManagement = () => {
                 Entries
               </div>
               <Button
-                btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-3 "
+                btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-2 "
                 btnName="Newest"
                 showType={btnShowType.primary}
                 btnEndIcon={<DownArrowIcon />}
@@ -643,10 +711,18 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div>
-            <Product
-              isLoading={productListLoading}
-              currentData={products.products}
-            />
+            {products && products.products.length > 0 ? (
+              <Product
+                isLoading={productListLoading}
+                currentData={products.products}
+                checkboxes={checkboxes}
+                checkboxOnChange={handleProductCheckboxChange}
+              />
+            ) : (
+              <div>
+                <DataNotFound />
+              </div>
+            )}
           </div>
         </div>
         <div className="flex justify-end pt-2">
@@ -660,6 +736,20 @@ const InventoryManagement = () => {
               onPageChanged={onPageChanged}
             />
           ) : null}
+        </div>
+        <div>
+          {isDeleteModel && (
+            <ErrorModal
+              onClose={() => {
+                setCheckboxes(null);
+                setIsDeleteModel(false);
+              }}
+              isLoading={deleteProductLoading}
+              onSave={handleRemove}
+              heading="Are you sure?"
+              subText="This will delete selected products."
+            />
+          )}
         </div>
       </section>
     </div>

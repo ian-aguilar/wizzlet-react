@@ -31,7 +31,7 @@ export const MailSent = ({ email }: { email: string }) => {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <g clip-path="url(#clip0_381_6192)">
+            <g clipPath="url(#clip0_381_6192)">
               <path
                 d="M59 118C91.5848 118 118 91.5848 118 59C118 26.4152 91.5848 0 59 0C26.4152 0 0 26.4152 0 59C0 91.5848 26.4152 118 59 118Z"
                 fill="#09A17A"
