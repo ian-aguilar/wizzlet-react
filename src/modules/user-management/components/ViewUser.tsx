@@ -36,6 +36,7 @@ import {
 
 // ** helper **
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
+import { DataNotFound } from "@/components/svgIcons";
 
 const ViewUser = () => {
   const currentDate = new Date();
@@ -368,7 +369,9 @@ const ViewUser = () => {
                     />
                   ))
                 ) : (
-                  <div className="text-center">No Data Found!</div>
+                  <div className="text-center">
+                    <DataNotFound />
+                  </div>
                 )}
               </div>
 

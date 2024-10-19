@@ -9,6 +9,7 @@ import {
   useSetMarkReadNotificationAPI,
 } from "./services";
 import { modifiedNotifications } from "./helper";
+import { Link } from "react-router-dom";
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true); // Track if there are more notifications to load
@@ -37,7 +38,13 @@ const Notifications = () => {
           else return data?.data;
         });
       } else {
+        setIsNotRead(false);
         setNotifications(data?.data);
+        for (let item of data?.data) {
+          if (!item.is_read) {
+            setIsNotRead(true);
+          }
+        }
       }
       setPage((prevPage) => prevPage + 1);
     } else {
@@ -52,7 +59,7 @@ const Notifications = () => {
     const { data } = await setMarkReadAPI({ ids: ids });
     if (data) {
       setReload((prev) => !prev);
-      setNotifications([])
+      setNotifications([]);
     }
   };
 
@@ -122,7 +129,7 @@ const Notifications = () => {
             dataLength={notifications ? Number(notifications?.length) : 0}
             next={fetchMoreNotifications}
             hasMore={hasMore}
-            loader={""}
+            loader={<p className=""> Loading... {hasMore} </p>}
             height={400}
             endMessage={<p className="text-center">No more notifications</p>} // Message when no more data
           >
@@ -139,11 +146,6 @@ const Notifications = () => {
                           return (
                             <div
                               key={index}
-                              onLoad={() => {
-                                setIsNotRead(
-                                  notification.is_read == false ? true : false
-                                );
-                              }}
                               className={`NotificationBox  flex gap-3 items-center p-2 ${
                                 notification.is_read
                                   ? `bg-white`
@@ -164,10 +166,23 @@ const Notifications = () => {
                                 &nbsp;
                               </div>
                               <div className="w-full">
-                                <div>
-                                  <div className="underline text-blackPrimary font-medium">
-                                    {notification.title}
-                                  </div>{" "}
+                                <div className="">
+                                  {notification.product_id ? (
+                                    <Link
+                                      to={`/inventory-management/product-form/1/${notification.product_id}`}
+                                      className="underline text-blackPrimary font-medium"
+                                    >
+                                      #{notification.product_id}
+                                    </Link>
+                                  ) : notification.register_user ? (
+                                    <Link
+                                      to={`/user-management/view/${notification.register_user}`}
+                                      className="underline text-blackPrimary font-medium"
+                                    >
+                                      @{notification.register_user}
+                                    </Link>
+                                  ) : null}{" "}
+                                  {notification.title}
                                 </div>
                                 <div className="flex gap-2 justify-between items-center">
                                   <p className="line-clamp-1">
@@ -194,227 +209,7 @@ const Notifications = () => {
           </div>
         )}
       </div>
-
-      {/* <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium "
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <h3 className="text-sm font-medium text-grayText">
-                        Yesterday
-                      </h3>
-
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium"
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium "
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium"
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium "
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium"
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium "
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-redAlert ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium"
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="NotificationBox  flex gap-3 items-center p-2 bg-grayLightBody/10 rounded-md text-grayText  w-full mb-1">
-                        <div className="flex w-2 h-2 min-w-2 rounded-full bg-greenPrimary ">
-                          &nbsp;
-                        </div>
-                        <div className="w-full">
-                          <div>
-                            <Link
-                              to=""
-                              className="underline text-blackPrimary font-medium "
-                            >
-                              @user123
-                            </Link>{" "}
-                            Registered
-                          </div>
-                          <div className="flex gap-2 justify-between items-center">
-                            <p className="line-clamp-1">
-                              use123 has added a new register{" "}
-                            </p>
-                            <p className="text-xs"> 1m ago </p>
-                          </div>
-                        </div>
-                      </div> */}
     </div>
   );
 };
 export default Notifications;
-
-// Simulate fetching notifications
-const getNotifications = async (page: number) => {
-  // Replace this with your actual fetch logic
-  // Simulate fetching 50 notifications at a time
-  return new Array(50).fill(0).map((_, index) => ({
-    id: `Notification ID ${page * 50 + index + 1}`,
-    smallMsg: `Small message for notification ${page * 50 + index + 1}`,
-    longMsg: `Detailed long message for notification ${page * 50 + index + 1}`,
-    time: `${index + 1}m ago`,
-  }));
-};

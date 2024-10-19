@@ -11,6 +11,9 @@ import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketp
 import { useGetAllDashboardDataApi } from "../services/dashboard.service";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { DashboardData, OptionType, RevenueMarketDetail } from "../types";
+import { DataNotFound } from "@/components/svgIcons";
+import geoMap from "/images/mapWorld.png";
+import GeoChart from "./GeoChart";
 
 const UserDashboard: React.FC = () => {
   const currentDate = new Date();
@@ -304,11 +307,15 @@ const UserDashboard: React.FC = () => {
           </div>
         </div>
         <div className="grid grid-cols-11 gap-4 mb-5">
-          <div className="flex justify-center items-center w-full h-full col-span-11 lg:col-span-5 border  rounded-md p-4 ">
+          <div className="flex justify-center items-center w-full h-full col-span-11 lg:col-span-5 border  rounded-md p-4 relative">
             {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
             {/* <GeoChart /> */}
+              <div className="absolute z-10 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
+                Coming Soon
+              </div>
+              <img src={geoMap} alt="" className="" />
           </div>
           <div className="flex flex-col w-full h-full col-span-6 lg:col-span-6 border  rounded-md p-4 ">
             <h3 className="text-xl font-bold mb-4">Top Selling Category</h3>
@@ -321,7 +328,9 @@ const UserDashboard: React.FC = () => {
                 />
               ))
             ) : (
-              <div className="text-center">No Data Found!</div>
+              <div className="text-center">
+                <DataNotFound />
+              </div>
             )}
           </div>
 

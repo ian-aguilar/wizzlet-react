@@ -55,7 +55,7 @@ export const useImportProductsFromAmazonApi = () => {
 export const useFetchSyncDetailsAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const fetchSyncDetailsApi = async (market:string) => {
+  const fetchSyncDetailsApi = async (market: string | null) => {
     return callApi(`${BASE_PATH}/sync-details`, { marketplace: market });
   };
 

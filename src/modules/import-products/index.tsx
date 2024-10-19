@@ -92,7 +92,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
-          return;
+          // return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING
@@ -305,7 +305,7 @@ const ImportProducts = () => {
             <div className="text-black font-medium">Last Sync</div>
             <p className="text-grayText">
               {syncDetails?.status === SyncStatus.PENDING
-                ? "In Progress"
+                ? "In Pending"
                 : syncDetails?.status === SyncStatus.INPROGRESS
                 ? "In Progress"
                 : syncDetails?.end_time
