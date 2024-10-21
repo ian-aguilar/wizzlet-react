@@ -1,5 +1,4 @@
 import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
-import { AxiosRequestConfig } from "axios";
 
 const AUTH_API_BASE_PATH = "/profile";
 
@@ -16,11 +15,12 @@ export const useFetchProfileDataAPI = () => {
 export const useProfileDataPostAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
 
-  const profileDataPostAPI = async (
-    data: object,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
-    return callApi(`${AUTH_API_BASE_PATH}/update`, data, config);
+  const profileDataPostAPI = async (data: object) => {
+    return callApi(`${AUTH_API_BASE_PATH}/update`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
 
   return { profileDataPostAPI, isLoading, isError, isSuccess };

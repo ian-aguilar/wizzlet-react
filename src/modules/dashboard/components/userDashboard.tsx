@@ -99,8 +99,6 @@ const UserDashboard: React.FC = () => {
 
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    // Fetch data when month changes
-    fetchAllData(newStartDate, newEndDate);
   };
 
   // Function to handle the API call for /getAllData
@@ -169,8 +167,7 @@ const UserDashboard: React.FC = () => {
               className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5  gap-4 min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}
-            >
+              key={item?.id}>
               {item?.coming_soon ? (
                 <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
                   Coming Soon
@@ -194,8 +191,7 @@ const UserDashboard: React.FC = () => {
               className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5   gap-4  min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}
-            >
+              key={item?.id}>
               {item?.coming_soon ? (
                 <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
                   Coming Soon
@@ -260,10 +256,10 @@ const UserDashboard: React.FC = () => {
                   ? mainData?.saleDetails[0]?.totalSoldItems
                   : 0}
               </p>
-              <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
+              {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
                 {" "}
                 +20%{" "}
-              </div>
+              </div> */}
             </div>
           </div>
           <div className=" col-span-12 xl:col-span-4 xl:border-l xl:border-r xl:border-t-0 xl:border-b-0 border-t border-b xl:px-5 xl:my-0 my-5 xl:py-0 py-5">
@@ -278,10 +274,10 @@ const UserDashboard: React.FC = () => {
               <p className="text-3xl font-bold ">
                 {mainData?.listedDetails[0]?.listedItems}
               </p>
-              <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
+              {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
                 {" "}
                 +20%{" "}
-              </div>
+              </div> */}
             </div>{" "}
           </div>
           <div className=" col-span-12 xl:col-span-4 xl:pl-5">
@@ -296,10 +292,10 @@ const UserDashboard: React.FC = () => {
               <p className="text-3xl font-bold ">
                 ${Number(mainData?.saleDetails[0]?.averageSalePrice).toFixed(2)}
               </p>
-              <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
+              {/* <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
                 {" "}
                 +20%{" "}
-              </div>
+              </div> */}
             </div>{" "}
           </div>
         </div>
@@ -308,7 +304,6 @@ const UserDashboard: React.FC = () => {
             {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
-            {/* <GeoChart /> */}
           </div>
           <div className="flex flex-col w-full h-full col-span-6 lg:col-span-6 border  rounded-md p-4 ">
             <h3 className="text-xl font-bold mb-4">Top Selling Category</h3>

@@ -1,7 +1,6 @@
 import { useState } from "react";
 // ** Icons **
 import { DeleteIcon, EditLabelIcon } from "@/assets/Svg";
-import { DataNotFound } from "@/components/svgIcons";
 
 // ** Components **
 import Checkbox from "@/components/form-fields/components/Checkbox";
@@ -64,8 +63,7 @@ const Product = ({
               return (
                 <div
                   key={index}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3"
-                >
+                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3">
                   <div>
                     <Checkbox
                       isChecked={checkboxes?.includes(item.id)}
@@ -96,8 +94,7 @@ const Product = ({
                           onClick={() => {
                             setIsDeleteModel(true);
                             setDeleteProduct(item.id);
-                          }}
-                        >
+                          }}>
                           <DeleteIcon className="text-redAlert cursor-pointer" />
                         </div>
                       </div>
@@ -110,8 +107,7 @@ const Product = ({
                             return (
                               <div
                                 key={category?.id}
-                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
-                              >
+                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
                                 {category?.name}
                               </div>
                             );
@@ -170,8 +166,7 @@ const Product = ({
                           return (
                             <div
                               key={index}
-                              className=" rounded-md  border border-grayText/20 p-1"
-                            >
+                              className=" rounded-md  border border-grayText/20 p-1">
                               <img
                                 src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                                 className="w-14 h-auto"

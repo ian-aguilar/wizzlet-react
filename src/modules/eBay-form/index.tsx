@@ -138,7 +138,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     clearErrors,
     setValue,
   } = useForm<any>({
-    // resolver: yupResolver(finalValidationSchema),
+    resolver: yupResolver(finalValidationSchema),
   });
   console.log("🚀 ~ errors:", errors);
 

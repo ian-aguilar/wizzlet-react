@@ -1,5 +1,3 @@
-import React from "react";
-
 const ProgressBar = ({ Progress, LabelName }: any) => {
   return (
     <div className="flex flex-col w-full mb-4">

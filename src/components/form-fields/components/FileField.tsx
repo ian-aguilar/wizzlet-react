@@ -23,6 +23,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     onFocus,
     setError,
     clearErrors,
+    isMulti,
     watch,
   } = fieldProps;
 
@@ -99,7 +100,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 render={({ field: { name: fieldName } }) => (
                   <input
                     id={id}
-                    multiple
+                    multiple={isMulti}
                     type="file"
                     onBlur={onBlur}
                     name={fieldName}
@@ -149,16 +150,14 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       <div
         className={`attachments__up__wrapper p-6 absolute w-full h-full relative ${
           defaultValue.length > 0 ? "z-[11]" : "z-[9]"
-        } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}
-      >
+        } border border-greenPrimary/30 border-dashed bg-[#e6f5f1] rounded-md `}>
         {defaultValue.map((value, index) => {
           const isUrl = typeof value === "string";
 
           return (
             <div
               className="attachments__box flex flex-col h-[95%] "
-              key={`url-${index}`}
-            >
+              key={`url-${index}`}>
               <div className="attachments__details flex items-center h-full">
                 <img
                   src={isUrl ? value : URL.createObjectURL(value)}
@@ -176,8 +175,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 className="action__btn__SD absolute top-3 right-3 block z-10 "
                 name="Delete"
                 title="Delete"
-                onClick={() => deleteAttachment(index)}
-              >
+                onClick={() => deleteAttachment(index)}>
                 ✕
               </button>
             </div>

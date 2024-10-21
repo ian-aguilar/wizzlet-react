@@ -4,7 +4,6 @@ import ReactPaginate from "react-paginate";
 // ** Types **
 import { IPaginationProps } from "../types";
 import { LeftArrowIcon } from "@/assets/Svg";
-import { spawn } from "child_process";
 
 export const Pagination = ({
   totalRecords,

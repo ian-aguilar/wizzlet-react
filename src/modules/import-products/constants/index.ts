@@ -1,4 +1,3 @@
-import { color } from "chart.js/helpers";
 import { ImportTab } from "../types";
 
 export const markeplaces = [
@@ -8,7 +7,7 @@ export const markeplaces = [
 
 export const switchButton = [ImportTab.NOT_IMPORTED, ImportTab.IMPORTED];
 
-export const pageLimitStyle = {
+export const pageLimitStyle: any = {
   singleValue: (base: any) => ({
     ...base,
     color: "#000000",
