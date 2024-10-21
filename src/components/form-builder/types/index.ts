@@ -23,6 +23,7 @@ export type FieldsType<T extends FieldValues> = {
   marketplace?: string;
   minLength?: number;
   maxLength?: number;
+  addMoreLength?: number;
 };
 
 export enum FieldsTypeEnum {
