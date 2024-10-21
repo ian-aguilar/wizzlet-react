@@ -14,12 +14,17 @@ import { ISignupForm } from "../types/signup";
 // ** validations **
 import { signUpValidationSchema } from "../validation-schema/signupLoginValidation";
 import { ShowPassword } from "@/components/svgIcons";
-import { useRegisterUserApi } from "../services/auth.service";
+import {
+  useCreateNotificationInDbApi,
+  useRegisterUserApi,
+} from "../services/auth.service";
 import { btnShowType } from "@/components/form-fields/types";
+import { Type } from "@/constants";
 
 const Registration = () => {
   const navigate = useNavigate();
   const { registerUserApi, isLoading: loader } = useRegisterUserApi();
+  const { createNotificationInDbApi } = useCreateNotificationInDbApi();
 
   const {
     handleSubmit,
@@ -37,8 +42,16 @@ const Registration = () => {
       password: values.password,
     };
 
-    const { error } = await registerUserApi(registerPayload);
+    const { error,data } = await registerUserApi(registerPayload);
     if (!error) {
+      const notificationPayload = {
+        title: `${values?.firstName} ${values?.lastName} Registered`,
+        description: `${values?.firstName} ${values?.lastName} has added a new register`,
+        is_read: false,
+        type: Type.NOTIFICATION,
+        registerUser: data?.data
+      };
+      await createNotificationInDbApi(notificationPayload);
       navigate(RoutesPath.Otp, { state: { email: values.email } });
     }
   };
@@ -125,8 +138,7 @@ const Registration = () => {
             Already have an account?{" "}
             <Link
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
-              to={RoutesPath.Login}
-            >
+              to={RoutesPath.Login}>
               SignIn
             </Link>
           </p>

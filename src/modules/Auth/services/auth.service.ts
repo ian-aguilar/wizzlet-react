@@ -116,3 +116,18 @@ export const useChangePasswordPostAPI = () => {
 
   return { changePasswordPostAPI, isLoading, isError, isSuccess };
 };
+
+// ** create notification in database **
+export const useCreateNotificationInDbApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const createNotificationInDbApi = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`notification/admin-db-create`, data, config);
+  };
+
+  return { createNotificationInDbApi, isLoading, isError, isSuccess };
+};

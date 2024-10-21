@@ -1,9 +1,10 @@
 export interface IFormInputs {
   firstName: string;
   lastName: string;
-  organizationName: string;
-  contactNumber: number;
-  email?: string;
+  organizationName?: string | null;
+  contactNumber?: number | null;
+  email: string;
+  profileImage?: File[] | Blob[];
 }
 
 export interface IChangePasswordInputs {
@@ -11,5 +12,3 @@ export interface IChangePasswordInputs {
   newPassword: string;
   confirmNewPassword: string;
 }
-
-

@@ -4,7 +4,14 @@ import { SetStateAction, useCallback, useEffect, useState } from "react";
 // ** Common **
 import Button from "@/components/form-fields/components/Button";
 import { SelectMarketplace } from "./components/SelectMarketplace";
-import { IItems, IOption, ISyncDetails, SyncStatus } from "./types";
+import {
+  IItems,
+  IOption,
+  ISyncDetails,
+  ImportTab,
+  SyncStatus,
+  TotalImportDataType,
+} from "./types";
 import { MARKETPLACE } from "@/components/common/types";
 import { ItemCard } from "./components/ItemCard";
 import Checkbox from "@/components/form-fields/components/Checkbox";
@@ -22,25 +29,31 @@ import {
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 
 // ** Icon **
-import { AutoSyncIcon } from "@/assets/Svg";
+import { AutoSyncIcon, SearchIcon } from "@/assets/Svg";
 import { DataNotFound } from "@/components/svgIcons";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { pageLimitStyle, selectedMarketplaceStyle } from "./constants";
 import moment from "moment";
+import InputSearch from "./components/InputSearch";
+import { Loader } from "@/components/common/Loader";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
   const [totalItem, setTotalItem] = useState<number>();
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [countCheckbox, setCountCheckbox] = useState<number>(0);
-  const [isCheck, setIsCheck] = useState<number[]>([]);
+  const [isCheck, setIsCheck] = useState<number[] | null>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
   const [synced, setSynced] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [amazonSyncStatus, setAmazonSyncStatus] = useState<SyncStatus>();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [totalImportData, setTotalImportData] =
+    useState<TotalImportDataType | null>(null);
   const [ebaySyncStatus, setEbaySyncStatus] = useState<SyncStatus>();
+  const [importSelectedTab, setImportSelectedTab] = useState<boolean>(false);
   const [itemPerPage, setItemPerPage] = useState<IOption>({
     label: "10",
     value: "10",
@@ -52,12 +65,12 @@ const ImportProducts = () => {
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
   const [syncDetails, setSyncDetails] = useState<ISyncDetails>();
   const [counter, setCounter] = useState(0);
-  const { getImportedProductsApi } = useGetImportedProductsApi();
+  const { getImportedProductsApi, isLoading: isLoadProduct } =
+    useGetImportedProductsApi();
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
-    useImportProductsFromAmazonApi();
+  const { isLoading: storeAmazonLoading } = useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -79,6 +92,7 @@ const ImportProducts = () => {
           break;
         }
         case MARKETPLACE.AMAZON: {
+          // return;
           if (
             amazonSyncStatus === SyncStatus.INPROGRESS ||
             amazonSyncStatus === SyncStatus.PENDING
@@ -102,20 +116,27 @@ const ImportProducts = () => {
             currentPage: currentPage,
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.EBAY,
+            imported: importSelectedTab,
+            search: searchQuery,
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
+          setTotalImportData(data?.data?.totalImportData);
           break;
         }
         case MARKETPLACE.AMAZON: {
+          // return;
           const { data } = await getImportedProductsApi({
             currentPage: currentPage,
             limit: itemPerPage.value,
             marketplace: MARKETPLACE.AMAZON,
+            imported: importSelectedTab,
+            search: searchQuery,
           });
           setItems(data?.data?.products || []);
           setTotalItem(data?.data?.totalRecord);
-          return;
+          setTotalImportData(data?.data?.totalImportData);
+          break;
         }
       }
     }
@@ -154,35 +175,53 @@ const ImportProducts = () => {
     };
   });
 
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query.trim());
+  }, []);
+
   useEffect(() => {
     getImportProductsHandler();
-  }, [selectedMarketplace, synced, itemPerPage, currentPage]);
+  }, [
+    selectedMarketplace,
+    synced,
+    itemPerPage,
+    currentPage,
+    importSelectedTab,
+    searchQuery,
+  ]);
 
   const selectAllHandler = () => {
-    setIsAllChecked((prev) => !prev);
-    if (items) {
-      const selectedItems: number[] = [];
-      items.forEach((item) => {
-        if (!item.is_imported) {
-          selectedItems.push(item.id);
-        }
-      });
-      setIsCheck(selectedItems);
+    const newSelectAll = !isAllChecked;
+    setIsAllChecked(newSelectAll);
+    const selectedBox = items
+      ?.map((item) => (newSelectAll && !item.is_imported ? item?.id : null))
+      .filter((item): item is number => item !== null);
+    if (selectedBox) {
+      setIsCheck(selectedBox);
+    } else {
+      setIsCheck(null);
     }
-    if (isAllChecked) {
-      setIsCheck([]);
-    }
-    console.log("IsAllChecked: ", isAllChecked);
+  };
+
+  const handleProductCheckboxChange = (id: number) => {
+    const isChecked = isCheck ? isCheck!.includes(id) : null;
+    const updatedCheckboxes = isChecked
+      ? isCheck!.filter((itemId) => itemId !== id)
+      : isCheck
+      ? [...isCheck, id]
+      : [id];
+    setIsCheck(updatedCheckboxes);
+    setIsAllChecked(updatedCheckboxes.length === countCheckbox);
   };
 
   const importProductsFromEbayHandler = async () => {
-    if (isCheck.length > 0) {
+    if (isCheck && isCheck.length > 0) {
       if (selectedMarketplace?.value === MARKETPLACE.EBAY) {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
         return;
-        await importProductsFromAmazonApi(isCheck);
+        // await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);
@@ -254,165 +293,241 @@ const ImportProducts = () => {
     }
   }, [counter, synced]);
 
-  return (
-    <div>
-      <div className="flex justify-between gap-4 mb-2 items-center">
-        <h2 className="text-blackPrimary font-bold text-3xl pb-2">Import</h2>
-        <div className="flex gap-2 items-center ">
-          <span className="p-3 bg-greenPrimary/5 inline-block rounded-full">
-            <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
-          </span>
-          <div className="whitespace-nowrap text-sm">
-            <div className="text-black font-medium">Last Sync</div>
-            <p className="text-grayText">
-              {syncDetails?.status === SyncStatus.PENDING
-                ? "In Progress"
-                : syncDetails?.status === SyncStatus.INPROGRESS
-                ? "In Progress"
-                : syncDetails?.end_time
-                ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
-                : `Not sync yet`}
-            </p>
-          </div>
-        </div>
+  if (isLoadProduct) {
+    return (
+      <div>
+        <Loader />
       </div>
-
-      <div className="bg-white p-7 mb-4">
-        <p className="uppercase text-base font-normal text-grayText mb-2">
-          Select the source to import from
-        </p>
-        <div className="flex gap-4 items-center ">
-          <SelectMarketplace
-            StylesConfig={selectedMarketplaceStyle}
-            isDisabled={isLoading || syncAmazonLoading}
-            isSearchable={false}
-            value={selectedMarketplace}
-            placeholder="Select Marketplace"
-            options={marketplaces}
-            onChange={(result: IOption) => {
-              setSelectedMarketplace(result as IOption);
-              setIsCheck([]);
-            }}
-          />
-          <Button
-            btnName={"Sync All Products"}
-            onClickHandler={importProductsHandler}
-            isLoading={
-              isLoading ||
-              syncAmazonLoading ||
-              (selectedMarketplace?.value === MARKETPLACE.AMAZON &&
-                (amazonSyncStatus === SyncStatus.INPROGRESS ||
-                  amazonSyncStatus === SyncStatus.PENDING)) ||
-              (selectedMarketplace?.value === MARKETPLACE.EBAY &&
-                (ebaySyncStatus === SyncStatus.INPROGRESS ||
-                  ebaySyncStatus === SyncStatus.PENDING))
-            }
-            btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
-          />
-          {isCheck.length > 0 && (
-            <Button
-              btnName={`Import ${isCheck.length} Products`}
-              onClickHandler={importProductsFromEbayHandler}
-              isLoading={importLoading || storeAmazonLoading}
-              btnClass="!w-auto !ml-auto "
-            />
-          )}
-        </div>
-        {/* <div className="flex gap-4 items-start pt-5">
-          <div className="flex flex-col gap-2 ">
-            <label> Search </label>
-            <SearchBox
-              InputLeftIcon={<SearchIcon />}
-              className="pl-14"
-              placeholder="Search"
-              name=""
-            />
+    );
+  } else {
+    return (
+      <div>
+        <div className="flex justify-between gap-4 mb-2 items-center">
+          <h2 className="text-blackPrimary font-bold text-3xl pb-2">Import</h2>
+          <div className="flex gap-2 items-center ">
+            <span className="p-3 bg-greenPrimary/5 inline-block rounded-full">
+              <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
+            </span>
+            <div className="whitespace-nowrap text-sm">
+              <div className="text-black font-medium">Last Sync</div>
+              <p className="text-grayText">
+                {syncDetails?.status === SyncStatus.PENDING
+                  ? "In Pending"
+                  : syncDetails?.status === SyncStatus.INPROGRESS
+                  ? "In Progress"
+                  : syncDetails?.end_time
+                  ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
+                  : `Not sync yet`}
+              </p>
+            </div>
           </div>
-          <div className="flex flex-col gap-2 ">
-            <label> Status </label>
-            <Button
+        </div>
+
+        <div className="bg-white py-3 px-7 mb-4">
+          <div className="flex justify-between">
+            <p className="uppercase text-base font-normal text-grayText mb-2">
+              Select the source to import from
+            </p>
+            <div className="text-gray-500 text-right">
+              Filtering:{" "}
+              <span className="text-black font-bold">
+                {" "}
+                {importSelectedTab
+                  ? ImportTab.IMPORTED
+                  : ImportTab.NOT_IMPORTED}
+              </span>
+            </div>
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-4 items-center ">
+              <SelectMarketplace
+                StylesConfig={selectedMarketplaceStyle}
+                isDisabled={isLoading || syncAmazonLoading}
+                isSearchable={false}
+                value={selectedMarketplace}
+                placeholder="Select Marketplace"
+                options={marketplaces}
+                onChange={(result: IOption) => {
+                  setSelectedMarketplace(result as IOption);
+                  setIsCheck([]);
+                }}
+              />
+              <Button
+                btnName={"Sync All Products"}
+                onClickHandler={importProductsHandler}
+                isLoading={
+                  isLoading ||
+                  syncAmazonLoading ||
+                  (selectedMarketplace?.value === MARKETPLACE.AMAZON &&
+                    (amazonSyncStatus === SyncStatus.INPROGRESS ||
+                      amazonSyncStatus === SyncStatus.PENDING)) ||
+                  (selectedMarketplace?.value === MARKETPLACE.EBAY &&
+                    (ebaySyncStatus === SyncStatus.INPROGRESS ||
+                      ebaySyncStatus === SyncStatus.PENDING))
+                }
+                btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
+              />
+            </div>
+            <div>
+              <div className="flex items-center space-x-4">
+                <div className="flex bg-gray-100 rounded-full">
+                  <button
+                    onClick={() => setImportSelectedTab(false)}
+                    className={`${
+                      !importSelectedTab
+                        ? "bg-gray-600 text-white"
+                        : "text-gray-400"
+                    } px-4 py-2 rounded-full transition-colors`}>
+                    {`${ImportTab.NOT_IMPORTED}(${
+                      totalImportData ? totalImportData.totalNotImported : 0
+                    })`}
+                  </button>
+                  <button
+                    onClick={() => setImportSelectedTab(true)}
+                    className={`${
+                      importSelectedTab
+                        ? "bg-gray-600 text-white"
+                        : "text-gray-400"
+                    } px-4 py-2 rounded-full transition-colors`}>
+                    {`${ImportTab.IMPORTED}(${
+                      totalImportData ? totalImportData.totalImported : 0
+                    })`}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="my-5">
+            <hr />
+          </div>
+          <div className="flex justify-between items-start ">
+            {items && items?.length > 0 ? (
+              <div>
+                <div className="flex flex-col gap-1 ">
+                  <label> Search </label>
+                  <InputSearch
+                    InputLeftIcon={<SearchIcon />}
+                    className="pl-12"
+                    placeholder="Search by title"
+                    name="search"
+                    onChange={handleSearchChange}
+                    value={searchQuery}
+                  />
+                </div>
+                <div className="flex flex-col gap-2 ">
+                  {/* <label> Status </label> */}
+                  {/* <Button
               btnName={"Connected"}
               isLoading={isLoading}
               btnClass="!w-auto !bg-white !text-grayText border border-grayLightBody "
               btnEndIcon={
                 <DownArrowIcon className="text-grayText inline-block ml-1" />
               }
-            />
-          </div>
-        </div> */}
-      </div>
-      <div className="bg-white p-5">
-        <div className="bg-[#F7F8FA] p-7">
-          <div className="flex justify-between mb-3 ">
-            <h3 className="font-medium text-[26px]">Items</h3>
-
-            <div className="flex gap-5 items-center pr-8">
-              <div className="inline-flex gap-2 items-center text-grayText">
-                Show
-                <SelectMarketplace
-                  StylesConfig={pageLimitStyle}
-                  isDisabled={isLoading || syncAmazonLoading}
-                  options={[
-                    { label: "10", value: "10" },
-                    { label: "20", value: "20" },
-                    { label: "25", value: "25" },
-                    { label: "50", value: "50" },
-                    { label: "100", value: "100" },
-                  ]}
-                  onChange={(e: SetStateAction<IOption>) => {
-                    setCurrentPage(1);
-                    if (e) {
-                      setItemPerPage(e);
-                    }
-                  }}
-                  placeholder="10"
-                />
-                Entries
+            /> */}
+                </div>
               </div>
+            ) : null}
 
-              {/* <SelectMarketplace
-                StylesConfig={newestBoxStyle}
-                placeholder="Newest"
-              /> */}
-              {countCheckbox > 0 && (
-                <Checkbox checkLabel="All" onChange={selectAllHandler} />
+            <div className="mt-8">
+              {isCheck && isCheck.length > 0 && (
+                <div className="flex gap-2">
+                  <Button
+                    btnName={"Unselect All"}
+                    onClickHandler={() => {
+                      setIsCheck([]);
+                    }}
+                    btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
+                  />
+                  <Button
+                    btnName={`Import ${isCheck?.length} Products`}
+                    onClickHandler={importProductsFromEbayHandler}
+                    isLoading={importLoading || storeAmazonLoading}
+                    btnClass="!w-auto !ml-auto "
+                  />
+                </div>
               )}
             </div>
           </div>
-          <div className="max-h-[calc(100vh_-_500px)] overflow-y-auto scroll-design ">
-            {items && items.length > 0 ? (
-              items.map((item) => {
-                return (
-                  <ItemCard
-                    item={item}
-                    isCheck={isCheck}
-                    setIsCheck={setIsCheck}
-                    key={item.id}
+        </div>
+        <div className="bg-white p-3">
+          <div className="bg-[#F7F8FA] py-4 px-7">
+            <div className="flex justify-between mb-1 ">
+              <h3 className="font-medium text-[26px]">Items</h3>
+
+              <div className="flex gap-5 items-center pr-8">
+                {items && items?.length > 0 && (
+                  <div className="inline-flex gap-2 items-center text-grayText">
+                    Show
+                    <SelectMarketplace
+                      StylesConfig={pageLimitStyle}
+                      isDisabled={isLoading || syncAmazonLoading}
+                      options={[
+                        { label: "10", value: "10" },
+                        { label: "20", value: "20" },
+                        { label: "25", value: "25" },
+                        { label: "50", value: "50" },
+                        { label: "100", value: "100" },
+                      ]}
+                      onChange={(e: SetStateAction<IOption>) => {
+                        setCurrentPage(1);
+                        if (e) {
+                          setItemPerPage(e);
+                        }
+                      }}
+                      placeholder="10"
+                    />
+                    Entries
+                  </div>
+                )}
+
+                {/* <SelectMarketplace
+                StylesConfig={newestBoxStyle}
+                placeholder="Newest"
+              /> */}
+                {countCheckbox > 0 && (
+                  <Checkbox
+                    checkLabel="All"
+                    onChange={selectAllHandler}
+                    isChecked={isCheck?.length === countCheckbox}
                   />
-                );
-              })
-            ) : (
-              <div className="justify-center flex">
-                <DataNotFound />
+                )}
               </div>
-            )}
+            </div>
+            <div className="max-h-[calc(100vh_-_450px)] overflow-y-auto scroll-design ">
+              {items && items.length > 0 ? (
+                items.map((item) => {
+                  return (
+                    <ItemCard
+                      item={item}
+                      isCheck={isCheck ? isCheck : []}
+                      checkboxOnChange={handleProductCheckboxChange}
+                      key={item.id}
+                    />
+                  );
+                })
+              ) : (
+                <div className="justify-center flex">
+                  <DataNotFound />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-end pt-2">
+            {totalItem ? (
+              <Pagination
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={2}
+                pageLimit={Number(itemPerPage.value)}
+                currentPage={currentPage}
+                totalRecords={Number(totalItem)}
+                onPageChanged={onPageChanged}
+              />
+            ) : null}
           </div>
         </div>
-        <div className="flex justify-end pt-2">
-          {totalItem ? (
-            <Pagination
-              pageRangeDisplayed={3}
-              marginPagesDisplayed={2}
-              pageLimit={Number(itemPerPage.value)}
-              currentPage={currentPage}
-              totalRecords={Number(totalItem)}
-              onPageChanged={onPageChanged}
-            />
-          ) : null}
-        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default ImportProducts;

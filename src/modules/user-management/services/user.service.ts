@@ -22,6 +22,17 @@ export const useGetUserListAPI = () => {
   return { getUserListAPI, isLoading, isError, isSuccess };
 };
 
+export const useGetOneUserListAPI = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getOneUserListAPI = async (userID: number) => {
+    return callApi(`${AUTH_API_BASE_PATH}/one-user/${userID}`);
+  };
+
+  return { getOneUserListAPI, isLoading, isError, isSuccess };
+};
+
 //  ** User Status Change **
 export const useUserStatusChangeAPI = () => {
   // ** custom Hooks **

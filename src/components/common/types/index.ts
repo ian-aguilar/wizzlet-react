@@ -27,6 +27,7 @@ export interface FileUploadProps {
 export interface InputSwitchProps {
   id: number;
   status: string;
+  className?: string;
   onToggle: (id: number, status: string) => void;
 }
 
@@ -47,7 +48,9 @@ export interface CategoryOptions {
 export interface SelectCategoryProps {
   options: ICategory[];
   defaultValue?: string | number;
-  setValue?: Dispatch<SetStateAction<{ id: number | string; value: string } | undefined>>;
+  setValue?: Dispatch<
+    SetStateAction<{ id: number | string; value: string } | undefined>
+  >;
   onChange?: (selectedOption: CategoryOptions) => void;
 }
 
@@ -79,7 +82,7 @@ export interface ISetSelectOptions {
 export interface ISearchBox {
   value?: string | number;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   className: string;
   InputLeftIcon?: ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -90,14 +93,9 @@ export enum MARKETPLACE {
   AMAZON = "amazon",
 }
 
-
-export interface IInputBox {
-  type:string;
-  value?: string | number | Date;
-  name: string;
-  placeholder: string;
-  className?: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+export enum MARKETPLACEID {
+  EBAY = 2,
+  AMAZON = 1,
 }
 
 export type IDatePickerBoxProps<T extends FieldValues> = {
@@ -106,10 +104,10 @@ export type IDatePickerBoxProps<T extends FieldValues> = {
   placeholder?: string;
   label?: string;
   isDisabled?: boolean;
-  value?: Date ;
+  value?: Date;
   maxDate?: Date;
-  icon?:ReactNode;
+  icon?: ReactNode;
   InputRightIcon?: ReactNode;
-  dateFormat?: string,
-  onChange: (...event: any[]) => void
+  dateFormat?: string;
+  onChange: (...event: any[]) => void;
 };

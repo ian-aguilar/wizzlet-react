@@ -15,31 +15,33 @@ export const Pagination = ({
 }: IPaginationProps) => {
   return (
     <ReactPaginate
+      className=""
       pageCount={Math.ceil(totalRecords / pageLimit)}
       onPageChange={onPageChanged}
-      forcePage={Number(currentPage) - 1} 
+      forcePage={Number(currentPage) - 1}
       pageRangeDisplayed={pageRangeDisplayed}
       marginPagesDisplayed={marginPagesDisplayed}
       previousLabel={
         <LeftArrowIcon
-          className={`min-h-10 ml-4 ${
+          className={`w-4 h-4 min-w-4  ml-1 mt-1.5 ${
             Number(currentPage) === 1 ? `opacity-50 cursor-not-allowed` : ``
           }`}
         />
       }
       nextLabel={
         <LeftArrowIcon
-          className={`min-h-10 rotate-180 mr-4 ${
+          className={`w-4 h-4 min-w-4  mr-1 mt-1.5 rotate-180  ${
             Number(currentPage) === Math.ceil(totalRecords / pageLimit)
               ? `opacity-50 cursor-not-allowed`
               : ``
           }`}
         />
       }
-      pageClassName="px-4 py-2"
-      activeClassName="bg-greenPrimary text-white rounded-md"
+      pageLinkClassName="w-7 h-7 min-w-7 flex justify-center items-center "
+      pageClassName=""
+      activeClassName="bg-greenPrimary text-white rounded-md w-7 h-7 min-w-7 flex justify-center items-center "
       disabledClassName="opacity-50 cursor-none"
-      containerClassName="flex bg-inputAuthBg/60 space-x-2 my-2 py-1 rounded-md"
+      containerClassName="flex  gap-2 py-1 rounded-md"
     />
   );
 };
