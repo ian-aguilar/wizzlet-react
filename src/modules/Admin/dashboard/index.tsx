@@ -18,7 +18,7 @@ import {
 import { AdminDashboardData, CategoryData, UserData } from "./types";
 import Select, { MultiValue, SingleValue } from "react-select";
 import { CategoriesProgressDropDownOptions } from "./constants";
-import { OptionType, RevenueMarketDetail } from "@/modules/dashboard/types";
+import { OptionType } from "@/modules/dashboard/types";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketplace.service";
 import DatePickerWithMonthSelect from "@/modules/dashboard/components/GlobalDatePicker";
@@ -327,7 +327,10 @@ const AdminDashboard = () => {
               categoriesUsed={categoryData?.usedCategories}
               // subCategoriesUsed={211348}
             />
-            <div className=" ">
+            <div className="relative">
+              <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md">
+                Coming Soon
+              </div>
               <CategoryUsedChart />
             </div>
           </div>

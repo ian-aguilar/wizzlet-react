@@ -70,8 +70,7 @@ const ImportProducts = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { isLoading: storeAmazonLoading } =
-    useImportProductsFromAmazonApi();
+  const { isLoading: storeAmazonLoading } = useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -378,8 +377,7 @@ const ImportProducts = () => {
                       !importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
-                  >
+                    } px-4 py-2 rounded-full transition-colors`}>
                     {`${ImportTab.NOT_IMPORTED}(${
                       totalImportData ? totalImportData.totalNotImported : 0
                     })`}
@@ -390,8 +388,7 @@ const ImportProducts = () => {
                       importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
-                  >
+                    } px-4 py-2 rounded-full transition-colors`}>
                     {`${ImportTab.IMPORTED}(${
                       totalImportData ? totalImportData.totalImported : 0
                     })`}

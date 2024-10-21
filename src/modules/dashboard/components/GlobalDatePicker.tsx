@@ -15,6 +15,26 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
   setIsDatePickerOpen,
   className,
 }) => {
+  //Max Date function
+  const maxDate = startDate
+    ? new Date(startDate.getTime() + 30 * 24 * 60 * 60 * 1000)
+    : null;
+
+  // Format date function
+  const formatDateRange = (start: Date | null, end: Date | null) => {
+    if (start && end) {
+      return `${start.toLocaleString("en-US", {
+        month: "short",
+      })} ${String(start.getDate()).padStart(2, "0")} - ${end.toLocaleString(
+        "en-US",
+        {
+          month: "short",
+        }
+      )} ${String(end.getDate()).padStart(2, "0")}`;
+    }
+    return "";
+  };
+
   return (
     <div
       className={`flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10 ${className} `}>
@@ -52,24 +72,13 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
         <div className="rounded-r-md flex items-center">
           <div
             className="flex items-center gap-2"
-            onClick={() => setIsDatePickerOpen((prev: boolean) => !prev)}>
-            {!isDatePickerOpen ? (
-              <>
-                <CalendarMainSVG />
-                {startDate && endDate ? (
-                  <span>
-                    {`${startDate.toLocaleString("en-US", {
-                      month: "short",
-                    })} ${String(startDate.getDate()).padStart(
-                      2,
-                      "0"
-                    )} - ${endDate.toLocaleString("en-US", {
-                      month: "short",
-                    })} ${String(endDate.getDate()).padStart(2, "0")}`}
-                  </span>
-                ) : null}
-              </>
-            ) : null}
+            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
+            <CalendarMainSVG />
+            {startDate && endDate && !isDatePickerOpen ? (
+              <span>{formatDateRange(startDate, endDate)}</span>
+            ) : (
+              <span>Select a date range</span>
+            )}
           </div>
 
           {isDatePickerOpen && (
@@ -80,8 +89,9 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
               startDate={startDate}
               endDate={endDate}
               selectsRange={true}
-              inline={false}
+              inline={true}
               dateFormat={"dd/MM/yyyy"}
+              maxDate={maxDate as Date} // Limit range to max 31 days
             />
           )}
         </div>
