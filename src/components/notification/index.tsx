@@ -9,6 +9,7 @@ import {
   useSetMarkReadNotificationAPI,
 } from "./services";
 import { modifiedNotifications } from "./helper";
+import { Link } from "react-router-dom";
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true); // Track if there are more notifications to load
@@ -37,7 +38,16 @@ const Notifications = () => {
           else return data?.data;
         });
       } else {
+        setIsNotRead(false);
         setNotifications(data?.data);
+        for (let item of data?.data) {
+          if (!item.is_read) {
+            setIsNotRead(true);
+          }
+        }
+      }
+      if (data?.data.length === 0) {
+        setHasMore(false);
       }
       setPage((prevPage) => prevPage + 1);
     } else {
@@ -119,7 +129,7 @@ const Notifications = () => {
             dataLength={notifications ? Number(notifications?.length) : 0}
             next={fetchMoreNotifications}
             hasMore={hasMore}
-            loader={""}
+            loader={<p className=""> Loading... </p>}
             height={400}
             endMessage={<p className="text-center">No more notifications</p>} // Message when no more data
           >
@@ -136,11 +146,6 @@ const Notifications = () => {
                           return (
                             <div
                               key={index}
-                              onLoad={() => {
-                                setIsNotRead(
-                                  notification.is_read == false ? true : false
-                                );
-                              }}
                               className={`NotificationBox  flex gap-3 items-center p-2 ${
                                 notification.is_read
                                   ? `bg-white`
@@ -159,10 +164,23 @@ const Notifications = () => {
                                 &nbsp;
                               </div>
                               <div className="w-full">
-                                <div>
-                                  <div className="underline text-blackPrimary font-medium">
-                                    {notification.title}
-                                  </div>{" "}
+                                <div className="">
+                                  {notification.product_id ? (
+                                    <Link
+                                      to={`/inventory-management/product-form/1/${notification.product_id}`}
+                                      className="underline text-blackPrimary font-medium"
+                                    >
+                                      #{notification.product_id}
+                                    </Link>
+                                  ) : notification.register_user ? (
+                                    <Link
+                                      to={`/user-management/view/${notification.register_user}`}
+                                      className="underline text-blackPrimary font-medium"
+                                    >
+                                      @{notification.register_user}
+                                    </Link>
+                                  ) : null}{" "}
+                                  {notification.title}
                                 </div>
                                 <div className="flex gap-2 justify-between items-center">
                                   <p className="line-clamp-1">

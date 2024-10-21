@@ -5,6 +5,7 @@ import { MarketplaceRevenue, RevenueProfitDonutChartProps } from "../types";
 import { calculateMarketplaceRevenue } from "../helper";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { pageLimitStyle } from "@/modules/import-products/constants";
+import { DataNotFound } from "@/components/svgIcons";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
@@ -94,13 +95,13 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
         </div>
       </div>
       <div className="flex flex-col justify-center w-full h-full">
-        <div className="max-w-[195px] mx-auto">
-          {chartData && revenueData.length > 0 ? (
+        {chartData && revenueData.length > 0 ? (
+          <div className="max-w-[195px] mx-auto">
             <Doughnut data={chartData} options={options} />
-          ) : (
-            <div className="text-center">No Data Found!</div>
-          )}
-        </div>
+          </div>
+        ) : (
+          <DataNotFound />
+        )}
         <div className="text-center pt-6 text-grayText text-base">
           {marketplaceData?.map((item) => (
             <h4 key={item.name}>
