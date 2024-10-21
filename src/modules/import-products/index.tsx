@@ -70,7 +70,7 @@ const ImportProducts = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
+  const { isLoading: storeAmazonLoading } =
     useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();

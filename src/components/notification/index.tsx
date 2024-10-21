@@ -175,14 +175,14 @@ const Notifications = () => {
                                       to={`/inventory-management/product-form/1/${notification.product_id}`}
                                       className="underline text-blackPrimary font-medium"
                                     >
-                                      #{notification.product_id}
+                                      #{notification?.product_name}
                                     </Link>
                                   ) : notification.register_user ? (
                                     <Link
                                       to={`/user-management/view/${notification.register_user}`}
                                       className="underline text-blackPrimary font-medium"
                                     >
-                                      @{notification.register_user}
+                                      @{notification.user_name}
                                     </Link>
                                   ) : null}{" "}
                                   {notification.title}
