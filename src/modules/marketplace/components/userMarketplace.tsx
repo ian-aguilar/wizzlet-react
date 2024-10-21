@@ -17,8 +17,12 @@ import { VITE_APP_API_URL } from "@/config";
 
 // ** Services **
 import { useEbayAuthAPI } from "../services/ebay.service";
-import { useMarketplaceListingAPI } from "../services/marketplace.service";
+import {
+  useMarketplaceDisconnectAPI,
+  useMarketplaceListingAPI,
+} from "../services/marketplace.service";
 import { useAmazonAuthAPI } from "../services/amazon.service";
+import { ErrorModal } from "@/components/common/ErrorModal";
 const UserMarketplace = () => {
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
@@ -26,15 +30,21 @@ const UserMarketplace = () => {
     notConnectedMarketplace: IMarketplace[];
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
   const [buttonLoading, setButtonLoading] = useState<number>();
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [disconnectMarketplace, setDisconnectMarketplace] = useState<
+    number | null
+  >(null);
 
   // ================= Custom hooks ====================
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { ebayAuthAPI, isLoading } = useEbayAuthAPI();
   const { amazonAuthAPI, isLoading: amazonLoading } = useAmazonAuthAPI();
+  const { disconnectMarketplaceAPI, isLoading: isDisconnectBtnLoading } =
+    useMarketplaceDisconnectAPI();
 
   useEffect(() => {
     marketplaceListing();
-  }, []);
+  }, [isDeleteModel,disconnectMarketplace]);
 
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
@@ -71,6 +81,22 @@ const UserMarketplace = () => {
         break;
     }
   };
+
+  const handleDisconnect = async () => {
+    setIsDeleteModel(false);
+    if (disconnectMarketplace) {
+      setButtonLoading(disconnectMarketplace);
+      const { error } = await disconnectMarketplaceAPI({
+        marketId: disconnectMarketplace,
+      });
+      if (error) {
+        console.log(error);
+      } else {
+        setIsDeleteModel(false);
+        setDisconnectMarketplace(null);
+      }
+    }
+  };
   return (
     <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
       {marketplace?.connectedMarketplace.length > 0 ? (
@@ -100,6 +126,20 @@ const UserMarketplace = () => {
                     </span>
                     CONNECTED
                   </span>
+                </div>
+                <div className="mt-auto pt-10 ">
+                  <Button
+                    btnName="Disconnect "
+                    btnClass=""
+                    showType={btnShowType.red}
+                    onClickHandler={() => {
+                      setIsDeleteModel(true);
+                      setDisconnectMarketplace(item.id);
+                    }}
+                    isLoading={
+                      item.id === buttonLoading ? isDisconnectBtnLoading : false
+                    }
+                  />
                 </div>
               </div>
             ))}
@@ -168,6 +208,20 @@ const UserMarketplace = () => {
               </div>
             </div>
           ))}
+        </div>
+        <div>
+          {isDeleteModel && (
+            <ErrorModal
+              onClose={() => {
+                setIsDeleteModel(false);
+                setDisconnectMarketplace(null);
+              }}
+              isLoading={isDisconnectBtnLoading}
+              onSave={handleDisconnect}
+              heading="Are you sure you want to proceed?"
+              subText="Disconnecting from this marketplace will result in the loss of all associated data."
+            />
+          )}
         </div>
       </div>
     </section>

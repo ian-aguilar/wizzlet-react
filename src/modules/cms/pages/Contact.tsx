@@ -126,10 +126,10 @@ const Contact = () => {
                   <div className=" col-span-12 md:col-span-6">
                     <Input
                       className=" !border-b-2 !border-[#E1E8EF] !bg-white focus:outline-0 outline-0 rounded-none px-0"
-                      placeholder="Enter Phone Number"
+                      placeholder="Enter 10 Digit Phone Number"
                       name="phoneNo"
                       textLabelName="Phone Number"
-                      type="text"
+                      type="number"
                       control={control}
                       errors={errors}
                       autoComplete={""}

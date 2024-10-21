@@ -22,6 +22,7 @@ export const modifiedNotifications = (notifications: notificationType[]) => {
         is_read: notification.is_read,
         type: notification.type,
         product_id: notification.product_id,
+        register_user: notification.register_user,
         notification_type: notification.notification_type,
         time: relativeTime,
       };

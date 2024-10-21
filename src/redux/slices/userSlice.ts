@@ -9,6 +9,7 @@ interface IUser {
   id: number;
   role: UserRole;
   email: string;
+  url: string;
   full_name: string;
   first_name: string;
   last_name: string;

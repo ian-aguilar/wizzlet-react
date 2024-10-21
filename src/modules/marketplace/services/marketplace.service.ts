@@ -23,3 +23,14 @@ export const useMarketplaceStatusAPI = () => {
 
   return { setMarketplaceStatusAPI, isLoading, isError, isSuccess };
 };
+
+export const useMarketplaceDisconnectAPI = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const disconnectMarketplaceAPI = async (data: object) => {
+    return callApi(`${AUTH_API_BASE_PATH}/disconnected`, data);
+  };
+
+  return { disconnectMarketplaceAPI, isLoading, isError, isSuccess };
+};

@@ -131,6 +131,7 @@ export interface FilePropsType<T extends FieldValues> {
   className?: string;
   errorClass?: string;
   required?: boolean;
+  isMulti?: boolean;
   disabled?: boolean;
   allowedFormat?: string[];
   onBlur?: () => void;

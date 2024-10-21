@@ -7,12 +7,9 @@ import { debounce } from "lodash";
 import {
   AddIconBtn,
   AutoSyncIcon,
-  BulkImportIcon,
   CategoryBtnIcon,
   CheckIconBtn,
   DeleteIcon,
-  DownArrowIcon,
-  DownloadCSVIcon,
   SearchIcon,
 } from "@/assets/Svg";
 
@@ -45,6 +42,9 @@ import { btnShowType } from "@/components/form-fields/types";
 import { E_PRODUCT_STATUS, Option, TopFilter, productProps } from "./types";
 import { ErrorModal } from "@/components/common/ErrorModal";
 import { DataNotFound } from "@/components/svgIcons";
+import { ISyncDetails, SyncStatus } from "../import-products/types";
+import { useFetchSyncDetailsAPI } from "../import-products/services/importProducts.service";
+import moment from "moment";
 
 const InventoryManagement = () => {
   // ** States **
@@ -57,6 +57,10 @@ const InventoryManagement = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [checkboxes, setCheckboxes] = useState<number[] | null>([]);
   const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncDetails, setSyncDetails] = useState<ISyncDetails>();
+  const [counter, setCounter] = useState(0);
+
   const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
     undefined
   );
@@ -95,6 +99,7 @@ const InventoryManagement = () => {
     useProductListingAPI();
   const { deleteProductsAPI, isLoading: deleteProductLoading } =
     useProductsDeleteAPI();
+  const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
 
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
@@ -123,7 +128,6 @@ const InventoryManagement = () => {
     productTypeData: Option | null = productType,
     productLabel: Option[] | null = productTag
   ) => {
-
     const categoryLabels = categoryName?.map((item) => item.label) || null;
     const productTags = productLabel?.map((item) => item.label) || null;
     const { data, error } = await getProductsDetailsAPI({
@@ -146,6 +150,7 @@ const InventoryManagement = () => {
     if (!error && data) {
       setProducts(data?.data);
       setTotalItem(data?.data?.totalRecord);
+      getSyncData();
     }
   };
 
@@ -354,6 +359,40 @@ const InventoryManagement = () => {
     productTag,
   ]);
 
+  const getSyncData = async () => {
+    const { data } = await fetchSyncDetailsApi(null);
+    if (data) {
+      if (
+        data?.data?.status === SyncStatus.COMPLETED ||
+        data?.data?.status === SyncStatus.FAILED
+      ) {
+        setSyncing(false);
+      } else if (
+        data?.data?.status === SyncStatus.INPROGRESS ||
+        data?.data?.status === SyncStatus.PENDING
+      ) {
+        setSyncing(true);
+      } else {
+        setSyncing(false);
+      }
+      setSyncDetails(data?.data);
+    } else {
+      setSyncing(false);
+    }
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (syncing) {
+      getSyncData();
+    }
+  }, [counter]);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -391,8 +430,7 @@ const InventoryManagement = () => {
                       }}
                     />
                   )
-                }
-              >
+                }>
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
@@ -533,20 +571,28 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div className="RightItems flex gap-4 items-center">
-            <Button
+            {/* <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
               BtnIconLeft={
                 <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
               }
-            />
+            /> */}
             <div className="flex gap-2 items-center ">
-              <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
+              <span className="p-3 bg-greenPrimary/5 inline-block rounded-full">
                 <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
               </span>
               <div className="whitespace-nowrap text-sm">
-                <div className="text-black font-medium">Last Auto Sync</div>
-                <p className="text-grayText">15 May 2020 9:30 am</p>
+                <div className="text-black font-medium">Last Sync</div>
+                <p className="text-grayText">
+                  {syncDetails?.status === SyncStatus.PENDING
+                    ? "In Pending"
+                    : syncDetails?.status === SyncStatus.INPROGRESS
+                    ? "In Progress"
+                    : syncDetails?.end_time
+                    ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
+                    : `Not sync yet`}
+                </p>
               </div>
             </div>
           </div>
@@ -564,16 +610,14 @@ const InventoryManagement = () => {
                       ? `text-greenPrimary border-greenPrimary`
                       : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}
-                >
+                  onClick={() => handleProductStatus(item)}>
                   {item}
                   <span
                     className={`text-base ${
                       productStatus === item
                         ? `bg-greenPrimary/10`
                         : `bg-greyBorder/50`
-                    } px-1 rounded-md`}
-                  >
+                    } px-1 rounded-md`}>
                     {productStatus === item
                       ? totalItem
                       : products.otherStatusTotal}
@@ -591,7 +635,7 @@ const InventoryManagement = () => {
               InputLeftIcon={<SearchIcon />}
               onChange={handleSearch}
             />
-            <Button
+            {/* <Button
               showType={btnShowType.primary}
               btnClass=" bg-grayText text-white !font-medium  !text-sm my-2.5  "
               btnName="Bulk Import CSV"
@@ -602,7 +646,7 @@ const InventoryManagement = () => {
               btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-sm  my-2.5   "
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
-            />
+            /> */}
             <AsyncSelectField
               name="Categories select box"
               serveSideSearch={true}
@@ -702,12 +746,12 @@ const InventoryManagement = () => {
                 />
                 Entries
               </div>
-              <Button
+              {/* <Button
                 btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-2 "
                 btnName="Newest"
                 showType={btnShowType.primary}
                 btnEndIcon={<DownArrowIcon />}
-              />
+              /> */}
             </div>
           </div>
           <div>

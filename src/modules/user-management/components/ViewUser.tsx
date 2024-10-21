@@ -36,6 +36,7 @@ import {
 
 // ** helper **
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
+import { DataNotFound } from "@/components/svgIcons";
 
 const ViewUser = () => {
   const currentDate = new Date();
@@ -129,7 +130,6 @@ const ViewUser = () => {
     const newEndDate = new Date(year, monthIndex + 1, 0);
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    fetchAllData(newStartDate, newEndDate);
   };
 
   const fetchAllData = async (start: Date, end: Date) => {
@@ -194,8 +194,7 @@ const ViewUser = () => {
               className="border p-2 rounded-full bg-white cursor-pointer"
               onClick={() => {
                 navigate(PrivateRoutesPath.userManagement.view);
-              }}
-            >
+              }}>
               <LeftArrowIcon />
             </div>
             <h3 className="text-2xl  text-blackPrimary  font-medium">
@@ -206,11 +205,20 @@ const ViewUser = () => {
       </div>
       <section className=" w-full bg-white flex gap-4 p-5 mb-5   max-h-[calc(100%_-_50px)] overflow-y-auto scroll-design items-start relative">
         <div className="min-w-[310px] w-[310px] bg-blackPrimary text-white sticky top-0 rounded-md py-10 px-7 text-center">
-          <img
-            src={ProfileImg}
-            className="mx-auto w-24 h-24 min-w-24 rounded-full object-cover object-center"
-            alt=""
-          />
+          {user?.url ? (
+            <img
+              src={user?.url}
+              className="mx-auto w-24 h-24 min-w-24 rounded-full object-cover object-center"
+              alt=""
+            />
+          ) : (
+            <img
+              src={ProfileImg}
+              className="mx-auto w-24 h-24 min-w-24 rounded-full object-cover object-center"
+              alt=""
+            />
+          )}
+
           <h3 className="font-bold text-xl text-white text-center pt-10 ">
             {user && user?.first_name + " " + user?.last_name}
           </h3>
@@ -288,10 +296,10 @@ const ViewUser = () => {
                           ? mainData?.saleDetails[0]?.totalSoldItems
                           : 0}
                       </p>
-                      <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
+                      {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
                         {" "}
                         +20%{" "}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className=" col-span-12  bg-white px-5 py-2 mb-4 border border-grayLightBody/20 rounded-md ">
@@ -308,10 +316,10 @@ const ViewUser = () => {
                       <p className="text-3xl font-bold ">
                         {mainData?.listedDetails[0]?.listedItems}
                       </p>
-                      <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
+                      {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
                         {" "}
                         +20%{" "}
-                      </div>
+                      </div> */}
                     </div>{" "}
                   </div>
                   <div className=" col-span-12  bg-white px-5 py-2  border border-grayLightBody/20 rounded-md ">
@@ -331,10 +339,10 @@ const ViewUser = () => {
                           mainData?.saleDetails[0]?.averageSalePrice
                         ).toFixed(2)}
                       </p>
-                      <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
+                      {/* <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
                         {" "}
                         +20%{" "}
-                      </div>
+                      </div> */}
                     </div>{" "}
                   </div>
                 </div>
@@ -368,7 +376,9 @@ const ViewUser = () => {
                     />
                   ))
                 ) : (
-                  <div className="text-center">No Data Found!</div>
+                  <div className="text-center">
+                    <DataNotFound />
+                  </div>
                 )}
               </div>
 

@@ -10,6 +10,9 @@ import {
   Tooltip,
   Legend,
   Filler,
+  ChartOptions,
+  ChartData,
+  ScriptableContext,
 } from "chart.js";
 import { RevenueProfitChartProps } from "../types";
 import { getRevenueAndLabels } from "../helper";
@@ -46,7 +49,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   }, []);
 
   // Dynamically generate chart data based on selected month or date range
-  const getDynamicData = () => {
+  const getDynamicData = (): ChartData<"line"> => {
     const selectedMarketplaceIds =
       selectedMarketplace?.map((item) => Number(item?.value)) || [];
     const { revenues, labels } = getRevenueAndLabels(
@@ -56,7 +59,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
       selectedMarketplaceIds.length > 0 ? selectedMarketplaceIds : undefined
     );
 
-    const getGradient = (ctx, chartArea) => {
+    const getGradient = (ctx: CanvasRenderingContext2D, chartArea: any) => {
       const gradient = ctx.createLinearGradient(
         0,
         chartArea.bottom,
@@ -75,33 +78,22 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
           label: "Revenue",
           data: revenues,
           borderColor: "#09A17A",
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
           tension: 0.4,
           pointBackgroundColor: "rgba(9, 161, 122, 1)",
           fill: true,
-          backgroundColor: function (context) {
+          backgroundColor: (context: ScriptableContext<"line">) => {
             const chart = context.chart;
             const { ctx, chartArea } = chart;
 
-            // This case happens on initial chart load
             if (!chartArea) return;
             return getGradient(ctx, chartArea);
           },
         },
-        // {
-        //   label: "Profit",
-        //   data: profitData,
-        //   borderColor: "#6C778B",
-        //   backgroundColor: "rgba(54, 162, 235,  0)",
-        //   tension: 0.4,
-        //   pointBackgroundColor: "#6C778B",
-        //   fill: true,
-        // },
       ],
     };
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
@@ -117,47 +109,7 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
         },
       },
       tooltip: {
-        enabled: true, // Disable the default tooltip
-        // external: (context) => {
-        //   const { chart, tooltip } = context;
-        //   let tooltipEl = document.getElementById("chartjs-tooltip");
-
-        //   // Create tooltip element if it doesn't exist
-        //   if (!tooltipEl) {
-        //     tooltipEl = document.createElement("div");
-        //     tooltipEl.id = "chartjs-tooltip";
-        //     tooltipEl.style.position = "absolute";
-        //     tooltipEl.style.background = "white";
-        //     tooltipEl.style.borderRadius = "4px";
-        //     tooltipEl.style.pointerEvents = "none";
-        //     tooltipEl.style.boxShadow = "0px 0px 12px rgba(0, 0, 0, 0.1)";
-        //     tooltipEl.style.padding = "8px";
-        //     document.body.appendChild(tooltipEl);
-        //   }
-
-        //   // Hide if no tooltip
-        //   if (tooltip.opacity === 0) {
-        //     tooltipEl.style.opacity = "0";
-        //     return;
-        //   }
-
-        //   // Set content for the tooltip
-        //   tooltipEl.innerHTML = `
-        //     <div style="font-weight: bold;">${tooltip.body[0]?.lines[0]}</div>
-        //     <div>Date: ${tooltip.dataPoints[0].label}</div>
-        //   `;
-
-        //   // Position tooltip near the data point
-        //   const canvasRect = chart.canvas.getBoundingClientRect();
-        //   tooltipEl.style.opacity = "1";
-        //   tooltipEl.style.left = `${
-        //     canvasRect.left + window.pageXOffset + tooltip.caretX
-        //   }px`;
-        //   tooltipEl.style.top = `${
-        //     canvasRect.top + window.pageYOffset + tooltip.caretY
-        //   }px`;
-        //   tooltipEl.style.transform = "translate(-50%, -50%)"; // Center the tooltip
-        // },
+        enabled: true,
       },
     },
     scales: {
@@ -179,24 +131,19 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   return (
     <>
       <div className="flex justify-between gap-4 flex-wrap">
-        {/* <p className="font-bold text-base">Revenue & Profit</p> */}
         <p className="font-bold text-base">Revenue</p>
         <div className="flex gap-2 text-grayText">
           <div>
             Total Revenue:{" "}
             <span className="font-bold text-blackPrimary">${totalRevenue}</span>{" "}
           </div>
-          {/* <div>
-            Total Profit:{" "}
-            <span className="font-bold text-blackPrimary">2,018.55</span>{" "}
-          </div> */}
         </div>
       </div>
       <div>
         <Line
           data={getDynamicData()}
           options={options}
-          className="w-full h-full   "
+          className="w-full h-full"
         />
       </div>
     </>

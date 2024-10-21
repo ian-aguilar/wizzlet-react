@@ -50,20 +50,20 @@ const MarketplaceActivityChart: React.FC<AdminRevenueProfitChartProps> = ({
           borderRadius: 10,
           barThickness: 35,
         },
-        {
-          label: "Profit",
-          data: [150, 530, 100, 150, 150, 401, 530],
-          backgroundColor: "#09A17A",
-          borderWidth: 5,
-          borderRadius: 10,
-          barThickness: 35,
-          borderColor: "transparent",
-        },
+        // {
+        //   label: "Profit",
+        //   data: [150, 530, 100, 150, 150, 401, 530],
+        //   backgroundColor: "#09A17A",
+        //   borderWidth: 5,
+        //   borderRadius: 10,
+        //   barThickness: 35,
+        //   borderColor: "transparent",
+        // },
       ],
     };
   };
 
-  const options = {
+  const options: any = {
     barPercentage: 0.8,
     categoryPercentage: 1.0,
     responsive: true,

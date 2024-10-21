@@ -1,5 +1,3 @@
-// CategoryUsedChart.tsx
-
 import React from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -11,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  ChartOptions,
 } from "chart.js";
 
 // Register Chart.js components
@@ -47,19 +46,19 @@ const CategoryUsedChart: React.FC = () => {
         borderColor: "#09A17A", // Line color
         backgroundColor: "#09A17A", // Area fill color
         borderWidth: 2,
-
         tension: 0, // Set to 0 for sharp lines
-        fill: true, // Fills the area under the line
+        fill: false, // Fills the area under the line
       },
     ],
   };
 
-  const options = {
+  // Explicitly typing the options object
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
         display: false,
-        position: "top" as const,
+        position: "top",
       },
       title: {
         display: false,
@@ -70,7 +69,7 @@ const CategoryUsedChart: React.FC = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          callback: (value: number) => `${value}m`, // Format y-axis ticks
+          callback: (value) => `${value}m`, // Format y-axis ticks
         },
         title: {
           display: true,

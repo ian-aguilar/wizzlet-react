@@ -39,5 +39,6 @@ export type UserType = {
   first_name: string;
   last_name: string;
   status: string;
+  url: string;
   role: string;
 };
