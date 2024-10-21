@@ -37,7 +37,8 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
 
   return (
     <div
-      className={`flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10 ${className} `}>
+      className={`flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10 ${className} `}
+    >
       {userFullName ? (
         <div>
           <h2 className="text-3xl font-bold line-clamp-1">
@@ -55,7 +56,8 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
             className="bg-black text-white py-2 lg:px-2 !rounded-r-none "
             id="month-select"
             value={selectedMonth}
-            onChange={onMonthChange}>
+            onChange={onMonthChange}
+          >
             {Array.from({ length: 12 }, (_, i) => {
               const monthName = new Date(0, i).toLocaleString("en-US", {
                 month: "long",
@@ -68,31 +70,36 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
             })}
           </select>
         </div>
-
         <div className="rounded-r-md flex items-center">
           <div
             className="flex items-center gap-2"
-            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
+            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+          >
             <CalendarMainSVG />
-            {startDate && endDate && !isDatePickerOpen ? (
+            {startDate || endDate ? (
               <span>{formatDateRange(startDate, endDate)}</span>
-            ) : (
-              <span>Select a date range</span>
-            )}
+            ) : null}{" "}
+            {/* Only show this if both startDate and endDate are selected */}
           </div>
 
           {isDatePickerOpen && (
             <DatePicker
+              placeholderText="Select a date range" // Show placeholder only inside DatePicker
+              isClearable={true}
               className="focus:outline-none text-center"
               selected={startDate}
               onChange={onDateRangeChange}
               startDate={startDate}
               endDate={endDate}
               selectsRange={true}
-              inline={true}
+              inline={false}
               dateFormat={"dd/MM/yyyy"}
               maxDate={maxDate as Date} // Limit range to max 31 days
             />
+          )}
+
+          {!startDate && !endDate && !isDatePickerOpen && (
+            <span>Select a date range</span> // Show only when no dates are selected and picker is closed
           )}
         </div>
       </div>

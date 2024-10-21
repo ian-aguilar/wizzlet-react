@@ -113,7 +113,8 @@ const Header = ({ type }: { type: string }) => {
               <div className="relative z-20" ref={dropdownRef}>
                 <div
                   className="w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center transition-all duration-300 relative cursor-pointer"
-                  onClick={toggleNotification}>
+                  onClick={toggleNotification}
+                >
                   <div className="NotificationAlertDot absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary border border-greyBorder/50">
                     &nbsp;
                   </div>
@@ -123,7 +124,7 @@ const Header = ({ type }: { type: string }) => {
                 {isOpen && (
                   <div className="absolute z-20 top-full -right-6 pt-4">
                     {/* Arrow */}
-                    <div className="w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-transparent border-b-[8pxpx] border-b-transparent border-r-[8px] border-r-white rotate-90 absolute top-0 right-10"></div>
+                    <div className="w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[8px] border-r-white rotate-90 absolute top-0 right-10"></div>
                     {/* Notification box */}
                     <div className="bg-white sm:min-w-[365px] max-w-[90%] w-full shadow-[0px_5px_29px_0px_#00000036] rounded-md">
                       <Notifications />
@@ -139,7 +140,8 @@ const Header = ({ type }: { type: string }) => {
                   className="block bg-grayLightBody/10 p-2 mb-1 hover:bg-greenPrimary/10 hover:text-greenPrimary hover:brightness-110 rounded-t-lg"
                   onClick={() =>
                     navigate(PrivateRoutesPath.setting.profile.view)
-                  }>
+                  }
+                >
                   Account
                 </span>
                 <span
@@ -147,12 +149,17 @@ const Header = ({ type }: { type: string }) => {
                   onClick={() => {
                     dispatch(setLogoutData());
                     dispatch(setRemoveUser());
-                  }}>
+                  }}
+                >
                   Logout
                 </span>
               </div>
               {user?.url ? (
-                <img src={user?.url} className="w-14 h-14 min-w-14" alt="" />
+                <img
+                  src={user?.url}
+                  className="w-14 h-14 min-w-14 rounded-full object-cover object-center"
+                  alt=""
+                />
               ) : (
                 <img
                   src={ProfilePlaceholder}
@@ -170,35 +177,41 @@ const Header = ({ type }: { type: string }) => {
             <div className="max-w-[1640px] w-full px-4  mx-auto flex justify-between items-center py-6 ">
               <Link
                 to={RoutesPath.CMSHome}
-                className="max-w-[177px] min-w-[177px] w-[177px]">
+                className="max-w-[177px] min-w-[177px] w-[177px]"
+              >
                 <img src={Logo} alt="" className="w-full h-auto" />
               </Link>
               <nav className=" hidden lg:flex gap-11 items-center">
                 <Link
                   to={RoutesPath.CMSHome}
-                  className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  ">
+                  className="text-blackPrimary text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
+                >
                   Home
                 </Link>
                 <Link
                   className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                  to={RoutesPath.CMSAboutUs}>
+                  to={RoutesPath.CMSAboutUs}
+                >
                   About
                 </Link>
                 <Link
                   className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                  to={RoutesPath.CMSFaqs}>
+                  to={RoutesPath.CMSFaqs}
+                >
                   FAQ
                 </Link>
                 <Link
                   className="text-blackPrimary  text-2xl  font-medium  hover:text-greenPrimary  transition-all duration-300 hover:transition-all hover:duration-300  "
-                  to={RoutesPath.CMSContact}>
+                  to={RoutesPath.CMSContact}
+                >
                   Contact Us
                 </Link>
               </nav>
               <div className=" hidden lg:flex ">
                 <Link
                   to={RoutesPath.Login}
-                  className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl ">
+                  className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
+                >
                   Log In
                 </Link>
                 <Button
@@ -213,7 +226,8 @@ const Header = ({ type }: { type: string }) => {
               </div>
               <div
                 className="HamburgerIcon  lg:hidden block"
-                onClick={() => setIsSidebar(true)}>
+                onClick={() => setIsSidebar(true)}
+              >
                 <Link to="" className="inline-block ">
                   {" "}
                   <HamburgerIcon />{" "}

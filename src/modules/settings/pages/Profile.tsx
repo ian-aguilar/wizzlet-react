@@ -98,7 +98,7 @@ const Profile = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="SettingsContentBox lg:pr-24 xl:pr-72 ">
             <div className="grid grid-cols-12 lg:gap-4">
-              <div className=" col-span-12 lg:col-span-6">
+              <div className=" col-span-12 lg:col-span-6 row-span-5 ">
                 <FileField
                   name="profileImage"
                   label="Profile Photo"
@@ -112,6 +112,7 @@ const Profile = () => {
                   clearErrors={clearErrors}
                   watch={watch}
                   isMulti={false}
+                  MainclassName="  h-[20vh] lg:h-[95%]"
                 />
               </div>
               <div className=" col-span-12 lg:col-span-6">
@@ -134,41 +135,42 @@ const Profile = () => {
                   type="text"
                 />
               </div>
-            </div>
-            {user?.role === UserRole.USER && (
-              <div className="grid grid-cols-12 lg:gap-4">
-                <div className=" col-span-12 lg:col-span-6">
-                  <Input
-                    textLabelName="Organization Name"
-                    control={control}
-                    name="organizationName"
-                    placeholder="xyz"
-                    errors={errors}
-                    type="text"
-                  />
-                </div>
-                <div className=" col-span-12 lg:col-span-6">
-                  <Input
-                    textLabelName="Contact Number"
-                    control={control}
-                    name="contactNumber"
-                    placeholder="1234567890"
-                    errors={errors}
-                    type="number"
-                  />
-                </div>
-              </div>
-            )}
 
-            <Input
-              textLabelName="Email"
-              control={control}
-              name="email"
-              errors={errors}
-              type="text"
-              isDisabled={true}
-            />
-            {/* <div className="text-sm text-grayText  ">
+              {user?.role === UserRole.USER && (
+                <>
+                  <div className=" col-span-12 lg:col-span-6">
+                    <Input
+                      textLabelName="Organization Name"
+                      control={control}
+                      name="organizationName"
+                      placeholder="xyz"
+                      errors={errors}
+                      type="text"
+                    />
+                  </div>
+                  <div className=" col-span-12 lg:col-span-6">
+                    <Input
+                      textLabelName="Contact Number"
+                      control={control}
+                      name="contactNumber"
+                      placeholder="1234567890"
+                      errors={errors}
+                      type="number"
+                    />
+                  </div>
+                </>
+              )}
+              <div className=" col-span-12 lg:col-span-6">
+                <Input
+                  textLabelName="Email"
+                  control={control}
+                  name="email"
+                  errors={errors}
+                  type="text"
+                  isDisabled={true}
+                />
+              </div>
+              {/* <div className="text-sm text-grayText  ">
               Do you want to change email?
               <Link
                 to=""
@@ -176,7 +178,8 @@ const Profile = () => {
                 Change
               </Link>
             </div> */}
-            <div className="pt-14">
+            </div>
+            <div className=" ">
               <Button
                 showType={btnShowType.green}
                 btnClass=" !w-auto !px-14 "

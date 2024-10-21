@@ -147,7 +147,7 @@ const LabelItems = ({
         ) : (
           <>
             <div>
-              <DataNotFound />
+              <DataNotFound className="h-[20vh] mt-[10vh]" />
             </div>
           </>
         )}

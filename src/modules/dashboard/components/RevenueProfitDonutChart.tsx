@@ -89,7 +89,8 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
             id="dataType"
             value={dataType}
             onChange={(e) => setDataType(e.target.value)}
-            style={pageLimitStyle}>
+            style={pageLimitStyle}
+          >
             <option value="Revenue">Revenue</option>
           </select>
         </div>
@@ -100,7 +101,7 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
             <Doughnut data={chartData} options={options} />
           </div>
         ) : (
-          <DataNotFound />
+          <DataNotFound className=" !h-[20vh]" />
         )}
         <div className="text-center pt-6 text-grayText text-base">
           {marketplaceData?.map((item) => (
