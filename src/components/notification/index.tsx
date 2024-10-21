@@ -46,6 +46,9 @@ const Notifications = () => {
           }
         }
       }
+      if (data?.data.length === 0) {
+        setHasMore(false);
+      }
       setPage((prevPage) => prevPage + 1);
     } else {
       setHasMore(false);
@@ -129,7 +132,7 @@ const Notifications = () => {
             dataLength={notifications ? Number(notifications?.length) : 0}
             next={fetchMoreNotifications}
             hasMore={hasMore}
-            loader={<p className=""> Loading... {hasMore} </p>}
+            loader={<p className=""> Loading... </p>}
             height={400}
             endMessage={<p className="text-center">No more notifications</p>} // Message when no more data
           >
