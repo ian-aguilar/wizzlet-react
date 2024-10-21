@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   useAmazonEditProductValuesApi,
   useAmazonFormHandleApi,
+  useCreateAmazonProductApi,
   useGetAllAmazonPropertiesApi,
 } from "./services/amazonForm.service";
 import { FieldsType, IValidationItem } from "@/components/form-builder/types";
@@ -26,6 +27,7 @@ import { useGetCategoriesAPI } from "../inventory-management/services";
 import { MARKETPLACEID } from "@/components/common/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validations";
+import { AmazonSaveType } from "./types";
 
 const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
@@ -33,6 +35,7 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
   const [validationItems, setValidationItems] = useState<IValidationItem>();
+  const [listInAmazonLoading, setListInAmazonLoading] = useState(false);
 
   const {
     control,
@@ -55,13 +58,13 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
   }, [fields]);
 
-  console.log(errors, "Errors <<<<<");
-
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
   const { editAmazonProductValueApi } = useAmazonEditProductValuesApi();
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
+
+  const { createAmazonProductApi } = useCreateAmazonProductApi();
 
   const getProperties = async (categoryData: {
     value: number;
@@ -93,15 +96,15 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
   };
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (type: AmazonSaveType, payload: any) => {
     console.log("🚀 ~ AmazonForm ~ payload:", payload);
 
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
     //transform payload structure as per amazon product api
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
 
+    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
     //payload append into a formData
     const formData = new FormData();
     appendFormData(formData, filterPayload);
@@ -118,6 +121,10 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
       );
 
       if (!amazonFormError) {
+        if (type === AmazonSaveType.SaveInAmazon) {
+          const { error } = await createAmazonProductApi(Number(productId));
+          if (!error) onComplete(productId);
+        }
         onComplete(productId);
       }
     } else {
@@ -189,7 +196,7 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   return (
     <div className="relative">
       {categoryLoading ? <Loader loaderClass="!absolute" /> : null}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
         <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
           <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
             Choose Product Category
@@ -222,13 +229,29 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
                 fields={properties as any}
                 watch={watch as any}
               />
+              <div className="flex justify-between">
+                <Button
+                  showType={btnShowType.primary}
+                  btnName="Save"
+                  type="submit"
+                  btnClass="mt-6 !text-base"
+                />
 
-              <Button
-                showType={btnShowType.primary}
-                btnName="Save"
-                type="submit"
-                btnClass="mt-6 !text-base"
-              />
+                <Button
+                  showType={btnShowType.primary}
+                  btnName="Save and list in Amazon"
+                  btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
+                  isLoading={listInAmazonLoading}
+                  type="button"
+                  onClickHandler={async () => {
+                    setListInAmazonLoading(true);
+                    await handleSubmit(
+                      onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
+                    )();
+                    setListInAmazonLoading(false);
+                  }}
+                />
+              </div>
             </div>
           )}
         </div>

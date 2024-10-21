@@ -46,3 +46,13 @@ export const useAmazonEditProductValuesApi = () => {
 
   return { editAmazonProductValueApi, isLoading, isError, isSuccess };
 };
+
+export const useCreateAmazonProductApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPut();
+
+  const createAmazonProductApi = async (id: number | null | undefined) => {
+    return callApi(`/products/create/amazon/${id}`, {});
+  };
+
+  return { createAmazonProductApi, isLoading, isError, isSuccess };
+};
