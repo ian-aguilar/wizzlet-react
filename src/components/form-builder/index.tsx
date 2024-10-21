@@ -109,7 +109,7 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.ARRAY:
         return (
           <>
-            {watch && (
+            {watch && data.addMoreLength !== 0 && (
               <FieldArrayComponent
                 fields={fields}
                 control={control}
