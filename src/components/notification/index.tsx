@@ -91,8 +91,7 @@ const Notifications = () => {
             </h2>
             <span
               onClick={handleMarkRead}
-              className="inline-flex text-greenPrimary gap-1 items-center cursor-pointer"
-            >
+              className="inline-flex text-greenPrimary gap-1 items-center cursor-pointer">
               <DoubleTickSVG className="text-greenPrimary" /> Mark as read
             </span>
           </>
@@ -111,8 +110,7 @@ const Notifications = () => {
             notificationType === Type.NOTIFICATION
               ? `border-b-greenPrimary`
               : ``
-          }  mb-[-2px] hover:text-blackPrimary     hover:border-b-[2px]  hover:mb-[-2px]`}
-        >
+          }  mb-[-2px] hover:text-blackPrimary     hover:border-b-[2px]  hover:mb-[-2px]`}>
           Notification
         </span>
         <span
@@ -125,8 +123,7 @@ const Notifications = () => {
           }}
           className={`px-7 pb-3 inline-block text-blackPrimary border-b-[2px] ${
             notificationType === Type.ALERT ? `border-b-greenPrimary` : ``
-          }  mb-[-2px] hover:text-blackPrimary hover:border-b-[2px]    hover:mb-[-2px]`}
-        >
+          }  mb-[-2px] hover:text-blackPrimary hover:border-b-[2px]    hover:mb-[-2px]`}>
           Alerts
         </span>
       </div>
@@ -159,8 +156,7 @@ const Notifications = () => {
                                 notification.is_read
                                   ? `bg-white`
                                   : `bg-grayLightBody/10`
-                              } rounded-md text-grayText  w-full mb-1`}
-                            >
+                              } rounded-md text-grayText  w-full mb-1`}>
                               <div
                                 className={`flex w-2 h-2 min-w-2 rounded-full ${
                                   notification.type === Type.NOTIFICATION &&
@@ -170,8 +166,7 @@ const Notifications = () => {
                                       !notification.is_read
                                     ? `bg-redAlert`
                                     : `bg-grayLightBody/50`
-                                }`}
-                              >
+                                }`}>
                                 &nbsp;
                               </div>
                               <div className="w-full">
