@@ -37,7 +37,7 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
 
   return (
     <div
-      className={`flex justify-between items-center w-full bg-white   py-3 px-5 mb-2  pr-10 ${className} `}
+      className={`flex justify-between items-center w-full  bg-white  py-3 px-5 mb-2   ${className} `}
     >
       {userFullName ? (
         <div>
@@ -70,36 +70,35 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
             })}
           </select>
         </div>
-        <div className="rounded-r-md flex items-center">
+        <div className="rounded-r-md flex items-center relative w-[170px] ">
           <div
             className="flex items-center gap-2"
             onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
           >
             <CalendarMainSVG />
-            {startDate || endDate ? (
+            {startDate && endDate && !isDatePickerOpen ? (
               <span>{formatDateRange(startDate, endDate)}</span>
-            ) : null}{" "}
-            {/* Only show this if both startDate and endDate are selected */}
+            ) : (
+              <span>Select a date range</span>
+            )}
           </div>
 
           {isDatePickerOpen && (
-            <DatePicker
-              placeholderText="Select a date range" // Show placeholder only inside DatePicker
-              isClearable={true}
-              className="focus:outline-none text-center"
-              selected={startDate}
-              onChange={onDateRangeChange}
-              startDate={startDate}
-              endDate={endDate}
-              selectsRange={true}
-              inline={false}
-              dateFormat={"dd/MM/yyyy"}
-              maxDate={maxDate as Date} // Limit range to max 31 days
-            />
-          )}
-
-          {!startDate && !endDate && !isDatePickerOpen && (
-            <span>Select a date range</span> // Show only when no dates are selected and picker is closed
+            <div className="absolute   z-10 top-[135%] left-[-35%]  !bg-[#fafafb]  placeholder:!bg-[#fafafb] ">
+              <DatePicker
+                placeholderText="Select a date range"
+                className="focus:outline-none text-center"
+                selected={startDate}
+                onChange={onDateRangeChange}
+                startDate={startDate}
+                endDate={endDate}
+                selectsRange={true}
+                dateFormat={"dd/MM/yyyy"}
+                maxDate={maxDate as Date} // Limit range to max 31 days
+                isClearable={true}
+                inline={true}
+              />
+            </div>
           )}
         </div>
       </div>
