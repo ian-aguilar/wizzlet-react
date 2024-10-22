@@ -1,6 +1,7 @@
 // ** Icons **
 import {
   CMSMGTIcon,
+  ContactIconSVG,
   DashboardIcon,
   HamburgerIcon,
   MarketPlaceIcon,
@@ -37,11 +38,12 @@ export const cmsSidebarComponents = [
     navName: "Terms of Service",
     path: PrivateRoutesPath.cmsManagement.terms,
     key: sidebarList.cmsTerms,
-  },{
+  },
+  {
     navName: "Privacy And Policy",
     path: PrivateRoutesPath.cmsManagement.privacy,
-    key:sidebarList.cmsPrivacy
-  }
+    key: sidebarList.cmsPrivacy,
+  },
 ];
 
 export const userSidebar = [
@@ -54,7 +56,7 @@ export const userSidebar = [
   {
     navIcon: UserMgtIcon,
     navName: "Inventory Management",
-    path: PrivateRoutesPath.inventoryManagement.view ,
+    path: PrivateRoutesPath.inventoryManagement.view,
     key: sidebarList.inventory,
   },
   {
@@ -91,7 +93,7 @@ export const adminSidebar = [
     key: sidebarList.user,
   },
   {
-    navIcon: HamburgerIcon,
+    navIcon: ContactIconSVG,
     navName: "Inquiry Management",
     path: PrivateRoutesPath.contactusManagement.view,
     key: sidebarList.contactus,
