@@ -30,6 +30,7 @@ import { schema } from "./validations";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { useCreateUserNotificationInDbApi } from "../eBay-form/services/productBasicForm.service";
 import { AmazonSaveType } from "./types";
+import { RECOMMENDED_BROWSE_NODES } from "./constants";
 
 const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
@@ -60,9 +61,11 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
   }, [fields]);
 
-  const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
+  const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
+    useGetAllAmazonPropertiesApi();
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
-  const { editAmazonProductValueApi } = useAmazonEditProductValuesApi();
+  const { editAmazonProductValueApi, isLoading: amazonDataLoading } =
+    useAmazonEditProductValuesApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
 
   const { getCategoriesAPI, isLoading: categoryLoading } =
@@ -83,7 +86,11 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     setProperties(data?.data?.properties);
     setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
-    reset(defaultValues);
+    const modifiedDefaultValues = {
+      ...defaultValues,
+      recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
+    };
+    reset(modifiedDefaultValues);
     return {
       propertyData: data?.data?.properties,
       defaultValue: defaultValues,
@@ -206,6 +213,10 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   }) => {
     getProperties(event);
   };
+
+  if (amazonDataLoading || amazonPropertiesLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="relative">

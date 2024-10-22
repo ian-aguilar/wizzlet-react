@@ -18,13 +18,14 @@ import { useEffect, useRef, useState } from "react";
 import ModalNav from "@/modules/cms/common/ModalNav";
 import Notifications from "../notification";
 import io from "socket.io-client";
+import { VITE_APP_API_URL } from "@/config";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(userSelector);
 
-  const socket = io("http://192.168.18.46:8001");
+  const socket = io(VITE_APP_API_URL);
 
   //-----------------States--------------------------
   const [isSidebar, setIsSidebar] = useState(false);
