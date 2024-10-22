@@ -227,13 +227,12 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     getProperties(event);
   };
 
-  if (amazonDataLoading || amazonPropertiesLoading) {
-    return <Loader />;
-  }
 
   return (
     <div className="relative">
-      {categoryLoading ? <Loader loaderClass="!absolute" /> : null}
+      {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
+        <Loader loaderClass="!absolute" />
+      ) : null}
       <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
         <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
           <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">

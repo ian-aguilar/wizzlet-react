@@ -316,14 +316,23 @@ const InventoryManagement = () => {
   const handleRemove = async () => {
     closeDeleteModel();
     setIsDeleteModel(false);
-    return;
     if (checkboxes?.length) {
       const { error } = await deleteProductsAPI(checkboxes as number[]);
       if (error) console.log(error);
       else {
         closeDeleteModel();
         setIsDeleteModel(false);
-        setCurrentPage(1);
+        await getProductsDetails(
+          searchTerm,
+          selectedMarketplace,
+          productStatus,
+          1,
+          Number(itemPerPage.value),
+          category,
+          filterDate,
+          productType,
+          productTag
+        );
       }
     }
   };
@@ -397,6 +406,20 @@ const InventoryManagement = () => {
       getSyncData();
     }
   }, [counter]);
+
+  const onChangeData = async () => {
+    await getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      1,
+      Number(itemPerPage.value),
+      category,
+      filterDate,
+      productType,
+      productTag
+    );
+  };
 
   return (
     <div>
@@ -769,6 +792,7 @@ const InventoryManagement = () => {
                 currentData={products.products}
                 checkboxes={checkboxes}
                 checkboxOnChange={handleProductCheckboxChange}
+                onChangeData={onChangeData}
               />
             ) : (
               <div className="h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_450px)]">
@@ -799,7 +823,7 @@ const InventoryManagement = () => {
               isLoading={deleteProductLoading}
               onSave={handleRemove}
               heading="Are you sure?"
-              subText="This will delete selected products."
+              subText="This will delete all selected product data from this platform only."
             />
           )}
         </div>

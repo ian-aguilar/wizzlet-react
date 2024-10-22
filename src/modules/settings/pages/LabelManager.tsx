@@ -130,7 +130,7 @@ const LabelManager = () => {
             onClose={closeDeleteModel}
             onSave={handleRemove}
             heading="Are you sure?"
-            subText="This will delete your user from the list."
+            subText="This label will be deleted from the list."
           />
         )}
       </div>

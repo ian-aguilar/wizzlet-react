@@ -87,6 +87,9 @@ const LabelView = () => {
     );
   }, [itemPerPage, currentPage]);
 
+  const onChangeData = async () => {
+    getLabelProducts(searchTerm, 1, Number(itemPerPage.value));
+  };
   return (
     <>
       <div className="pb-5">
@@ -151,7 +154,11 @@ const LabelView = () => {
         </div>
         <div>
           <div>
-            <LabelItems isLoading={isLoading} currentData={labelProduct} />
+            <LabelItems
+              isLoading={isLoading}
+              currentData={labelProduct}
+              onChangeData={onChangeData}
+            />
           </div>
         </div>
         <div className="flex justify-end mt-2">
