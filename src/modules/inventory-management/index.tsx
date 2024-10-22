@@ -45,6 +45,11 @@ import { DataNotFound } from "@/components/svgIcons";
 import { ISyncDetails, SyncStatus } from "../import-products/types";
 import { useFetchSyncDetailsAPI } from "../import-products/services/importProducts.service";
 import moment from "moment";
+import {
+  newestBoxStyle,
+  pageLimitStyle,
+  selectedMarketplaceStyle,
+} from "../import-products/constants";
 
 const InventoryManagement = () => {
   // ** States **
@@ -430,7 +435,8 @@ const InventoryManagement = () => {
                       }}
                     />
                   )
-                }>
+                }
+              >
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
@@ -610,14 +616,16 @@ const InventoryManagement = () => {
                       ? `text-greenPrimary border-greenPrimary`
                       : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}>
+                  onClick={() => handleProductStatus(item)}
+                >
                   {item}
                   <span
                     className={`text-base ${
                       productStatus === item
                         ? `bg-greenPrimary/10`
                         : `bg-greyBorder/50`
-                    } px-1 rounded-md`}>
+                    } px-1 rounded-md`}
+                  >
                     {productStatus === item
                       ? totalItem
                       : products.otherStatusTotal}
@@ -763,8 +771,8 @@ const InventoryManagement = () => {
                 checkboxOnChange={handleProductCheckboxChange}
               />
             ) : (
-              <div>
-                <DataNotFound />
+              <div className="h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_450px)]">
+                <DataNotFound className="!h-[30vh]" />
               </div>
             )}
           </div>

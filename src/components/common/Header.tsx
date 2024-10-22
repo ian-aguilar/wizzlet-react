@@ -125,7 +125,7 @@ const Header = ({ type }: { type: string }) => {
                 {isOpen && (
                   <div className="absolute z-20 top-full -right-6 pt-4">
                     {/* Arrow */}
-                    <div className="w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-transparent border-b-[8pxpx] border-b-transparent border-r-[8px] border-r-white rotate-90 absolute top-0 right-10"></div>
+                    <div className="w-0 h-0 border-l-[8px] border-l-transparent border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[8px] border-r-white rotate-90 absolute top-0 right-10"></div>
                     {/* Notification box */}
                     <div className="bg-white sm:min-w-[365px] max-w-[90%] w-full shadow-[0px_5px_29px_0px_#00000036] rounded-md">
                       <Notifications />
@@ -155,7 +155,11 @@ const Header = ({ type }: { type: string }) => {
                 </span>
               </div>
               {user?.url ? (
-                <img src={user?.url} className="w-14 h-14 min-w-14" alt="" />
+                <img
+                  src={user?.url}
+                  className="w-14 h-14 min-w-14 rounded-full object-cover object-center"
+                  alt=""
+                />
               ) : (
                 <img
                   src={ProfilePlaceholder}

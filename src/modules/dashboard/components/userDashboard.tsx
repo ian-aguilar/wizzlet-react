@@ -13,6 +13,7 @@ import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { DashboardData, OptionType, RevenueMarketDetail } from "../types";
 import { DataNotFound } from "@/components/svgIcons";
 import geoMap from "/images/mapWorld.png";
+import { pageLimitStyle } from "@/modules/import-products/constants";
 
 const UserDashboard: React.FC = () => {
   const currentDate = new Date();
@@ -169,7 +170,8 @@ const UserDashboard: React.FC = () => {
               className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5  gap-4 min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}>
+              key={item?.id}
+            >
               {item?.coming_soon ? (
                 <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
                   Coming Soon
@@ -193,7 +195,8 @@ const UserDashboard: React.FC = () => {
               className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5   gap-4  min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
                 item?.coming_soon ? "relative" : ""
               }`}
-              key={item?.id}>
+              key={item?.id}
+            >
               {item?.coming_soon ? (
                 <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
                   Coming Soon
@@ -220,6 +223,7 @@ const UserDashboard: React.FC = () => {
           <h3 className="font-medium text-[26px] ">Analytics</h3>
           <Select
             isMulti
+            styles={pageLimitStyle}
             value={selectedOptions}
             onChange={handleChange}
             options={connectedMarketplace}
@@ -324,7 +328,7 @@ const UserDashboard: React.FC = () => {
               ))
             ) : (
               <div className="text-center">
-                <DataNotFound />
+                <DataNotFound className="!h-[20vh]" />
               </div>
             )}
           </div>
