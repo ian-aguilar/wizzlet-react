@@ -15,40 +15,44 @@ import { productProps } from "../types";
 import { useNavigate } from "react-router-dom";
 
 // ** Services **
-import { useProductDeleteAPI } from "../services";
+import { useProductsDeleteAPI } from "../services";
 
 const Product = ({
   currentData,
   isLoading,
   checkboxes,
   checkboxOnChange,
+  onChangeData,
 }: {
   currentData: productProps[];
   isLoading?: boolean;
   checkboxes: number[] | null;
   checkboxOnChange: (id: number) => void;
+  onChangeData: () => Promise<void>;
 }) => {
   const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
   const [deleteProduct, setDeleteProduct] = useState<number | null>(null);
   const closeDeleteModel = () => setDeleteProduct(null);
 
-  const { deleteProductAPI, isLoading: deleteLoading } = useProductDeleteAPI();
+  const { deleteProductsAPI, isLoading: deleteLoading } =
+    useProductsDeleteAPI();
+
+  const navigate = useNavigate();
 
   const handleRemove = async () => {
     closeDeleteModel();
     setIsDeleteModel(false);
-    return;
     if (deleteProduct) {
-      const { error } = await deleteProductAPI(Number(deleteProduct));
+      const { error } = await deleteProductsAPI([Number(deleteProduct)]);
       if (error) console.log(error);
       else {
         closeDeleteModel();
         setIsDeleteModel(false);
-        navigate(`/inventory-management`);
+        await onChangeData();
       }
     }
   };
-  const navigate = useNavigate();
+
   const handleEditProduct = (productId: number) => {
     navigate(`/inventory-management/product-form/1/${productId}`);
   };
@@ -190,7 +194,7 @@ const Product = ({
                   isLoading={deleteLoading}
                   onSave={handleRemove}
                   heading="Are you sure?"
-                  subText="This will delete your product from list"
+                  subText="This will delete product data from this platform only."
                 />
               )}
             </div>
