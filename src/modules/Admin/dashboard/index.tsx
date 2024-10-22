@@ -22,7 +22,6 @@ import { OptionType } from "@/modules/dashboard/types";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketplace.service";
 import DatePickerWithMonthSelect from "@/modules/dashboard/components/GlobalDatePicker";
-import { customStyles } from "@/components/form-fields/constant";
 import { pageLimitStyle } from "@/modules/import-products/constants";
 
 const AdminDashboard = () => {
