@@ -35,7 +35,14 @@ const ProductForm: React.FC = () => {
   ) => {
     if (isClick) {
       if (newStep > currentStep) {
-        return;
+        if (currentStep !== 2 && currentStep !== 1) {
+          navigate(
+            `/inventory-management/product-form/${newStep}/${productId}`
+          );
+          return;
+        } else {
+          return;
+        }
       }
     }
     navigate(`/inventory-management/product-form/${newStep}/${productId}`);

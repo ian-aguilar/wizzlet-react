@@ -311,14 +311,23 @@ const InventoryManagement = () => {
   const handleRemove = async () => {
     closeDeleteModel();
     setIsDeleteModel(false);
-    return;
     if (checkboxes?.length) {
       const { error } = await deleteProductsAPI(checkboxes as number[]);
       if (error) console.log(error);
       else {
         closeDeleteModel();
         setIsDeleteModel(false);
-        setCurrentPage(1);
+        await getProductsDetails(
+          searchTerm,
+          selectedMarketplace,
+          productStatus,
+          1,
+          Number(itemPerPage.value),
+          category,
+          filterDate,
+          productType,
+          productTag
+        );
       }
     }
   };
@@ -393,6 +402,20 @@ const InventoryManagement = () => {
     }
   }, [counter]);
 
+  const onChangeData = async () => {
+    await getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      1,
+      Number(itemPerPage.value),
+      category,
+      filterDate,
+      productType,
+      productTag
+    );
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
@@ -430,7 +453,8 @@ const InventoryManagement = () => {
                       }}
                     />
                   )
-                }>
+                }
+              >
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
@@ -761,6 +785,7 @@ const InventoryManagement = () => {
                 currentData={products.products}
                 checkboxes={checkboxes}
                 checkboxOnChange={handleProductCheckboxChange}
+                onChangeData={onChangeData}
               />
             ) : (
               <div>
@@ -791,7 +816,7 @@ const InventoryManagement = () => {
               isLoading={deleteProductLoading}
               onSave={handleRemove}
               heading="Are you sure?"
-              subText="This will delete selected products."
+              subText="This will delete all selected product data from this platform only."
             />
           )}
         </div>

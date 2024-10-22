@@ -41,17 +41,13 @@ export const useEditProductAPi = () => {
 export const useProductsDeleteAPI = () => {
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
 
-  const deleteProductsAPI = async (data: object) => {
-    return callApi(`${PRODUCT_LIST_PATH}/products-delete`, { params: data });
+  const deleteProductsAPI = async (productIds: number[]) => {
+    const queryString = productIds.map((id) => `${id}`).join(",");
+    return callApi(`${PRODUCT_LIST_PATH}/products-delete`, {
+      params: { productIds: queryString },
+    });
   };
   return { deleteProductsAPI, isLoading, isError, isSuccess };
 };
 
-export const useProductDeleteAPI = () => {
-  const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
 
-  const deleteProductAPI = async (id: number) => {
-    return callApi(`${PRODUCT_LIST_PATH}/products-delete/${id}`);
-  };
-  return { deleteProductAPI, isLoading, isError, isSuccess };
-};
