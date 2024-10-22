@@ -37,3 +37,8 @@ export interface OutputData {
 export interface AnyObject {
   [key: string]: any;
 }
+
+export enum AmazonSaveType {
+  Save = "Save",
+  SaveInAmazon = "SaveInAmazon",
+}

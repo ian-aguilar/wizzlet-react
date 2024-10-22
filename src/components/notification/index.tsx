@@ -36,14 +36,14 @@ const Notifications = () => {
 
     if (data && !error) {
       if (notifications && notifications.length > 0) {
-        setNotifications((prev: any) => {
-          if (prev && prev?.length > 0) return [...prev, ...data?.data];
+        setNotifications((prev) => {
+          if (prev && prev?.length > 0) return [...prev, ...data.data];
           else return data?.data;
         });
       } else {
         setIsNotRead(false);
         setNotifications(data?.data);
-        for (let item of data?.data) {
+        for (const item of data.data) {
           if (!item.is_read) {
             setIsNotRead(true);
           }
@@ -175,13 +175,13 @@ const Notifications = () => {
                                     <Link
                                       to={`/inventory-management/product-form/1/${notification.product_id}`}
                                       className="underline text-blackPrimary font-medium">
-                                      #{notification.product_id}
+                                      #{notification?.product_name}
                                     </Link>
                                   ) : notification.register_user ? (
                                     <Link
                                       to={`/user-management/view/${notification.register_user}`}
                                       className="underline text-blackPrimary font-medium">
-                                      @{notification.register_user}
+                                      @{notification.user_name}
                                     </Link>
                                   ) : null}{" "}
                                   {notification.title}

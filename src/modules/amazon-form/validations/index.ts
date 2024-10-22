@@ -19,10 +19,12 @@ const getValue = (data: any, path: string[]): any => {
   } else return data;
 };
 
-function separateBracketedString(str: string): {
+const separateBracketedString = (
+  str: string
+): {
   prefix: string;
   value: number | null;
-} {
+} => {
   const match = str.match(/^([^\[]+)\[(\d+)\]$/);
   if (match) {
     return {
@@ -34,157 +36,32 @@ function separateBracketedString(str: string): {
     prefix: str,
     value: null,
   };
-}
+};
 
-function parseSchema(
+const removeZeroMaxItemsFields = (path: string[], properties: any) => {
+  const newPath: string[] = [];
+  let flag = false;
+
+  path.forEach((field) => {
+    const { prefix }: any = separateBracketedString(field);
+    newPath.push(prefix);
+    const nestedProperties = getNestedValue(properties, newPath);
+    if (nestedProperties?.maxItems === 0) {
+      flag = true;
+    }
+  });
+
+  return flag;
+};
+
+const parseSchema = (
   data: any,
   ctx: z.RefinementCtx,
   amazonJson: any,
   path: any = [],
   properties: any
-) {
+) => {
   if (amazonJson) {
-    if (amazonJson["if"]) {
-      const array = [];
-
-      if (amazonJson["if"]["allOf"]) {
-        const temp = parseProperties(
-          validationEnum.AllOf,
-          amazonJson["if"]["allOf"],
-          data,
-          properties,
-          []
-        );
-        const tempArray = temp?.every((e) => e?.success);
-        if (tempArray) {
-          array.push(...[{ success: true, path: [] }]);
-        } else {
-          array.push(...[{ success: false, path: [] }]);
-        }
-      }
-
-      if (amazonJson["if"]["anyOf"]) {
-        const temp = parseProperties(
-          validationEnum.Anyof,
-          amazonJson["if"]["anyOf"],
-          data,
-          properties,
-          []
-        );
-        const tempArray = temp?.some((e) => e?.success);
-        if (tempArray) {
-          array.push(...[{ success: true, path: [] }]);
-        } else {
-          array.push(...[{ success: false, path: [] }]);
-        }
-      }
-
-      if (amazonJson["if"]["required"]) {
-        let temp: ResType[] | undefined = [];
-        temp = parseProperties(
-          validationEnum.Required,
-          amazonJson["if"]["required"],
-          data,
-          properties,
-          []
-        );
-        array.push(...(temp || []));
-      }
-      if (amazonJson["if"]["properties"]) {
-        const temp = parseProperties(
-          validationEnum.Properties,
-          amazonJson["if"]["properties"],
-          data,
-          properties,
-          []
-        );
-        const tempArray = temp?.every((e) => e.success);
-        if (tempArray) {
-          array.push(...[{ success: true, path: [] }]);
-        } else {
-          array.push(...[{ success: false, path: [] }]);
-        }
-      }
-
-      if (amazonJson["if"]["not"]) {
-        const temp = parseProperties(
-          validationEnum.Not,
-          amazonJson["if"]["not"],
-          data,
-          properties,
-          []
-        );
-        array.push(...(temp || []));
-      }
-
-      const success = array.every((e) => e?.success);
-
-      if (success) {
-        if (amazonJson["then"]) {
-          const thenArray: ResType[] = [];
-          if (amazonJson["then"]["required"]) {
-            const temp = parseProperties(
-              validationEnum.Required,
-              amazonJson["then"]["required"],
-              data,
-              properties,
-              path
-            );
-            thenArray.push(...(temp || []));
-          }
-          if (amazonJson["then"]["properties"]) {
-            const temp = parseProperties(
-              validationEnum.Properties,
-              amazonJson["then"]["properties"],
-              data,
-              properties,
-              path
-            );
-            thenArray.push(...(temp || []));
-          }
-          thenArray?.forEach((e: ResType) => {
-            if (!e.success) {
-              ctx.addIssue({
-                path: e.path,
-                message: e.message
-                  ? e.message
-                  : ` ${e.path[e.path.length - 1]} is required`,
-                code: "custom",
-              });
-            }
-          });
-        }
-      } else {
-        if (amazonJson["else"]) {
-          const elseArray: ResType[] = [];
-
-          if (amazonJson["else"]["required"]) {
-            const temp = parseProperties(
-              validationEnum.Required,
-              amazonJson["else"]["required"],
-              data,
-              properties,
-              path
-            );
-            elseArray.push(...(temp || []));
-          }
-          parseSchema(data, ctx, amazonJson["else"], [], properties);
-
-          elseArray?.forEach((e: any) => {
-            if (!e.success) {
-              ctx.addIssue({
-                path: e.path,
-                message: e.message
-                  ? e.message
-                  : ` ${e.path[e.path.length - 1]} is required`,
-                code: "custom",
-              });
-            }
-          });
-        }
-      }
-    }
-
     if (amazonJson["allOf"]) {
       const temp = parseProperties(
         validationEnum.AllOf,
@@ -193,43 +70,26 @@ function parseSchema(
         properties,
         path
       );
-      console.log("🚀 ~ temp:", temp);
-      temp?.forEach((e: ResType) => {
-        if (!e.success) {
-          ctx.addIssue({
-            path: [...path, ...e.path],
-            message: e.message
-              ? e.message
-              : ` ${e.path[e.path.length - 1]} is required`,
-            code: "custom",
-          });
-        }
-      });
-    }
 
-    if (amazonJson["properties"]) {
-      const temp = parseProperties(
-        validationEnum.Properties,
-        amazonJson["properties"],
-        data,
-        properties,
-        path
-      );
-
-      temp?.forEach((e: any) => {
-        if (!e.success) {
-          ctx.addIssue({
-            path: e.path,
-            message: e.message
-              ? e.message
-              : ` ${e.path[e.path.length - 1]} is required`,
-            code: "custom",
-          });
+      if (temp) {
+        for (let e of temp) {
+          if (!removeZeroMaxItemsFields(e.path, properties)) {
+            if (!e.success) {
+              ctx.addIssue({
+                path: [...path, ...e.path],
+                message: e.message
+                  ? e.message
+                  : ` ${e.path[e.path.length - 1]} is required`,
+                code: "custom",
+              });
+            }
+          } else {
+          }
         }
-      });
+      }
     }
   }
-}
+};
 
 // export const testValidations = (amazonJson: any, data: any) => {
 export const schema = (amazonJson: IConditions | undefined, properties: any) =>
@@ -239,100 +99,31 @@ export const schema = (amazonJson: IConditions | undefined, properties: any) =>
       ctx,
       {
         allOf: Array.isArray(amazonJson?.allOf) ? amazonJson.allOf : [],
-        // allOf: [
-        //   {
-        //     properties: {
-        //       shirt_size: {
-        //         items: {
-        //           if: {
-        //             not: {
-        //               allOf: [
-        //                 {
-        //                   required: ["size_class"],
-        //                   properties: {
-        //                     size_class: {
-        //                       enum: ["age", "alpha", "numeric"],
-        //                     },
-        //                   },
-        //                 },
-        //                 {
-        //                   required: ["size_system"],
-        //                   properties: {
-        //                     size_system: {
-        //                       enum: ["as5"],
-        //                     },
-        //                   },
-        //                 },
-        //               ],
-        //             },
-        //           },
-        //           then: {
-        //             not: {
-        //               required: ["size"],
-        //             },
-        //           },
-        //         },
-        //       },
-        //     },
-        //   },
-        // ],
       },
       [],
       properties
     );
-    if (amazonJson?.required) {
-      amazonJson?.required?.forEach((item) => {
-        const value = getValue(data, [item]);
 
-        if (Array.isArray(value)) {
-          value?.forEach((innerItem, index) => {
-            checkMainRequired(data, ctx, [`${item}[${index}]`], innerItem);
-          });
-        } else if (typeof value === "object") {
-          Object.keys(value).forEach((objectItem) => {
-            checkMainRequired(data, ctx, [...item, objectItem]);
-          });
-        } else {
-          if (!value || value === "") {
+    if (amazonJson?.required) {
+      amazonJson?.required?.forEach((e) => {
+        const array: ResType[] = [];
+
+        array.push(...findProperties([e], data, properties));
+
+        array?.forEach((e: ResType) => {
+          if (!e.success) {
             ctx.addIssue({
-              path: [item],
-              message: ` ${item} is required`,
+              path: e.path,
+              message: e.message
+                ? e.message
+                : ` ${e.path[e.path.length - 1]} is required`,
               code: "custom",
             });
           }
-        }
+        });
       });
     }
   });
-
-const checkMainRequired = (
-  data: any,
-  ctx: z.RefinementCtx,
-  path: string[],
-  value: Object | undefined = undefined
-) => {
-  if (!value) {
-    value = getValue(data, path);
-  }
-
-  if (Array.isArray(value)) {
-    value?.forEach((innerItem, index) => {
-      checkMainRequired(data, ctx, [path[index]], innerItem);
-    });
-  } else if (typeof value === "object") {
-    Object.keys(value).forEach((objectItem) => {
-      checkMainRequired(data, ctx, [...path, objectItem]);
-    });
-  } else {
-    if (!value || value === "") {
-      ctx.addIssue({
-        path: path,
-        message: ` ${path[path.length - 1]} is required`,
-        code: "custom",
-      });
-    }
-  }
-};
 
 const checkIf = (
   amazonJson: any,
@@ -349,8 +140,9 @@ const checkIf = (
     properties,
     path
   );
+
   const success = temp?.every((e) => e.success);
-  console.log(success, "success >>>>>", temp);
+
   if (success) {
     if (amazonJson["then"]) {
       const temp = parseProperties(
@@ -379,7 +171,7 @@ const checkIf = (
   return tempArray;
 };
 
-const getNestedValue = (properties: any, path: string[]) => {
+export const getNestedValue = (properties: any, path: string[]) => {
   let current = properties;
 
   for (let i = 0; i < path.length; i++) {
@@ -412,7 +204,8 @@ const findProperties = (path: string[], data: any, properties: any) => {
   const tempPath = [...path];
   const lastEle = tempPath.pop();
 
-  const tempValue = getValue(data, path);
+  const { prefix: lastNewELe } = separateBracketedString(lastEle as string);
+  const tempValue = getValue(data, [...tempPath, lastNewELe]);
 
   if (tempValue) {
     const newPath: string[] = [];
@@ -427,7 +220,7 @@ const findProperties = (path: string[], data: any, properties: any) => {
           if (e !== "marketplace_id" && e !== "language_tag") {
             const temp1 = tempValue.flatMap((_: any, index: number) => {
               return findProperties(
-                [...tempPath, `${lastEle}[${index}]`, e],
+                [...tempPath, `${lastNewELe}[${index}]`, e],
                 data,
                 properties
               );
@@ -458,6 +251,7 @@ const findProperties = (path: string[], data: any, properties: any) => {
       message: ` ${path[path.length - 1]} is required`,
     });
   }
+
   return tempArray;
 };
 
@@ -495,11 +289,6 @@ const parseProperties = (
         if (!amazonJson["properties"]) {
           amazonJson["required"].forEach((e: string) => {
             array.push(...findProperties([...path, e], data, properties));
-            console.log(
-              array,
-              "NOTTTT >>>>>",
-              ...findProperties([...path, e], data, properties)
-            );
           });
         } else {
           amazonJson["required"].forEach((e: string) => {
@@ -538,7 +327,24 @@ const parseProperties = (
           properties,
           path
         );
-        array.push(...(temp || []));
+
+        const tempValue = temp?.every((e) => e.success);
+        array.push(
+          ...(temp?.map((item) => {
+            return {
+              success: Boolean(tempValue),
+              path: item.path,
+              message: item.message,
+            };
+          }) || [])
+        );
+
+        // if (tempValue) {
+        //   array.push(...[{ success: true, path: [] }]);
+        // } else {
+        //   array.push(...[{ success: false, path: [] }]);
+        // }
+        // array.push(...(temp || []));
       }
 
       const tempValue = array.every((e) => e.success);
@@ -792,8 +598,15 @@ const parseProperties = (
               array2.push(...[{ success: false, path: [] }]);
             }
           }
+          if (value["if"]) {
+            const temp = checkIf(value, data, properties, path);
+            if (temp?.length > 0) {
+              array2.push(...temp);
+            } else {
+              array2.push(...findProperties(path, data, properties));
+            }
+          }
         });
-
         return array2;
       }
 
@@ -802,7 +615,7 @@ const parseProperties = (
       const array3: any[] = [];
       // const array3: ResType[] = [];
 
-      amazonJson.forEach((e: any, index: any) => {
+      amazonJson.forEach((e: any) => {
         const tempArray: ResType[] = [];
         if (e["required"]) {
           const temp = parseProperties(
@@ -820,8 +633,6 @@ const parseProperties = (
           );
         }
 
-        console.log([...tempArray], "first>>>>>>>>>>>>>>>>>>>>>>>", index);
-
         if (e["properties"]) {
           const temp = parseProperties(
             validationEnum.Properties,
@@ -837,7 +648,6 @@ const parseProperties = (
             }))
           );
         }
-        console.log([...tempArray], "second>>>>>>>>>>>>>>>>>>>>>>>", index);
 
         if (e["not"]) {
           const temp = parseProperties(
@@ -880,50 +690,53 @@ const parseProperties = (
           );
         }
 
-        let tempValue = true;
+        // let tempValue = true;
 
-        if (type === validationEnum.AllOf) {
-          tempValue = tempArray.every((e) => e.success);
-        } else {
-          tempValue = tempArray.some((e) => e.success);
-        }
-        array3.push(
-          ...(tempArray.map((item) => {
-            return {
-              success: tempValue,
-              path: item.path,
-              message: item.message,
-              json: e,
-            };
-          }) || [])
-        );
-
-        // const tempValue = tempArray.every((e) => e.success);
-        // if (tempValue) {
-        //   array3.push(
-        //     ...(tempArray.map((item) => {
-        //       return {
-        //         success: true,
-        //         path: item.path,
-        //         message: item.message,
-        //         json: e,
-        //       };
-        //     }) || [])
-        //   );
+        // if (type === validationEnum.AllOf) {
+        //   tempValue = tempArray.every((e) => e.success);
         // } else {
-        //   array3.push(
-        //     ...(tempArray.map((item) => {
-        //       return {
-        //         success: false,
-        //         path: item.path,
-        //         message: item.message,
-        //         json: e,
-        //       };
-        //     }) || [])
-        //   );
+        //   tempValue = tempArray.some((e) => e.success);
         // }
+
+        // array3.push(
+        //   ...(tempArray.map((item) => {
+        //     return {
+        //       success: tempValue,
+        //       path: item.path,
+        //       message: item.message,
+        //       json: e,
+        //     };
+        //   }) || [])
+        // );
+
+        const tempValue = tempArray.every((e) => e.success);
+        if (tempValue) {
+          array3.push(
+            ...(tempArray.map((item) => {
+              return {
+                success: true,
+                path: item.path,
+                message: item.message,
+                json: e,
+              };
+            }) || [])
+          );
+        } else {
+          array3.push(
+            ...(tempArray.map((item) => {
+              return {
+                success: false,
+                path: item.path,
+                message: item.message,
+                json: e,
+              };
+            }) || [])
+          );
+        }
+
         // array3.push(...tempArray);
       });
+
       return array3;
 
     case validationEnum.If:
@@ -957,6 +770,7 @@ const parseProperties = (
                 properties,
                 path
               );
+
               array4.push(...(temp || []));
             }
           });
@@ -983,7 +797,6 @@ const parseProperties = (
         );
 
         if (type === validationEnum.Then) {
-          // console.log(temp, "TEMPPPPPPP >>>>>");
           const newTemp = temp?.map((e) => {
             return {
               ...e,
@@ -1004,11 +817,21 @@ const parseProperties = (
           path
         );
         const tempValue = temp?.every((e) => e.success);
-        if (tempValue) {
-          array4.push(...[{ success: true, path: [] }]);
-        } else {
-          array4.push(...[{ success: false, path: [] }]);
-        }
+        array4.push(
+          ...(temp?.map((item) => {
+            return {
+              success: Boolean(tempValue),
+              path: item.path,
+              message: item.message,
+            };
+          }) || [])
+        );
+        // const tempValue = temp?.every((e) => e.success);
+        // if (tempValue) {
+        //   array4.push(...[{ success: true, path: [] }]);
+        // } else {
+        //   array4.push(...[{ success: false, path: [] }]);
+        // }
       }
       if (amazonJson["anyOf"]) {
         const temp = parseProperties(
@@ -1020,11 +843,22 @@ const parseProperties = (
         );
 
         const tempValue = temp?.some((e) => e.success);
-        if (tempValue) {
-          array4.push(...[{ success: true, path: [] }]);
-        } else {
-          array4.push(...[{ success: false, path: [] }]);
-        }
+        array4.push(
+          ...(temp?.map((item) => {
+            return {
+              success: Boolean(tempValue),
+              path: item.path,
+              message: item.message,
+            };
+          }) || [])
+        );
+        // const tempValue = temp?.some((e) => e.success);
+        // if (tempValue) {
+        //   array4.push(...[{ success: true, path: [] }]);
+        // } else {
+        //   array4.push(...[{ success: false, path: [] }]);
+        // }
+        // array4.push(...(temp || []));
       }
       if (amazonJson["if"]) {
         array4.push(...(checkIf(amazonJson, data, properties, path) || []));
@@ -1106,12 +940,22 @@ const parseProperties = (
               )?.filter(Boolean) || []
             );
           });
-          const tempArray = temp1?.every((e: ResType) => e?.success);
-          if (tempArray) {
-            array5.push(...[{ success: true, path: [] }]);
-          } else {
-            array5.push(...[{ success: false, path: [] }]);
-          }
+          const tempValue = temp1?.every((e) => e.success);
+          array5.push(
+            ...(temp1?.map((item) => {
+              return {
+                success: Boolean(tempValue),
+                path: item.path,
+                message: item.message,
+              };
+            }) || [])
+          );
+          // const tempArray = temp1?.every((e: ResType) => e?.success);
+          // if (tempArray) {
+          //   array5.push(...[{ success: true, path: [] }]);
+          // } else {
+          //   array5.push(...[{ success: false, path: [] }]);
+          // }
         }
         if (amazonJson["anyOf"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
@@ -1125,12 +969,22 @@ const parseProperties = (
               )?.filter(Boolean) || []
             );
           });
-          const tempArray = temp1?.some((e: ResType) => e?.success);
-          if (tempArray) {
-            array5.push(...[{ success: true, path: [] }]);
-          } else {
-            array5.push(...[{ success: false, path: [] }]);
-          }
+          const tempValue = temp1?.some((e) => e.success);
+          array5.push(
+            ...(temp1?.map((item) => {
+              return {
+                success: Boolean(tempValue),
+                path: item.path,
+                message: item.message,
+              };
+            }) || [])
+          );
+          // const tempArray = temp1?.some((e: ResType) => e?.success);
+          // if (tempArray) {
+          //   array5.push(...[{ success: true, path: [] }]);
+          // } else {
+          //   array5.push(...[{ success: false, path: [] }]);
+          // }
         }
         if (amazonJson["if"]) {
           const temp1 = tempValueForItems.flatMap((_: any, index: number) => {

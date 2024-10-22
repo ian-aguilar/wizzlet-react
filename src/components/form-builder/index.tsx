@@ -23,6 +23,13 @@ const FormBuilder = <T extends FieldValues>({
   watch,
 }: FromBuilderPropsType<T>) => {
   const getField = (data: FieldsType<T>) => {
+    if (
+      data.title === "Recommended Browse Nodes" ||
+      data.name === "recommended_browse_nodes" ||
+      data.name?.includes("product_image_locator")
+    ) {
+      return <></>;
+    }
     const name = (
       fieldArrayName ? fieldArrayName + "." + data.name : data.name
     ) as any;
@@ -109,7 +116,7 @@ const FormBuilder = <T extends FieldValues>({
       case FieldsTypeEnum.ARRAY:
         return (
           <>
-            {watch && (
+            {watch && data.addMoreLength !== 0 && (
               <FieldArrayComponent
                 fields={fields}
                 control={control}

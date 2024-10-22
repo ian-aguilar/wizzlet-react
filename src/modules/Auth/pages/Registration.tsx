@@ -45,7 +45,7 @@ const Registration = () => {
     const { error, data } = await registerUserApi(registerPayload);
     if (!error) {
       const notificationPayload = {
-        title: `${values?.firstName} ${values?.lastName} Registered`,
+        title: ` Registered`,
         description: `${values?.firstName} ${values?.lastName} has added a new register`,
         is_read: false,
         type: Type.NOTIFICATION,
