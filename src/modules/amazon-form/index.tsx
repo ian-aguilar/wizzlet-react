@@ -28,9 +28,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "./validations";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { useCreateUserNotificationInDbApi } from "../eBay-form/services/productBasicForm.service";
+import { useSelector } from "react-redux";
+import { userSelector } from "@/redux/slices/userSlice";
+import { selectSocket } from "@/redux/slices/socketSlice";
 
 const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
+
+  const user = useSelector(userSelector);
+  const socket = useSelector(selectSocket);
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
@@ -129,7 +135,14 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
           type: Type.NOTIFICATION,
           marketplace: MARKETPLACE.AMAZON,
         };
-        createUserNotificationInDbApi(notificationPayload);
+        const { data, error } = await createUserNotificationInDbApi(
+          notificationPayload
+        );
+        if (data && !error) {
+          if (socket) {
+            socket.emit("user_notification", user?.id);
+          }
+        }
         onComplete(productId);
       }
     } else {

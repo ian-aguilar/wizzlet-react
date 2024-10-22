@@ -1,5 +1,4 @@
 import { DoubleTickSVG } from "@/assets/Svg";
-// import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NotificationGroup, notificationType } from "./types";
@@ -10,6 +9,8 @@ import {
 } from "./services";
 import { modifiedNotifications } from "./helper";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectSocket } from "@/redux/slices/socketSlice";
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true); // Track if there are more notifications to load
@@ -20,6 +21,8 @@ const Notifications = () => {
     Type.NOTIFICATION
   );
   const [notifications, setNotifications] = useState<notificationType[]>([]);
+
+  const socket = useSelector(selectSocket); // Use the selector to get the socket
 
   const { getNotificationAPI } = useFetchNotificationAPI();
   const { setMarkReadAPI } = useSetMarkReadNotificationAPI();
@@ -59,10 +62,13 @@ const Notifications = () => {
 
   const handleMarkRead = async () => {
     const ids = notifications?.map((item) => item.id);
-    const { data } = await setMarkReadAPI({ ids: ids });
-    if (data) {
+    const { data, error } = await setMarkReadAPI({ ids: ids });
+    if (data && !error) {
       setReload((prev) => !prev);
       setNotifications([]);
+      if (socket) {
+        socket.emit("notifications_read", false);
+      }
     }
   };
 
@@ -168,15 +174,13 @@ const Notifications = () => {
                                   {notification.product_id ? (
                                     <Link
                                       to={`/inventory-management/product-form/1/${notification.product_id}`}
-                                      className="underline text-blackPrimary font-medium"
-                                    >
+                                      className="underline text-blackPrimary font-medium">
                                       #{notification.product_id}
                                     </Link>
                                   ) : notification.register_user ? (
                                     <Link
                                       to={`/user-management/view/${notification.register_user}`}
-                                      className="underline text-blackPrimary font-medium"
-                                    >
+                                      className="underline text-blackPrimary font-medium">
                                       @{notification.register_user}
                                     </Link>
                                   ) : null}{" "}

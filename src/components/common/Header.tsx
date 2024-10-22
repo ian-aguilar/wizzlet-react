@@ -1,35 +1,32 @@
-// ** packages **
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-// ** icons/svg **
 import { HamburgerIcon, NotificationIcon, RightArrowWhite } from "@/assets/Svg";
 import MainLogo from "/images/logo.svg";
 import ProfilePlaceholder from "/images/profile-placeholder.png";
 import Logo from "/images/logo.svg";
-
-// ** redux **
+import { setSocket } from "@/redux/slices/socketSlice";
 import { setRemoveUser, userSelector } from "@/redux/slices/userSlice";
-import { setLogoutData } from "@/redux/slices/authSlice";
+import { getAuth, setLogoutData } from "@/redux/slices/authSlice";
 import { PrivateRoutesPath, RoutesPath } from "@/modules/Auth/types";
 import Button from "../form-fields/components/Button";
 import { btnShowType } from "../form-fields/types";
 import { useEffect, useRef, useState } from "react";
 import ModalNav from "@/modules/cms/common/ModalNav";
 import Notifications from "../notification";
-import io from "socket.io-client";
+import useSocket from "@/socket/connection";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(userSelector);
+  const auth = useSelector(getAuth);
 
-  const socket = io("http://192.168.18.46:8001");
+  const socket = useSocket(auth.token);
 
   //-----------------States--------------------------
   const [isSidebar, setIsSidebar] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  // const [hasNotification, setHasNotification] = useState(false);
+  const [hasNotification, setHasNotification] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -50,20 +47,22 @@ const Header = ({ type }: { type: string }) => {
   };
 
   useEffect(() => {
-    // Emit an event when the user logs in to identify the user on the backend
+    if (!socket) {
+      return;
+    }
+
     socket.emit("user_connected", user?.id);
 
     // Listen for notifications from the backend
     socket.on("notification_dot", (showDot: boolean) => {
-      console.log("🚀 ~ socket.on ~ showDot:", showDot);
-      // setHasNotification(showDot);
+      setHasNotification(showDot);
     });
 
     return () => {
       // Clean up the socket connection when the component is unmounted
       socket.off("notification_dot");
     };
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -114,9 +113,12 @@ const Header = ({ type }: { type: string }) => {
                 <div
                   className="w-14 h-14 min-w-14 rounded-full border border-greyBorder hover:bg-greenPrimary/5 flex justify-center items-center transition-all duration-300 relative cursor-pointer"
                   onClick={toggleNotification}>
-                  <div className="NotificationAlertDot absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary border border-greyBorder/50">
-                    &nbsp;
-                  </div>
+                  {hasNotification ? (
+                    <div className="NotificationAlertDot absolute top-0 -right-0.5 w-3 h-3 min-w-3 rounded-full bg-greenPrimary border border-greyBorder/50">
+                      &nbsp;
+                    </div>
+                  ) : null}
+
                   <NotificationIcon />
                 </div>
 
@@ -147,6 +149,7 @@ const Header = ({ type }: { type: string }) => {
                   onClick={() => {
                     dispatch(setLogoutData());
                     dispatch(setRemoveUser());
+                    dispatch(setSocket(null));
                   }}>
                   Logout
                 </span>
