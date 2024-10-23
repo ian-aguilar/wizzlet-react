@@ -1,113 +1,121 @@
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
+import { MarketplaceRevenue, RevenueProfitDonutChartProps } from "../types";
+import { calculateMarketplaceRevenue } from "../helper";
+import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
+import { pageLimitStyle } from "@/modules/import-products/constants";
+import { DataNotFound } from "@/components/svgIcons";
 
-interface RevenueProfitDonutChartProps {
-  startDate: Date;
-  endDate: Date;
-}
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
-  startDate,
-  endDate,
+  connectedMarketplace,
+  revenueData,
+  selectedMarketplace,
 }) => {
-  ChartJS.register(ArcElement, Tooltip, Legend, Title);
+  //------------------------------State---------------------------------
+  const [dataType, setDataType] = useState<string>("Revenue");
+  const [marketplaceData, setMarketplaceData] = useState<MarketplaceRevenue[]>(
+    []
+  );
+  const [chartData, setChartData] = useState<any>(null);
 
-  const [ebayProfit, setEbayProfit] = useState<number>(55238); // Initial profit for eBay
-  const [amazonProfit, setAmazonProfit] = useState<number>(55238); // Initial profit for Amazon
+  const fetchDataByDateRange = () => {
+    const selectedMarketplaceIds =
+      selectedMarketplace?.map((item) => Number(item?.value)) || [];
 
-  // Mock function to fetch data based on date range
-  const fetchDataByDateRange = (start: Date, end: Date) => {
-    // Implement your logic to fetch or calculate profits based on date range
-    setEbayProfit(Math.floor(Math.random() * 100000));
-    setAmazonProfit(Math.floor(Math.random() * 100000));
+    const { totalRevenue, names } = calculateMarketplaceRevenue(
+      revenueData,
+      connectedMarketplace,
+      selectedMarketplaceIds.length > 0 ? selectedMarketplaceIds : undefined
+    );
+
+    const combinedData: MarketplaceRevenue[] = names.map((name, index) => ({
+      name: capitalizeFirstLetter(name),
+      value: totalRevenue[index],
+    }));
+
+    setMarketplaceData(combinedData);
+
+    setChartData({
+      labels: names,
+      datasets: [
+        {
+          data: totalRevenue,
+          backgroundColor: ["#E1E1E1", "#09A17A"],
+          borderColor: ["#E1E1E1", "#09A17A"],
+          borderWidth: 0,
+          hoverBorderWidth: 7,
+        },
+      ],
+    });
   };
 
   useEffect(() => {
-    // Fetch new data whenever startDate or endDate changes
-    fetchDataByDateRange(startDate, endDate);
-  }, [startDate, endDate]);
-
-  const data = {
-    labels: ["eBay", "Amazon"],
-    datasets: [
-      {
-        data: [ebayProfit, amazonProfit],
-        backgroundColor: ["#E1E1E1", "#34B2A0"], // Adjust colors as needed
-        borderWidth: 0,
-      },
-    ],
-  };
+    fetchDataByDateRange();
+  }, [revenueData, connectedMarketplace, selectedMarketplace]);
 
   const options = {
     responsive: true,
     plugins: {
       legend: {
         position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Revenue & Profit",
-      },
-      tooltip: {
-        enabled: false, // Disable default tooltips
-        external: (context: any) => {
-          const { chart, tooltip } = context;
-          let tooltipEl = document.getElementById("chartjs-tooltip");
-
-          if (!tooltipEl) {
-            tooltipEl = document.createElement("div");
-            tooltipEl.id = "chartjs-tooltip";
-            tooltipEl.style.opacity = "0";
-            tooltipEl.style.position = "absolute";
-            tooltipEl.style.background = "#fff";
-            tooltipEl.style.border = "1px solid #ccc";
-            tooltipEl.style.padding = "8px";
-            tooltipEl.style.borderRadius = "4px";
-            tooltipEl.style.pointerEvents = "none";
-            tooltipEl.style.zIndex = "1000";
-            document.body.appendChild(tooltipEl);
-          }
-
-          if (tooltip.opacity === 0) {
-            tooltipEl.style.opacity = "0";
-            return;
-          }
-
-          if (tooltip.body) {
-            const bodyLines = tooltip.body.map((b: any) => b.lines);
-            const title = tooltip.title || [];
-
-            tooltipEl.innerHTML = `
-              <div style="font-weight: bold;">${title[0]}</div>
-              <div>Profit: $${bodyLines[0]}</div>
-            `;
-          }
-
-          const position = chart.canvas.getBoundingClientRect();
-
-          tooltipEl.style.opacity = "1";
-          tooltipEl.style.left =
-            position.left + window.pageXOffset + tooltip.caretX + "px";
-          tooltipEl.style.top =
-            position.top + window.pageYOffset + tooltip.caretY + "px";
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+          font: {
+            size: 16,
+            family: "Jost",
+          },
         },
       },
+      tooltip: {
+        enabled: true,
+      },
     },
+    cutout: "70%",
+    radius: "80%",
   };
 
   return (
-    <div>
-      <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-        <Doughnut data={data} options={options} />
-        <div style={{ textAlign: "center" }}>
-          <h4>eBay Profit: ${ebayProfit}</h4>
-          <h4>Amazon Profit: ${amazonProfit}</h4>
+    <>
+      <div className="flex gap-4 justify-between">
+        <p className="font-bold text-base pt-2">Marketplace Revenue & Profit</p>
+        <div>
+          <select
+            className="text-black bg-white py-2 lg:px-2 border border-grayText focus:outline-none rounded-md   cursor-pointer"
+            id="dataType"
+            value={dataType}
+            onChange={(e) => setDataType(e.target.value)}
+            style={pageLimitStyle}
+          >
+            <option value="Revenue">Revenue</option>
+          </select>
         </div>
       </div>
-
-      <div id="chartjs-tooltip" style={{ opacity: 0 }}></div>
-    </div>
+      <div className="flex flex-col justify-center w-full h-full">
+        {chartData && revenueData.length > 0 ? (
+          <div className="max-w-[195px] mx-auto">
+            <Doughnut data={chartData} options={options} />
+          </div>
+        ) : (
+          <DataNotFound className=" !h-[20vh]" />
+        )}
+        <div className="text-center pt-6 text-grayText text-base">
+          {marketplaceData?.map((item) => (
+            <h4 key={item.name}>
+              {item?.name} Revenue:{" "}
+              <span className="font-semibold text-blackPrimary">
+                ${item?.value}
+              </span>
+            </h4>
+          ))}
+        </div>
+        <div id="chartjs-tooltip" style={{ opacity: 0 }}></div>
+      </div>
+    </>
   );
 };
 

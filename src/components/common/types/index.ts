@@ -27,6 +27,7 @@ export interface FileUploadProps {
 export interface InputSwitchProps {
   id: number;
   status: string;
+  className?: string;
   onToggle: (id: number, status: string) => void;
 }
 
@@ -81,7 +82,7 @@ export interface ISetSelectOptions {
 export interface ISearchBox {
   value?: string | number;
   name: string;
-  placeholder: string;
+  placeholder?: string;
   className: string;
   InputLeftIcon?: ReactNode;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -95,15 +96,6 @@ export enum MARKETPLACE {
 export enum MARKETPLACEID {
   EBAY = 2,
   AMAZON = 1,
-}
-
-export interface IInputBox {
-  type: string;
-  value?: string | number | Date;
-  name: string;
-  placeholder: string;
-  className?: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 export type IDatePickerBoxProps<T extends FieldValues> = {

@@ -7,11 +7,9 @@ import { debounce } from "lodash";
 import {
   AddIconBtn,
   AutoSyncIcon,
-  BulkImportIcon,
   CategoryBtnIcon,
   CheckIconBtn,
-  DownArrowIcon,
-  DownloadCSVIcon,
+  DeleteIcon,
   SearchIcon,
 } from "@/assets/Svg";
 
@@ -31,22 +29,38 @@ import { status } from "./helper/constant";
 
 // ** Services **
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
-import { useGetCategoriesAPI, useProductListingAPI } from "./services";
+import {
+  useGetCategoriesAPI,
+  useProductListingAPI,
+  useProductsDeleteAPI,
+} from "./services";
 import { useFetchLabelDataAPI } from "../settings/services/label.service";
 
 // ** Types **
 import { IMarketplace } from "../marketplace/types";
 import { btnShowType } from "@/components/form-fields/types";
 import { E_PRODUCT_STATUS, Option, TopFilter, productProps } from "./types";
+import { ErrorModal } from "@/components/common/ErrorModal";
+import { DataNotFound } from "@/components/svgIcons";
+import { ISyncDetails, SyncStatus } from "../import-products/types";
+import { useFetchSyncDetailsAPI } from "../import-products/services/importProducts.service";
+import moment from "moment";
 
 const InventoryManagement = () => {
   // ** States **
   const [totalItem, setTotalItem] = useState<number>();
   const [selectedMarketplace, setSelectedMarketplace] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number | string>(1);
-  const [category, setCategory] = useState<Option[] | undefined>(undefined);
+  const [category, setCategory] = useState<Option[] | null>(null);
   const [productTag, setProductTag] = useState<Option[] | null>(null);
   const [isFilterBoxOpen, setIsFilterBoxOpen] = useState<boolean>(false);
+  const [selectAll, setSelectAll] = useState(false);
+  const [checkboxes, setCheckboxes] = useState<number[] | null>([]);
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncDetails, setSyncDetails] = useState<ISyncDetails>();
+  const [counter, setCounter] = useState(0);
+
   const [currentFilter, setCurrentFilter] = useState<Option | undefined>(
     undefined
   );
@@ -83,6 +97,9 @@ const InventoryManagement = () => {
     useFetchLabelDataAPI();
   const { getProductsDetailsAPI, isLoading: productListLoading } =
     useProductListingAPI();
+  const { deleteProductsAPI, isLoading: deleteProductLoading } =
+    useProductsDeleteAPI();
+  const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
 
   // ** API call for get connected marketplace **
   const marketplaceListing = async () => {
@@ -106,14 +123,13 @@ const InventoryManagement = () => {
     status: string = "",
     page: number = Number(currentPage),
     limit: number = Number(itemPerPage.value),
-    categoryName: Option[] | undefined = category,
+    categoryName: Option[] | null = category,
     filterCreatedDate: Date | undefined = filterDate,
     productTypeData: Option | null = productType,
     productLabel: Option[] | null = productTag
   ) => {
-    const categoryLabels = categoryName?.map((item) => item.label) || undefined;
-    const productTags = productLabel?.map((item) => item.label) || undefined;
-    console.log("productTags: ", productTags);
+    const categoryLabels = categoryName?.map((item) => item.label) || null;
+    const productTags = productLabel?.map((item) => item.label) || null;
     const { data, error } = await getProductsDetailsAPI({
       productStatus: status !== "" ? status : productStatus,
       selectedMarketplace: {
@@ -134,6 +150,7 @@ const InventoryManagement = () => {
     if (!error && data) {
       setProducts(data?.data);
       setTotalItem(data?.data?.totalRecord);
+      getSyncData();
     }
   };
 
@@ -142,6 +159,8 @@ const InventoryManagement = () => {
     (selectedItem: { selected: number }): void => {
       const newPage = selectedItem.selected + 1;
       setCurrentPage(newPage);
+      setCheckboxes([]);
+      setSelectAll(false);
       getProductsDetails(
         searchTerm,
         selectedMarketplace,
@@ -171,7 +190,6 @@ const InventoryManagement = () => {
       page
     );
     if (!error && data) {
-      console.log(data?.data);
       return data?.data;
     }
   };
@@ -208,6 +226,10 @@ const InventoryManagement = () => {
   // ** handle product status **
   const handleProductStatus = (item: E_PRODUCT_STATUS) => {
     setCurrentPage(1);
+    if (item !== productStatus) {
+      setCheckboxes([]);
+      setSelectAll(false);
+    }
     setProductStatus(item);
   };
 
@@ -245,7 +267,7 @@ const InventoryManagement = () => {
       value: string,
       selectedMarketplace: number[],
       status: string,
-      category: Option[] | undefined,
+      category: Option[] | null,
       filterDate: Date | undefined,
       productType: Option | null,
       productTag: Option[] | null
@@ -263,6 +285,52 @@ const InventoryManagement = () => {
       ),
     [itemPerPage]
   );
+
+  const handleSelectAllChange = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
+    const selectedBox: number[] | null = products?.products
+      .map((item) => (newSelectAll ? item?.id : null))
+      .filter((item): item is number => item !== null);
+    setCheckboxes(selectedBox);
+  };
+
+  const handleProductCheckboxChange = (id: number) => {
+    const isChecked = checkboxes ? checkboxes!.includes(id) : null;
+    const updatedCheckboxes = isChecked
+      ? checkboxes!.filter((itemId) => itemId !== id)
+      : checkboxes
+      ? [...checkboxes, id]
+      : [id];
+    setCheckboxes(updatedCheckboxes);
+    setSelectAll(updatedCheckboxes.length === products?.products.length);
+  };
+
+  const closeDeleteModel = () => setCheckboxes(null);
+
+  const handleRemove = async () => {
+    closeDeleteModel();
+    setIsDeleteModel(false);
+    if (checkboxes?.length) {
+      const { error } = await deleteProductsAPI(checkboxes as number[]);
+      if (error) console.log(error);
+      else {
+        closeDeleteModel();
+        setIsDeleteModel(false);
+        await getProductsDetails(
+          searchTerm,
+          selectedMarketplace,
+          productStatus,
+          1,
+          Number(itemPerPage.value),
+          category,
+          filterDate,
+          productType,
+          productTag
+        );
+      }
+    }
+  };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.currentTarget.value.trim());
@@ -299,6 +367,54 @@ const InventoryManagement = () => {
     productType,
     productTag,
   ]);
+
+  const getSyncData = async () => {
+    const { data } = await fetchSyncDetailsApi(null);
+    if (data) {
+      if (
+        data?.data?.status === SyncStatus.COMPLETED ||
+        data?.data?.status === SyncStatus.FAILED
+      ) {
+        setSyncing(false);
+      } else if (
+        data?.data?.status === SyncStatus.INPROGRESS ||
+        data?.data?.status === SyncStatus.PENDING
+      ) {
+        setSyncing(true);
+      } else {
+        setSyncing(false);
+      }
+      setSyncDetails(data?.data);
+    } else {
+      setSyncing(false);
+    }
+  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (syncing) {
+      getSyncData();
+    }
+  }, [counter]);
+
+  const onChangeData = async () => {
+    await getProductsDetails(
+      searchTerm,
+      selectedMarketplace,
+      productStatus,
+      1,
+      Number(itemPerPage.value),
+      category,
+      filterDate,
+      productType,
+      productTag
+    );
+  };
 
   return (
     <div>
@@ -337,8 +453,7 @@ const InventoryManagement = () => {
                       }}
                     />
                   )
-                }
-              >
+                }>
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
@@ -367,7 +482,6 @@ const InventoryManagement = () => {
                       maxDate={new Date()}
                       name="dateCreated"
                       onChange={(e) => {
-                        console.log("Date:", e);
                         setCurrentPage(1);
                         setFilterDate(new Date(e));
                       }}
@@ -387,7 +501,6 @@ const InventoryManagement = () => {
                         { id: 2, name: "Variant" },
                       ]}
                       onChange={(e) => {
-                        console.log("Product type:", e);
                         setCurrentPage(1);
                         if (e) {
                           setProductType(e);
@@ -470,9 +583,7 @@ const InventoryManagement = () => {
                       BtnIconLeft={
                         selectedMarketplace.includes(item.id) ? (
                           <CheckIconBtn className="text-white inline-block mr-2 w-4 h-4" />
-                        ) : (
-                          <></>
-                        )
+                        ) : null
                       }
                     />
                   );
@@ -483,20 +594,28 @@ const InventoryManagement = () => {
             </div>
           </div>
           <div className="RightItems flex gap-4 items-center">
-            <Button
+            {/* <Button
               btnName="Sync Now"
               btnClass="!bg-greenPrimary text-white !text-base"
               BtnIconLeft={
                 <AutoSyncIcon className="text-white w-6 h-6 min-w-6 inline-block mr-2" />
               }
-            />
+            /> */}
             <div className="flex gap-2 items-center ">
-              <span className="p-3 bg-grayLightBody/5 inline-block rounded-full">
+              <span className="p-3 bg-greenPrimary/5 inline-block rounded-full">
                 <AutoSyncIcon className="text-greenPrimary w-9 h-9 min-w-9" />
               </span>
               <div className="whitespace-nowrap text-sm">
-                <div className="text-black font-medium">Last Auto Sync</div>
-                <p className="text-grayText">15 May 2020 9:30 am</p>
+                <div className="text-black font-medium">Last Sync</div>
+                <p className="text-grayText">
+                  {syncDetails?.status === SyncStatus.PENDING
+                    ? "In Pending"
+                    : syncDetails?.status === SyncStatus.INPROGRESS
+                    ? "In Progress"
+                    : syncDetails?.end_time
+                    ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
+                    : `Not sync yet`}
+                </p>
               </div>
             </div>
           </div>
@@ -514,16 +633,14 @@ const InventoryManagement = () => {
                       ? `text-greenPrimary border-greenPrimary`
                       : `text-black border-greyBorder`
                   }  text-lg gap-2 border-b-2 capitalize cursor-pointer font-medium hover:bg-greenPrimary/10  transition-all duration-300 hover:transition-all hover:duration-300`}
-                  onClick={() => handleProductStatus(item)}
-                >
+                  onClick={() => handleProductStatus(item)}>
                   {item}
                   <span
                     className={`text-base ${
                       productStatus === item
                         ? `bg-greenPrimary/10`
                         : `bg-greyBorder/50`
-                    } px-1 rounded-md`}
-                  >
+                    } px-1 rounded-md`}>
                     {productStatus === item
                       ? totalItem
                       : products.otherStatusTotal}
@@ -541,7 +658,7 @@ const InventoryManagement = () => {
               InputLeftIcon={<SearchIcon />}
               onChange={handleSearch}
             />
-            <Button
+            {/* <Button
               showType={btnShowType.primary}
               btnClass=" bg-grayText text-white !font-medium  !text-sm my-2.5  "
               btnName="Bulk Import CSV"
@@ -552,18 +669,18 @@ const InventoryManagement = () => {
               btnClass=" !font-medium hover:border-blackPrimary/20 text-grayText  !text-sm  my-2.5   "
               btnName="Download CSV "
               BtnIconLeft={<DownloadCSVIcon className="text-grayText" />}
-            />
+            /> */}
             <AsyncSelectField
               name="Categories select box"
               serveSideSearch={true}
               getOnChange={(e) => {
                 setCurrentPage(1);
                 if (!e.length) {
-                  setCategory(undefined);
+                  setCategory(null);
                   return;
                 }
                 if (e) {
-                  setCategory(e);
+                  setCategory(() => [...e]);
                   getProductsDetails(
                     searchTerm,
                     selectedMarketplace,
@@ -582,7 +699,7 @@ const InventoryManagement = () => {
               isSearchable={true}
               notClearable={true}
               getOptions={getCategories}
-              value={category !== undefined || null ? category : undefined}
+              value={category ? category : null}
               className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-52 !text-base  "
               placeholder="By Category"
             />
@@ -592,12 +709,31 @@ const InventoryManagement = () => {
         <div className="ActiveItemsBox px-5 py-2 bg-grayLightBody/5 mt-2">
           <div className="flex gap-5 justify-between items-center flex-wrap mb-3">
             <div className="flex gap-5 items-center ">
-              <h3 className="text-[26px] font-medium ">
+              <h3 className="text-[26px] font-medium">
                 {productStatus === E_PRODUCT_STATUS.active
                   ? `Active Items`
                   : `Draft Items`}
               </h3>
-              <Checkbox checkLabel="Check All" />
+              {products?.products.length > 0 && (
+                <Checkbox
+                  checkLabel="Select All"
+                  isChecked={checkboxes?.length === products?.products.length}
+                  onChange={handleSelectAllChange}
+                />
+              )}
+              {checkboxes && checkboxes?.length > 0 && (
+                <div>
+                  <Button
+                    showType={btnShowType.red}
+                    btnClass="text-white !font-medium !text-base flex gap-1"
+                    btnName={`Delete Items ${
+                      checkboxes?.length ? `(${checkboxes?.length})` : null
+                    }`}
+                    BtnIconLeft={<DeleteIcon className="text-white " />}
+                    onClickHandler={() => setIsDeleteModel(true)}
+                  />
+                </div>
+              )}
             </div>
             <div className="flex gap-5 items-center ">
               <div className="inline-flex gap-2 items-center text-grayText">
@@ -633,19 +769,28 @@ const InventoryManagement = () => {
                 />
                 Entries
               </div>
-              <Button
+              {/* <Button
                 btnClass="hover:border-grayText/20 !text-base !font-medium !px-3 !py-2 "
                 btnName="Newest"
                 showType={btnShowType.primary}
                 btnEndIcon={<DownArrowIcon />}
-              />
+              /> */}
             </div>
           </div>
           <div>
-            <Product
-              isLoading={productListLoading}
-              currentData={products.products}
-            />
+            {products && products.products.length > 0 ? (
+              <Product
+                isLoading={productListLoading}
+                currentData={products.products}
+                checkboxes={checkboxes}
+                checkboxOnChange={handleProductCheckboxChange}
+                onChangeData={onChangeData}
+              />
+            ) : (
+              <div className="h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_450px)]">
+                <DataNotFound className="!h-[30vh]" />
+              </div>
+            )}
           </div>
         </div>
         <div className="flex justify-end pt-2">
@@ -659,6 +804,20 @@ const InventoryManagement = () => {
               onPageChanged={onPageChanged}
             />
           ) : null}
+        </div>
+        <div>
+          {isDeleteModel && (
+            <ErrorModal
+              onClose={() => {
+                setCheckboxes(null);
+                setIsDeleteModel(false);
+              }}
+              isLoading={deleteProductLoading}
+              onSave={handleRemove}
+              heading="Are you sure?"
+              subText="This will delete all selected product data from this platform only."
+            />
+          )}
         </div>
       </section>
     </div>

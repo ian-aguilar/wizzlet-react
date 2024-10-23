@@ -10,8 +10,12 @@ import {
   Tooltip,
   Legend,
   Filler,
+  ChartOptions,
+  ChartData,
+  ScriptableContext,
 } from "chart.js";
 import { RevenueProfitChartProps } from "../types";
+import { getRevenueAndLabels } from "../helper";
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +31,9 @@ ChartJS.register(
 const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   startDate,
   endDate,
+  totalRevenue,
+  data,
+  selectedMarketplace,
 }) => {
   useEffect(() => {
     const createCustomTooltip = () => {
@@ -42,109 +49,104 @@ const RevenueProfitChart: React.FC<RevenueProfitChartProps> = ({
   }, []);
 
   // Dynamically generate chart data based on selected month or date range
-  const getDynamicData = () => {
-    const labels = [];
-    const revenueData = [];
-    const profitData = [];
+  const getDynamicData = (): ChartData<"line"> => {
+    const selectedMarketplaceIds =
+      selectedMarketplace?.map((item) => Number(item?.value)) || [];
+    const { revenues, labels } = getRevenueAndLabels(
+      data,
+      startDate?.toLocaleDateString("en-CA") as string,
+      endDate?.toLocaleDateString("en-CA") as string,
+      selectedMarketplaceIds.length > 0 ? selectedMarketplaceIds : undefined
+    );
 
-    const currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-      labels.push(
-        currentDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        })
+    const getGradient = (ctx: CanvasRenderingContext2D, chartArea: any) => {
+      const gradient = ctx.createLinearGradient(
+        0,
+        chartArea.bottom,
+        0,
+        chartArea.top
       );
-      revenueData.push(Math.floor(Math.random() * 20000) + 30000);
-      profitData.push(Math.floor(Math.random() * 20000) + 25000);
-
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+      gradient.addColorStop(0.9, "rgba(9, 161, 122, 0.20)");
+      gradient.addColorStop(0.1, "transparent");
+      return gradient;
+    };
 
     return {
       labels,
       datasets: [
         {
           label: "Revenue",
-          data: revenueData,
-          borderColor: "rgba(75, 192, 192, 1)",
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          data: revenues,
+          borderColor: "#09A17A",
           tension: 0.4,
-          pointBackgroundColor: "rgba(75, 192, 192, 1)",
+          pointBackgroundColor: "rgba(9, 161, 122, 1)",
           fill: true,
-        },
-        {
-          label: "Profit",
-          data: profitData,
-          borderColor: "rgba(54, 162, 235, 1)",
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          tension: 0.4,
-          pointBackgroundColor: "rgba(54, 162, 235, 1)",
-          fill: true,
+          backgroundColor: (context: ScriptableContext<"line">) => {
+            const chart = context.chart;
+            const { ctx, chartArea } = chart;
+
+            if (!chartArea) return;
+            return getGradient(ctx, chartArea);
+          },
         },
       ],
     };
   };
 
-  const options = {
+  const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
       legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Revenue & Profit",
+        position: "top",
+        labels: {
+          usePointStyle: true,
+          boxWidth: 8,
+          boxHeight: 8,
+          font: {
+            size: 16,
+            family: "Jost",
+          },
+        },
       },
       tooltip: {
-        enabled: false,
-        external: (context: any) => {
-          const { chart, tooltip } = context;
-          const tooltipEl = document.getElementById("chartjs-tooltip");
-
-          if (!tooltipEl) {
-            return;
-          }
-
-          if (tooltip.opacity === 0) {
-            tooltipEl.style.opacity = "0";
-            return;
-          }
-
-          tooltipEl.innerHTML = `
-            <div style="background: white; padding: 8px; border-radius: 4px; box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);">
-              <div style="font-weight: bold;">${tooltip.body[0].lines[0]}</div>
-              <div>Date: ${tooltip.dataPoints[0].label}</div>
-            </div>
-          `;
-
-          const position = chart.canvas.getBoundingClientRect();
-          tooltipEl.style.opacity = "1";
-          tooltipEl.style.position = "absolute";
-          tooltipEl.style.left =
-            position.left + window.pageXOffset + tooltip.caretX + "px";
-          tooltipEl.style.top =
-            position.top + window.pageYOffset + tooltip.caretY + "px";
-          tooltipEl.style.pointerEvents = "none";
-        },
+        enabled: true,
       },
     },
     scales: {
+      x: {
+        display: true,
+        grid: {
+          drawOnChartArea: false,
+        },
+      },
       y: {
         beginAtZero: true,
         ticks: {
-          callback: function (value: number) {
-            return `$${value / 1000}K`;
-          },
+          callback: (value) => `${value}K`, // Scale tick values for display
         },
       },
     },
   };
 
   return (
-    <div>
-      <Line data={getDynamicData()} options={options} />
-    </div>
+    <>
+      <div className="flex justify-between gap-4 flex-wrap">
+        <p className="font-bold text-base">Revenue</p>
+        <div className="flex gap-2 text-grayText">
+          <div>
+            Total Revenue:{" "}
+            <span className="font-bold text-blackPrimary">${totalRevenue}</span>{" "}
+          </div>
+        </div>
+      </div>
+      <div>
+        <Line
+          data={getDynamicData()}
+          options={options}
+          className="w-full h-full"
+        />
+      </div>
+    </>
   );
 };
 

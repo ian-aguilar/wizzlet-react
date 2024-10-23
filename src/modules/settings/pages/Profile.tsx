@@ -10,22 +10,33 @@ import { btnShowType } from "@/components/form-fields/types";
 import { IFormInputs } from "../types";
 import { profileDefaultValue } from "@/constants";
 import { useEffect } from "react";
-import { useFetchProfileDataAPI, useProfileDataPostAPI } from "../services/profile.service";
+import {
+  useFetchProfileDataAPI,
+  useProfileDataPostAPI,
+} from "../services/profile.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { profileValidationSchema } from "../validation-schema/profileValidation";
 import { useSelector } from "react-redux";
 import { UserRole, userSelector } from "@/redux/slices/userSlice";
+import FileField from "@/components/form-fields/components/FileField";
+import { isArray } from "lodash";
 
 const Profile = () => {
   const {
     control,
     handleSubmit,
+    register,
+    setError,
+    setValue,
+    clearErrors,
+    watch,
     reset: ResetForm,
     formState: { errors },
   } = useForm<IFormInputs>({
     resolver: yupResolver(profileValidationSchema),
     defaultValues: profileDefaultValue,
   });
+  console.log(errors, "==============");
 
   // ================= Custom hooks ====================
   const { getProfileDataAPI } = useFetchProfileDataAPI();
@@ -48,17 +59,33 @@ const Profile = () => {
         organizationName: data?.data?.organization_name,
         contactNumber: data?.data?.contact_number,
         email: data?.data?.email,
+        profileImage: data?.data?.url,
       });
     }
   };
 
   const onSubmit = async (payload: IFormInputs) => {
-    await profileDataPostAPI({
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      organizationName: payload.organizationName,
-      contactNumber: payload.contactNumber,
-    });
+    const formData = new FormData();
+
+    if (payload.contactNumber) {
+      formData.append("contactNumber", payload.contactNumber.toString());
+    }
+    if (payload.organizationName) {
+      formData.append("organizationName", payload.organizationName.toString());
+    }
+    formData.append("lastName", payload.lastName.toString());
+    formData.append("firstName", payload.firstName.toString());
+    formData.append("email", payload.email.toString());
+
+    if (isArray(payload.profileImage) && payload.profileImage.length > 0) {
+      payload.profileImage.forEach((file: File | Blob) => {
+        if (file) {
+          formData.append(`profileImage`, file);
+        }
+      });
+    }
+
+    await profileDataPostAPI(formData);
   };
 
   return (
@@ -71,6 +98,23 @@ const Profile = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="SettingsContentBox lg:pr-24 xl:pr-72 ">
             <div className="grid grid-cols-12 lg:gap-4">
+              <div className=" col-span-12 lg:col-span-6 row-span-5 ">
+                <FileField
+                  name="profileImage"
+                  label="Profile Photo"
+                  control={control}
+                  errors={errors}
+                  maxSize={8}
+                  allowedFormat={["image/png", "image/jpeg"]}
+                  register={register}
+                  setError={setError}
+                  setValue={setValue}
+                  clearErrors={clearErrors}
+                  watch={watch}
+                  isMulti={false}
+                  MainclassName="  h-[20vh] lg:h-[95%]"
+                />
+              </div>
               <div className=" col-span-12 lg:col-span-6">
                 <Input
                   textLabelName="First Name"
@@ -91,41 +135,42 @@ const Profile = () => {
                   type="text"
                 />
               </div>
-            </div>
-            {user?.role === UserRole.USER && (
-              <div className="grid grid-cols-12 lg:gap-4">
-                <div className=" col-span-12 lg:col-span-6">
-                  <Input
-                    textLabelName="Organization Name"
-                    control={control}
-                    name="organizationName"
-                    placeholder="xyz"
-                    errors={errors}
-                    type="text"
-                  />
-                </div>
-                <div className=" col-span-12 lg:col-span-6">
-                  <Input
-                    textLabelName="Contact Number"
-                    control={control}
-                    name="contactNumber"
-                    placeholder="1234567890"
-                    errors={errors}
-                    type="number"
-                  />
-                </div>
-              </div>
-            )}
 
-            <Input
-              textLabelName="Email"
-              control={control}
-              name="email"
-              errors={errors}
-              type="text"
-              isDisabled={true}
-            />
-            {/* <div className="text-sm text-grayText  ">
+              {user?.role === UserRole.USER && (
+                <>
+                  <div className=" col-span-12 lg:col-span-6">
+                    <Input
+                      textLabelName="Organization Name"
+                      control={control}
+                      name="organizationName"
+                      placeholder="xyz"
+                      errors={errors}
+                      type="text"
+                    />
+                  </div>
+                  <div className=" col-span-12 lg:col-span-6">
+                    <Input
+                      textLabelName="Contact Number"
+                      control={control}
+                      name="contactNumber"
+                      placeholder="1234567890"
+                      errors={errors}
+                      type="number"
+                    />
+                  </div>
+                </>
+              )}
+              <div className=" col-span-12 lg:col-span-6">
+                <Input
+                  textLabelName="Email"
+                  control={control}
+                  name="email"
+                  errors={errors}
+                  type="text"
+                  isDisabled={true}
+                />
+              </div>
+              {/* <div className="text-sm text-grayText  ">
               Do you want to change email?
               <Link
                 to=""
@@ -133,7 +178,8 @@ const Profile = () => {
                 Change
               </Link>
             </div> */}
-            <div className="pt-14">
+            </div>
+            <div className=" ">
               <Button
                 showType={btnShowType.green}
                 btnClass=" !w-auto !px-14 "

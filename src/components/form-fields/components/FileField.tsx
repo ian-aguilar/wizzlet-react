@@ -23,7 +23,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
     onFocus,
     setError,
     clearErrors,
+    isMulti,
     watch,
+    MainclassName,
   } = fieldProps;
 
   const defaultValue: File[] | string[] = Array.isArray(watch(name))
@@ -88,7 +90,9 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
   };
 
   return (
-    <div className="field__wrapper relative flex flex-col h-[95%] ">
+    <div
+      className={`field__wrapper relative flex flex-col h-[95%] ${MainclassName}`}
+    >
       <div className="field__inner__wrapper">
         <div className="file__upload__wrapper">
           <div className="upload__btn absolute inset-0 z-10 border border-greenPrimary/30 border-dashed bg-greenPrimary/5 rounded-md  ">
@@ -99,7 +103,7 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 render={({ field: { name: fieldName } }) => (
                   <input
                     id={id}
-                    multiple
+                    multiple={isMulti}
                     type="file"
                     onBlur={onBlur}
                     name={fieldName}

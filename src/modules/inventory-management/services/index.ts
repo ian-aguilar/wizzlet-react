@@ -1,5 +1,5 @@
 // ** Custom hook **
-import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosDelete, useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 const CATEGORIES_PATH = "/categories";
 const PRODUCT_LIST_PATH = "/products";
 export const useGetCategoriesAPI = () => {
@@ -37,3 +37,17 @@ export const useEditProductAPi = () => {
   };
   return { getEditProductsDetailsAPI, isLoading, isError, isSuccess };
 };
+
+export const useProductsDeleteAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
+
+  const deleteProductsAPI = async (productIds: number[]) => {
+    const queryString = productIds.map((id) => `${id}`).join(",");
+    return callApi(`${PRODUCT_LIST_PATH}/products-delete`, {
+      params: { productIds: queryString },
+    });
+  };
+  return { deleteProductsAPI, isLoading, isError, isSuccess };
+};
+
+

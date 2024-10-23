@@ -5,6 +5,7 @@ export const InputSwitch: React.FC<InputSwitchProps> = ({
   id,
   status,
   onToggle,
+  className,
 }) => {
   const handleToggle = () => {
     const newStatus = status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
@@ -12,10 +13,11 @@ export const InputSwitch: React.FC<InputSwitchProps> = ({
   };
 
   return (
-    <div>
+    <div className={` ${className} `}>
       <label
         htmlFor={`toggle-${id}`}
-        className="flex items-center cursor-pointer dark:text-grayLightBody">
+        className="flex items-center cursor-pointer dark:text-grayLightBody"
+      >
         <div className="relative">
           <input
             type="checkbox"

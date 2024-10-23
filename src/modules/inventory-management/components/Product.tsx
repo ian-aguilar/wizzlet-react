@@ -1,8 +1,11 @@
+import { useState } from "react";
 // ** Icons **
 import { DeleteIcon, EditLabelIcon } from "@/assets/Svg";
 
 // ** Components **
 import Checkbox from "@/components/form-fields/components/Checkbox";
+import { Loader } from "@/components/common/Loader";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 // ** Config **
 import { VITE_APP_API_URL } from "@/config";
@@ -10,17 +13,46 @@ import { VITE_APP_API_URL } from "@/config";
 // ** Types **
 import { productProps } from "../types";
 import { useNavigate } from "react-router-dom";
-import { DataNotFound } from "@/components/svgIcons";
-import { Loader } from "@/components/common/Loader";
+
+// ** Services **
+import { useProductsDeleteAPI } from "../services";
 
 const Product = ({
   currentData,
   isLoading,
+  checkboxes,
+  checkboxOnChange,
+  onChangeData,
 }: {
   currentData: productProps[];
   isLoading?: boolean;
+  checkboxes: number[] | null;
+  checkboxOnChange: (id: number) => void;
+  onChangeData: () => Promise<void>;
 }) => {
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [deleteProduct, setDeleteProduct] = useState<number | null>(null);
+  const closeDeleteModel = () => setDeleteProduct(null);
+
+  const { deleteProductsAPI, isLoading: deleteLoading } =
+    useProductsDeleteAPI();
+
   const navigate = useNavigate();
+
+  const handleRemove = async () => {
+    closeDeleteModel();
+    setIsDeleteModel(false);
+    if (deleteProduct) {
+      const { error } = await deleteProductsAPI([Number(deleteProduct)]);
+      if (error) console.log(error);
+      else {
+        closeDeleteModel();
+        setIsDeleteModel(false);
+        await onChangeData();
+      }
+    }
+  };
+
   const handleEditProduct = (productId: number) => {
     navigate(`/inventory-management/product-form/1/${productId}`);
   };
@@ -35,10 +67,12 @@ const Product = ({
               return (
                 <div
                   key={index}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3"
-                >
+                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3">
                   <div>
-                    <Checkbox checkLabel=" " />
+                    <Checkbox
+                      isChecked={checkboxes?.includes(item.id)}
+                      onChange={() => checkboxOnChange(item.id)}
+                    />
                   </div>
                   <div className="IBox flex gap-6 w-full ">
                     <div className="prodImg w-[170px]">
@@ -60,7 +94,11 @@ const Product = ({
                         <div onClick={() => handleEditProduct(item?.id)}>
                           <EditLabelIcon className="cursor-pointer" />
                         </div>
-                        <div>
+                        <div
+                          onClick={() => {
+                            setIsDeleteModel(true);
+                            setDeleteProduct(item.id);
+                          }}>
                           <DeleteIcon className="text-redAlert cursor-pointer" />
                         </div>
                       </div>
@@ -73,8 +111,7 @@ const Product = ({
                             return (
                               <div
                                 key={category?.id}
-                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
-                              >
+                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
                                 {category?.name}
                               </div>
                             );
@@ -133,8 +170,7 @@ const Product = ({
                           return (
                             <div
                               key={index}
-                              className=" rounded-md  border border-grayText/20 p-1"
-                            >
+                              className=" rounded-md  border border-grayText/20 p-1">
                               <img
                                 src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                                 className="w-14 h-auto"
@@ -149,14 +185,21 @@ const Product = ({
                 </div>
               );
             })}
-          </>
-        ) : (
-          <>
             <div>
-              <DataNotFound />
+              {isDeleteModel && (
+                <ErrorModal
+                  onClose={() => {
+                    setIsDeleteModel(false);
+                  }}
+                  isLoading={deleteLoading}
+                  onSave={handleRemove}
+                  heading="Are you sure?"
+                  subText="This will delete product data from this platform only."
+                />
+              )}
             </div>
           </>
-        )}
+        ) : null}
       </div>
     );
   }

@@ -13,17 +13,42 @@ import { VITE_APP_API_URL } from "@/config";
 
 // ** Types **
 import { ILabelViewProps } from "../types/label";
+import { useProductsDeleteAPI } from "@/modules/inventory-management/services";
+import { useState } from "react";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 const LabelItems = ({
   currentData,
   isLoading,
+  onChangeData,
 }: {
   currentData: ILabelViewProps[];
+  onChangeData: () => Promise<void>;
   isLoading?: boolean;
 }) => {
   const navigate = useNavigate();
   const handleEditProduct = (productId: number) => {
     navigate(`/inventory-management/product-form/1/${productId}`);
+  };
+  const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [deleteProduct, setDeleteProduct] = useState<number | null>(null);
+  const closeDeleteModel = () => setDeleteProduct(null);
+
+  const { deleteProductsAPI, isLoading: deleteLoading } =
+    useProductsDeleteAPI();
+
+  const handleRemove = async () => {
+    closeDeleteModel();
+    setIsDeleteModel(false);
+    if (deleteProduct) {
+      const { error } = await deleteProductsAPI([Number(deleteProduct)]);
+      if (error) console.log(error);
+      else {
+        closeDeleteModel();
+        setIsDeleteModel(false);
+        await onChangeData();
+      }
+    }
   };
   if (isLoading) {
     return <Loader />;
@@ -53,7 +78,12 @@ const LabelItems = ({
                         <div onClick={() => handleEditProduct(item?.id)}>
                           <EditLabelIcon className="cursor-pointer" />
                         </div>
-                        <div>
+                        <div
+                          onClick={() => {
+                            setIsDeleteModel(true);
+                            setDeleteProduct(item.id);
+                          }}
+                        >
                           <DeleteIcon className="text-redAlert cursor-pointer" />
                         </div>
                       </div>
@@ -143,11 +173,24 @@ const LabelItems = ({
                 </div>
               );
             })}
+            <div>
+              {isDeleteModel && (
+                <ErrorModal
+                  onClose={() => {
+                    setIsDeleteModel(false);
+                  }}
+                  isLoading={deleteLoading}
+                  onSave={handleRemove}
+                  heading="Are you sure?"
+                  subText="This will delete product data from this platform only."
+                />
+              )}
+            </div>
           </>
         ) : (
           <>
             <div>
-              <DataNotFound />
+              <DataNotFound className="h-[20vh] mt-[10vh]" />
             </div>
           </>
         )}

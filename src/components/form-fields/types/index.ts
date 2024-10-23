@@ -105,7 +105,7 @@ export interface BaseModalCommonProps {
   keyWord?: string;
   onCancel: () => void;
   onConfirm?: () => void;
-  cancelButtonText: string;
+  cancelButtonText?: string;
   confirmButtonText: string;
   isLoading?: boolean;
   icon?: React.ReactNode;
@@ -131,6 +131,7 @@ export interface FilePropsType<T extends FieldValues> {
   className?: string;
   errorClass?: string;
   required?: boolean;
+  isMulti?: boolean;
   disabled?: boolean;
   allowedFormat?: string[];
   onBlur?: () => void;
@@ -144,6 +145,7 @@ export interface FilePropsType<T extends FieldValues> {
   ) => void;
   clearErrors?: UseFormClearErrors<T>;
   watch: UseFormWatch<T>;
+  MainclassName?: any;
 }
 export interface inviteModalProps {
   link: string | undefined | null;

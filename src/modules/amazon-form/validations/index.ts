@@ -628,7 +628,7 @@ const parseProperties = (
       const array3: any[] = [];
       // const array3: ResType[] = [];
 
-      amazonJson.forEach((e: any, index: any) => {
+      amazonJson.forEach((e: any) => {
         const tempArray: ResType[] = [];
         if (e["required"]) {
           const temp = parseProperties(

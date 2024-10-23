@@ -4,6 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormBuilder from "@/components/form-builder";
 import {
   useCreateEbayProductApi,
+  useCreateUserNotificationInDbApi,
   useEbayFormHandleApi,
   useEditProductValuesApi,
   useGetAllFieldsApi,
@@ -11,7 +12,11 @@ import {
 } from "./services/productBasicForm.service";
 import { useEffect, useState } from "react";
 import { Select } from "@/components/form-fields/components/SelectCategory";
-import { CategoryOptions, ICategory } from "@/components/common/types";
+import {
+  CategoryOptions,
+  ICategory,
+  MARKETPLACE,
+} from "@/components/common/types";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
@@ -22,6 +27,10 @@ import { productEbayFormValidationSchema } from "./validation-schema";
 import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
 import { ProductBasicFormSingleProps } from "../all-product-form-wrapper/types";
+import { NOTIFICATION_TYPE, Type } from "@/constants";
+import { useSelector } from "react-redux";
+import { userSelector } from "@/redux/slices/userSlice";
+import { selectSocket } from "@/redux/slices/socketSlice";
 
 const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { productId } = useParams();
@@ -32,6 +41,10 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const { createEbayProductApi } = useCreateEbayProductApi();
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
+  const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+
+  const user = useSelector(userSelector);
+  const socket = useSelector(selectSocket);
 
   //**  STATE **//
   const [id, setId] = useState();
@@ -219,7 +232,24 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
       if (!ebayFormError) {
         if (type === "SaveInEbay") {
           const { error } = await createEbayProductApi(Number(productId));
-          if (!error) onComplete(productId);
+          if (!error) {
+            const notificationPayload = {
+              productId: productId,
+              notification_type: NOTIFICATION_TYPE.LIST,
+              is_read: false,
+              type: Type.NOTIFICATION,
+              marketplace: MARKETPLACE.EBAY,
+            };
+            const { data, error } = await createUserNotificationInDbApi(
+              notificationPayload
+            );
+            if (data && !error) {
+              if (socket) {
+                socket.emit("user_notification", user?.id);
+              }
+            }
+            onComplete(productId);
+          }
         } else {
           onComplete(productId);
         }
@@ -231,8 +261,6 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
 
   useEffect(() => {
     handleEditApiResponse().then((data) => {
-      console.log(data, "========================");
-
       setId(data?.categoryId);
 
       let temp: any = { ...data };
