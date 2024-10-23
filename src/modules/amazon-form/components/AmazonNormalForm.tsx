@@ -24,7 +24,13 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../validations";
 import { useGetCategoriesAPI } from "@/modules/inventory-management/services";
-import { MARKETPLACEID } from "@/components/common/types";
+import { MARKETPLACE, MARKETPLACEID } from "@/components/common/types";
+import { RECOMMENDED_BROWSE_NODES } from "../constants";
+import { userSelector } from "@/redux/slices/userSlice";
+import { selectSocket } from "@/redux/slices/socketSlice";
+import { useSelector } from "react-redux";
+import { NOTIFICATION_TYPE, Type } from "@/constants";
+import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
 
 export const AmazonNormalForm = (props: IAmazonForm) => {
   const { onComplete, productId } = props;
@@ -49,12 +55,16 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
   const fields = useWatch({ control });
 
+  const user = useSelector(userSelector);
+  const socket = useSelector(selectSocket);
+
   const { amazonFormSubmitApi } = useAmazonFormHandleApi();
   const { createAmazonProductApi } = useCreateAmazonProductApi();
   const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
   const { editAmazonProductValueApi } = useAmazonEditProductValuesApi();
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
+  const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
 
   const getProperties = async (categoryData: {
     value: number;
@@ -68,7 +78,11 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     setProperties(data?.data?.properties);
     setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
-    reset(defaultValues);
+    const modifiedDefaultValues = {
+      ...defaultValues,
+      recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
+    };
+    reset(modifiedDefaultValues);
     return {
       propertyData: data?.data?.properties,
       defaultValue: defaultValues,
@@ -177,9 +191,28 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
       );
 
       if (!amazonFormError) {
+        const notificationPayload = {
+          productId: productId,
+          notification_type: NOTIFICATION_TYPE.LIST,
+          is_read: false,
+          type: Type.NOTIFICATION,
+          marketplace: MARKETPLACE.AMAZON,
+        };
         if (type === AmazonSaveType.SaveInAmazon) {
           const { error } = await createAmazonProductApi(Number(productId));
-          if (!error) onComplete(productId);
+          if (!error) {
+            const { data, error } = await createUserNotificationInDbApi(
+              notificationPayload
+            );
+            if (data && !error) {
+              if (socket) {
+                socket.emit("user_notification", user?.id);
+              }
+            }
+            onComplete(productId);
+          } else {
+            return;
+          }
         }
         onComplete(productId);
       }

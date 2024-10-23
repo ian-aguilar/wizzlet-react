@@ -26,7 +26,7 @@ const FormBuilder = <T extends FieldValues>({
     if (
       data.title === "Recommended Browse Nodes" ||
       data.name === "recommended_browse_nodes" ||
-      data.name?.includes("product_image_locator")
+      data.name?.includes("image_locator")
     ) {
       return <></>;
     }

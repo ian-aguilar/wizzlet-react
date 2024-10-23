@@ -58,7 +58,7 @@ export enum ProductType {
 
 export interface IAmazonForm {
   onComplete: (data: any) => void;
-  productId?: string;
+  productId: string;
 }
 
 export const AmazonVariationCombinationValues = {
