@@ -56,3 +56,25 @@ export const useCreateAmazonProductApi = () => {
 
   return { createAmazonProductApi, isLoading, isError, isSuccess };
 };
+
+export const useGetProductTypeApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getProductTypeApi = async (id: number | null | undefined) => {
+    return callApi(`/products/type/${id}`, {});
+  };
+
+  return { getProductTypeApi, isLoading, isError, isSuccess };
+};
+
+export const useGetAmazonVariationPropertiesApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getAmazonVariationProperties = async (
+    id: number | null | undefined
+  ) => {
+    return callApi(`/property/amazon/variation/${id}`, {});
+  };
+
+  return { getAmazonVariationProperties, isLoading, isError, isSuccess };
+};

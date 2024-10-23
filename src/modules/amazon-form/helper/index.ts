@@ -1,4 +1,12 @@
-import { AnyObject, InputData, OutputData, ReferenceItem } from "../types";
+import { FieldsType } from "@/components/form-builder/types";
+import {
+  AnyObject,
+  DefaultChildProperties,
+  InputData,
+  ManualProperties,
+  OutputData,
+  ReferenceItem,
+} from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const amazonTransformData = (data: any): any => {
@@ -74,50 +82,52 @@ export const mapDataWithReference = async (
   reference?.forEach((ref) => {
     const dataKey = ref.name;
 
-    if (data[dataKey]) {
-      result[dataKey] = data[dataKey].map((item: any) => {
-        const mappedItem: any = {};
+    if (ref.name !== "variation_theme") {
+      if (data[dataKey]) {
+        result[dataKey] = data[dataKey].map((item: any) => {
+          const mappedItem: any = {};
 
-        ref.items.forEach((subRef) => {
-          const fieldName = subRef.name;
+          ref.items.forEach((subRef) => {
+            const fieldName = subRef.name;
 
-          if (item[fieldName]) {
-            // Handle `OPTIONS` or `MULTI_SELECT` types
-            if (subRef.type === "OPTIONS") {
-              const option = subRef.option?.find(
-                (opt) => opt.value === item[fieldName]
-              );
-
-              if (option) {
-                // mappedItem[fieldName] = {
-                //   label: option.label,
-                //   value: option.value,
-                // };
-                mappedItem[fieldName] = option.value;
-              }
-            } else if (
-              subRef.type === "MULTI_SELECT" &&
-              Array.isArray(item[fieldName])
-            ) {
-              mappedItem[fieldName] = item[fieldName].map((val: string) => {
+            if (item[fieldName]) {
+              // Handle `OPTIONS` or `MULTI_SELECT` types
+              if (subRef.type === "OPTIONS") {
                 const option = subRef.option?.find(
-                  (opt) => String(opt.value) === val
+                  (opt) => opt.value === item[fieldName]
                 );
 
-                // return option
-                //   ? { label: option.label, value: option.value }
-                //   : { label: "", value: val };
-                return option ? option.value : val;
-              });
-            } else {
-              // Directly map the value for other types
-              mappedItem[fieldName] = item[fieldName];
-            }
-          }
-        });
+                if (option) {
+                  // mappedItem[fieldName] = {
+                  //   label: option.label,
+                  //   value: option.value,
+                  // };
+                  mappedItem[fieldName] = option.value;
+                }
+              } else if (
+                subRef.type === "MULTI_SELECT" &&
+                Array.isArray(item[fieldName])
+              ) {
+                mappedItem[fieldName] = item[fieldName].map((val: string) => {
+                  const option = subRef.option?.find(
+                    (opt) => String(opt.value) === val
+                  );
 
-        return mappedItem;
-      });
+                  // return option
+                  //   ? { label: option.label, value: option.value }
+                  //   : { label: "", value: val };
+                  return option ? option.value : val;
+                });
+              } else {
+                // Directly map the value for other types
+                mappedItem[fieldName] = item[fieldName];
+              }
+            }
+          });
+
+          return mappedItem;
+        });
+      }
     }
   });
 
@@ -201,4 +211,80 @@ export const mergeDefaults = async (
     }
   });
   return valueData;
+};
+
+export const filterAmazonVariantProperties = (
+  properties: any,
+  selectedTheme: string[]
+) => {
+  const newProperties = getData(properties, DefaultChildProperties);
+  console.log("🚀 ~ properties:", newProperties);
+
+  const parentProperties: FieldsType<any>[] = [],
+    variationProperties: FieldsType<any>[] = [];
+
+  newProperties?.forEach((property: any) => {
+    if (!selectedTheme.includes(property.name)) {
+      if (!ManualProperties.includes(property.name)) {
+        parentProperties.push(property);
+      }
+
+      // let isProperty,
+      //   index = 0;
+
+      // DefaultChildProperties.forEach((e, i) => {
+      //   if (e.includes(property.name)) {
+      //     isProperty = property;
+      //     index = i;
+      //   }
+      // });
+
+      // if (isProperty) {
+      //   getData(isProperty, [DefaultChildProperties[index]]);
+      // }
+    } else {
+      variationProperties.push(property);
+    }
+  });
+
+  return {
+    parentProperties,
+    variationProperties,
+  };
+};
+
+export const getNestedDefaultProperty = (
+  property: any,
+  propertyName: string
+) => {
+  if (property.items) {
+    if (property?.items?.length > 0) {
+      property?.items?.forEach((e: any, index: number) => {
+        if (e.name === propertyName) {
+          property?.items?.splice(index, 1);
+        } else {
+          getNestedDefaultProperty(e, propertyName);
+        }
+      });
+    }
+  }
+};
+
+const getData = (property: any, removeProperty: string[][]): any => {
+  const returnData = [];
+  for (const temp of property) {
+    const tempFind = removeProperty.find((e) => e[0] === temp.name);
+    if (tempFind) {
+      if (tempFind.length > 1) {
+        tempFind.shift();
+        const tempProperty = getData(temp.items, [tempFind]);
+        if (tempProperty?.length > 0) {
+          returnData.push({ ...temp, items: tempProperty });
+        }
+      }
+    } else {
+      returnData.push(temp);
+    }
+  }
+  return returnData;
 };

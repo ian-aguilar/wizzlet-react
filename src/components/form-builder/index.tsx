@@ -88,7 +88,10 @@ const FormBuilder = <T extends FieldValues>({
                 placeholder={data.description ? data.description : ""}
                 options={data.option || []}
                 isClearable={true}
-                isMulti={data?.isMulti ? true : false}
+                isMulti={
+                  data?.type === FieldsTypeEnum.MULTI_SELECT ? true : false
+                }
+                maxLength={data.addMoreLength}
               />
             ) : (
               <SelectField<T>

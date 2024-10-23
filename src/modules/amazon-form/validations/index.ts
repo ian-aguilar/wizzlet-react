@@ -71,10 +71,13 @@ const parseSchema = (
         path
       );
 
+      let index = 0;
+
       if (temp) {
         for (let e of temp) {
           if (!removeZeroMaxItemsFields(e.path, properties)) {
             if (!e.success) {
+              index++;
               ctx.addIssue({
                 path: [...path, ...e.path],
                 message: e.message
@@ -153,7 +156,13 @@ const checkIf = (
         path
       );
 
-      tempArray.push(...(temp || []));
+      const newTemp = temp?.filter((e) => {
+        if (!e.success) {
+          return e;
+        }
+      });
+
+      tempArray.push(...(newTemp || []));
     }
   } else {
     if (amazonJson["else"]) {
@@ -603,7 +612,11 @@ const parseProperties = (
             if (temp?.length > 0) {
               array2.push(...temp);
             } else {
-              array2.push(...findProperties(path, data, properties));
+              array2.push(
+                ...findProperties(path, data, properties).filter(
+                  (e) => !e.success
+                )
+              );
             }
           }
         });
@@ -673,6 +686,7 @@ const parseProperties = (
             properties,
             path
           );
+
           tempArray.push(
             ...(temp || []).map((item) => ({
               ...item,

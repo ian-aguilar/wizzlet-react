@@ -229,6 +229,7 @@ export interface ICustomSelect<T extends FieldValues> {
   isClearable?: boolean;
   className?: string;
   autoFocus?: boolean;
+  maxLength?: number;
 }
 export type ICheckboxProps = {
   value?: string | number | readonly string[] | undefined;

@@ -58,7 +58,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
     },
   });
 
-  console.log("🚀 ~ errors:", errors);
   const tagOptionApi = async () => {
     try {
       const { data, error } = await getTagOptionsApi();
@@ -75,7 +74,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
       return;
     }
     const { data, error } = await getEditProductsDetailsAPI(productId);
-    console.log("🚀 ~ handleEditProductApi ~ data:", data);
     if (data && !error) {
       return data?.data;
     }
@@ -138,11 +136,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
   };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    console.log(
-      "🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:",
-      payload
-    );
-
     const newPayload = {
       ...payload,
       productId: productId,
