@@ -214,9 +214,10 @@ const findProperties = (path: string[], data: any, properties: any) => {
   const lastEle = tempPath.pop();
 
   const { prefix: lastNewELe } = separateBracketedString(lastEle as string);
-  const tempValue = getValue(data, [...tempPath, lastNewELe]);
 
-  if (tempValue) {
+  const tempValue = getValue(data, [...tempPath, lastNewELe]);
+  if (!(tempValue === undefined || tempValue === null || tempValue === "")) {
+    // if (tempValue === undefined || tempValue === null || tempValue === "") {
     const newPath: string[] = [];
     path.forEach((e) => {
       const { prefix }: any = separateBracketedString(e);
@@ -276,9 +277,12 @@ const parseProperties = (
       if (Array.isArray(amazonJson)) {
         return amazonJson.map((e: any) => {
           let success = true;
-          if (!getValue(data, [...path, e])) {
+          const value = getValue(data, [...path, e]);
+
+          if (value === undefined || value === null || value?.trim() === "") {
             success = false;
           }
+
           return { path: [...path, e], success };
         });
       } else return [];
@@ -696,6 +700,11 @@ const parseProperties = (
         }
 
         if (e["if"]) {
+          console.log(
+            checkIf(e, data, properties, path),
+            "checkIf(e, data, properties, path)"
+          );
+
           tempArray.push(
             ...(checkIf(e, data, properties, path) || []).map((item) => ({
               ...item,
