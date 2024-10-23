@@ -4,7 +4,7 @@ import { formComponentMap, steps } from "./constant";
 // import AmazonForm from "../amazon-form";
 import { useGetProductMarketplaceAPI } from "../choose-marketplace/services";
 import { capitalizeFirstLetter } from "../choose-marketplace/helper";
-import { addMarketplaceForms } from "./helper";
+import { addMarketplaceForms, filterAndResetIds } from "./helper";
 import { FormData } from "./types";
 import { Loader } from "@/components/common/Loader";
 import { PrivateRoutesPath } from "../Auth/types";
@@ -98,7 +98,14 @@ const ProductForm: React.FC = () => {
   }, []); // Fetch the marketplace once
 
   useEffect(() => {
+    if (step == "1" && productId == "0") {
+      steps.splice(2);
+    }
+    if (marketplace?.length > 0) {
+      filterAndResetIds(steps, marketplace);
+    }
     addMarketplaceForms(marketplace, steps, setStepData);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [marketplace]); // Re-run when marketplace updates
 

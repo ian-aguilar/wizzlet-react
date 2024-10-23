@@ -28,7 +28,7 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
 }) => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
-  const { basicFormSubmitApi } = useProductBasicFormApi();
+  const { basicFormSubmitApi, isLoading } = useProductBasicFormApi();
   const { getTagOptionsApi } = useTagOptionsApi();
   const { getEditProductsDetailsAPI } = useEditProductAPi();
   const { productId } = useParams();
@@ -75,7 +75,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
       return;
     }
     const { data, error } = await getEditProductsDetailsAPI(productId);
-    console.log("🚀 ~ handleEditProductApi ~ data:", data);
     if (data && !error) {
       return data?.data;
     }
@@ -138,11 +137,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
   };
 
   const onSubmit: SubmitHandler<IProductBasicForm> = async (payload) => {
-    console.log(
-      "🚀 ~ constonSubmit:SubmitHandler<IProductBasicForm>= ~ payload:",
-      payload
-    );
-
     const newPayload = {
       ...payload,
       productId: productId,
@@ -268,6 +262,7 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
           ) : null}
 
           <Button
+            isLoading={isLoading}
             btnName="Save & Next"
             type="submit"
             btnClass=" !w-auto p-2    text-white bg-green-500 rounded-md"
