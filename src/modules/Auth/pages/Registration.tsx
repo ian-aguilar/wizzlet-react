@@ -42,14 +42,14 @@ const Registration = () => {
       password: values.password,
     };
 
-    const { error,data } = await registerUserApi(registerPayload);
+    const { error, data } = await registerUserApi(registerPayload);
     if (!error) {
       const notificationPayload = {
         title: ` Registered`,
         description: `${values?.firstName} ${values?.lastName} has added a new register`,
         is_read: false,
         type: Type.NOTIFICATION,
-        registerUser: data?.data
+        registerUser: data?.data,
       };
       await createNotificationInDbApi(notificationPayload);
       navigate(RoutesPath.Otp, { state: { email: values.email } });

@@ -68,21 +68,21 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
             })}
           </select>
         </div>
-
         <div className="rounded-r-md flex items-center">
           <div
             className="flex items-center gap-2"
             onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}>
             <CalendarMainSVG />
-            {startDate && endDate && !isDatePickerOpen ? (
+            {startDate || endDate ? (
               <span>{formatDateRange(startDate, endDate)}</span>
-            ) : (
-              <span>Select a date range</span>
-            )}
+            ) : null}{" "}
+            {/* Only show this if both startDate and endDate are selected */}
           </div>
 
           {isDatePickerOpen && (
             <DatePicker
+              placeholderText="Select a date range" // Show placeholder only inside DatePicker
+              isClearable={true}
               className="focus:outline-none text-center"
               selected={startDate}
               onChange={onDateRangeChange}
@@ -93,6 +93,10 @@ const DatePickerWithMonthSelect: React.FC<DatePickerWithMonthSelectProps> = ({
               dateFormat={"dd/MM/yyyy"}
               maxDate={maxDate as Date} // Limit range to max 31 days
             />
+          )}
+
+          {!startDate && !endDate && !isDatePickerOpen && (
+            <span>Select a date range</span> // Show only when no dates are selected and picker is closed
           )}
         </div>
       </div>

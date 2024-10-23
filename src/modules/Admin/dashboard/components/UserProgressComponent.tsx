@@ -21,7 +21,6 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
         <div className="max-w-[190px]">
           <CircularProgressbar
             value={percentage}
-            maxValue={todaysUsers}
             text={`${todaysUsers}`}
             styles={buildStyles({
               pathColor: "#09A17A",
@@ -33,7 +32,7 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
         </div>
         <div className="user-stats w-full ">
           <div className="flex gap-4 font-medium text-grayText pt-6 ">
-            <div className="max-w-[12px] rounded-full  bg-[#D8DCE4] w-full ">
+            <div className="max-w-[12px] rounded-full  bg-greenPrimary w-full">
               &nbsp;
             </div>
             <div>
@@ -49,7 +48,7 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
             </div>
           </div>
           <div className="flex gap-4 font-medium text-grayText pt-6 ">
-            <div className="max-w-[12px] rounded-full  bg-greenPrimary w-full ">
+            <div className="max-w-[12px] rounded-full   bg-[#D8DCE4] w-full ">
               &nbsp;
             </div>
             <div>
