@@ -453,8 +453,7 @@ const InventoryManagement = () => {
                       }}
                     />
                   )
-                }
-              >
+                }>
                 <DropDown
                   value={currentFilter}
                   onChange={(e) => {
@@ -788,8 +787,8 @@ const InventoryManagement = () => {
                 onChangeData={onChangeData}
               />
             ) : (
-              <div>
-                <DataNotFound />
+              <div className="h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_450px)]">
+                <DataNotFound className="!h-[30vh]" />
               </div>
             )}
           </div>

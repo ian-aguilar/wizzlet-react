@@ -145,6 +145,7 @@ export interface FilePropsType<T extends FieldValues> {
   ) => void;
   clearErrors?: UseFormClearErrors<T>;
   watch: UseFormWatch<T>;
+  MainclassName?: any;
 }
 export interface inviteModalProps {
   link: string | undefined | null;

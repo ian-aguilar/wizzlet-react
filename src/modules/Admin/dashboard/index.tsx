@@ -22,6 +22,7 @@ import { OptionType } from "@/modules/dashboard/types";
 import { capitalizeFirstLetter } from "@/modules/choose-marketplace/helper";
 import { useMarketplaceListingAPI } from "@/modules/marketplace/services/marketplace.service";
 import DatePickerWithMonthSelect from "@/modules/dashboard/components/GlobalDatePicker";
+import { pageLimitStyle } from "@/modules/import-products/constants";
 
 const AdminDashboard = () => {
   const currentDate = new Date();
@@ -41,7 +42,8 @@ const AdminDashboard = () => {
     inactiveUsers: 0,
     totalUsers: 0,
     totalMarketplace: 0,
-    todaysUsers: 0,
+    onlineUsers: 0,
+    offlineUsers: 0,
   });
 
   const [selectedOptions, setSelectedOptions] = useState<
@@ -95,8 +97,9 @@ const AdminDashboard = () => {
         activeUsers: data?.data?.activeUsers,
         inactiveUsers: data?.data?.inactiveUsers,
         totalUsers: data?.data?.activeUsers + data?.data?.inactiveUsers,
-        todaysUsers: data?.data?.todaysUsers,
         totalMarketplace: data?.data?.totalMarketplace,
+        onlineUsers: data?.data?.onlineUsers,
+        offlineUsers: data?.data?.offlineUsers,
       });
     }
   };
@@ -191,7 +194,6 @@ const AdminDashboard = () => {
         marketplaceIds
       );
       if (data && !error) {
-        console.log("🚀 ~ fetchAllData ~ data:", data);
         setMainData(data?.data);
       }
     } catch (error) {
@@ -264,9 +266,9 @@ const AdminDashboard = () => {
         <article className="grid grid-cols-12 gap-y-3 lg:gap-x-3 ">
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-4 ">
             <UserProgressComponent
-              todaysUsers={userData?.todaysUsers}
-              onlineUsers={0}
-              offlineUsers={0}
+              todaysUsers={userData?.offlineUsers + userData?.onlineUsers}
+              onlineUsers={userData?.onlineUsers}
+              offlineUsers={userData?.offlineUsers}
             />
           </div>
           <div className="bg-grayLightBody/5 p-5 rounded-md col-span-12 lg:col-span-8 relative">
@@ -282,6 +284,7 @@ const AdminDashboard = () => {
               </h3>
               <div className="ml-auto flex gap-4 items-center">
                 <Select
+                  styles={pageLimitStyle}
                   className="!w-[300px]"
                   isMulti
                   value={selectedMarketplaceOptions}
@@ -319,6 +322,7 @@ const AdminDashboard = () => {
                 onChange={handleChange}
                 options={CategoriesProgressDropDownOptions}
                 placeholder="Filter"
+                styles={pageLimitStyle}
               />
             </div>
             <CategoriesProgress

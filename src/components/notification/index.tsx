@@ -1,5 +1,4 @@
 import { DoubleTickSVG } from "@/assets/Svg";
-// import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NotificationGroup, notificationType } from "./types";
@@ -10,6 +9,8 @@ import {
 } from "./services";
 import { modifiedNotifications } from "./helper";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectSocket } from "@/redux/slices/socketSlice";
 
 const Notifications = () => {
   const [hasMore, setHasMore] = useState(true); // Track if there are more notifications to load
@@ -20,6 +21,8 @@ const Notifications = () => {
     Type.NOTIFICATION
   );
   const [notifications, setNotifications] = useState<notificationType[]>([]);
+
+  const socket = useSelector(selectSocket); // Use the selector to get the socket
 
   const { getNotificationAPI } = useFetchNotificationAPI();
   const { setMarkReadAPI } = useSetMarkReadNotificationAPI();
@@ -33,14 +36,14 @@ const Notifications = () => {
 
     if (data && !error) {
       if (notifications && notifications.length > 0) {
-        setNotifications((prev: any) => {
-          if (prev && prev?.length > 0) return [...prev, ...data?.data];
+        setNotifications((prev) => {
+          if (prev && prev?.length > 0) return [...prev, ...data.data];
           else return data?.data;
         });
       } else {
         setIsNotRead(false);
         setNotifications(data?.data);
-        for (let item of data?.data) {
+        for (const item of data.data) {
           if (!item.is_read) {
             setIsNotRead(true);
           }
@@ -59,10 +62,13 @@ const Notifications = () => {
 
   const handleMarkRead = async () => {
     const ids = notifications?.map((item) => item.id);
-    const { data } = await setMarkReadAPI({ ids: ids });
-    if (data) {
+    const { data, error } = await setMarkReadAPI({ ids: ids });
+    if (data && !error) {
       setReload((prev) => !prev);
       setNotifications([]);
+      if (socket) {
+        socket.emit("notifications_read", false);
+      }
     }
   };
 
@@ -104,7 +110,7 @@ const Notifications = () => {
             notificationType === Type.NOTIFICATION
               ? `border-b-greenPrimary`
               : ``
-          }  mb-[-2px] hover:text-blackPrimary hover:bg-gray-100   hover:border-b-[2px]  hover:mb-[-2px]`}>
+          }  mb-[-2px] hover:text-blackPrimary     hover:border-b-[2px]  hover:mb-[-2px]`}>
           Notification
         </span>
         <span
@@ -117,7 +123,7 @@ const Notifications = () => {
           }}
           className={`px-7 pb-3 inline-block text-blackPrimary border-b-[2px] ${
             notificationType === Type.ALERT ? `border-b-greenPrimary` : ``
-          }  mb-[-2px] hover:text-blackPrimary hover:border-b-[2px] hover:bg-gray-100  hover:mb-[-2px]`}>
+          }  mb-[-2px] hover:text-blackPrimary hover:border-b-[2px]    hover:mb-[-2px]`}>
           Alerts
         </span>
       </div>
@@ -168,15 +174,13 @@ const Notifications = () => {
                                   {notification.product_id ? (
                                     <Link
                                       to={`/inventory-management/product-form/1/${notification.product_id}`}
-                                      className="underline text-blackPrimary font-medium"
-                                    >
+                                      className="underline text-blackPrimary font-medium">
                                       #{notification?.product_name}
                                     </Link>
                                   ) : notification.register_user ? (
                                     <Link
                                       to={`/user-management/view/${notification.register_user}`}
-                                      className="underline text-blackPrimary font-medium"
-                                    >
+                                      className="underline text-blackPrimary font-medium">
                                       @{notification.user_name}
                                     </Link>
                                   ) : null}{" "}
@@ -186,7 +190,7 @@ const Notifications = () => {
                                   <p className="line-clamp-1">
                                     {notification.description}
                                   </p>
-                                  <p className="text-xs">
+                                  <p className="text-xs whitespace-nowrap">
                                     {" "}
                                     {notification.time}{" "}
                                   </p>

@@ -70,7 +70,8 @@ const ImportProducts = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { isLoading: storeAmazonLoading } = useImportProductsFromAmazonApi();
+  const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
+    useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -220,8 +221,8 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
-        return;
-        // await importProductsFromAmazonApi(isCheck);
+        // return;
+        await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);
@@ -365,7 +366,7 @@ const ImportProducts = () => {
                     (ebaySyncStatus === SyncStatus.INPROGRESS ||
                       ebaySyncStatus === SyncStatus.PENDING))
                 }
-                btnClass="!w-auto border border-solid border-black/30 bg-transparent !text-grayText "
+                btnClass="!w-auto border border-solid border-greenPrimary bg-transparent !text-greenPrimary !font-semibold "
               />
             </div>
             <div>
@@ -377,7 +378,8 @@ const ImportProducts = () => {
                       !importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}>
+                    } px-4 py-2 rounded-full transition-colors`}
+                  >
                     {`${ImportTab.NOT_IMPORTED}(${
                       totalImportData ? totalImportData.totalNotImported : 0
                     })`}
@@ -388,7 +390,8 @@ const ImportProducts = () => {
                       importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}>
+                    } px-4 py-2 rounded-full transition-colors`}
+                  >
                     {`${ImportTab.IMPORTED}(${
                       totalImportData ? totalImportData.totalImported : 0
                     })`}
@@ -397,7 +400,7 @@ const ImportProducts = () => {
               </div>
             </div>
           </div>
-          <div className="my-5">
+          <div className="my-2">
             <hr />
           </div>
           <div className="flex justify-between items-start ">
@@ -506,8 +509,8 @@ const ImportProducts = () => {
                   );
                 })
               ) : (
-                <div className="justify-center flex">
-                  <DataNotFound />
+                <div className="justify-center flex !max-h-[calc(100vh_-_450px)] !min-h-[calc(100vh_-_450px)]">
+                  <DataNotFound className=" !h-[30vh] " />
                 </div>
               )}
             </div>

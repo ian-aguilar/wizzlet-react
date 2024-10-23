@@ -135,7 +135,6 @@ export const selectedMarketplaceStyle = {
   }),
   option: (base: any) => ({
     ...base,
-
     color: "#000",
     background: "#eee",
     "&:hover": {

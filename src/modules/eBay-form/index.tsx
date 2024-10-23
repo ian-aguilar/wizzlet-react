@@ -28,6 +28,9 @@ import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
 import { ProductBasicFormSingleProps } from "../all-product-form-wrapper/types";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
+import { useSelector } from "react-redux";
+import { userSelector } from "@/redux/slices/userSlice";
+import { selectSocket } from "@/redux/slices/socketSlice";
 
 const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   onComplete,
@@ -42,6 +45,9 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   const { getCategoryApi, isLoading: optionsLoading } = useGetCategoryApi();
   const { getAllFieldsApi, isLoading: fieldsLoading } = useGetAllFieldsApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+
+  const user = useSelector(userSelector);
+  const socket = useSelector(selectSocket);
 
   //**  STATE **//
   const [id, setId] = useState();
@@ -252,7 +258,14 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
               type: Type.NOTIFICATION,
               marketplace: MARKETPLACE.EBAY,
             };
-            createUserNotificationInDbApi(notificationPayload);
+            const { data, error } = await createUserNotificationInDbApi(
+              notificationPayload
+            );
+            if (data && !error) {
+              if (socket) {
+                socket.emit("user_notification", user?.id);
+              }
+            }
             onComplete(productId);
           }
         } else {
