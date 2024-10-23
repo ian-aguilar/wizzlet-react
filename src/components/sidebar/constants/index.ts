@@ -3,7 +3,6 @@ import {
   CMSMGTIcon,
   ContactIconSVG,
   DashboardIcon,
-  HamburgerIcon,
   MarketPlaceIcon,
   SettingsIcon,
   UserMgtIcon,

@@ -4,6 +4,7 @@ import { Controller, FieldValues } from "react-hook-form";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { IDateInputProps } from "../types";
+import moment from "moment";
 
 const DateInput = <T extends FieldValues>({
   placeholder,
@@ -25,9 +26,16 @@ const DateInput = <T extends FieldValues>({
           render={({ field: { onChange, onBlur, value } }) => (
             <DatePicker
               className={`  ${className}`}
-              selected={value}
+              selected={
+                value
+                  ? (moment(value, "YYYY-MM-DD").toDate() as any) !=
+                    "Invalid Date"
+                    ? moment(value, "YYYY-MM-DD").toDate()
+                    : null
+                  : null
+              }
               placeholderText={placeholder || "mm/dd/yyyy"}
-              onChange={onChange}
+              onChange={(e) => onChange(moment(e).format("YYYY-MM-DD"))}
               onBlur={onBlur}
               disabled={isDisabled}
             />
