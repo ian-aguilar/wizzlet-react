@@ -105,7 +105,7 @@ export interface BaseModalCommonProps {
   keyWord?: string;
   onCancel: () => void;
   onConfirm?: () => void;
-  cancelButtonText: string;
+  cancelButtonText?: string;
   confirmButtonText: string;
   isLoading?: boolean;
   icon?: React.ReactNode;

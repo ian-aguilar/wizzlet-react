@@ -27,11 +27,13 @@ export const BaseModal: React.FC<BaseModalCommonProps> = ({
 
         {children && <div className="modalBody px-6">{children}</div>}
         <div className="ModalFooterActions flex justify-center gap-2 p-5">
-          <Button
-            btnClass="!w-auto !px-4 !bg-transparent border border-greyBorder !text-grayText  "
-            btnName={cancelButtonText}
-            onClickHandler={onCancel}
-          />
+          {cancelButtonText ? (
+            <Button
+              btnClass="!w-auto !px-4 !bg-transparent border border-greyBorder !text-grayText  "
+              btnName={cancelButtonText}
+              onClickHandler={onCancel}
+            />
+          ) : null}
           {onConfirm && (
             <Button
               showType={showType}
