@@ -93,7 +93,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
 
   const handleOnChange = async (selectedOption: CategoryOptions) => {
     setErrorShow(false);
-    
+
     if (!selectedOption?.id) {
       return;
     }
@@ -239,13 +239,10 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
     });
 
     if (productId) {
-      const { data: result, error: ebayFormError } = await ebayFormSubmitApi(
-        formData,
-        {
-          categoryId: categoriesId,
-          productId,
-        }
-      );
+      const { error: ebayFormError } = await ebayFormSubmitApi(formData, {
+        categoryId: categoriesId,
+        productId,
+      });
 
       if (!ebayFormError) {
         if (type === "SaveInEbay") {
@@ -272,7 +269,6 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
           onComplete(productId);
         }
       }
-
     }
   };
 
