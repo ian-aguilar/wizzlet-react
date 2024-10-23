@@ -23,7 +23,8 @@ export interface UserData {
   inactiveUsers: number;
   totalUsers: number;
   totalMarketplace: number;
-  todaysUsers: number;
+  onlineUsers: number;
+  offlineUsers: number;
 }
 
 export interface CategoryData {

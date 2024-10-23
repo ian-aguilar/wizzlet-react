@@ -194,7 +194,8 @@ const ViewUser = () => {
               className="border p-2 rounded-full bg-white cursor-pointer"
               onClick={() => {
                 navigate(PrivateRoutesPath.userManagement.view);
-              }}>
+              }}
+            >
               <LeftArrowIcon />
             </div>
             <h3 className="text-2xl  text-blackPrimary  font-medium">
@@ -377,7 +378,7 @@ const ViewUser = () => {
                   ))
                 ) : (
                   <div className="text-center">
-                    <DataNotFound />
+                    <DataNotFound className="!h-[20vh]" />
                   </div>
                 )}
               </div>

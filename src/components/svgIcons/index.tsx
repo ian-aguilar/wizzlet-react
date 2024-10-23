@@ -108,12 +108,12 @@ export const Logo = () => {
   );
 };
 
-export const DataNotFound = () => {
+export const DataNotFound = ({ className }: any) => {
   return (
     <img
       src={NoData}
       alt="No data found"
-      className="m-auto max-h-[500px] min-h-[500px]"
+      className={`m-auto  min-h-[10vh] ${className} `}
     />
   );
 };
