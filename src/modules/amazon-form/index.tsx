@@ -32,8 +32,11 @@ import { useCreateUserNotificationInDbApi } from "../eBay-form/services/productB
 import { AmazonSaveType } from "./types";
 import { RECOMMENDED_BROWSE_NODES } from "./constants";
 
-const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
-  const { productId } = useParams();
+const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({
+  onComplete,
+  setCompletedStep,
+}) => {
+  const { productId, step } = useParams();
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
@@ -103,6 +106,9 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
     const { data, error } = await editAmazonProductValueApi(productId);
     if (!error && data?.data) {
+      setCompletedStep((prev: number[]) =>
+        prev.includes(Number(step)) ? prev : [...prev, Number(step)]
+      );
       return data?.data;
     }
   };

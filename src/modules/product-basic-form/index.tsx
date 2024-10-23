@@ -21,16 +21,19 @@ import { useEditProductAPi } from "../inventory-management/services";
 import { useParams } from "react-router-dom";
 import Button from "@/components/form-fields/components/Button";
 import { INameOption, IOption } from "../inventory-management/types";
-import { productTypes } from "./constant";
+import { PRODUCT_STATUS, productTypes } from "./constant";
+import { Loader } from "@/components/common/Loader";
 
 const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
   onComplete,
+  setCompletedStep,
 }) => {
   const [productType, setProductType] = useState<string | undefined>(undefined);
   const [tagsOptions, setTagsOptions] = useState<TagOption[]>([]);
-  const { basicFormSubmitApi } = useProductBasicFormApi();
+  const { basicFormSubmitApi, isLoading: isLoadingSubmit } =
+    useProductBasicFormApi();
   const { getTagOptionsApi } = useTagOptionsApi();
-  const { getEditProductsDetailsAPI } = useEditProductAPi();
+  const { getEditProductsDetailsAPI, isLoading } = useEditProductAPi();
   const { productId } = useParams();
 
   const {
@@ -84,7 +87,18 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
   useEffect(() => {
     handleEditProductApi().then((apiData) => {
       setProductType(apiData?.productType?.value);
-
+      const steps = apiData?.totalMarketplace + 2;
+      if (
+        apiData?.status === PRODUCT_STATUS.DRAFT ||
+        apiData?.status === PRODUCT_STATUS.COMPLETE ||
+        apiData?.status === PRODUCT_STATUS.INITIAL
+      ) {
+        setCompletedStep(Array.from({ length: steps }, (_, i) => i + 1));
+      } else {
+        setCompletedStep((prev: number[]) =>
+          prev.includes(1) ? prev : [...prev, 1]
+        );
+      }
       const formattedData = {
         productType: apiData?.productType,
         title: apiData?.title,
@@ -158,121 +172,133 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
       },
     });
     if (createProductId) {
+      setCompletedStep((prev: number[]) =>
+        prev.includes(2) ? prev : [...prev, 2]
+      );
       onComplete(createProductId);
     }
   };
 
   return (
-    <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
+    <div className="p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design relative">
       <form onSubmit={handleSubmit(onSubmit)}>
         <h3 className="font-semibold text-[26px] pb-2 mb-4 border-b border-b-black/20">
           Hayowl Form
         </h3>
-        <div className="text-lg font-medium text-blackPrimary">Item Photos</div>
-        <div className="col-span-12 relative">
-          <MultipleImageUpload
-            name="image"
-            control={control}
-            setError={setError}
-            clearErrors={clearErrors}
-            errors={errors}
-            maxSize={8}
-            allowedFormat={["image/png", "image/jpeg"]}
-            setValue={setValue}
-            watch={watch}
-            className=""
-          />
-        </div>
-        <section className="pt-4">
-          <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
-            Hayowl Form
-          </h2>
-          <div className="border-l border-r border-b mb-2 rounded-b-md">
-            <div className="grid grid-cols-12 w-full p-4">
-              <div className="col-span-12   ">
-                <SelectField
-                  className="mb-3"
-                  label="Product Type"
-                  options={productTypes}
-                  name="productType"
-                  control={control}
-                  errors={errors}
-                  onChange={(selectedOption) =>
-                    handleProductTypeChange(
-                      selectedOption ? selectedOption.value : ""
-                    )
-                  }
-                />
-                <Input
-                  textLabelName="Title"
-                  placeholder="Enter Title"
-                  name="title"
-                  type="text"
-                  control={control}
-                  errors={errors}
-                />
-                <TextArea
-                  textLabelName="Description"
-                  placeholder="Enter Description"
-                  name="description"
-                  type="text"
-                  control={control}
-                  errors={errors}
-                />
-                <SelectField
-                  className="mb-3"
-                  label="Tags"
-                  placeholder="Select Tags"
-                  options={tagsOptions}
-                  name="tagOptions"
-                  control={control}
-                  errors={errors}
-                  isMulti
-                />
-                {productType !== "VARIANT" && (
-                  <div>
+        {isLoading ? (
+          <Loader loaderClass="!absolute" />
+        ) : (
+          <>
+            <div className="text-lg font-medium text-blackPrimary">
+              Item Photos
+            </div>
+            <div className="col-span-12 relative">
+              <MultipleImageUpload
+                name="image"
+                control={control}
+                setError={setError}
+                clearErrors={clearErrors}
+                errors={errors}
+                maxSize={8}
+                allowedFormat={["image/png", "image/jpeg"]}
+                setValue={setValue}
+                watch={watch}
+                className=""
+              />
+            </div>
+            <section className="pt-4">
+              <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+                Hayowl Form
+              </h2>
+              <div className="border-l border-r border-b mb-2 rounded-b-md">
+                <div className="grid grid-cols-12 w-full p-4">
+                  <div className="col-span-12   ">
+                    <SelectField
+                      className="mb-3"
+                      label="Product Type"
+                      options={productTypes}
+                      name="productType"
+                      control={control}
+                      errors={errors}
+                      onChange={(selectedOption) =>
+                        handleProductTypeChange(
+                          selectedOption ? selectedOption.value : ""
+                        )
+                      }
+                    />
                     <Input
-                      textLabelName="SKU"
-                      placeholder="Enter SKU"
-                      name="sku"
+                      textLabelName="Title"
+                      placeholder="Enter Title"
+                      name="title"
                       type="text"
                       control={control}
                       errors={errors}
                     />
-                    <Input
-                      textLabelName="Quantity"
-                      placeholder="Enter Quantity"
-                      name="quantity"
-                      type="number"
+                    <TextArea
+                      textLabelName="Description"
+                      placeholder="Enter Description"
+                      name="description"
+                      type="text"
                       control={control}
                       errors={errors}
                     />
-                    <Input
-                      textLabelName="Price"
-                      placeholder="Enter Price"
-                      name="price"
-                      type="number"
+                    <SelectField
+                      className="mb-3"
+                      label="Tags"
+                      placeholder="Select Tags"
+                      options={tagsOptions}
+                      name="tagOptions"
                       control={control}
                       errors={errors}
+                      isMulti
                     />
+                    {productType !== "VARIANT" && (
+                      <div>
+                        <Input
+                          textLabelName="SKU"
+                          placeholder="Enter SKU"
+                          name="sku"
+                          type="text"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="Quantity"
+                          placeholder="Enter Quantity"
+                          name="quantity"
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                        <Input
+                          textLabelName="Price"
+                          placeholder="Enter Price"
+                          name="price"
+                          type="number"
+                          control={control}
+                          errors={errors}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
 
-          {errors?.combinations?.type === "min" ? (
-            <div className="errorText text-red-600 font-medium text-sm">
-              Please save the variant and create at least one combination
-            </div>
-          ) : null}
+              {errors?.combinations?.type === "min" ? (
+                <div className="errorText text-red-600 font-medium text-sm">
+                  Please save the variant and create at least one combination
+                </div>
+              ) : null}
 
-          <Button
-            btnName="Save & Next"
-            type="submit"
-            btnClass=" !w-auto p-2    text-white bg-green-500 rounded-md"
-          />
-        </section>
+              <Button
+                btnName="Save & Next"
+                isLoading={isLoadingSubmit}
+                type="submit"
+                btnClass=" !w-auto p-2    text-white bg-green-500 rounded-md"
+              />
+            </section>
+          </>
+        )}
       </form>
     </div>
   );
