@@ -163,6 +163,8 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({
               }
             }
             onComplete(productId);
+          } else {
+            return;
           }
         }
         onComplete(productId);

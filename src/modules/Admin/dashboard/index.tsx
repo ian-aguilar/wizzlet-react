@@ -287,6 +287,7 @@ const AdminDashboard = () => {
                   styles={pageLimitStyle}
                   className="!w-[300px]"
                   isMulti
+                  isSearchable={false}
                   value={selectedMarketplaceOptions}
                   onChange={handleMarketplaceChange}
                   options={connectedMarketplace}
