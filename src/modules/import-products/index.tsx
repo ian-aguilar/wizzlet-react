@@ -70,7 +70,8 @@ const ImportProducts = () => {
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
-  const { isLoading: storeAmazonLoading } = useImportProductsFromAmazonApi();
+  const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
+    useImportProductsFromAmazonApi();
   const { importAmazonProductsApi, isLoading: syncAmazonLoading } =
     useImportAmazonProductsApi();
   const { importProductsFromEbayApi, isLoading: importLoading } =
@@ -220,8 +221,8 @@ const ImportProducts = () => {
         await importProductsFromEbayApi(isCheck);
       }
       if (selectedMarketplace?.value === MARKETPLACE.AMAZON) {
-        return;
-        // await importProductsFromAmazonApi(isCheck);
+        // return;
+        await importProductsFromAmazonApi(isCheck);
       }
       await getImportProductsHandler();
       setIsCheck([]);

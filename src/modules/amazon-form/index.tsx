@@ -227,7 +227,6 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     getProperties(event);
   };
 
-
   return (
     <div className="relative">
       {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (

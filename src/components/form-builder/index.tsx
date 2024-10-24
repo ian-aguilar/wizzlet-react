@@ -210,8 +210,7 @@ const FieldArrayComponent = <T extends FieldValues>({
                               const field = getAppendField(data.items);
                               append(field);
                             }
-                          }}
-                        >
+                          }}>
                           <AddIconBtn className="  text-greenPrimary " />
                         </span>
 
@@ -220,8 +219,7 @@ const FieldArrayComponent = <T extends FieldValues>({
                             className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300"
                             onClick={() => {
                               remove(index);
-                            }}
-                          >
+                            }}>
                             <DeleteIcon className=" text-redAlert " />
                           </span>
                         )}

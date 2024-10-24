@@ -41,12 +41,12 @@ const AdminMarketplace = () => {
           </h2>
         </div>
       </div>
-      <section className=" w-full bg-white  p-5 mb-5 max-h-[calc(100vh_-_365px)] lg:max-h-[calc(100vh_-_350px)] overflow-y-auto scroll-design ">
+      <section className=" w-full bg-white  p-5 mb-5   min-h-[calc(100vh_-_200px)] max-h-[calc(100vh_-_200px)]   overflow-y-auto scroll-design ">
         <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
           {marketplace?.notConnectedMarketplace.map((item) => (
             <div
               key={item?.id}
-              className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col`}
+              className={`col-span-6 lg:col-span-4 bg-grayLightBody/10 p-8 flex flex-col`}
             >
               <div className="flex flex-wrap justify-between items-start gap-4 ">
                 <div>
