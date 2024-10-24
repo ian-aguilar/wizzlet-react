@@ -198,11 +198,15 @@ export const Select = (props: SelectCategoryProps) => {
       <div
         className="border border-greyBorder p-3 rounded-md max h-[50px]  "
         onClick={() => {
+          if(defaultValue !== 0){
+            setIsSelectOpen(false)
+            return;
+          }
           setIsSelectOpen(!isSelectOpen);
         }}
       >
         {newValue && slug}
-        {!isSelectOpen && !newValue && `Select Value`}
+        {!isSelectOpen && !newValue && `Select Category`}
       </div>
       <div
         className={` ${
