@@ -354,6 +354,9 @@ const ImportProducts = () => {
                 }}
               />
               <Button
+                BtnIconLeft={
+                  <AutoSyncIcon className="inline-flex mr-2 w-5 h-5 text-black " />
+                }
                 btnName={"Sync All Products"}
                 onClickHandler={importProductsHandler}
                 isLoading={
@@ -366,7 +369,7 @@ const ImportProducts = () => {
                     (ebaySyncStatus === SyncStatus.INPROGRESS ||
                       ebaySyncStatus === SyncStatus.PENDING))
                 }
-                btnClass="!w-auto border border-solid border-greenPrimary bg-transparent !text-greenPrimary !font-semibold "
+                btnClass="!w-auto border border-solid !bg-blend-screen !border-greenPrimary !bg-greenPrimary/40 !text-black !font-semibold "
               />
             </div>
             <div>
@@ -378,8 +381,7 @@ const ImportProducts = () => {
                       !importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
-                  >
+                    } px-4 py-2 rounded-full transition-colors`}>
                     {`${ImportTab.NOT_IMPORTED}(${
                       totalImportData ? totalImportData.totalNotImported : 0
                     })`}
@@ -390,8 +392,7 @@ const ImportProducts = () => {
                       importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
-                  >
+                    } px-4 py-2 rounded-full transition-colors`}>
                     {`${ImportTab.IMPORTED}(${
                       totalImportData ? totalImportData.totalImported : 0
                     })`}
