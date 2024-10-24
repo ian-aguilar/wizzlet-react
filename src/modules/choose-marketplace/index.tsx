@@ -15,12 +15,14 @@ import { ProductBasicFormProps } from "../all-product-form-wrapper/types";
 import { useNavigate, useParams } from "react-router-dom";
 import { VITE_APP_API_URL } from "@/config";
 import { capitalizeFirstLetter } from "./helper";
+import { Loader } from "@/components/common/Loader";
 
 // ** Types **
 
 const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   onComplete,
   getMarketplace,
+  setCompletedStep,
 }) => {
   const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
     []
@@ -39,8 +41,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   const navigate = useNavigate();
 
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
-  const { setProductMarketplace } = useSetProductMarketplaceAPI();
-  const { getProductMarketplace } = useGetProductMarketplaceAPI();
+  const { setProductMarketplace, isLoading: isLoadingSubmit } =
+    useSetProductMarketplaceAPI();
+  const { getProductMarketplace, isLoading } = useGetProductMarketplaceAPI();
 
   // Fetch marketplaces from the API
   const marketplaceListing = async () => {
@@ -54,6 +57,14 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   const getSelectedMarketplace = async () => {
     const { data, error } = await getProductMarketplace(productId as string);
     if (!error && data) {
+      const idArray: number[] = data?.data?.map(
+        (item: { id: number; name: string }) => item?.id
+      );
+      if (idArray.length) {
+        setCompletedStep((prev: number[]) =>
+          prev.includes(2) ? prev : [...prev, 2]
+        );
+      }
       const selectedIds = data?.data?.map(
         (item: { id: number; name: string }) => item?.id
       );
@@ -100,6 +111,9 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
     if (!data && error) {
       console.log("Error: ", error);
     } else {
+      setCompletedStep((prev: number[]) =>
+        prev.includes(3) ? prev : [...prev, 3]
+      );
       setErrorShow(false);
       onComplete(productId);
       getMarketplace(result);
@@ -107,35 +121,40 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   };
 
   return (
-    <div className="marketplace-form p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design ">
+    <div className="marketplace-form p-7 bg-white w-full rounded-md h-[calc(100vh_-_460px)]  lg:h-[calc(100vh_-_180px)]  overflow-y-auto scroll-design  relative">
       <h3 className="title text-[26px] font-semibold pb-4 mb-4 border-b border-black/20  ">
         Choose Marketplace
       </h3>
-      <div className="marketplace-list flex flex-col gap-4 lg:max-w-[568px]">
-        {marketplace.connectedMarketplace.length > 0 ? (
-          marketplace.connectedMarketplace.map((item) => (
-            <div
-              key={item.id}
-              className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  ">
-              <img
-                src={VITE_APP_API_URL + item.logo}
-                className="max-w-[77px] h-[23px] object-contain "
-                alt=""
-              />
+      {isLoading ? (
+        <Loader loaderClass="!absolute" />
+      ) : (
+        <div className="marketplace-list flex flex-col gap-4 lg:max-w-[568px]">
+          {marketplace.connectedMarketplace.length > 0 ? (
+            marketplace.connectedMarketplace.map((item) => (
+              <div
+                key={item.id}
+                className="marketplace-item bg-grayLightBody/10 p-4 border border-greyBorder rounded-md flex justify-between  "
+              >
+                <img
+                  src={VITE_APP_API_URL + item.logo}
+                  className="max-w-[77px] h-[23px] object-contain "
+                  alt=""
+                />
 
-              <Checkbox
-                mainClass="  flex-row-reverse gap-4"
-                isChecked={selectedMarketplaces.includes(item.id)}
-                onChange={() => handleMarketplaceSelection(item.id)}
-                value={item.id}
-                isDisabled={previouslySelectedMarketplaces.includes(item.id)}
-              />
-            </div>
-          ))
-        ) : (
-          <p>No marketplaces available</p>
-        )}
-      </div>
+                <Checkbox
+                  mainClass="  flex-row-reverse gap-4"
+                  // checkLabel={item.name}
+                  isChecked={selectedMarketplaces.includes(item.id)}
+                  onChange={() => handleMarketplaceSelection(item.id)}
+                  value={item.id}
+                />
+              </div>
+            ))
+          ) : (
+            <p>No marketplaces available</p>
+          )}
+        </div>
+      )}
 
       {errorShow && selectedMarketplaces.length === 0 ? (
         <span className="errorText text-red-600 font-medium text-sm">
@@ -154,6 +173,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
         <Button
           btnName="Save & Next"
           btnClass="!w-auto"
+          isLoading={isLoadingSubmit}
           onClickHandler={handleSubmit}
         />
       </div>

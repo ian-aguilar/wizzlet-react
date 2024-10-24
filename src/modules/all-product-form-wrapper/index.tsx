@@ -21,6 +21,7 @@ const ProductForm: React.FC = () => {
 
   const [marketplace, setMarketplace] = useState<string[]>([]);
   const [stepData, setStepData] = useState<FormData[]>([]);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
 
   const navigate = useNavigate();
   const currentStep = parseInt(step || "1", 10);
@@ -34,6 +35,10 @@ const ProductForm: React.FC = () => {
     isClick: boolean = false
   ) => {
     if (isClick) {
+      if (completedSteps.includes(newStep)) {
+        navigate(`/inventory-management/product-form/${newStep}/${productId}`);
+        return;
+      }
       if (newStep > currentStep) {
         if (currentStep !== 2 && currentStep !== 1) {
           navigate(
@@ -117,7 +122,10 @@ const ProductForm: React.FC = () => {
     if (currentStep === 1) {
       return (
         <Suspense fallback={<Loader loaderClass="!absolute" />}>
-          <ProductBasicForm onComplete={handleBasicFormComplete} />
+          <ProductBasicForm
+            onComplete={handleBasicFormComplete}
+            setCompletedStep={setCompletedSteps}
+          />
         </Suspense>
       );
     }
@@ -127,6 +135,7 @@ const ProductForm: React.FC = () => {
         <Suspense fallback={<Loader loaderClass="!absolute" />}>
           <ChooseMarketplace
             onComplete={handleChooseMarketplaceComplete}
+            setCompletedStep={setCompletedSteps}
             getMarketplace={handleMarketplaceForm}
           />
         </Suspense>
@@ -139,7 +148,10 @@ const ProductForm: React.FC = () => {
     if (ComponentToRender) {
       return (
         <Suspense fallback={<Loader loaderClass="!absolute" />}>
-          <ComponentToRender onComplete={handleDynamicFormComplete} />
+          <ComponentToRender
+            onComplete={handleDynamicFormComplete}
+            setCompletedStep={setCompletedSteps}
+          />
         </Suspense>
       );
     }
