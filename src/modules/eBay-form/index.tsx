@@ -32,8 +32,11 @@ import { useSelector } from "react-redux";
 import { userSelector } from "@/redux/slices/userSlice";
 import { selectSocket } from "@/redux/slices/socketSlice";
 
-const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
-  const { productId } = useParams();
+const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
+  onComplete,
+  setCompletedStep,
+}) => {
+  const { productId, step } = useParams();
 
   const { ebayFormSubmitApi, isLoading: ebayFormSubmitApiLoading } =
     useEbayFormHandleApi();
@@ -51,6 +54,8 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
   const [productType, setProductType] = useState<string | null>(null);
+  const [errorShow, setErrorShow] = useState<boolean>(false);
+
   const [propertyOptions, setPropertyOptions] = useState<
     ({ label: string; value: string } | undefined)[]
   >([]);
@@ -87,7 +92,8 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   };
 
   const handleOnChange = async (selectedOption: CategoryOptions) => {
-    console.log("Selected Option:", selectedOption);
+    setErrorShow(false);
+
     if (!selectedOption?.id) {
       return;
     }
@@ -117,6 +123,9 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
     const { data, error } = await editProductValueApi(productId);
     if (!error && data?.data) {
+      setCompletedStep((prev: number[]) =>
+        prev.includes(Number(step)) ? prev : [...prev, Number(step)]
+      );
       return data?.data;
     }
   };
@@ -150,6 +159,14 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
 
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
+
+    if (categoriesId == 0) {
+      setErrorShow(true);
+      return;
+    } else {
+      setErrorShow(false);
+    }
+
     const formData = new FormData();
 
     if (productType === "VARIANT") {
@@ -205,7 +222,6 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     Object.keys(payload).forEach((key) => {
       if (key !== "combinations" && key !== "variantProperties") {
         const value = payload[key];
-        console.log("🚀 ~ Object.keys ~ value:", value, Boolean(value));
         if (Array.isArray(value)) {
           value.forEach((item, index) => {
             if (item) formData.append(`${key}[${index}]`, JSON.stringify(item));
@@ -223,13 +239,10 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     });
 
     if (productId) {
-      const { data: result, error: ebayFormError } = await ebayFormSubmitApi(
-        formData,
-        {
-          categoryId: categoriesId,
-          productId,
-        }
-      );
+      const { error: ebayFormError } = await ebayFormSubmitApi(formData, {
+        categoryId: categoriesId,
+        productId,
+      });
 
       if (!ebayFormError) {
         if (type === "SaveInEbay") {
@@ -256,8 +269,6 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
           onComplete(productId);
         }
       }
-
-      console.log("🚀 ~ onSubmit ~ result:", result);
     }
   };
 
@@ -316,6 +327,11 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
             onChange={handleOnChange}
           />
 
+          {errorShow ? (
+            <span className="errorText text-red-600 font-medium text-sm">
+              {"Category is not selected."}
+            </span>
+          ) : null}
           {productType === "VARIANT" && (
             <Variation
               control={control}

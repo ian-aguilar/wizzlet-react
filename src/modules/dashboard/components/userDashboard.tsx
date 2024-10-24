@@ -14,6 +14,7 @@ import { DashboardData, OptionType, RevenueMarketDetail } from "../types";
 import { DataNotFound } from "@/components/svgIcons";
 import geoMap from "/images/mapWorld.png";
 import { pageLimitStyle } from "@/modules/import-products/constants";
+import { Loader } from "@/components/common/Loader";
 
 const UserDashboard: React.FC = () => {
   const currentDate = new Date();
@@ -62,8 +63,9 @@ const UserDashboard: React.FC = () => {
   });
 
   // ================= Custom hooks ====================
-  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
-  const { getAllDashboardDataAPI } = useGetAllDashboardDataApi();
+  const { getMarketplaceListingAPI, isLoading: isMarketplaceLoading } =
+    useMarketplaceListingAPI();
+  const { getAllDashboardDataAPI, isLoading } = useGetAllDashboardDataApi();
 
   useEffect(() => {
     marketplaceListing();
@@ -162,178 +164,194 @@ const UserDashboard: React.FC = () => {
         isDatePickerOpen={isDatePickerOpen}
         setIsDatePickerOpen={setIsDatePickerOpen}
       />
-      <section className="w-full bg-white   py-3 px-5 mb-2 ">
+      <section className="w-full bg-white   py-3 px-5 mb-2 relative">
         <p className="text-lg font-medium  ">Connect Your Marketplace</p>
-        <div className="flex   gap-4  max-h-[80px] overflow-x-auto scroll-design">
-          {marketplace?.connectedMarketplace.map((item) => (
-            <div
-              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5  gap-4 min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
-                item?.coming_soon ? "relative" : ""
-              }`}
-              key={item?.id}
-            >
-              {item?.coming_soon ? (
-                <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
-                  Coming Soon
-                </div>
-              ) : null}
-              <img
-                src={VITE_APP_API_URL + item.logo}
-                className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
-                alt=""
-              />
-              <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
-                <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
-                  &nbsp;
+        {isMarketplaceLoading ? (
+          <Loader loaderClass={"absolute"} />
+        ) : (
+          <div className="flex   gap-4  max-h-[80px] overflow-x-auto scroll-design">
+            {marketplace?.connectedMarketplace.map((item) => (
+              <div
+                className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5  gap-4 min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
+                  item?.coming_soon ? "relative" : ""
+                }`}
+                key={item?.id}
+              >
+                {item?.coming_soon ? (
+                  <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+                    Coming Soon
+                  </div>
+                ) : null}
+                <img
+                  src={VITE_APP_API_URL + item.logo}
+                  className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
+                  alt=""
+                />
+                <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
+                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
+                    &nbsp;
+                  </span>
+                  CONNECTED
                 </span>
-                CONNECTED
-              </span>
-            </div>
-          ))}
-          {marketplace?.notConnectedMarketplace.map((item) => (
-            <div
-              className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5   gap-4  min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
-                item?.coming_soon ? "relative" : ""
-              }`}
-              key={item?.id}
-            >
-              {item?.coming_soon ? (
-                <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
-                  Coming Soon
-                </div>
-              ) : null}
+              </div>
+            ))}
+            {marketplace?.notConnectedMarketplace.map((item) => (
+              <div
+                className={`bg-grayLightBody/5 col-span-6 xl:col-span-3 flex justify-between  items-center p-5   gap-4  min-w-[300px] w-[300px] lg:min-w-[360px] lg:w-[360px] ${
+                  item?.coming_soon ? "relative" : ""
+                }`}
+                key={item?.id}
+              >
+                {item?.coming_soon ? (
+                  <div className="absolute z-0 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
+                    Coming Soon
+                  </div>
+                ) : null}
 
-              <img
-                src={VITE_APP_API_URL + item.logo}
-                className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
-                alt=""
-              />
-              <span className="inline-flex items-center px-4 gap-2  bg-grayText/10   text-sm  rounded-full py-1 text-grayText border border-grayText ">
-                <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayText ">
-                  &nbsp;
+                <img
+                  src={VITE_APP_API_URL + item.logo}
+                  className=" max-w-[60px] lg:max-w-[85px] xl:max-w-[115px] max-h-[40px] w-full h-full object-contain  "
+                  alt=""
+                />
+                <span className="inline-flex items-center px-4 gap-2  bg-grayText/10   text-sm  rounded-full py-1 text-grayText border border-grayText ">
+                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayText ">
+                    &nbsp;
+                  </span>
+                  NOT&nbsp;CONNECTED
                 </span>
-                NOT&nbsp;CONNECTED
-              </span>
-            </div>
-          ))}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
       <section className=" w-full bg-white  p-5 mb-5 max-h-[calc(100vh_-_365px)] lg:max-h-[calc(100vh_-_350px)] overflow-y-auto scroll-design ">
-        <div className="flex gap-6 justify-between flex-wrap items-center  pb-1">
-          <h3 className="font-medium text-[26px] ">Analytics</h3>
-          <Select
-            isMulti
-            styles={pageLimitStyle}
-            value={selectedOptions}
-            onChange={handleChange}
-            options={connectedMarketplace}
-            placeholder="Filter By Marketplace"
-          />
-        </div>
-        <div className="grid grid-cols-12 lg:gap-x-4 gap-y-4 mb-5 ">
-          <div className=" w-full h-full col-span-12 lg:col-span-9 border p-5 relative rounded-md ">
-            <RevenueProfitChart
-              startDate={startDate}
-              endDate={endDate}
-              totalRevenue={mainData?.totalRevenue}
-              data={mainData?.revenueMarketDetails}
-              selectedMarketplace={selectedOptions}
-            />
-          </div>
-          <div className="flex flex-col    w-full h-full col-span-12 lg:col-span-3 border p-5 relative  rounded-md ">
-            <RevenueProfitDonutChart
-              connectedMarketplace={marketplace?.connectedMarketplace}
-              revenueData={mainData?.revenueMarketDetails}
-              selectedMarketplace={selectedOptions}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">
-          <div className=" col-span-12 xl:col-span-4 xl:pr-5  ">
-            <div className="flex justify-between items-center pb-4 ">
-              <p className="text-grayText text-base">Number of Sold Items</p>
-              <div>
-                <SoldIcon />
+        {isLoading ? (
+          <Loader loaderClass={"absolute"} />
+        ) : (
+          <>
+            <div className="flex gap-6 justify-between flex-wrap items-center  pb-1">
+              <h3 className="font-medium text-[26px] ">Analytics</h3>
+              <Select
+                isMulti
+                isSearchable={false}
+                styles={pageLimitStyle}
+                value={selectedOptions}
+                onChange={handleChange}
+                options={connectedMarketplace}
+                placeholder="Filter By Marketplace"
+              />
+            </div>
+            <div className="grid grid-cols-12 lg:gap-x-4 gap-y-4 mb-5 ">
+              <div className=" w-full h-full col-span-12 lg:col-span-9 border p-5 relative rounded-md ">
+                <RevenueProfitChart
+                  startDate={startDate}
+                  endDate={endDate}
+                  totalRevenue={mainData?.totalRevenue}
+                  data={mainData?.revenueMarketDetails}
+                  selectedMarketplace={selectedOptions}
+                />
+              </div>
+              <div className="flex flex-col    w-full h-full col-span-12 lg:col-span-3 border p-5 relative  rounded-md ">
+                <RevenueProfitDonutChart
+                  connectedMarketplace={marketplace?.connectedMarketplace}
+                  revenueData={mainData?.revenueMarketDetails}
+                  selectedMarketplace={selectedOptions}
+                />
               </div>
             </div>
-            <div className="flex justify-between items-center">
-              <p className="text-3xl font-bold ">
-                {mainData?.saleDetails[0]?.totalSoldItems
-                  ? mainData?.saleDetails[0]?.totalSoldItems
-                  : 0}
-              </p>
-              {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
+            <div className="grid grid-cols-12 border mb-5  rounded-md  p-5">
+              <div className=" col-span-12 xl:col-span-4 xl:pr-5  ">
+                <div className="flex justify-between items-center pb-4 ">
+                  <p className="text-grayText text-base">
+                    Number of Sold Items
+                  </p>
+                  <div>
+                    <SoldIcon />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-3xl font-bold ">
+                    {mainData?.saleDetails[0]?.totalSoldItems
+                      ? mainData?.saleDetails[0]?.totalSoldItems
+                      : 0}
+                  </p>
+                  {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md  font-semibold ">
                 {" "}
                 +20%{" "}
               </div> */}
-            </div>
-          </div>
-          <div className=" col-span-12 xl:col-span-4 xl:border-l xl:border-r xl:border-t-0 xl:border-b-0 border-t border-b xl:px-5 xl:my-0 my-5 xl:py-0 py-5">
-            {" "}
-            <div className="flex justify-between items-center pb-4 ">
-              <p className="text-grayText text-base">Number of Listed Items</p>
-              <div>
-                <ListedIcon />
+                </div>
               </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="text-3xl font-bold ">
-                {mainData?.listedDetails[0]?.listedItems}
-              </p>
-              {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
+              <div className=" col-span-12 xl:col-span-4 xl:border-l xl:border-r xl:border-t-0 xl:border-b-0 border-t border-b xl:px-5 xl:my-0 my-5 xl:py-0 py-5">
+                {" "}
+                <div className="flex justify-between items-center pb-4 ">
+                  <p className="text-grayText text-base">
+                    Number of Listed Items
+                  </p>
+                  <div>
+                    <ListedIcon />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-3xl font-bold ">
+                    {mainData?.listedDetails[0]?.listedItems}
+                  </p>
+                  {/* <div className="bg-yellow/20 text-yellow text-sm py-1 px-2 rounded-md font-semibold ">
                 {" "}
                 +20%{" "}
               </div> */}
-            </div>{" "}
-          </div>
-          <div className=" col-span-12 xl:col-span-4 xl:pl-5">
-            {" "}
-            <div className="flex justify-between items-center pb-4 ">
-              <p className="text-grayText text-base">Average Sale Price</p>
-              <div>
-                <SalesIcon />
+                </div>{" "}
               </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <p className="text-3xl font-bold ">
-                ${Number(mainData?.saleDetails[0]?.averageSalePrice).toFixed(2)}
-              </p>
-              {/* <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
+              <div className=" col-span-12 xl:col-span-4 xl:pl-5">
+                {" "}
+                <div className="flex justify-between items-center pb-4 ">
+                  <p className="text-grayText text-base">Average Sale Price</p>
+                  <div>
+                    <SalesIcon />
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-3xl font-bold ">
+                    $
+                    {Number(mainData?.saleDetails[0]?.averageSalePrice).toFixed(
+                      2
+                    )}
+                  </p>
+                  {/* <div className="bg-redAlert/20 text-redAlert text-sm py-1 px-2 rounded-md  font-semibold ">
                 {" "}
                 +20%{" "}
               </div> */}
-            </div>{" "}
-          </div>
-        </div>
-        <div className="grid grid-cols-11 gap-4 mb-5">
-          <div className="flex justify-center items-center w-full h-full col-span-11 lg:col-span-5 border  rounded-md p-4 relative">
-            {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
+                </div>{" "}
+              </div>
+            </div>
+            <div className="grid grid-cols-11 gap-4 mb-5">
+              <div className="flex justify-center items-center w-full h-full col-span-11 lg:col-span-5 border  rounded-md p-4 relative">
+                {/* <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium z-10  rounded-md  ">
               Coming Soon
             </div> */}
-            {/* <GeoChart /> */}
-            <div className="absolute z-10 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
-              Coming Soon
-            </div>
-            <img src={geoMap} alt="" className="" />
-          </div>
-          <div className="flex flex-col w-full h-full col-span-6 lg:col-span-6 border  rounded-md p-4 ">
-            <h3 className="text-xl font-bold mb-4">Top Selling Category</h3>
-            {mainData?.TopSoldCategories.length > 0 ? (
-              mainData?.TopSoldCategories.map((item) => (
-                <ProgressBar
-                  key={item.categoryName}
-                  Progress={item?.percentage}
-                  LabelName={item?.categoryName}
-                />
-              ))
-            ) : (
-              <div className="text-center">
-                <DataNotFound className="!h-[20vh]" />
+                {/* <GeoChart /> */}
+                <div className="absolute z-10 inset-0 bg-grayLightBody/50 backdrop-blur-sm flex justify-center items-center text-[22px] font-medium  rounded-md  ">
+                  Coming Soon
+                </div>
+                <img src={geoMap} alt="" className="" />
               </div>
-            )}
-          </div>
+              <div className="flex flex-col w-full h-full col-span-6 lg:col-span-6 border  rounded-md p-4 ">
+                <h3 className="text-xl font-bold mb-4">Top Selling Category</h3>
+                {mainData?.TopSoldCategories.length > 0 ? (
+                  mainData?.TopSoldCategories.map((item) => (
+                    <ProgressBar
+                      key={item.categoryName}
+                      Progress={item?.percentage}
+                      LabelName={item?.categoryName}
+                    />
+                  ))
+                ) : (
+                  <div className="text-center">
+                    <DataNotFound className="!h-[20vh]" />
+                  </div>
+                )}
+              </div>
 
-          {/* <div className="flex flex-col   w-full h-full col-span-5 lg:col-span-3 border  rounded-md p-4 ">
+              {/* <div className="flex flex-col   w-full h-full col-span-5 lg:col-span-3 border  rounded-md p-4 ">
             <h3 className="text-xl font-bold mb-4">Top Selling Sub-Category</h3>
             <ProgressBar Progress="45" LabelName="Computers" />
             <ProgressBar Progress="45" LabelName="Computers" />
@@ -341,7 +359,9 @@ const UserDashboard: React.FC = () => {
             <ProgressBar Progress="45" LabelName="Computers" />
             <ProgressBar Progress="45" LabelName="Computers" />
           </div> */}
-        </div>
+            </div>
+          </>
+        )}
       </section>
     </>
   );

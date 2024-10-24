@@ -35,8 +35,11 @@ import { selectSocket } from "@/redux/slices/socketSlice";
 import { AmazonSaveType } from "./types";
 import { RECOMMENDED_BROWSE_NODES } from "./constants";
 
-const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
-  const { productId } = useParams();
+const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({
+  onComplete,
+  setCompletedStep,
+}) => {
+  const { productId, step } = useParams();
 
   const user = useSelector(userSelector);
   const socket = useSelector(selectSocket);
@@ -109,6 +112,9 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
     }
     const { data, error } = await editAmazonProductValueApi(productId);
     if (!error && data?.data) {
+      setCompletedStep((prev: number[]) =>
+        prev.includes(Number(step)) ? prev : [...prev, Number(step)]
+      );
       return data?.data;
     }
   };
@@ -157,6 +163,8 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
               }
             }
             onComplete(productId);
+          } else {
+            return;
           }
         }
         onComplete(productId);
@@ -226,7 +234,6 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
   }) => {
     getProperties(event);
   };
-
 
   return (
     <div className="relative">
