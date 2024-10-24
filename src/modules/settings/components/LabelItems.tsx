@@ -190,7 +190,7 @@ const LabelItems = ({
         ) : (
           <>
             <div>
-              <DataNotFound className="h-[20vh] mt-[10vh]" />
+              <DataNotFound className="h-[30vh] mt-[10vh]" />
             </div>
           </>
         )}

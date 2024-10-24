@@ -239,4 +239,5 @@ export type ICheckboxProps = {
   isChecked?: boolean;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   mainClass?: any;
+  isDisabled?: boolean;
 };

@@ -24,11 +24,11 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   getMarketplace,
   setCompletedStep,
 }) => {
-  // ** States **
-
   const [selectedMarketplaces, setSelectedMarketplaces] = useState<number[]>(
     []
-  ); // List of selected marketplaces
+  );
+  const [previouslySelectedMarketplaces, setPreviouslySelectedMarketplaces] =
+    useState<number[]>([]); // Track previously selected marketplaces (from the DB)
   const [errorShow, setErrorShow] = useState<boolean>(false);
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
@@ -40,13 +40,12 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
   const { productId } = useParams();
   const navigate = useNavigate();
 
-  // ** Custom hooks **
   const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
   const { setProductMarketplace, isLoading: isLoadingSubmit } =
     useSetProductMarketplaceAPI();
   const { getProductMarketplace, isLoading } = useGetProductMarketplaceAPI();
 
-  // Fetch the marketplace listing
+  // Fetch marketplaces from the API
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
@@ -54,6 +53,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
     }
   };
 
+  // Fetch previously selected marketplaces from the database
   const getSelectedMarketplace = async () => {
     const { data, error } = await getProductMarketplace(productId as string);
     if (!error && data) {
@@ -65,24 +65,31 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
           prev.includes(2) ? prev : [...prev, 2]
         );
       }
-      setSelectedMarketplaces(idArray);
+      const selectedIds = data?.data?.map(
+        (item: { id: number; name: string }) => item?.id
+      );
+      setSelectedMarketplaces(selectedIds); // Set selected marketplaces
+      setPreviouslySelectedMarketplaces(selectedIds); // Store as "previously selected"
     }
   };
 
+  // Fetch data when component mounts
   useEffect(() => {
     setErrorShow(false);
-    marketplaceListing();
-    getSelectedMarketplace();
+    marketplaceListing(); // Load marketplace options
+    getSelectedMarketplace(); // Load selected marketplaces
   }, []);
 
   // Handle marketplace selection toggle
   const handleMarketplaceSelection = (id: number) => {
+    if (previouslySelectedMarketplaces.includes(id)) return; // Prevent deselection of previously selected
+
     if (!selectedMarketplaces.includes(id)) {
-      setSelectedMarketplaces([...selectedMarketplaces, id]); // Add if not selected
+      setSelectedMarketplaces([...selectedMarketplaces, id]); // Add new marketplace
     } else {
       setSelectedMarketplaces(
-        selectedMarketplaces.filter((market) => market !== id)
-      ); // Remove if already selected
+        selectedMarketplaces.filter((market) => market !== id) // Remove marketplace
+      );
     }
   };
 
@@ -149,7 +156,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
         </div>
       )}
 
-      {errorShow && selectedMarketplaces.length == 0 ? (
+      {errorShow && selectedMarketplaces.length === 0 ? (
         <span className="errorText text-red-600 font-medium text-sm">
           {"Marketplace is not selected."}
         </span>

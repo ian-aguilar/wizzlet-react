@@ -14,9 +14,14 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
       sortField: "full_name",
       sortable: true,
       cell: (row: IUserListing) => (
-        <div>
-          {row.added_by_admin && <span> Added by admin </span>}
-          {row.full_name}
+        <div className="relative">
+          {row.added_by_admin && (
+            <span className="text-greenPrimary absolute -top-1 left-0 bg-greenPrimary/10 block whitespace-nowrap text-[10px] leading-[14px] ">
+              {" "}
+              Add by admin{" "}
+            </span>
+          )}
+          <span className="block pt-1.5 "> {row.full_name}</span>
         </div>
       ),
     },
@@ -53,9 +58,7 @@ const useUserHeaders = ({ onDelete, onInactive }: IUseUserHeadersProps) => {
         <div className="flex gap-4 ">
           <span
             className="text-greenPrimary cursor-pointer"
-            onClick={() =>
-              navigate(`/user-management/view/${row.id}`)
-            }
+            onClick={() => navigate(`/user-management/view/${row.id}`)}
           >
             {" "}
             <EyeIconSettings className="inline-block mr-1 text-greenPrimary" />{" "}
