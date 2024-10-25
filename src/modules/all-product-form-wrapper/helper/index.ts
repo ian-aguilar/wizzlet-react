@@ -26,3 +26,21 @@ export const addMarketplaceForms = (
 
   setStepData(() => [...formArray]);
 };
+
+export const filterAndResetIds = (
+  originalArray: FormData[],
+  labelsToKeep: string[]
+): void => {
+  // Remove unwanted elements starting from index 2
+  for (let i = originalArray.length - 1; i >= 2; i--) {
+    const item = originalArray[i];
+    if (!labelsToKeep.includes(item.label)) {
+      originalArray.splice(i, 1); // Remove the element if label does not match
+    }
+  }
+
+  // Reset the IDs based on the remaining items in the array
+  originalArray.forEach((item, index) => {
+    item.id = index + 1; // Set ID to be index + 1
+  });
+};

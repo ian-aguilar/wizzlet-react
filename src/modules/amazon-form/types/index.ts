@@ -1,4 +1,5 @@
-import { FieldsType } from "@/components/form-builder/types";
+import { FieldsType, IValidationItem } from "@/components/form-builder/types";
+import { Option } from "@/modules/inventory-management/types";
 import {
   Control,
   FieldErrors,
@@ -22,6 +23,7 @@ export interface ResType {
   success: boolean;
   path: string[];
   message?: string;
+  isVariation?: boolean;
 }
 export interface ReferenceItem {
   type: string;
@@ -101,10 +103,15 @@ export const ManualProperties = [
 ];
 
 export interface IAmazonVariantChildProps {
-  control: Control<FieldValues, any>;
-  errors: FieldErrors<FieldValues>;
-  watch: UseFormWatch<FieldValues>;
-  variationProperties: FieldsType<any>[] | undefined;
+  variationProperties: FieldsType<any>[] | undefined | ReferenceItem[];
+  validationItems: IValidationItem | undefined;
+  fieldDefaultValues: any;
+  variationThemeField: any;
+  productId: number | string;
+  category: Option | null;
+  childProduct: any;
+  onComplete: (data: any) => void;
+  parent_sku: string;
 }
 
 export interface ICategoryData {

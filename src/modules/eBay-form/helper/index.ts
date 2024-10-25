@@ -45,7 +45,7 @@ export const transformData = async (
 
   const secondArray: Record<string, string[]> = {};
 
-  data.forEach((item) => {
+  data?.forEach((item) => {
     const optionValues = item?.option?.map((opt) => opt?.value);
     secondArray[item.name] = optionValues;
   });

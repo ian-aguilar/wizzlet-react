@@ -1,9 +1,17 @@
 import { ICheckboxProps } from "../types";
 
-const Checkbox = ({ name, checkLabel, isChecked, onChange, value, mainClass }: ICheckboxProps) => {
+const Checkbox = ({
+  name,
+  checkLabel,
+  isChecked,
+  onChange,
+  value,
+  mainClass,
+  isDisabled, // New prop for disabling the checkbox
+}: ICheckboxProps) => {
   return (
     <>
-      <div className={` flex items-center ${mainClass} `}>
+      <div className={`flex items-center ${mainClass}`}>
         <input
           id={name}
           name={name}
@@ -11,10 +19,15 @@ const Checkbox = ({ name, checkLabel, isChecked, onChange, value, mainClass }: I
           onChange={onChange}
           checked={isChecked}
           type="checkbox"
-          className="h-4 w-4 rounded-[2px] border-solid border-gray-300 accent-greenPrimary hover:ring-greenPrimary duration-300 transition-all  "
+          disabled={isDisabled}
+          className="h-4 w-4 rounded-[2px] border-solid border-gray-300 accent-greenPrimary hover:ring-greenPrimary duration-300 transition-all disabled:cursor-not-allowed disabled:bg-gray-200"
         />
         {checkLabel && (
-          <label className="ml-2 text-darkText font-medium text-base leading-4 " htmlFor={name}>
+          <label
+            className={`ml-2 text-darkText font-medium text-base leading-4 ${
+              isDisabled ? "text-gray-400" : ""
+            }`} // Optional: graying out the label for disabled checkboxes
+            htmlFor={name}>
             {checkLabel}
           </label>
         )}

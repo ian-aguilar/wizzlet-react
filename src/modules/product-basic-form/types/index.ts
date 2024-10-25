@@ -10,7 +10,7 @@ export interface IProductBasicForm {
   price?: number;
   variantProperties?: IVariantProperty[];
   combinations?: ICombination[];
-  tagOptions: { label: string; value: string }[];
+  tagOptions?: { label: string; value: string }[];
 }
 
 export interface IVariantProperty {

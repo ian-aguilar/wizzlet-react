@@ -13,6 +13,17 @@ export const useMarketplaceListingAPI = () => {
   return { getMarketplaceListingAPI, isLoading, isError, isSuccess };
 };
 
+export const useMarketplaceAdminListingAPI = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getMarketplaceAdminListingAPI = async () => {
+    return callApi(`${AUTH_API_BASE_PATH}/admin-marketplace`);
+  };
+
+  return { getMarketplaceAdminListingAPI, isLoading, isError, isSuccess };
+};
+
 export const useMarketplaceStatusAPI = () => {
   // ** custom Hooks **
   const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();

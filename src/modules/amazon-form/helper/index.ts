@@ -73,10 +73,10 @@ export const appendFormData = (
   }
 };
 
-export const mapDataWithReference = async (
+export const mapDataWithReference = (
   data: InputData,
   reference: ReferenceItem[]
-): Promise<OutputData> => {
+): OutputData => {
   const result: OutputData = {};
 
   reference?.forEach((ref) => {
@@ -118,6 +118,18 @@ export const mapDataWithReference = async (
                   //   : { label: "", value: val };
                   return option ? option.value : val;
                 });
+              } else if (subRef.type === "DATE") {
+                const dateValue = item[fieldName];
+                if (dateValue) {
+                  // Convert from "YYYY-DD-MM" to "YYYY-MM-DD" format
+                  const [year, day, month] = dateValue.split("-");
+                  const formattedDate = `${year}-${month}-${day}`;
+
+                  // Convert to a JavaScript Date object
+                  mappedItem[fieldName] = new Date(formattedDate);
+                } else {
+                  mappedItem[fieldName] = null; // If the date value is empty or invalid
+                }
               } else {
                 // Directly map the value for other types
                 mappedItem[fieldName] = item[fieldName];
