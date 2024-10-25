@@ -304,13 +304,13 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   };
 
   return (
-    <div>
+    <div className="relative">
       {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
-        <Loader loaderClass="!absolute" />
+        <Loader loaderClass="!absolute !h-full" />
       ) : null}
-      <div className="flex justify-center gap-[50px]">
+      <div className="flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap !w-[calc(100vw_-_480px)]   scroll-design pr-6 ">
         <span
-          className="cursor-pointer"
+          className="cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary "
           onClick={() => {
             setTab(ITab.Parent);
           }}
@@ -321,7 +321,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
           childProperties.map((_, index: number) => {
             return (
               <span
-                className="cursor-pointer"
+                className="cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 onClick={() => {
                   // if (variationThemeField) {
                   setTab(ITab.Variation);
@@ -334,7 +334,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             );
           })}
         <span
-          className="cursor-pointer"
+          className="cursor-pointer text-white  px-4 py-2 hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
           onClick={() => {
             addChildProperties();
           }}
@@ -342,121 +342,129 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
           Add Child product +
         </span>
       </div>
+
       <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
         {tab === ITab.Parent && (
-          <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
+          <div className="p-5 bg-white max-h-[calc(100vh_-_200px)] scroll-design overflow-y-auto ">
             <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
               Choose Product Category
             </h2>
-            <AsyncSelectField
-              name="amazonProductCategory"
-              serveSideSearch={true}
-              getOnChange={(e) => {
-                if (e) {
-                  setCategoryData(e);
-                  handleGetCategoryWiseProperty(e);
-                } else {
-                  setCategory(null);
-                }
-              }}
-              isLoading={categoryLoading}
-              isSearchable={true}
-              notClearable={true}
-              getOptions={getCategories}
-              value={category ? category : null}
-              className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
-              placeholder="Choose Category"
-            />
-            {variationThemeData && (
-              <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
-                Choose Variation Combination
-              </h2>
-            )}
-            {variationThemeData &&
-              variationThemeData.map((e, index: number) => {
-                return (
-                  <div key={index}>
-                    <Controller
-                      name={"variation_theme[0].name"}
-                      control={control}
-                      render={({ field: { onChange, onBlur } }) => (
-                        <input
-                          onBlur={onBlur}
-                          onChange={onChange}
-                          value={e.value}
-                          name="variation_theme[0].name"
-                          type="radio"
-                          className={`bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300 `}
-                          // disabled={isDisabled}
+            <div className="py-3 px-5 border-l border-r border-b rounded-b-md">
+              <AsyncSelectField
+                name="amazonProductCategory"
+                serveSideSearch={true}
+                getOnChange={(e) => {
+                  if (e) {
+                    setCategoryData(e);
+                    handleGetCategoryWiseProperty(e);
+                  } else {
+                    setCategory(null);
+                  }
+                }}
+                isLoading={categoryLoading}
+                isSearchable={true}
+                notClearable={true}
+                getOptions={getCategories}
+                value={category ? category : null}
+                className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
+                placeholder="Choose Category"
+              />
+              {variationThemeData && (
+                <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+                  Choose Variation Combination
+                </h2>
+              )}
+              <div className="py-3 px-5 border-l border-r border-b rounded-b-md">
+                {variationThemeData &&
+                  variationThemeData.map((e, index: number) => {
+                    return (
+                      <div className="flex gap-4 items-center " key={index}>
+                        <Controller
+                          name={"variation_theme[0].name"}
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <input
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              value={e.value}
+                              name="variation_theme[0].name"
+                              type="radio"
+                              className={` w-4 h-4 accent-greenPrimary `}
+                              // disabled={isDisabled}
+                            />
+                          )}
                         />
-                      )}
-                    />
-                    <label>{e.label}</label>
-                  </div>
-                );
-              })}
-            {/* {tab === ITab.Parent ? ( */}
-            {/* <> */}
-            <Input
-              placeholder={"Enter parent sku"}
-              control={control}
-              textLabelName={"Parent SKU"}
-              name={"parent_sku"}
-              errors={errors}
-              type={"input"}
-            />
-            {properties && properties.length > 0 && (
-              <div>
-                <FormBuilder
-                  control={control}
-                  errors={errors}
-                  fields={properties as any}
-                  watch={watch as any}
-                />
-                <div className="flex justify-between">
-                  <Button
-                    showType={btnShowType.primary}
-                    btnName="Save"
-                    type="submit"
-                    btnClass="mt-6 !text-base"
-                  />
-
-                  <Button
-                    showType={btnShowType.primary}
-                    btnName="Save and list in Amazon"
-                    btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
-                    // isLoading={listInAmazonLoading}
-                    type="button"
-                    onClickHandler={async () => {
-                      // setListInAmazonLoading(true);
-                      await handleSubmit(
-                        onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
-                      )();
-                      // setListInAmazonLoading(false);
-                    }}
-                  />
-                </div>
+                        <label className="w-full">{e.label}</label>
+                      </div>
+                    );
+                  })}
               </div>
-            )}
+              {/* {tab === ITab.Parent ? ( */}
+              {/* <> */}
+              <Input
+                placeholder={"Enter parent sku"}
+                control={control}
+                textLabelName={"Parent SKU"}
+                name={"parent_sku"}
+                errors={errors}
+                type={"input"}
+              />
+              {properties && properties.length > 0 && (
+                <div>
+                  <FormBuilder
+                    control={control}
+                    errors={errors}
+                    fields={properties as any}
+                    watch={watch as any}
+                  />
+                  <div className="flex justify-between">
+                    <Button
+                      showType={btnShowType.primary}
+                      btnName="Save"
+                      type="submit"
+                      btnClass="mt-6 !text-base"
+                    />
+
+                    <Button
+                      showType={btnShowType.primary}
+                      btnName="Save and list in Amazon"
+                      btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
+                      // isLoading={listInAmazonLoading}
+                      type="button"
+                      onClickHandler={async () => {
+                        // setListInAmazonLoading(true);
+                        await handleSubmit(
+                          onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
+                        )();
+                        // setListInAmazonLoading(false);
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </form>
+
       {tab === ITab.Variation &&
         childProperties.length > 0 &&
         childProperties.map((_: any, index) => {
           return (
-            <AmazonVariantChildForm
-              variationProperties={childProperties[index]}
-              validationItems={validationItems}
-              fieldDefaultValues={fieldDefaultValues}
-              variationThemeField={variationThemeField}
-              productId={productId}
-              category={category}
-              onComplete={onComplete}
-              childProduct={childProducts[index]}
-              parent_sku={parent_sku}
-              key={index}
-            />
+            <div className="p-5 bg-white max-h-[calc(100vh_-_200px)] scroll-design overflow-y-auto ">
+              <AmazonVariantChildForm
+                variationProperties={childProperties[index]}
+                validationItems={validationItems}
+                fieldDefaultValues={fieldDefaultValues}
+                variationThemeField={variationThemeField}
+                productId={productId}
+                category={category}
+                onComplete={onComplete}
+                childProduct={childProducts[index]}
+                parent_sku={parent_sku}
+                key={index}
+              />
+            </div>
           );
         })}
     </div>
