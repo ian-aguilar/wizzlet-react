@@ -198,8 +198,8 @@ export const Select = (props: SelectCategoryProps) => {
       <div
         className="border border-greyBorder p-3 rounded-md max h-[50px]  "
         onClick={() => {
-          if(defaultValue !== 0){
-            setIsSelectOpen(false)
+          if (defaultValue !== 0 && defaultValue !== null) {
+            setIsSelectOpen(false);
             return;
           }
           setIsSelectOpen(!isSelectOpen);

@@ -376,7 +376,10 @@ const ImportProducts = () => {
               <div className="flex items-center space-x-4">
                 <div className="flex bg-gray-100 rounded-full">
                   <button
-                    onClick={() => setImportSelectedTab(false)}
+                    onClick={() => {
+                      setImportSelectedTab(false);
+                      setCurrentPage(1);
+                    }}
                     className={`${
                       !importSelectedTab
                         ? "bg-gray-600 text-white"
@@ -387,7 +390,10 @@ const ImportProducts = () => {
                     })`}
                   </button>
                   <button
-                    onClick={() => setImportSelectedTab(true)}
+                    onClick={() => {
+                      setImportSelectedTab(true);
+                      setCurrentPage(1);
+                    }}
                     className={`${
                       importSelectedTab
                         ? "bg-gray-600 text-white"
@@ -405,22 +411,21 @@ const ImportProducts = () => {
             <hr />
           </div>
           <div className="flex justify-between items-start ">
-            {items && items?.length > 0 ? (
-              <div>
-                <div className="flex flex-col gap-1 ">
-                  <label> Search </label>
-                  <InputSearch
-                    InputLeftIcon={<SearchIcon />}
-                    className="pl-12"
-                    placeholder="Search by title"
-                    name="search"
-                    onChange={handleSearchChange}
-                    value={searchQuery}
-                  />
-                </div>
-                <div className="flex flex-col gap-2 ">
-                  {/* <label> Status </label> */}
-                  {/* <Button
+            <div>
+              <div className="flex flex-col gap-1 ">
+                <label> Search </label>
+                <InputSearch
+                  InputLeftIcon={<SearchIcon />}
+                  className="pl-12"
+                  placeholder="Search by title"
+                  name="search"
+                  onChange={handleSearchChange}
+                  value={searchQuery}
+                />
+              </div>
+              <div className="flex flex-col gap-2 ">
+                {/* <label> Status </label> */}
+                {/* <Button
               btnName={"Connected"}
               isLoading={isLoading}
               btnClass="!w-auto !bg-white !text-grayText border border-grayLightBody "
@@ -428,10 +433,8 @@ const ImportProducts = () => {
                 <DownArrowIcon className="text-grayText inline-block ml-1" />
               }
             /> */}
-                </div>
               </div>
-            ) : null}
-
+            </div>
             <div className="mt-8">
               {isCheck && isCheck.length > 0 && (
                 <div className="flex gap-2">
