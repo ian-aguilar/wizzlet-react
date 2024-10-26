@@ -96,13 +96,19 @@ export const useAmazonChildFormHandleApi = () => {
   const amazonChildFormSubmitApi = async (
     data: object,
     { productId }: { productId: number | string },
-    { categoryId }: { categoryId: number | string | undefined }
+    { categoryId }: { categoryId: number | string | undefined },
+    { childId }: { childId: number | string | undefined },
+    { variationId }: { variationId: number | string | undefined }
   ) => {
-    return callApi(`/amazon/form/${categoryId}/${productId}`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    return callApi(
+      `/amazon/form/${categoryId}/${productId}?childId=${childId}&variationId=${variationId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   };
 
   return { amazonChildFormSubmitApi, isLoading, isError, isSuccess };

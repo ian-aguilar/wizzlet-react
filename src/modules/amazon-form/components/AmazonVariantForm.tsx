@@ -20,7 +20,6 @@ import {
   amazonTransformData,
   appendFormData,
   cleanPayload,
-  filterAmazonVariantProperties,
   mapDataWithReference,
   mergeDefaults,
 } from "../helper";
@@ -67,10 +66,14 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
-  const [tab, setTab] = useState<ITab>(ITab.Parent);
+  const [tab, setTab] = useState<{ type: ITab; index: null | number }>({
+    type: ITab.Parent,
+    index: null,
+  });
   const [categoryData, setCategoryData] = useState<ICategoryData>();
   const [variationThemeData, setVariationThemeData] = useState<Option[]>();
   const [childProducts, setChildProducts] = useState<any[]>([]);
+  const [variations, setVariations] = useState<any[]>([]);
   const [childProperties, setChildProperties] = useState<any[]>([]);
   const [fieldDefaultValues, setFieldDefaultValues] = useState<any>();
 
@@ -97,6 +100,11 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
     const { data: variationData } = await getAmazonVariationProperties(
       categoryData?.value
     );
+
+    // const newProperties = filterAmazonProperties(data?.data?.properties, [
+    //   ...DefaultChildProperties,
+    //   ...DefaultProperties,
+    // ]);
 
     setVariationThemeData(variationData?.data);
     setCategory(categoryData);
@@ -230,7 +238,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const getChildProducts = async () => {
     const { data, error } = await getAmazonChildProductsApi(+productId);
     if (!error && data) {
-      setChildProducts(data?.data);
+      setChildProducts(data?.data?.childProducts);
+      setVariations(data?.data?.variations);
     }
   };
 
@@ -239,13 +248,23 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   }, []);
 
   useEffect(() => {
-    if (childProducts.length > 0 && properties) {
-      const newChildProperties: any[] = [];
-      childProducts.forEach(() => {
-        newChildProperties.push(properties);
-      });
+    if (properties) {
+      if (childProducts.length > 0) {
+        const newChildProperties: any[] = [];
+        childProducts.forEach(() => {
+          newChildProperties.push(properties);
+        });
 
-      setChildProperties(newChildProperties);
+        setChildProperties(newChildProperties);
+      } else if (childProducts.length === 0) {
+        const newChildProperties: any[] = [];
+
+        variations.forEach(() => {
+          newChildProperties.push(properties);
+        });
+
+        setChildProperties(newChildProperties);
+      }
     }
   }, [childProducts, properties]);
 
@@ -312,7 +331,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
         <span
           className="cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary "
           onClick={() => {
-            setTab(ITab.Parent);
+            setTab({ type: ITab.Parent, index: null });
           }}
         >
           Parent Product
@@ -324,7 +343,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                 className="cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 onClick={() => {
                   // if (variationThemeField) {
-                  setTab(ITab.Variation);
+                  setTab({ type: ITab.Variation, index });
                   // }
                 }}
                 key={index}
@@ -344,7 +363,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
-        {tab === ITab.Parent && (
+        {tab.type === ITab.Parent && (
           <div className="p-5 bg-white max-h-[calc(100vh_-_200px)] scroll-design overflow-y-auto ">
             <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
               Choose Product Category
@@ -447,26 +466,23 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
         )}
       </form>
 
-      {tab === ITab.Variation &&
-        childProperties.length > 0 &&
-        childProperties.map((_: any, index) => {
-          return (
-            <div className="p-5 bg-white max-h-[calc(100vh_-_200px)] scroll-design overflow-y-auto ">
-              <AmazonVariantChildForm
-                variationProperties={childProperties[index]}
-                validationItems={validationItems}
-                fieldDefaultValues={fieldDefaultValues}
-                variationThemeField={variationThemeField}
-                productId={productId}
-                category={category}
-                onComplete={onComplete}
-                childProduct={childProducts[index]}
-                parent_sku={parent_sku}
-                key={index}
-              />
-            </div>
-          );
-        })}
+      {tab.type === ITab.Variation && tab.index !== null && (
+        <div className="p-5 bg-white max-h-[calc(100vh_-_200px)] scroll-design overflow-y-auto">
+          <AmazonVariantChildForm
+            variationProperties={childProperties[tab.index]}
+            validationItems={validationItems}
+            fieldDefaultValues={fieldDefaultValues}
+            variationThemeField={variationThemeField}
+            productId={productId}
+            category={category}
+            onComplete={onComplete}
+            childProduct={childProducts[tab.index]}
+            parent_sku={parent_sku}
+            variations={variations[tab.index]}
+            key={tab.index}
+          />
+        </div>
+      )}
     </div>
   );
 };

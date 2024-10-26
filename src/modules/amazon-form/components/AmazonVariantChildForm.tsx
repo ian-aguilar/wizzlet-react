@@ -39,8 +39,9 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     productId,
     category,
     childProduct,
-    parent_sku,
     onComplete,
+    parent_sku,
+    variations,
   } = props;
 
   const {
@@ -71,15 +72,23 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     fieldDefaultValues.parentage_level[0].value = "child";
     fieldDefaultValues.child_parent_sku_relationship[0].child_relationship_type =
       "variation";
-    fieldDefaultValues.child_parent_sku_relationship[0].parent_sku =
-      childProduct?.product?.sku;
+    fieldDefaultValues.child_parent_sku_relationship[0].parent_sku = parent_sku;
+
+    if (variations) {
+      fieldDefaultValues.fulfillment_availability[0].quantity =
+        variations.quantity;
+      fieldDefaultValues.fulfillment_availability[0].fulfillment_channel_code =
+        "DEFAULT";
+    } else {
+      fieldDefaultValues.fulfillment_availability[0].quantity = undefined;
+      fieldDefaultValues.fulfillment_availability[0].fulfillment_channel_code =
+        undefined;
+    }
 
     reset(fieldDefaultValues);
 
     return fieldDefaultValues;
   };
-
-  console.log(childProduct?.product?.sku, "?????//s");
 
   useEffect(() => {
     getProperties();
@@ -110,6 +119,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       },
       {
         categoryId: category?.value,
+      },
+      {
+        childId: childProduct?.id,
+      },
+      {
+        variationId: variations?.id,
       }
     );
 

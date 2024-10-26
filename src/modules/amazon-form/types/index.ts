@@ -96,6 +96,11 @@ export const DefaultChildProperties = [
   ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
 ];
 
+export const DefaultProperties = [
+  ["parentage_level"],
+  ["child_parent_sku_relationship"],
+];
+
 export const ManualProperties = [
   "parentage_level",
   "child_parent_sku_relationship",
@@ -112,6 +117,7 @@ export interface IAmazonVariantChildProps {
   childProduct: any;
   onComplete: (data: any) => void;
   parent_sku: string;
+  variations: any;
 }
 
 export interface ICategoryData {
