@@ -1,11 +1,5 @@
 import { FieldsType, IValidationItem } from "@/components/form-builder/types";
 import { Option } from "@/modules/inventory-management/types";
-import {
-  Control,
-  FieldErrors,
-  FieldValues,
-  UseFormWatch,
-} from "react-hook-form";
 
 export enum validationEnum {
   Required = "required",
@@ -118,6 +112,8 @@ export interface IAmazonVariantChildProps {
   onComplete: (data: any) => void;
   parent_sku: string;
   variations: any;
+  isLast: boolean;
+  changeVariationTabHandler: () => void;
 }
 
 export interface ICategoryData {

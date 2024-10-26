@@ -42,6 +42,8 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     onComplete,
     parent_sku,
     variations,
+    isLast,
+    changeVariationTabHandler,
   } = props;
 
   const {
@@ -51,6 +53,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     handleSubmit,
     formState: { errors },
     trigger,
+    setError,
   } = useForm({
     resolver: zodResolver(
       schema(validationItems?.conditions, validationItems?.properties)
@@ -61,6 +64,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const socket = useSelector(selectSocket);
 
   const fields = useWatch({ control });
+  const child_sku = watch("child_sku");
 
   const { amazonChildFormSubmitApi } = useAmazonChildFormHandleApi();
   const { createAmazonProductApi } = useCreateAmazonProductApi();
@@ -96,7 +100,14 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
   useEffect(() => {
     if (fields) {
-      trigger();
+      trigger().then(() => {
+        if (!child_sku || child_sku.trim() === "") {
+          setError("child_sku", {
+            type: "required",
+            message: "Child SKU is required",
+          });
+        }
+      });
     }
   }, [trigger, fields]);
 
@@ -147,10 +158,18 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
               socket.emit("user_notification", user?.id);
             }
           }
-          onComplete(productId);
+          if (isLast) {
+            onComplete(productId);
+          } else {
+            changeVariationTabHandler();
+          }
         }
       }
-      onComplete(productId);
+      if (isLast) {
+        onComplete(productId);
+      } else {
+        changeVariationTabHandler();
+      }
     }
   };
 
