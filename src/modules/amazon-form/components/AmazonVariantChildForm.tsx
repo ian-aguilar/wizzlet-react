@@ -9,7 +9,7 @@ import {
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../validations";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   amazonTransformData,
   appendFormData,
@@ -21,7 +21,6 @@ import {
   useAmazonChildFormHandleApi,
   useCreateAmazonProductApi,
 } from "../services/amazonForm.service";
-import { useParams } from "react-router-dom";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { MARKETPLACE } from "@/components/common/types";
 import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
