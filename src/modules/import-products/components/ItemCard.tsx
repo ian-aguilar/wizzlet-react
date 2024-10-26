@@ -27,11 +27,19 @@ export const ItemCard = ({ item, isCheck,checkboxOnChange }: IItemsProps) => {
           <div className="flex flex-wrap gap-4 text-sm ">
             <span className="font-medium flex items-center gap-2">
               {" "}
-              <p className="font-normal inline-block text-grayText">
-                {" "}
-                PRICE
-              </p>{" "}
-              {item.price}
+              {item.type === null ? (
+                <>
+                  <p className="font-normal inline-block text-grayText">
+                    {" "}
+                    PRICE
+                  </p>
+                  <span>{item.price}</span>
+                </>
+              ) : (
+                <span className="bg-greenPrimary/10 text-greenPrimary  text-xs font-medium py-0.5 rounded-md px-1">
+                  Variant Product
+                </span>
+              )}
             </span>
             <span className="text-[#D8DCE4]">|</span>
             <span className="font-medium flex items-center gap-2">

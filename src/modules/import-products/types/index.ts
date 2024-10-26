@@ -27,6 +27,7 @@ export type IItems = {
   price?: number;
   product_portal_id: string;
   is_imported: boolean;
+  type:string;
 };
 
 export type IItemsProps = {
