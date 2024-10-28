@@ -9,6 +9,7 @@ export type FromBuilderPropsType<T extends FieldValues> = {
   control?: FormControlProp<T>;
   fieldArrayName?: any;
   watch?: UseFormWatch<FieldValues>;
+  isEdit?: boolean;
 };
 
 export type FieldsType<T extends FieldValues> = {
@@ -24,6 +25,7 @@ export type FieldsType<T extends FieldValues> = {
   minLength?: number;
   maxLength?: number;
   addMoreLength?: number;
+  editable?: boolean;
 };
 
 export enum FieldsTypeEnum {
@@ -52,6 +54,7 @@ export type FieldArrayComponentType<T extends FieldValues> = {
   fieldArrayName?: any;
   watch: UseFormWatch<FieldValues>;
   data: any;
+  isEdit?: boolean;
 };
 
 export type IConditions = {

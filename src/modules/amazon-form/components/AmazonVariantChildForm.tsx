@@ -9,7 +9,7 @@ import {
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../validations";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   amazonTransformData,
   appendFormData,
@@ -20,6 +20,7 @@ import {
 import {
   useAmazonChildFormHandleApi,
   useCreateAmazonProductApi,
+  useDeleteAmazonChildProductApi,
 } from "../services/amazonForm.service";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { MARKETPLACE } from "@/components/common/types";
@@ -28,6 +29,7 @@ import { userSelector } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { selectSocket } from "@/redux/slices/socketSlice";
 import Input from "@/components/form-fields/components/Input";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const {
@@ -43,6 +45,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     variations,
     isLast,
     changeVariationTabHandler,
+    removeTabHandler,
   } = props;
 
   const {
@@ -65,9 +68,14 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const fields = useWatch({ control });
   const child_sku = watch("child_sku");
 
-  const { amazonChildFormSubmitApi } = useAmazonChildFormHandleApi();
-  const { createAmazonProductApi } = useCreateAmazonProductApi();
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+
+  const { amazonChildFormSubmitApi, isLoading: saveAmazonLoading } =
+    useAmazonChildFormHandleApi();
+  const { createAmazonProductApi, isLoading: listInAmazonLoading } =
+    useCreateAmazonProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+  const { deleteAmazonChildProductApi } = useDeleteAmazonChildProductApi();
 
   const getProperties = () => {
     fieldDefaultValues.variation_theme[0].name = variationThemeField;
@@ -210,6 +218,21 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const deleteVariantHandler = async () => {
+    if (childProduct) {
+      const { error } = await deleteAmazonChildProductApi(
+        +productId,
+        +childProduct?.id
+      );
+      if (!error) {
+        removeTabHandler();
+      }
+    } else {
+      removeTabHandler();
+    }
+  };
+
+  console.log("🚀 ~ deleteVariantHandler ~ childProduct:", childProduct);
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
       <Input
@@ -229,30 +252,49 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             watch={watch as any}
           />
 
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-[10px]">
             <Button
               showType={btnShowType.primary}
               btnName="Save"
               type="submit"
               btnClass="mt-6 !text-base"
+              isLoading={saveAmazonLoading}
+            />
+
+            <Button
+              showType={btnShowType.primary}
+              btnName="Delete Variant"
+              type="button"
+              btnClass="mt-6 !text-base !bg-redAlert !text-white"
+              onClickHandler={() => {
+                setIsDeleteModal(true);
+              }}
             />
 
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Amazon"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
-              // isLoading={listInAmazonLoading}
+              isLoading={listInAmazonLoading}
               type="button"
               onClickHandler={async () => {
-                // setListInAmazonLoading(true);
                 await handleSubmit(
                   onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
                 )();
-                // setListInAmazonLoading(false);
               }}
             />
           </div>
         </div>
+      )}
+      {isDeleteModal && (
+        <ErrorModal
+          onClose={() => {
+            setIsDeleteModal(false);
+          }}
+          onSave={deleteVariantHandler}
+          heading="Are you sure?"
+          subText="This will delete this variant and all your changes will be lost."
+        />
       )}
     </form>
   );

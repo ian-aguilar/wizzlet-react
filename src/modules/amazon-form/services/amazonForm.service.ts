@@ -1,4 +1,4 @@
-import { useAxiosGet, useAxiosPut } from "@/hooks/useAxios";
+import { useAxiosDelete, useAxiosGet, useAxiosPut } from "@/hooks/useAxios";
 
 export const useGetAllAmazonPropertiesApi = () => {
   // ** custom Hooks **
@@ -112,4 +112,17 @@ export const useAmazonChildFormHandleApi = () => {
   };
 
   return { amazonChildFormSubmitApi, isLoading, isError, isSuccess };
+};
+
+export const useDeleteAmazonChildProductApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosDelete();
+
+  const deleteAmazonChildProductApi = async (
+    productId: number | null | undefined,
+    variantId: number | null | undefined
+  ) => {
+    return callApi(`/products/amazon/child/${productId}/${variantId}`, {});
+  };
+
+  return { deleteAmazonChildProductApi, isLoading, isError, isSuccess };
 };

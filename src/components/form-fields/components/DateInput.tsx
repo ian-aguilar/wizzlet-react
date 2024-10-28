@@ -25,7 +25,9 @@ const DateInput = <T extends FieldValues>({
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <DatePicker
-              className={`  ${className}`}
+              className={
+                `  ${className}` + (isDisabled ? `cursor-not-allowed` : "")
+              }
               selected={
                 value
                   ? (moment(value, "YYYY-MM-DD").toDate() as any) !=
