@@ -45,7 +45,6 @@ import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
 import VariantWarningModal from "./WarningModal";
-import { set } from "lodash";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
   const { productId, onComplete } = props;
@@ -249,10 +248,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
           const editFinalData = mapDataWithReference(
             editApiResponse?.productData,
             propertiesData?.propertyData
-          );
-          console.log(
-            "🚀 ~ .then ~ editApiResponse?.productData:",
-            editApiResponse?.productData
           );
 
           let mergedData = await mergeDefaults(

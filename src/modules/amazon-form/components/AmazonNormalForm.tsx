@@ -264,8 +264,6 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
         }
         onComplete(productId);
       }
-    } else {
-      console.log("Product ID Missing");
     }
   };
 
