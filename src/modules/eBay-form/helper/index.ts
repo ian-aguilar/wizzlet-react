@@ -62,6 +62,7 @@ export const addAmazonVariantToCombinationsByIndex = (
     const variant = secondaryData[index];
 
     if (variant) {
+      combination.quantity = variant?.quantity;
       combination.amazonVariant = {
         label: variant.name,
         value: variant.amazonVariantId,

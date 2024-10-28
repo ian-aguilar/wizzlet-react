@@ -148,7 +148,7 @@ export interface VariantImageProps {
   clearErrors: UseFormClearErrors<any>;
   setValue: UseFormSetValue<any>;
   watch: any;
-  amazonVariantData: ProductData[];
+  amazonVariantData?: ProductData[];
   categoriesId: string | number;
   propertyOptions: SelectOption[] | any;
   allPropertyOptions: SelectOption[];

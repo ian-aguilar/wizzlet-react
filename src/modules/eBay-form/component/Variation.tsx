@@ -2,12 +2,7 @@ import MultipleImageUpload from "@/components/form-fields/components/multipleFil
 import SelectField from "@/components/form-fields/components/SelectField";
 import { VariantProperty } from "@/modules/product-basic-form/types";
 import React, { useEffect, useState } from "react";
-import {
-  Combination,
-  ICombination,
-  SelectOption,
-  VariantImageProps,
-} from "../types";
+import { Combination, SelectOption, VariantImageProps } from "../types";
 import Button from "@/components/form-fields/components/Button";
 import { DeleteIcon } from "@/assets/Svg";
 import { useFieldArray } from "react-hook-form";
@@ -40,11 +35,13 @@ const Variation: React.FC<VariantImageProps> = ({
   >([]);
 
   useEffect(() => {
-    const options = amazonVariantData?.map((item) => ({
-      label: item.name,
-      value: item.amazonVariantId,
-    }));
-    setAmazonVariationOption(options);
+    if (amazonVariantData && amazonVariantData?.length > 0) {
+      const options = amazonVariantData?.map((item) => ({
+        label: item.name,
+        value: item.amazonVariantId,
+      }));
+      setAmazonVariationOption(options);
+    }
   }, [amazonVariantData]);
 
   const {
@@ -147,10 +144,12 @@ const Variation: React.FC<VariantImageProps> = ({
   };
 
   const getQuantityByVariantId = (variantId: number): number | undefined => {
-    const item = amazonVariantData.find(
-      ({ amazonVariantId }) => amazonVariantId === variantId
-    );
-    return item ? item.quantity : 0;
+    if (amazonVariantData && amazonVariantData?.length > 0) {
+      const item = amazonVariantData.find(
+        ({ amazonVariantId }) => amazonVariantId === variantId
+      );
+      return item ? item.quantity : 0;
+    }
   };
 
   const handleAddCombination = () => {
@@ -204,11 +203,13 @@ const Variation: React.FC<VariantImageProps> = ({
   };
 
   const handleAmazonVariantChange = (selectedValue: string, index: number) => {
-    const selectedOption = amazonVariantData.find(
-      (item) => item.amazonVariantId === Number(selectedValue)
-    );
-    if (selectedOption) {
-      setValue(`combinations.${index}.quantity`, selectedOption.quantity);
+    if (amazonVariantData && amazonVariantData?.length > 0) {
+      const selectedOption = amazonVariantData.find(
+        (item) => item.amazonVariantId === Number(selectedValue)
+      );
+      if (selectedOption) {
+        setValue(`combinations.${index}.quantity`, selectedOption.quantity);
+      }
     }
   };
 
@@ -331,24 +332,25 @@ const Variation: React.FC<VariantImageProps> = ({
                 onClick={() => removeCombination(index)}>
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
-
-              <SelectField
-                label="Amazon Variant"
-                options={amazonVariationOption?.filter(
-                  (e: { label: string; value: number }) =>
-                    !combinations?.some(
-                      (item: any) => e?.value === item?.amazonVariant?.value
-                    )
-                )}
-                isClearable={true}
-                name={`combinations.${index}.amazonVariant`}
-                control={control}
-                placeholder="Select Amazon Variation"
-                errors={errors}
-                onChange={(selectedOption) =>
-                  handleAmazonVariantChange(selectedOption.value, index)
-                }
-              />
+              {amazonVariantData && amazonVariantData?.length > 0 ? (
+                <SelectField
+                  label="Amazon Variant"
+                  options={amazonVariationOption?.filter(
+                    (e: { label: string; value: number }) =>
+                      !combinations?.some(
+                        (item: any) => e?.value === item?.amazonVariant?.value
+                      )
+                  )}
+                  isClearable={true}
+                  name={`combinations.${index}.amazonVariant`}
+                  control={control}
+                  placeholder="Select Amazon Variation"
+                  errors={errors}
+                  onChange={(selectedOption) =>
+                    handleAmazonVariantChange(selectedOption.value, index)
+                  }
+                />
+              ) : null}
             </div>
           ))}
           {combinations?.length > 0 ? (

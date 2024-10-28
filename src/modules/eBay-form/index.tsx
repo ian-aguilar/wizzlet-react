@@ -125,10 +125,12 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
       return;
     }
     const { data, error } = await editProductValueApi(productId);
-    console.log("🚀 ~ handleEditApiResponse ~ data:", data);
 
     if (!error && data?.data?.amazonVariant) {
-      setAmazonVariantData(data?.data?.amazonVariant);
+      const filterData = data?.data?.amazonVariant.filter(
+        (e) => e?.amazonVariantId !== null
+      );
+      setAmazonVariantData(filterData);
     }
 
     if (!error && data?.data?.finalProductValues) {
@@ -168,6 +170,13 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
 
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
+
+    if (amazonVariantData?.length === 0) {
+      payload.combinations = payload.combinations.map((item) => {
+        delete item["amazonVariant"];
+        return item;
+      });
+    }
 
     if (categoriesId == 0) {
       setErrorShow(true);
@@ -317,9 +326,17 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
       setProductType(data?.finalProductValues?.productType);
 
       if (data?.amazonVariant) {
+        const filtratedAmazonVariant = data?.amazonVariant.filter(
+          (e: {
+            name: string;
+            quantity: number;
+            amazonVariantId: number;
+            ebay_variation_id: number;
+          }) => e.ebay_variation_id !== null
+        );
         const finalPayload = await addAmazonVariantToCombinationsByIndex(
           temp,
-          data?.amazonVariant
+          filtratedAmazonVariant
         );
 
         // NEED TO CHECK
@@ -365,7 +382,9 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
               allPropertyOptions={allPropertyOptions}
               propertyOptions={propertyOptions}
               allOptions={allOptions}
-              amazonVariantData={amazonVariantData}
+              amazonVariantData={
+                amazonVariantData?.length > 0 ? amazonVariantData : []
+              }
               setPropertiesState={setPropertiesState}
               setGeneratedCombinations={setGeneratedCombinations}
               generatedCombinations={generatedCombinations}
