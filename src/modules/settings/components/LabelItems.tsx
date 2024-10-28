@@ -132,7 +132,7 @@ const LabelItems = ({
                           <span className="uppercase font-normal text-sm text-grayText">
                             Type
                           </span>
-                          <p className="text-blackPrimary font-medium capitalize">
+                          <p className="bg-greenPrimary/10 text-greenPrimary align-middle text-s font-medium py-0.5 rounded-md px-1 mt-1 ">
                             {item?.type}
                           </p>
                         </div>

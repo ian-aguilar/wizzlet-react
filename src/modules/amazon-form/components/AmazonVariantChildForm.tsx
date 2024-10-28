@@ -121,6 +121,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             message: "Image is required",
           });
         }
+        if (watchedImage.length > 10) {
+          setError("image", {
+            type: "required",
+            message: "Maximum 10 images are allowed to upload",
+          });
+        }
         if (!child_sku || child_sku.trim() === "") {
           setError("child_sku", {
             type: "required",
@@ -136,6 +142,13 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       setError("image", {
         type: "required",
         message: "Image is required",
+      });
+      return;
+    }
+    if (watchedImage.length > 10) {
+      setError("image", {
+        type: "required",
+        message: "Only 10 Images is allowed to upload",
       });
       return;
     }
