@@ -75,11 +75,21 @@ export interface IUploadProps<T extends FieldValues = FieldValues> {
   setValue: UseFormSetValue<T>;
 }
 
+export type ProductData = {
+  name: string;
+  quantity: number;
+  amazonVariantId: number;
+};
+
 export interface Combination {
   quantity: number;
   sku: string;
   price: number;
   combination: Array<{
+    name: string;
+    value: string;
+  }>;
+  amazonVariant: Array<{
     name: string;
     value: string;
   }>;
@@ -138,6 +148,7 @@ export interface VariantImageProps {
   clearErrors: UseFormClearErrors<any>;
   setValue: UseFormSetValue<any>;
   watch: any;
+  amazonVariantData: ProductData[];
   categoriesId: string | number;
   propertyOptions: SelectOption[] | any;
   allPropertyOptions: SelectOption[];

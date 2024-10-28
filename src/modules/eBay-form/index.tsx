@@ -20,9 +20,13 @@ import {
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
 import { Loader } from "@/components/common/Loader";
-import { PropertiesState, SelectOption } from "./types";
+import { ProductData, PropertiesState, SelectOption } from "./types";
 import { useParams } from "react-router-dom";
-import { generateCombinations, transformData } from "./helper";
+import {
+  addAmazonVariantToCombinationsByIndex,
+  generateCombinations,
+  transformData,
+} from "./helper";
 import { productEbayFormValidationSchema } from "./validation-schema";
 import { variantOptionType } from "../product-basic-form/types";
 import Variation from "./component/Variation";
@@ -55,6 +59,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   const [categoriesId, setCategoriesId] = useState<number | string>(0);
   const [productType, setProductType] = useState<string | null>(null);
   const [errorShow, setErrorShow] = useState<boolean>(false);
+  const [amazonVariantData, setAmazonVariantData] = useState<ProductData[]>([]);
 
   const [propertyOptions, setPropertyOptions] = useState<
     ({ label: string; value: string } | undefined)[]
@@ -109,12 +114,10 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
 
     setAllPropertyOptions(data?.data?.categorizedProperties || []);
 
-    if (productType === "NORMAL") {
-      setPropertiesState((prevState) => ({
-        ...prevState,
-        categorized: data?.data?.categorizedProperties || [],
-      }));
-    }
+    setPropertiesState((prevState) => ({
+      ...prevState,
+      categorized: data?.data?.categorizedProperties || [],
+    }));
   };
 
   const handleEditApiResponse = async () => {
@@ -122,7 +125,13 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
       return;
     }
     const { data, error } = await editProductValueApi(productId);
-    if (!error && data?.data) {
+    console.log("🚀 ~ handleEditApiResponse ~ data:", data);
+
+    if (!error && data?.data?.amazonVariant) {
+      setAmazonVariantData(data?.data?.amazonVariant);
+    }
+
+    if (!error && data?.data?.finalProductValues) {
       setCompletedStep((prev: number[]) =>
         prev.includes(Number(step)) ? prev : [...prev, Number(step)]
       );
@@ -155,6 +164,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   } = useForm<any>({
     resolver: yupResolver(finalValidationSchema),
   });
+  console.log("🚀 ~ errors:", errors);
 
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
@@ -272,11 +282,11 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   };
 
   useEffect(() => {
-    handleEditApiResponse().then((data) => {
-      setId(data?.categoryId);
+    handleEditApiResponse().then(async (data) => {
+      setId(data?.finalProductValues?.categoryId);
 
-      let temp: any = { ...data };
-      if (data?.productType === "NORMAL") {
+      let temp: any = { ...data?.finalProductValues };
+      if (data?.finalProductValues?.productType === "NORMAL") {
         temp = { ...temp, variantProperties: [] };
       } else {
         if (temp?.variantProperties?.length > 0) {
@@ -304,12 +314,24 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
         }
       }
 
-      setProductType(data?.productType);
+      setProductType(data?.finalProductValues?.productType);
 
-      // NEED TO CHECK
-      setTimeout(() => {
-        reset(temp);
-      }, 1000);
+      if (data?.amazonVariant) {
+        const finalPayload = await addAmazonVariantToCombinationsByIndex(
+          temp,
+          data?.amazonVariant
+        );
+
+        // NEED TO CHECK
+        setTimeout(() => {
+          reset(finalPayload);
+        }, 1000);
+      } else {
+        // NEED TO CHECK
+        setTimeout(() => {
+          reset(temp);
+        }, 1000);
+      }
     });
   }, []);
 
@@ -343,6 +365,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
               allPropertyOptions={allPropertyOptions}
               propertyOptions={propertyOptions}
               allOptions={allOptions}
+              amazonVariantData={amazonVariantData}
               setPropertiesState={setPropertiesState}
               setGeneratedCombinations={setGeneratedCombinations}
               generatedCombinations={generatedCombinations}

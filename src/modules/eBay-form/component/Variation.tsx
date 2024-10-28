@@ -1,7 +1,7 @@
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import SelectField from "@/components/form-fields/components/SelectField";
 import { VariantProperty } from "@/modules/product-basic-form/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Combination,
   ICombination,
@@ -20,6 +20,7 @@ const Variation: React.FC<VariantImageProps> = ({
   setError,
   clearErrors,
   setValue,
+  amazonVariantData,
   watch,
   categoriesId,
   propertyOptions,
@@ -31,6 +32,20 @@ const Variation: React.FC<VariantImageProps> = ({
 }) => {
   //** STATE **//
   const [imageIndex, setImageIndex] = useState(0);
+  const [amazonVariationOption, setAmazonVariationOption] = useState<
+    {
+      label: string;
+      value: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    const options = amazonVariantData?.map((item) => ({
+      label: item.name,
+      value: item.amazonVariantId,
+    }));
+    setAmazonVariationOption(options);
+  }, [amazonVariantData]);
 
   const {
     fields: variantFields,
@@ -117,17 +132,25 @@ const Variation: React.FC<VariantImageProps> = ({
       setGeneratedCombinations(combinations);
 
       // Initialize field array with combinations and additional fields
-      const initialCombinationFields: ICombination[] = combinations?.map(
-        (combination: Combination[]) => ({
+      const initialCombinationFields = combinations?.map(
+        (combination: Combination[], index: number) => ({
           combination,
           price: 0,
           sku: "",
-          quantity: 0,
+          quantity: getQuantityByVariantId(amazonVariationOption[index]?.value),
+          amazonVariant: amazonVariationOption[index],
         })
       );
 
       setValue("combinations", initialCombinationFields);
     }
+  };
+
+  const getQuantityByVariantId = (variantId: number): number | undefined => {
+    const item = amazonVariantData.find(
+      ({ amazonVariantId }) => amazonVariantId === variantId
+    );
+    return item ? item.quantity : 0;
   };
 
   const handleAddCombination = () => {
@@ -158,6 +181,7 @@ const Variation: React.FC<VariantImageProps> = ({
         price: 0,
         sku: "",
         quantity: 0,
+        amazonVariant: [],
       });
     } else {
       console.log("No more combinations available to add.");
@@ -176,6 +200,15 @@ const Variation: React.FC<VariantImageProps> = ({
           images: [],
         })),
       });
+    }
+  };
+
+  const handleAmazonVariantChange = (selectedValue: string, index: number) => {
+    const selectedOption = amazonVariantData.find(
+      (item) => item.amazonVariantId === Number(selectedValue)
+    );
+    if (selectedOption) {
+      setValue(`combinations.${index}.quantity`, selectedOption.quantity);
     }
   };
 
@@ -257,7 +290,7 @@ const Variation: React.FC<VariantImageProps> = ({
               Generated Combinations:
             </h2>
           ) : null}
-          {combinationFields.map((item: any, index) => (
+          {combinationFields?.map((item: any, index) => (
             <div
               key={item.id}
               className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md ">
@@ -266,6 +299,7 @@ const Variation: React.FC<VariantImageProps> = ({
                   ?.map((e: { value: string }) => e.value)
                   .join(", ")}
               </div>
+
               <Input
                 textLabelName="Price"
                 placeholder="Enter Price"
@@ -297,6 +331,24 @@ const Variation: React.FC<VariantImageProps> = ({
                 onClick={() => removeCombination(index)}>
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
+
+              <SelectField
+                label="Amazon Variant"
+                options={amazonVariationOption?.filter(
+                  (e: { label: string; value: number }) =>
+                    !combinations?.some(
+                      (item: any) => e?.value === item?.amazonVariant?.value
+                    )
+                )}
+                isClearable={true}
+                name={`combinations.${index}.amazonVariant`}
+                control={control}
+                placeholder="Select Amazon Variation"
+                errors={errors}
+                onChange={(selectedOption) =>
+                  handleAmazonVariantChange(selectedOption.value, index)
+                }
+              />
             </div>
           ))}
           {combinations?.length > 0 ? (
