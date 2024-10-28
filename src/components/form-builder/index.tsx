@@ -21,6 +21,7 @@ const FormBuilder = <T extends FieldValues>({
   errors,
   fieldArrayName,
   watch,
+  isEdit,
 }: FromBuilderPropsType<T>) => {
   const getField = (data: FieldsType<T>) => {
     if (
@@ -44,6 +45,7 @@ const FormBuilder = <T extends FieldValues>({
               errors={errors}
               label={data.title ? data.title : data.name}
               placeholder={data.description ? data.description : ""}
+              isDisabled={isEdit && data.editable}
             />
           </div>
         );
@@ -69,6 +71,7 @@ const FormBuilder = <T extends FieldValues>({
               errors={errors}
               textLabelName={data.title ? data.title : data.name}
               placeholder={data.description ? data.description : ""}
+              isDisabled={isEdit && !data.editable}
             />
             <div className="flex gap-[15px]">
               {(data.minLength as number) > 0 && (
@@ -99,6 +102,7 @@ const FormBuilder = <T extends FieldValues>({
                   data?.type === FieldsTypeEnum.MULTI_SELECT ? true : false
                 }
                 maxLength={data.addMoreLength}
+                disabled={isEdit && data.editable}
               />
             ) : (
               <SelectField<T>
@@ -111,6 +115,7 @@ const FormBuilder = <T extends FieldValues>({
                 options={data.option || []}
                 isClearable={true}
                 isMulti={data?.isMulti ? true : false}
+                disabled={isEdit && data.editable}
               />
             )}
           </div>
@@ -127,6 +132,7 @@ const FormBuilder = <T extends FieldValues>({
                 fieldArrayName={name}
                 data={data}
                 watch={watch}
+                isEdit={isEdit}
               />
             )}
           </>
@@ -144,6 +150,7 @@ const FormBuilder = <T extends FieldValues>({
                 fieldArrayName={
                   fieldArrayName ? `${fieldArrayName}.${data.name}` : data.name
                 }
+                isEdit={isEdit}
               />
             </div>
           </>
@@ -176,6 +183,7 @@ const FieldArrayComponent = <T extends FieldValues>({
   fieldArrayName,
   data,
   watch,
+  isEdit,
 }: FieldArrayComponentType<T>) => {
   const { append, remove } = useFieldArray({
     name: fieldArrayName,
@@ -201,6 +209,7 @@ const FieldArrayComponent = <T extends FieldValues>({
                       fields={data.items as FieldsType<T>[]}
                       fieldArrayName={`${fieldArrayName}[${index}]`}
                       watch={watch}
+                      isEdit={isEdit}
                     />
 
                     {(data?.addMore === undefined ||

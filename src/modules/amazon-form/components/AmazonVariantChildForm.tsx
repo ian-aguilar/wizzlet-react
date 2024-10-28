@@ -9,7 +9,7 @@ import {
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../validations";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   amazonTransformData,
   appendFormData,
@@ -19,7 +19,8 @@ import {
 } from "../helper";
 import {
   useAmazonChildFormHandleApi,
-  useCreateAmazonProductApi,
+  useCreateAmazonChildProductApi,
+  useDeleteAmazonChildProductApi,
 } from "../services/amazonForm.service";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { MARKETPLACE } from "@/components/common/types";
@@ -28,6 +29,8 @@ import { userSelector } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { selectSocket } from "@/redux/slices/socketSlice";
 import Input from "@/components/form-fields/components/Input";
+import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const {
@@ -43,6 +46,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     variations,
     isLast,
     changeVariationTabHandler,
+    removeTabHandler,
   } = props;
 
   const {
@@ -50,6 +54,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     watch,
     reset,
     handleSubmit,
+    setValue,
     formState: { errors },
     trigger,
     setError,
@@ -65,9 +70,14 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const fields = useWatch({ control });
   const child_sku = watch("child_sku");
 
-  const { amazonChildFormSubmitApi } = useAmazonChildFormHandleApi();
-  const { createAmazonProductApi } = useCreateAmazonProductApi();
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+
+  const { amazonChildFormSubmitApi, isLoading: saveAmazonLoading } =
+    useAmazonChildFormHandleApi();
+  const { createAmazonChildProductApi, isLoading: listInAmazonLoading } =
+    useCreateAmazonChildProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+  const { deleteAmazonChildProductApi } = useDeleteAmazonChildProductApi();
 
   const getProperties = () => {
     fieldDefaultValues.variation_theme[0].name = variationThemeField;
@@ -97,9 +107,26 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     getProperties();
   }, [fieldDefaultValues, variationThemeField]);
 
+  const watchedImage = useWatch({
+    control,
+    name: "image",
+  });
+
   useEffect(() => {
     if (fields) {
       trigger().then(() => {
+        if (!watchedImage || watchedImage.length === 0) {
+          setError("image", {
+            type: "required",
+            message: "Image is required",
+          });
+        }
+        if (watchedImage.length > 10) {
+          setError("image", {
+            type: "required",
+            message: "Maximum 10 images are allowed to upload",
+          });
+        }
         if (!child_sku || child_sku.trim() === "") {
           setError("child_sku", {
             type: "required",
@@ -111,6 +138,28 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   }, [trigger, fields]);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
+    if (!watchedImage || watchedImage.length === 0) {
+      setError("image", {
+        type: "required",
+        message: "Image is required",
+      });
+      return;
+    }
+    if (watchedImage.length > 10) {
+      setError("image", {
+        type: "required",
+        message: "Only 10 Images is allowed to upload",
+      });
+      return;
+    }
+    if (!child_sku || child_sku.trim() === "") {
+      setError("child_sku", {
+        type: "required",
+        message: "Child SKU is required",
+      });
+      return;
+    }
+
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
@@ -120,6 +169,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
     //payload append into a formData
     const formData = new FormData();
+    payload?.image?.forEach((image: File, index: number) => {
+      formData.append(`image[${index}]`, image);
+    });
+
     appendFormData(formData, filterPayload);
 
     const { error: amazonFormError } = await amazonChildFormSubmitApi(
@@ -147,7 +200,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
         marketplace: MARKETPLACE.AMAZON,
       };
       if (type === AmazonSaveType.SaveInAmazon) {
-        const { error } = await createAmazonProductApi(Number(productId));
+        const { error } = await createAmazonChildProductApi(
+          Number(productId),
+          child_sku
+        );
         if (!error) {
           const { data, error } = await createUserNotificationInDbApi(
             notificationPayload
@@ -196,6 +252,11 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       if (childProduct.sku) {
         mergedData.child_sku = childProduct.sku;
       }
+      if (childProduct.amazonVariationImages?.length > 0) {
+        mergedData.image = childProduct.amazonVariationImages.map(
+          (item: any) => item.url
+        );
+      }
 
       if (editFinalData) {
         setTimeout(() => {
@@ -210,16 +271,52 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const deleteVariantHandler = async () => {
+    if (childProduct) {
+      const { error } = await deleteAmazonChildProductApi(
+        +productId,
+        +childProduct?.id
+      );
+      if (!error) {
+        removeTabHandler();
+      }
+    } else {
+      removeTabHandler();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
-      <Input
-        placeholder={"Enter child sku"}
-        control={control}
-        textLabelName={"Child SKU"}
-        name={"child_sku"}
-        errors={errors}
-        type={"input"}
-      />
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Child SKU
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
+        <Input
+          placeholder={"Enter child sku"}
+          control={control}
+          textLabelName={"Child SKU"}
+          name={"child_sku"}
+          errors={errors}
+          type={"input"}
+        />
+      </div>
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Variation Image
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md col-span-12 relative mb-4">
+        <MultipleImageUpload
+          name="image"
+          control={control}
+          setError={setError}
+          // clearErrors={clearErrors}
+          errors={errors}
+          maxSize={8}
+          allowedFormat={["image/png", "image/jpeg"]}
+          setValue={setValue}
+          watch={watch}
+          className=""
+        />
+      </div>
       {variationProperties && variationProperties.length > 0 && (
         <div>
           <FormBuilder
@@ -229,30 +326,49 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             watch={watch as any}
           />
 
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-[10px]">
             <Button
               showType={btnShowType.primary}
               btnName="Save"
               type="submit"
               btnClass="mt-6 !text-base"
+              isLoading={saveAmazonLoading}
+            />
+
+            <Button
+              showType={btnShowType.primary}
+              btnName="Delete Variant"
+              type="button"
+              btnClass="mt-6 !text-base !bg-redAlert !text-white"
+              onClickHandler={() => {
+                setIsDeleteModal(true);
+              }}
             />
 
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Amazon"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
-              // isLoading={listInAmazonLoading}
+              isLoading={listInAmazonLoading}
               type="button"
               onClickHandler={async () => {
-                // setListInAmazonLoading(true);
                 await handleSubmit(
                   onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
                 )();
-                // setListInAmazonLoading(false);
               }}
             />
           </div>
         </div>
+      )}
+      {isDeleteModal && (
+        <ErrorModal
+          onClose={() => {
+            setIsDeleteModal(false);
+          }}
+          onSave={deleteVariantHandler}
+          heading="Are you sure?"
+          subText="This will delete this variant and all your changes will be lost."
+        />
       )}
     </form>
   );
