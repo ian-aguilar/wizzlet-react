@@ -58,17 +58,19 @@ export const addAmazonVariantToCombinationsByIndex = (
   secondaryData: any
 ) => ({
   ...primaryData,
-  combinations: primaryData.combinations.map((combination, index) => {
-    const variant = secondaryData[index];
+  combinations: primaryData.combinations.map(
+    (combination: any, index: number) => {
+      const variant = secondaryData[index];
 
-    if (variant) {
-      combination.quantity = variant?.quantity;
-      combination.amazonVariant = {
-        label: variant.name,
-        value: variant.amazonVariantId,
-      };
+      if (variant) {
+        combination.quantity = variant?.quantity;
+        combination.amazonVariant = {
+          label: variant.name,
+          value: variant.amazonVariantId,
+        };
+      }
+
+      return combination;
     }
-
-    return combination;
-  }),
+  ),
 });

@@ -128,7 +128,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
 
     if (!error && data?.data?.amazonVariant) {
       const filterData = data?.data?.amazonVariant.filter(
-        (e) => e?.amazonVariantId !== null
+        (e: any) => e?.amazonVariantId !== null
       );
       setAmazonVariantData(filterData);
     }
@@ -172,7 +172,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
     console.log("🚀 ~ onSubmit ~ payload:", payload);
 
     if (amazonVariantData?.length === 0) {
-      payload.combinations = payload.combinations.map((item) => {
+      payload.combinations = payload.combinations.map((item: any) => {
         delete item["amazonVariant"];
         return item;
       });
