@@ -81,7 +81,7 @@ const RevenueProfitDonutChart: React.FC<RevenueProfitDonutChartProps> = ({
 
   return (
     <>
-      <div className="flex gap-4 justify-between">
+      <div className="flex gap-4 justify-between flex-wrap">
         <p className="font-bold text-base pt-2">Marketplace Revenue & Profit</p>
         <div>
           <select

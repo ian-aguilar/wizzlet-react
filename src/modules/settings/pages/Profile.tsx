@@ -96,7 +96,7 @@ const Profile = () => {
         </h3>
         {/* <ModalCommon /> */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="SettingsContentBox lg:pr-20  2xl:pr-72 ">
+          <div className="SettingsContentBox    2xl:pr-72 ">
             <div className="grid grid-cols-12 lg:gap-4">
               <div className=" col-span-12 lg:col-span-6 row-span-3 ">
                 <FileField
@@ -182,7 +182,7 @@ const Profile = () => {
             <div className=" ">
               <Button
                 showType={btnShowType.green}
-                btnClass=" !w-auto !px-14 "
+                btnClass=" !w-auto !px-14 lg:!mt-14 "
                 type="submit"
                 btnName="Update"
                 isLoading={loader}
