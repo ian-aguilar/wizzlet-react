@@ -29,6 +29,7 @@ import { userSelector } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { selectSocket } from "@/redux/slices/socketSlice";
 import Input from "@/components/form-fields/components/Input";
+import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 
 export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const {
@@ -48,7 +49,9 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     control,
     watch,
     reset,
+    setError,
     handleSubmit,
+    setValue,
     formState: { errors },
     trigger,
   } = useForm({
@@ -94,13 +97,33 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     getProperties();
   }, [fieldDefaultValues, variationThemeField]);
 
+  const watchedImage = useWatch({
+    control,
+    name: "image",
+  });
+
   useEffect(() => {
     if (fields) {
-      trigger();
+      trigger().then(() => {
+        if (!watchedImage || watchedImage.length === 0) {
+          setError("image", {
+            type: "required",
+            message: "Image is required",
+          });
+        }
+      });
     }
   }, [trigger, fields]);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
+    if (!watchedImage || watchedImage.length === 0) {
+      setError("image", {
+        type: "required",
+        message: "Image is required",
+      });
+      return;
+    }
+
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
@@ -110,6 +133,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
     //payload append into a formData
     const formData = new FormData();
+    payload?.image?.forEach((image: File, index: number) => {
+      formData.append(`image[${index}]`, image);
+    });
+
     appendFormData(formData, filterPayload);
 
     const { error: amazonFormError } = await amazonChildFormSubmitApi(
@@ -178,6 +205,11 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       if (childProduct.sku) {
         mergedData.child_sku = childProduct.sku;
       }
+      if (childProduct.amazonVariationImages?.length > 0) {
+        mergedData.image = childProduct.amazonVariationImages.map(
+          (item: any) => item.url
+        );
+      }
 
       if (editFinalData) {
         setTimeout(() => {
@@ -202,6 +234,21 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
         errors={errors}
         type={"input"}
       />
+      <div className="col-span-12 relative mb-4">
+        <p>Variation Image</p>
+        <MultipleImageUpload
+          name="image"
+          control={control}
+          setError={setError}
+          // clearErrors={clearErrors}
+          errors={errors}
+          maxSize={8}
+          allowedFormat={["image/png", "image/jpeg"]}
+          setValue={setValue}
+          watch={watch}
+          className=""
+        />
+      </div>
       {variationProperties && variationProperties.length > 0 && (
         <div>
           <FormBuilder
