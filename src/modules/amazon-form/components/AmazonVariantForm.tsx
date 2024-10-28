@@ -36,7 +36,6 @@ import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/p
 import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
-import { ErrorModal } from "@/components/common/ErrorModal";
 import VariantWarningModal from "./WarningModal";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
@@ -82,8 +81,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [warningIndex, setWarningIndex] = useState<number>(0);
-
-  // console.log("🚀 ~ properties:", properties);
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();

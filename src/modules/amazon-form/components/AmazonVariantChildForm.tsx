@@ -19,7 +19,7 @@ import {
 } from "../helper";
 import {
   useAmazonChildFormHandleApi,
-  useCreateAmazonProductApi,
+  useCreateAmazonChildProductApi,
   useDeleteAmazonChildProductApi,
 } from "../services/amazonForm.service";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
@@ -72,8 +72,8 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
   const { amazonChildFormSubmitApi, isLoading: saveAmazonLoading } =
     useAmazonChildFormHandleApi();
-  const { createAmazonProductApi, isLoading: listInAmazonLoading } =
-    useCreateAmazonProductApi();
+  const { createAmazonChildProductApi, isLoading: listInAmazonLoading } =
+    useCreateAmazonChildProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
   const { deleteAmazonChildProductApi } = useDeleteAmazonChildProductApi();
 
@@ -119,7 +119,14 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   }, [trigger, fields]);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
-    //remove undefined and null and blank value from payload
+    if (!child_sku || child_sku.trim() === "") {
+      setError("child_sku", {
+        type: "required",
+        message: "Child SKU is required",
+      });
+      return;
+    }
+
     const removeNullValueFromPayload = cleanPayload(payload);
 
     //transform payload structure as per amazon product api
@@ -155,7 +162,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
         marketplace: MARKETPLACE.AMAZON,
       };
       if (type === AmazonSaveType.SaveInAmazon) {
-        const { error } = await createAmazonProductApi(Number(productId));
+        const { error } = await createAmazonChildProductApi(
+          Number(productId),
+          child_sku
+        );
         if (!error) {
           const { data, error } = await createUserNotificationInDbApi(
             notificationPayload
@@ -232,7 +242,6 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     }
   };
 
-  console.log("🚀 ~ deleteVariantHandler ~ childProduct:", childProduct);
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
       <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
