@@ -1,11 +1,5 @@
 import { FieldsType, IValidationItem } from "@/components/form-builder/types";
 import { Option } from "@/modules/inventory-management/types";
-import {
-  Control,
-  FieldErrors,
-  FieldValues,
-  UseFormWatch,
-} from "react-hook-form";
 
 export enum validationEnum {
   Required = "required",
@@ -96,6 +90,11 @@ export const DefaultChildProperties = [
   ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
 ];
 
+export const DefaultProperties = [
+  ["parentage_level"],
+  ["child_parent_sku_relationship"],
+];
+
 export const ManualProperties = [
   "parentage_level",
   "child_parent_sku_relationship",
@@ -112,6 +111,9 @@ export interface IAmazonVariantChildProps {
   childProduct: any;
   onComplete: (data: any) => void;
   parent_sku: string;
+  variations: any;
+  isLast: boolean;
+  changeVariationTabHandler: () => void;
 }
 
 export interface ICategoryData {

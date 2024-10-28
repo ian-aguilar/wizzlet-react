@@ -1,12 +1,4 @@
-import { FieldsType } from "@/components/form-builder/types";
-import {
-  AnyObject,
-  DefaultChildProperties,
-  InputData,
-  ManualProperties,
-  OutputData,
-  ReferenceItem,
-} from "../types";
+import { AnyObject, InputData, OutputData, ReferenceItem } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const amazonTransformData = (data: any): any => {
@@ -225,46 +217,6 @@ export const mergeDefaults = async (
   return valueData;
 };
 
-export const filterAmazonVariantProperties = (
-  properties: any,
-  selectedTheme: string[]
-) => {
-  const newProperties = getData(properties, DefaultChildProperties);
-  console.log("🚀 ~ properties:", newProperties);
-
-  const parentProperties: FieldsType<any>[] = [],
-    variationProperties: FieldsType<any>[] = [];
-
-  newProperties?.forEach((property: any) => {
-    if (!selectedTheme.includes(property.name)) {
-      if (!ManualProperties.includes(property.name)) {
-        parentProperties.push(property);
-      }
-
-      // let isProperty,
-      //   index = 0;
-
-      // DefaultChildProperties.forEach((e, i) => {
-      //   if (e.includes(property.name)) {
-      //     isProperty = property;
-      //     index = i;
-      //   }
-      // });
-
-      // if (isProperty) {
-      //   getData(isProperty, [DefaultChildProperties[index]]);
-      // }
-    } else {
-      variationProperties.push(property);
-    }
-  });
-
-  return {
-    parentProperties,
-    variationProperties,
-  };
-};
-
 export const getNestedDefaultProperty = (
   property: any,
   propertyName: string
@@ -282,14 +234,17 @@ export const getNestedDefaultProperty = (
   }
 };
 
-const getData = (property: any, removeProperty: string[][]): any => {
+export const filterAmazonProperties = (
+  property: any,
+  removeProperty: string[][]
+): any => {
   const returnData = [];
   for (const temp of property) {
     const tempFind = removeProperty.find((e) => e[0] === temp.name);
     if (tempFind) {
       if (tempFind.length > 1) {
         tempFind.shift();
-        const tempProperty = getData(temp.items, [tempFind]);
+        const tempProperty = filterAmazonProperties(temp.items, [tempFind]);
         if (tempProperty?.length > 0) {
           returnData.push({ ...temp, items: tempProperty });
         }

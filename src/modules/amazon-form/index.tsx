@@ -20,11 +20,8 @@ import { AmazonVariantForm } from "./components/AmazonVariantForm";
 // import { AmazonSaveType } from "./types";
 // import { RECOMMENDED_BROWSE_NODES } from "./constants";
 
-const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({
-  onComplete,
-  setCompletedStep,
-}) => {
-  const { productId, step } = useParams();
+const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
+  const { productId } = useParams();
 
   const [productType, setProductType] = useState<string | null>(null);
 

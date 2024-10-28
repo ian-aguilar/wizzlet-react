@@ -9,7 +9,7 @@ import {
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema } from "../validations";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   amazonTransformData,
   appendFormData,
@@ -21,7 +21,6 @@ import {
   useAmazonChildFormHandleApi,
   useCreateAmazonProductApi,
 } from "../services/amazonForm.service";
-import { useParams } from "react-router-dom";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { MARKETPLACE } from "@/components/common/types";
 import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
@@ -39,8 +38,11 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     productId,
     category,
     childProduct,
-    parent_sku,
     onComplete,
+    parent_sku,
+    variations,
+    isLast,
+    changeVariationTabHandler,
   } = props;
 
   const {
@@ -50,6 +52,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     handleSubmit,
     formState: { errors },
     trigger,
+    setError,
   } = useForm({
     resolver: zodResolver(
       schema(validationItems?.conditions, validationItems?.properties)
@@ -60,6 +63,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const socket = useSelector(selectSocket);
 
   const fields = useWatch({ control });
+  const child_sku = watch("child_sku");
 
   const { amazonChildFormSubmitApi } = useAmazonChildFormHandleApi();
   const { createAmazonProductApi } = useCreateAmazonProductApi();
@@ -71,15 +75,23 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     fieldDefaultValues.parentage_level[0].value = "child";
     fieldDefaultValues.child_parent_sku_relationship[0].child_relationship_type =
       "variation";
-    fieldDefaultValues.child_parent_sku_relationship[0].parent_sku =
-      childProduct?.product?.sku;
+    fieldDefaultValues.child_parent_sku_relationship[0].parent_sku = parent_sku;
+
+    if (variations) {
+      fieldDefaultValues.fulfillment_availability[0].quantity =
+        variations.quantity;
+      fieldDefaultValues.fulfillment_availability[0].fulfillment_channel_code =
+        "DEFAULT";
+    } else {
+      fieldDefaultValues.fulfillment_availability[0].quantity = undefined;
+      fieldDefaultValues.fulfillment_availability[0].fulfillment_channel_code =
+        undefined;
+    }
 
     reset(fieldDefaultValues);
 
     return fieldDefaultValues;
   };
-
-  console.log(childProduct?.product?.sku, "?????//s");
 
   useEffect(() => {
     getProperties();
@@ -87,7 +99,14 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
   useEffect(() => {
     if (fields) {
-      trigger();
+      trigger().then(() => {
+        if (!child_sku || child_sku.trim() === "") {
+          setError("child_sku", {
+            type: "required",
+            message: "Child SKU is required",
+          });
+        }
+      });
     }
   }, [trigger, fields]);
 
@@ -110,6 +129,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       },
       {
         categoryId: category?.value,
+      },
+      {
+        childId: childProduct?.id,
+      },
+      {
+        variationId: variations?.id,
       }
     );
 
@@ -132,10 +157,18 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
               socket.emit("user_notification", user?.id);
             }
           }
-          onComplete(productId);
+          if (isLast) {
+            onComplete(productId);
+          } else {
+            changeVariationTabHandler();
+          }
         }
       }
-      onComplete(productId);
+      if (isLast) {
+        onComplete(productId);
+      } else {
+        changeVariationTabHandler();
+      }
     }
   };
 
