@@ -179,14 +179,19 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
-      <Input
-        placeholder={"Enter child sku"}
-        control={control}
-        textLabelName={"Child SKU"}
-        name={"child_sku"}
-        errors={errors}
-        type={"input"}
-      />
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Child SKU
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
+        <Input
+          placeholder={"Enter child sku"}
+          control={control}
+          textLabelName={"Child SKU"}
+          name={"child_sku"}
+          errors={errors}
+          type={"input"}
+        />
+      </div>
       {variationProperties && variationProperties.length > 0 && (
         <div>
           <FormBuilder
