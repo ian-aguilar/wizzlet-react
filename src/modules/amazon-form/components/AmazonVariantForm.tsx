@@ -461,7 +461,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                   Choose Variation Combination
                 </h2>
               )}
-              <div className="py-3 px-5 border-l border-r border-b rounded-b-md">
+              <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
                 {variationThemeData &&
                   variationThemeData.map((e, index: number) => {
                     return (
@@ -489,15 +489,20 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               </div>
               {/* {tab === ITab.Parent ? ( */}
               {/* <> */}
-              <Input
-                placeholder={"Enter parent sku"}
-                control={control}
-                textLabelName={"Parent SKU"}
-                name={"parent_sku"}
-                errors={errors}
-                type={"input"}
-                isDisabled={isEdit}
-              />
+              <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+                Parent SKU
+              </h2>
+              <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
+                <Input
+                  placeholder={"Enter parent sku"}
+                  control={control}
+                  textLabelName={"Parent SKU"}
+                  name={"parent_sku"}
+                  errors={errors}
+                  type={"input"}
+                  isDisabled={isEdit}
+                />
+              </div>
               {properties && properties.length > 0 && (
                 <div>
                   <FormBuilder
