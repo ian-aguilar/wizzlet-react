@@ -61,7 +61,6 @@ const ProductBasicForm: React.FC<ProductBasicFormSingleProps> = ({
     },
   });
 
-  console.log("🚀 ~ errors:", errors);
   const tagOptionApi = async () => {
     try {
       const { data, error } = await getTagOptionsApi();

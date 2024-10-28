@@ -26,7 +26,7 @@ const FormBuilder = <T extends FieldValues>({
     if (
       data.title === "Recommended Browse Nodes" ||
       data.name === "recommended_browse_nodes" ||
-      data.name?.includes("product_image_locator")
+      data.name?.includes("image_locator")
     ) {
       return <></>;
     }
@@ -95,7 +95,10 @@ const FormBuilder = <T extends FieldValues>({
                 placeholder={data.description ? data.description : ""}
                 options={data.option || []}
                 isClearable={true}
-                isMulti={data?.isMulti ? true : false}
+                isMulti={
+                  data?.type === FieldsTypeEnum.MULTI_SELECT ? true : false
+                }
+                maxLength={data.addMoreLength}
               />
             ) : (
               <SelectField<T>
@@ -210,7 +213,8 @@ const FieldArrayComponent = <T extends FieldValues>({
                               const field = getAppendField(data.items);
                               append(field);
                             }
-                          }}>
+                          }}
+                        >
                           <AddIconBtn className="  text-greenPrimary " />
                         </span>
 
@@ -219,7 +223,8 @@ const FieldArrayComponent = <T extends FieldValues>({
                             className="flex justify-center items-center w-8 h-8 border bg-redAlert/10 border-redAlert rounded-md cursor-pointer hover:brightness-125 transition-all duration-300"
                             onClick={() => {
                               remove(index);
-                            }}>
+                            }}
+                          >
                             <DeleteIcon className=" text-redAlert " />
                           </span>
                         )}

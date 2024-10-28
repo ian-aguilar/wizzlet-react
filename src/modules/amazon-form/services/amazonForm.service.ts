@@ -56,3 +56,60 @@ export const useCreateAmazonProductApi = () => {
 
   return { createAmazonProductApi, isLoading, isError, isSuccess };
 };
+
+export const useGetProductTypeApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getProductTypeApi = async (id: number | null | undefined) => {
+    return callApi(`/products/type/${id}`, {});
+  };
+
+  return { getProductTypeApi, isLoading, isError, isSuccess };
+};
+
+export const useGetAmazonVariationPropertiesApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getAmazonVariationProperties = async (
+    id: number | null | undefined
+  ) => {
+    return callApi(`/property/amazon/variation/${id}`, {});
+  };
+
+  return { getAmazonVariationProperties, isLoading, isError, isSuccess };
+};
+
+export const useGetAmazonChildProductsApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getAmazonChildProductsApi = async (id: number | null | undefined) => {
+    return callApi(`/products/amazon/child/${id}`, {});
+  };
+
+  return { getAmazonChildProductsApi, isLoading, isError, isSuccess };
+};
+
+export const useAmazonChildFormHandleApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPut();
+
+  const amazonChildFormSubmitApi = async (
+    data: object,
+    { productId }: { productId: number | string },
+    { categoryId }: { categoryId: number | string | undefined },
+    { childId }: { childId: number | string | undefined },
+    { variationId }: { variationId: number | string | undefined }
+  ) => {
+    return callApi(
+      `/amazon/form/${categoryId}/${productId}?childId=${childId}&variationId=${variationId}`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+  };
+
+  return { amazonChildFormSubmitApi, isLoading, isError, isSuccess };
+};

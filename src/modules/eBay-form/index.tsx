@@ -155,7 +155,6 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   } = useForm<any>({
     resolver: yupResolver(finalValidationSchema),
   });
-  console.log("🚀 ~ errors:", errors);
 
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
