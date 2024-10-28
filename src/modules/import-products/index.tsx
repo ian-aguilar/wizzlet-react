@@ -413,7 +413,7 @@ const ImportProducts = () => {
           <div className="flex justify-between items-start ">
             <div>
               <div className="flex flex-col gap-1 ">
-                <label> Search </label>
+                {/* <label> Search </label> */}
                 <InputSearch
                   InputLeftIcon={<SearchIcon />}
                   className="pl-12"
@@ -500,7 +500,7 @@ const ImportProducts = () => {
                 )}
               </div>
             </div>
-            <div className="max-h-[calc(100vh_-_450px)] overflow-y-auto scroll-design ">
+            <div className="max-h-[calc(100vh_-_520px)] overflow-y-auto scroll-design ">
               {items && items.length > 0 ? (
                 items.map((item) => {
                   return (
@@ -513,7 +513,7 @@ const ImportProducts = () => {
                   );
                 })
               ) : (
-                <div className="justify-center flex !max-h-[calc(100vh_-_450px)] !min-h-[calc(100vh_-_450px)]">
+                <div className="justify-center flex !max-h-[calc(100vh_-_480px)] !min-h-[calc(100vh_-_480px)]">
                   <DataNotFound className=" !h-[30vh] " />
                 </div>
               )}

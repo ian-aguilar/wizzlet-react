@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { IDateInputProps } from "../types";
 import moment from "moment";
+import { flip } from "lodash";
 
 const DateInput = <T extends FieldValues>({
   placeholder,
@@ -25,7 +26,7 @@ const DateInput = <T extends FieldValues>({
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <DatePicker
-              className={`  ${className}`}
+              className={` bg-inputAuthBg/60 p-3 rounded-md text-gray-800 w-full outline-none hover:outline-greenPrimary  focus:outline-greenPrimary font-normal text-base mb-1 transition-all duration-300  bg-inputAuthBg/60   p-3 rounded-md text-gray-800 w-full outline-none focus:outline-none font-normal text-base mb-2 transition-all duration-300 mb-2   ${className}`}
               selected={
                 value
                   ? (moment(value, "YYYY-MM-DD").toDate() as any) !=
@@ -38,6 +39,7 @@ const DateInput = <T extends FieldValues>({
               onChange={(e) => onChange(moment(e).format("YYYY-MM-DD"))}
               onBlur={onBlur}
               disabled={isDisabled}
+              popperProps={{ strategy: "fixed" }}
             />
           )}
         />
