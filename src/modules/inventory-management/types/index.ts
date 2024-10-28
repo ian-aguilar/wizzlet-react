@@ -77,6 +77,7 @@ export type productProps = {
   status: string;
   price: string;
   date: string;
+  type: string;
   quantity: number;
   sku: string;
   variantId?: number;

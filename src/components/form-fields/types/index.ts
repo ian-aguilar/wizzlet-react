@@ -190,6 +190,7 @@ export interface warningModalProps {
   onSave?: () => void;
   heading: string;
   confirmButtonText: string;
+  subText?: string;
 }
 
 export type ITextAreaProps<T extends FieldValues> = {

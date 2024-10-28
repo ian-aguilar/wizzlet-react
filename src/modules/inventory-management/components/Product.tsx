@@ -123,12 +123,20 @@ const Product = ({
                       ) : null}
                       <div className="DescSpecifications flex flex-wrap gap-6 py-5">
                         <div>
-                          <span className="uppercase font-normal text-sm text-grayText">
-                            Price
-                          </span>
-                          <p className="text-blackPrimary font-medium ">
-                            {item?.price}
-                          </p>
+                          {item.type === "VARIANT" ? (
+                            <div className="bg-greenPrimary/10 text-greenPrimary align-middle text-s font-medium py-0.5 rounded-md px-1 ml-2 mt-2 ">
+                              Variant Product
+                            </div>
+                          ) : (
+                            <>
+                              <span className="uppercase font-normal text-sm text-grayText">
+                                Price
+                              </span>
+                              <p className="text-blackPrimary font-medium ">
+                                {item?.price}
+                              </p>
+                            </>
+                          )}
                         </div>
                         <div className="border-r border-dashed border-grayText/30">
                           &nbsp;
@@ -145,17 +153,22 @@ const Product = ({
                             })}
                           </p>
                         </div>
-                        <div className="border-r border-dashed border-grayText/30">
-                          &nbsp;
-                        </div>
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">
-                            QTY
-                          </span>
-                          <p className="text-blackPrimary font-medium ">
-                            {item?.quantity}
-                          </p>
-                        </div>
+                        {item.type === "VARIANT" ? null : (
+                          <>
+                            <div className="border-r border-dashed border-grayText/30">
+                              &nbsp;
+                            </div>
+                            <div>
+                              <span className="uppercase font-normal text-sm text-grayText">
+                                QTY
+                              </span>
+                              <p className="text-blackPrimary font-medium ">
+                                {item?.quantity}
+                              </p>
+                            </div>
+                          </>
+                        )}
+
                         <div className="border-r border-dashed border-grayText/30">
                           &nbsp;
                         </div>
