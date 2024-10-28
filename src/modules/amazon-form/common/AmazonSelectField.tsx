@@ -47,6 +47,7 @@ export const AmazonSelectField = <T extends FieldValues>(
     name,
     control,
     errors,
+    maxLength,
   } = props;
 
   const components = { ValueContainer };
@@ -86,6 +87,9 @@ export const AmazonSelectField = <T extends FieldValues>(
                     innerValue?.includes(option.value)
                   )
                 : options.find((option: Option) => option.value === innerValue)
+            }
+            isOptionDisabled={() =>
+              maxLength ? innerValue?.length >= maxLength : false
             }
             placeholder={placeholder || ""}
             options={options}

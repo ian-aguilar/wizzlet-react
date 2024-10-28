@@ -73,7 +73,8 @@ const InputField = <T extends FieldValues>({
       {inputEndIcon && (
         <div
           className="absolute right-4 top-4"
-          onClick={() => setIsShow((prev) => !prev)}>
+          onClick={() => setIsShow((prev) => !prev)}
+        >
           {!isShow ? inputEndIcon : <EyeIconSettings />}
         </div>
       )}
