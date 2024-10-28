@@ -19,9 +19,9 @@ import {
 } from "../helper";
 import {
   useAmazonChildFormHandleApi,
-  useCreateAmazonProductApi,
+  useCreateAmazonChildProductApi,
+  useDeleteAmazonChildProductApi,
 } from "../services/amazonForm.service";
-import { useParams } from "react-router-dom";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { MARKETPLACE } from "@/components/common/types";
 import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { selectSocket } from "@/redux/slices/socketSlice";
 import Input from "@/components/form-fields/components/Input";
 import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
+import { ErrorModal } from "@/components/common/ErrorModal";
 
 export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const {
@@ -43,17 +44,20 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     onComplete,
     parent_sku,
     variations,
+    isLast,
+    changeVariationTabHandler,
+    removeTabHandler,
   } = props;
 
   const {
     control,
     watch,
     reset,
-    setError,
     handleSubmit,
     setValue,
     formState: { errors },
     trigger,
+    setError,
   } = useForm({
     resolver: zodResolver(
       schema(validationItems?.conditions, validationItems?.properties)
@@ -64,10 +68,16 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   const socket = useSelector(selectSocket);
 
   const fields = useWatch({ control });
+  const child_sku = watch("child_sku");
 
-  const { amazonChildFormSubmitApi } = useAmazonChildFormHandleApi();
-  const { createAmazonProductApi } = useCreateAmazonProductApi();
+  const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+
+  const { amazonChildFormSubmitApi, isLoading: saveAmazonLoading } =
+    useAmazonChildFormHandleApi();
+  const { createAmazonChildProductApi, isLoading: listInAmazonLoading } =
+    useCreateAmazonChildProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+  const { deleteAmazonChildProductApi } = useDeleteAmazonChildProductApi();
 
   const getProperties = () => {
     fieldDefaultValues.variation_theme[0].name = variationThemeField;
@@ -111,6 +121,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             message: "Image is required",
           });
         }
+        if (!child_sku || child_sku.trim() === "") {
+          setError("child_sku", {
+            type: "required",
+            message: "Child SKU is required",
+          });
+        }
       });
     }
   }, [trigger, fields]);
@@ -120,6 +136,13 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       setError("image", {
         type: "required",
         message: "Image is required",
+      });
+      return;
+    }
+    if (!child_sku || child_sku.trim() === "") {
+      setError("child_sku", {
+        type: "required",
+        message: "Child SKU is required",
       });
       return;
     }
@@ -164,7 +187,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
         marketplace: MARKETPLACE.AMAZON,
       };
       if (type === AmazonSaveType.SaveInAmazon) {
-        const { error } = await createAmazonProductApi(Number(productId));
+        const { error } = await createAmazonChildProductApi(
+          Number(productId),
+          child_sku
+        );
         if (!error) {
           const { data, error } = await createUserNotificationInDbApi(
             notificationPayload
@@ -174,10 +200,18 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
               socket.emit("user_notification", user?.id);
             }
           }
-          onComplete(productId);
+          if (isLast) {
+            onComplete(productId);
+          } else {
+            changeVariationTabHandler();
+          }
         }
       }
-      onComplete(productId);
+      if (isLast) {
+        onComplete(productId);
+      } else {
+        changeVariationTabHandler();
+      }
     }
   };
 
@@ -224,18 +258,39 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const deleteVariantHandler = async () => {
+    if (childProduct) {
+      const { error } = await deleteAmazonChildProductApi(
+        +productId,
+        +childProduct?.id
+      );
+      if (!error) {
+        removeTabHandler();
+      }
+    } else {
+      removeTabHandler();
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
-      <Input
-        placeholder={"Enter child sku"}
-        control={control}
-        textLabelName={"Child SKU"}
-        name={"child_sku"}
-        errors={errors}
-        type={"input"}
-      />
-      <div className="col-span-12 relative mb-4">
-        <p>Variation Image</p>
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Child SKU
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
+        <Input
+          placeholder={"Enter child sku"}
+          control={control}
+          textLabelName={"Child SKU"}
+          name={"child_sku"}
+          errors={errors}
+          type={"input"}
+        />
+      </div>
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Variation Image
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md col-span-12 relative mb-4">
         <MultipleImageUpload
           name="image"
           control={control}
@@ -258,30 +313,49 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             watch={watch as any}
           />
 
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-[10px]">
             <Button
               showType={btnShowType.primary}
               btnName="Save"
               type="submit"
               btnClass="mt-6 !text-base"
+              isLoading={saveAmazonLoading}
+            />
+
+            <Button
+              showType={btnShowType.primary}
+              btnName="Delete Variant"
+              type="button"
+              btnClass="mt-6 !text-base !bg-redAlert !text-white"
+              onClickHandler={() => {
+                setIsDeleteModal(true);
+              }}
             />
 
             <Button
               showType={btnShowType.primary}
               btnName="Save and list in Amazon"
               btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
-              // isLoading={listInAmazonLoading}
+              isLoading={listInAmazonLoading}
               type="button"
               onClickHandler={async () => {
-                // setListInAmazonLoading(true);
                 await handleSubmit(
                   onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
                 )();
-                // setListInAmazonLoading(false);
               }}
             />
           </div>
         </div>
+      )}
+      {isDeleteModal && (
+        <ErrorModal
+          onClose={() => {
+            setIsDeleteModal(false);
+          }}
+          onSave={deleteVariantHandler}
+          heading="Are you sure?"
+          subText="This will delete this variant and all your changes will be lost."
+        />
       )}
     </form>
   );

@@ -1,12 +1,4 @@
-import { FieldsType } from "@/components/form-builder/types";
-import {
-  AnyObject,
-  DefaultChildProperties,
-  InputData,
-  ManualProperties,
-  OutputData,
-  ReferenceItem,
-} from "../types";
+import { AnyObject, InputData, OutputData, ReferenceItem } from "../types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const amazonTransformData = (data: any): any => {
