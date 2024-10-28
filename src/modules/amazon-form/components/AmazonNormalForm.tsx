@@ -1,11 +1,12 @@
 import AsyncSelectField from "@/modules/inventory-management/components/AsyncSelectField";
-import { AmazonSaveType, IAmazonForm } from "../types";
+import { AmazonSaveType, DefaultProperties, IAmazonForm } from "../types";
 import { useEffect, useState } from "react";
 import FormBuilder from "@/components/form-builder";
 import {
   amazonTransformData,
   appendFormData,
   cleanPayload,
+  filterAmazonProperties,
   mapDataWithReference,
   mergeDefaults,
 } from "../helper";
@@ -75,7 +76,14 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     }
     const { data } = await getAllAmazonPropertiesApi(categoryData?.value);
     setCategory(categoryData);
-    setProperties(data?.data?.properties);
+    const newProperties = filterAmazonProperties(data?.data?.properties, [
+      ...DefaultProperties,
+      ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
+      ["item_name"],
+      ["product_description"],
+      ["fulfillment_availability", "quantity"],
+    ]);
+    setProperties(newProperties);
     setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
     const modifiedDefaultValues = {
@@ -148,10 +156,50 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             propertiesData?.propertyData
           );
 
-          const mergedData = await mergeDefaults(
+          let mergedData = await mergeDefaults(
             editFinalData,
             propertiesData?.defaultValue
           );
+
+          if (editApiResponse?.product) {
+            mergedData = {
+              ...mergedData,
+              item_name: [
+                {
+                  value: editApiResponse?.product?.title,
+                },
+              ],
+              product_description: [
+                {
+                  value: editApiResponse?.product?.description,
+                },
+              ],
+              purchasable_offer: [
+                {
+                  ...mergedData["purchasable_offer"][0],
+                  our_price: [
+                    {
+                      schedule: [
+                        {
+                          value_with_tax: [
+                            {
+                              value: editApiResponse?.product?.price,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+              fulfillment_availability: [
+                {
+                  ...mergedData["fulfillment_availability"][0],
+                  quantity: editApiResponse?.product?.quantity,
+                },
+              ],
+            };
+          }
 
           if (editFinalData) {
             setTimeout(() => {
@@ -216,8 +264,6 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
         }
         onComplete(productId);
       }
-    } else {
-      console.log("Product ID Missing");
     }
   };
 

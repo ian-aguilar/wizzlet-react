@@ -15,11 +15,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncSelectField from "@/modules/inventory-management/components/AsyncSelectField";
 import { useGetCategoriesAPI } from "@/modules/inventory-management/services";
 import { MARKETPLACE, MARKETPLACEID } from "@/components/common/types";
-import { AmazonSaveType, IAmazonForm, ICategoryData, ITab } from "../types";
+import {
+  AmazonSaveType,
+  DefaultChildProperties,
+  DefaultProperties,
+  IAmazonForm,
+  ICategoryData,
+  ITab,
+} from "../types";
 import {
   amazonTransformData,
   appendFormData,
   cleanPayload,
+  filterAmazonProperties,
   mapDataWithReference,
   mergeDefaults,
 } from "../helper";
@@ -66,6 +74,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const socket = useSelector(selectSocket);
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
+  const [parentProperties, setParentProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
   const [tab, setTab] = useState<{ type: ITab; index: null | number }>({
     type: ITab.Parent,
@@ -80,7 +89,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
   const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [warningIndex, setWarningIndex] = useState<number>(0);
+  const [warningIndex, setWarningIndex] = useState<number | null>(0);
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
@@ -106,14 +115,21 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       categoryData?.value
     );
 
-    // const newProperties = filterAmazonProperties(data?.data?.properties, [
-    //   ...DefaultChildProperties,
-    //   ...DefaultProperties,
-    // ]);
+    const newProperties = filterAmazonProperties(
+      data?.data?.properties,
+      DefaultProperties
+    );
+
+    const newParentProperties = filterAmazonProperties(newProperties, [
+      ...DefaultChildProperties,
+      ["item_name"],
+      ["product_description"],
+    ]);
 
     setVariationThemeData(variationData?.data);
     setCategory(categoryData);
-    setProperties(data?.data?.properties);
+    setProperties(newProperties);
+    setParentProperties(newParentProperties);
     setValidationItems(data?.data?.validationItems);
 
     let defaultValues = getAppendField(data?.data?.properties);
@@ -234,18 +250,40 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             propertiesData?.propertyData
           );
 
-          const mergedData = await mergeDefaults(
+          let mergedData = await mergeDefaults(
             editFinalData,
             propertiesData?.defaultValue
           );
 
           if (editApiResponse?.productData?.variation_theme[0].name) {
-            mergedData.variation_theme[0].name =
-              editApiResponse?.productData?.variation_theme[0].name;
+            mergedData = {
+              ...mergedData,
+              variation_theme: [
+                {
+                  name: editApiResponse?.productData?.variation_theme[0].name,
+                },
+              ],
+            };
           }
 
           if (editApiResponse?.parent_sku) {
             mergedData.parent_sku = editApiResponse?.parent_sku;
+          }
+
+          if (editApiResponse?.product) {
+            mergedData = {
+              ...mergedData,
+              item_name: [
+                {
+                  value: editApiResponse?.product?.title,
+                },
+              ],
+              product_description: [
+                {
+                  value: editApiResponse?.product?.description,
+                },
+              ],
+            };
           }
 
           if (editFinalData) {
@@ -390,7 +428,11 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
           }
           onClick={() => {
-            setTab({ type: ITab.Parent, index: null });
+            if (tab.index !== null) {
+              setWarningIndex(null);
+              setIsWarningModal(true);
+            }
+            // setTab({ type: ITab.Parent, index: null });
           }}
         >
           Parent Product
@@ -405,8 +447,10 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                     : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 }
                 onClick={() => {
-                  setWarningIndex(index);
-                  setIsWarningModal(true);
+                  if (index !== tab.index) {
+                    setWarningIndex(index);
+                    setIsWarningModal(true);
+                  }
                   // if (variationThemeField) {
                   // }
                 }}
@@ -500,12 +544,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                   isDisabled={isEdit}
                 />
               </div>
-              {properties && properties.length > 0 && (
+              {parentProperties && parentProperties.length > 0 && (
                 <div>
                   <FormBuilder
                     control={control}
                     errors={errors}
-                    fields={properties as any}
+                    fields={parentProperties as any}
                     watch={watch as any}
                     isEdit={isEdit}
                   />
@@ -561,8 +605,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             setIsWarningModal(false);
           }}
           onSave={() => {
-            if (isSaved) {
-              setTab({ type: ITab.Variation, index: warningIndex });
+            if (warningIndex === null) {
+              setTab({ type: ITab.Parent, index: null });
+            } else {
+              if (isSaved) {
+                setTab({ type: ITab.Variation, index: warningIndex });
+              }
             }
             setIsWarningModal(false);
           }}
