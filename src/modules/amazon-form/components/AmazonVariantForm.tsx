@@ -95,7 +95,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const isSidebarOpen = useSelector(
     (state: RootState) => state.sidebar.isSidebarOpen
   );
-  console.log("🚀 ~ isSidebarOpen:", isSidebarOpen);
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
