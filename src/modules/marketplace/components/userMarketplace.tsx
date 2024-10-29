@@ -23,6 +23,7 @@ import {
 } from "../services/marketplace.service";
 import { useAmazonAuthAPI } from "../services/amazon.service";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import { Loader } from "@/components/common/Loader";
 const UserMarketplace = () => {
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
@@ -36,7 +37,8 @@ const UserMarketplace = () => {
   >(null);
 
   // ================= Custom hooks ====================
-  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { getMarketplaceListingAPI, isLoading: marketLoading } =
+    useMarketplaceListingAPI();
   const { ebayAuthAPI, isLoading } = useEbayAuthAPI();
   const { amazonAuthAPI, isLoading: amazonLoading } = useAmazonAuthAPI();
   const { disconnectMarketplaceAPI, isLoading: isDisconnectBtnLoading } =
@@ -44,7 +46,7 @@ const UserMarketplace = () => {
 
   useEffect(() => {
     marketplaceListing();
-  }, [isDeleteModel,disconnectMarketplace]);
+  }, [isDeleteModel, disconnectMarketplace]);
 
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
@@ -98,133 +100,143 @@ const UserMarketplace = () => {
     }
   };
   return (
-    <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
-      {marketplace?.connectedMarketplace.length > 0 ? (
-        <>
-          <h4 className="text-center pb-7 text-[26px] font-medium ">
-            Connected Marketplaces
-          </h4>
-          <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
-            {marketplace?.connectedMarketplace.map((item) => (
-              <div
-                key={item?.id}
-                className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
-                  item?.coming_soon ? "relative" : ""
-                }`}
-              >
-                <div className="flex flex-wrap justify-between items-start gap-4 ">
-                  <div>
-                    <img
-                      src={VITE_APP_API_URL + item.logo}
-                      className="max-w-[150px]  w-full h-auto"
-                      alt=""
+    <>
+      {marketLoading ? (
+        <div>
+          <Loader />
+        </div>
+      ) : (
+        <section className="MarketPlaceSection  h-[calc(100%_-_40px)] w-full bg-white overflow-y-auto scroll-design p-5 ">
+          {marketplace?.connectedMarketplace.length > 0 ? (
+            <>
+              <h4 className="text-center pb-7 text-[26px] font-medium ">
+                Connected Marketplaces
+              </h4>
+              <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
+                {marketplace?.connectedMarketplace.map((item) => (
+                  <div
+                    key={item?.id}
+                    className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
+                      item?.coming_soon ? "relative" : ""
+                    }`}
+                  >
+                    <div className="flex flex-wrap justify-between items-start gap-4 ">
+                      <div>
+                        <img
+                          src={VITE_APP_API_URL + item.logo}
+                          className="max-w-[150px]  w-full h-auto"
+                          alt=""
+                        />
+                      </div>
+                      <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
+                        <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
+                          &nbsp;
+                        </span>
+                        CONNECTED
+                      </span>
+                    </div>
+                    <div className="mt-auto pt-10 ">
+                      <Button
+                        btnName="Disconnect "
+                        btnClass=""
+                        showType={btnShowType.red}
+                        onClickHandler={() => {
+                          setIsDeleteModel(true);
+                          setDisconnectMarketplace(item.id);
+                        }}
+                        isLoading={
+                          item.id === buttonLoading
+                            ? isDisconnectBtnLoading
+                            : false
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="my-5">
+                <hr />
+              </div>
+            </>
+          ) : (
+            <div className="py-24 px-20 bg-grayLightBody/10 sm:bg-MarketPlaceDB bg-right bg-no-repeat mb-14">
+              <h3 className=" text-5xl md:text-[58px] font-bold text-grayText/50 pb-6 bg-cover ">
+                No Marketplace Connected
+              </h3>
+              <Button
+                showType={btnShowType.primary}
+                btnClass=" flex gap-2 items-center !text-2xl !w-auto bg-transparent border !border-blackPrimary/20 !py-2 !px-4 !text-blackPrimary font-semibold "
+                btnName="Connect Now"
+                btnEndIcon={<DownArrowBlack />}
+              />
+            </div>
+          )}
+
+          <div>
+            <h4 className="text-center pb-7 text-[26px] font-medium ">
+              Connect Marketplaces
+            </h4>
+            <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
+              {marketplace?.notConnectedMarketplace.map((item) => (
+                <div
+                  key={item?.id}
+                  className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
+                    item?.coming_soon ? "relative" : ""
+                  }`}
+                >
+                  {item?.coming_soon ? (
+                    <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
+                      Coming Soon
+                    </div>
+                  ) : null}
+                  <div className="flex flex-wrap justify-between items-start gap-4 ">
+                    <div>
+                      <img
+                        src={VITE_APP_API_URL + item.logo}
+                        className="max-w-[150px]  w-full h-auto"
+                        alt=""
+                      />
+                    </div>
+                    <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
+                      <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
+                        &nbsp;
+                      </span>
+                      NOT CONNECTED
+                    </span>
+                  </div>
+                  <div className="mt-auto pt-10 ">
+                    <Button
+                      btnName="Connect "
+                      btnClass=""
+                      onClickHandler={() => authenticateUser(item)}
+                      isLoading={
+                        item.id === buttonLoading
+                          ? isLoading || amazonLoading
+                          : false
+                      }
                     />
                   </div>
-                  <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
-                    <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
-                      &nbsp;
-                    </span>
-                    CONNECTED
-                  </span>
                 </div>
-                <div className="mt-auto pt-10 ">
-                  <Button
-                    btnName="Disconnect "
-                    btnClass=""
-                    showType={btnShowType.red}
-                    onClickHandler={() => {
-                      setIsDeleteModel(true);
-                      setDisconnectMarketplace(item.id);
-                    }}
-                    isLoading={
-                      item.id === buttonLoading ? isDisconnectBtnLoading : false
-                    }
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="my-5">
-            <hr />
-          </div>
-        </>
-      ) : (
-        <div className="py-24 px-20 bg-grayLightBody/10 sm:bg-MarketPlaceDB bg-right bg-no-repeat mb-14">
-          <h3 className=" text-5xl md:text-[58px] font-bold text-grayText/50 pb-6 bg-cover ">
-            No Marketplace Connected
-          </h3>
-          <Button
-            showType={btnShowType.primary}
-            btnClass=" flex gap-2 items-center !text-2xl !w-auto bg-transparent border !border-blackPrimary/20 !py-2 !px-4 !text-blackPrimary font-semibold "
-            btnName="Connect Now"
-            btnEndIcon={<DownArrowBlack />}
-          />
-        </div>
-      )}
-
-      <div>
-        <h4 className="text-center pb-7 text-[26px] font-medium ">
-          Connect Marketplaces
-        </h4>
-        <div className="grid grid-cols-12 gap-x-5 gap-y-5 ">
-          {marketplace?.notConnectedMarketplace.map((item) => (
-            <div
-              key={item?.id}
-              className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
-                item?.coming_soon ? "relative" : ""
-              }`}
-            >
-              {item?.coming_soon ? (
-                <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
-                  Coming Soon
-                </div>
-              ) : null}
-              <div className="flex flex-wrap justify-between items-start gap-4 ">
-                <div>
-                  <img
-                    src={VITE_APP_API_URL + item.logo}
-                    className="max-w-[150px]  w-full h-auto"
-                    alt=""
-                  />
-                </div>
-                <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                  <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                    &nbsp;
-                  </span>
-                  NOT CONNECTED
-                </span>
-              </div>
-              <div className="mt-auto pt-10 ">
-                <Button
-                  btnName="Connect "
-                  btnClass=""
-                  onClickHandler={() => authenticateUser(item)}
-                  isLoading={
-                    item.id === buttonLoading
-                      ? isLoading || amazonLoading
-                      : false
-                  }
-                />
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div>
-          {isDeleteModel && (
-            <ErrorModal
-              onClose={() => {
-                setIsDeleteModel(false);
-                setDisconnectMarketplace(null);
-              }}
-              isLoading={isDisconnectBtnLoading}
-              onSave={handleDisconnect}
-              heading="Are you sure you want to proceed?"
-              subText="Disconnecting from this marketplace will result in the loss of all associated data."
-            />
-          )}
-        </div>
-      </div>
-    </section>
+            <div>
+              {isDeleteModel && (
+                <ErrorModal
+                  onClose={() => {
+                    setIsDeleteModel(false);
+                    setDisconnectMarketplace(null);
+                  }}
+                  isLoading={isDisconnectBtnLoading}
+                  onSave={handleDisconnect}
+                  heading="Are you sure you want to proceed?"
+                  subText="Disconnecting from this marketplace will result in the loss of all associated data."
+                />
+              )}
+            </div>
+          </div>
+        </section>
+      )}{" "}
+    </>
   );
 };
 
