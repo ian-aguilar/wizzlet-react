@@ -16,8 +16,8 @@ import {
 } from "../services/profile.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { profileValidationSchema } from "../validation-schema/profileValidation";
-import { useSelector } from "react-redux";
-import { UserRole, userSelector } from "@/redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, UserRole, userSelector } from "@/redux/slices/userSlice";
 import FileField from "@/components/form-fields/components/FileField";
 import { isArray } from "lodash";
 
@@ -40,6 +40,8 @@ const Profile = () => {
   // ================= Custom hooks ====================
   const { getProfileDataAPI } = useFetchProfileDataAPI();
   const { profileDataPostAPI, isLoading: loader } = useProfileDataPostAPI();
+
+  const dispatch = useDispatch();
 
   const user = useSelector(userSelector);
 
@@ -84,7 +86,16 @@ const Profile = () => {
       });
     }
 
-    await profileDataPostAPI(formData);
+    const { data, error } = await profileDataPostAPI(formData);
+    if (data && !error) {
+      const updatedUser = {
+        user: {
+          ...user,
+          url: data?.data[0]?.url,
+        },
+      };
+      dispatch(setUser(updatedUser));
+    }
   };
 
   return (
@@ -111,7 +122,7 @@ const Profile = () => {
                   clearErrors={clearErrors}
                   watch={watch}
                   isMulti={false}
-                  MainclassName="  h-[20vh] max-h-[25vh] lg:max-h-[300px] lg:h-[95%] min-h-[20vh] lg:mb-0 mb-4"
+                  MainclassName="h-[20vh] max-h-[25vh] lg:max-h-[300px] lg:h-[95%] min-h-[20vh] lg:mb-0 mb-4"
                 />
               </div>
               <div className=" col-span-12 lg:col-span-6">
@@ -142,7 +153,7 @@ const Profile = () => {
                       textLabelName="Organization Name"
                       control={control}
                       name="organizationName"
-                      placeholder="xyz"
+                      placeholder="Organization Name"
                       errors={errors}
                       type="text"
                     />
@@ -152,7 +163,7 @@ const Profile = () => {
                       textLabelName="Contact Number"
                       control={control}
                       name="contactNumber"
-                      placeholder="1234567890"
+                      placeholder="Contact Number"
                       errors={errors}
                       type="number"
                     />
@@ -169,14 +180,6 @@ const Profile = () => {
                   isDisabled={true}
                 />
               </div>
-              {/* <div className="text-sm text-grayText  ">
-              Do you want to change email?
-              <Link
-                to=""
-                className="font-medium cursor-pointer text-greenPrimary inline-block ml-2 hover:underline hover:underline-offset-2 hover:brightness-110 transition-all duration-300 hover:transition-all hover:duration-300">
-                Change
-              </Link>
-            </div> */}
             </div>
             <div className=" ">
               <Button
