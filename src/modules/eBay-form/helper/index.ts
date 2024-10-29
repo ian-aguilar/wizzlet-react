@@ -52,3 +52,25 @@ export const transformData = async (
 
   return { firstArray, secondArray };
 };
+
+export const addAmazonVariantToCombinationsByIndex = (
+  primaryData: any,
+  secondaryData: any
+) => ({
+  ...primaryData,
+  combinations: primaryData.combinations.map(
+    (combination: any, index: number) => {
+      const variant = secondaryData[index];
+
+      if (variant) {
+        combination.quantity = variant?.quantity;
+        combination.amazonVariant = {
+          label: variant.name,
+          value: variant.amazonVariantId,
+        };
+      }
+
+      return combination;
+    }
+  ),
+});

@@ -114,6 +114,7 @@ export interface IAmazonVariantChildProps {
   variations: any;
   isLast: boolean;
   changeVariationTabHandler: () => void;
+  removeTabHandler: () => void;
 }
 
 export interface ICategoryData {

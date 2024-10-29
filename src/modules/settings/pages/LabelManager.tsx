@@ -90,7 +90,7 @@ const LabelManager = () => {
 
   return (
     <div className="pb-5">
-      <div className="border-b border-greyBorder pb-2 mb-4 flex justify-between">
+      <div className="border-b border-greyBorder pb-2 mb-4 flex justify-between flex-wrap">
         <h3 className="text-2xl  text-blackPrimary  font-medium">
           Label Manager
         </h3>
@@ -150,7 +150,9 @@ const LabelManager = () => {
             showType={btnShowType.green}
             confirmButtonText="OK"
             heading={"Massage"}
-            subText={"This label cannot be deleted because it is currently in use."}
+            subText={
+              "This label cannot be deleted because it is currently in use."
+            }
             onCancel={closeDeleteModel}
             onConfirm={closeDeleteModel}
             icon={<InfoIcon className="w-16 h-16 text-redAlert mx-auto " />}

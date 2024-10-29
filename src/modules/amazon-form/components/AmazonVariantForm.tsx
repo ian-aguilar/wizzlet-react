@@ -15,11 +15,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import AsyncSelectField from "@/modules/inventory-management/components/AsyncSelectField";
 import { useGetCategoriesAPI } from "@/modules/inventory-management/services";
 import { MARKETPLACE, MARKETPLACEID } from "@/components/common/types";
-import { AmazonSaveType, IAmazonForm, ICategoryData, ITab } from "../types";
+import {
+  AmazonSaveType,
+  DefaultChildProperties,
+  DefaultProperties,
+  IAmazonForm,
+  ICategoryData,
+  ITab,
+} from "../types";
 import {
   amazonTransformData,
   appendFormData,
   cleanPayload,
+  filterAmazonProperties,
   mapDataWithReference,
   mergeDefaults,
 } from "../helper";
@@ -36,7 +44,7 @@ import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/p
 import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
-import { ErrorModal } from "@/components/common/ErrorModal";
+import VariantWarningModal from "./WarningModal";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
   const { productId, onComplete } = props;
@@ -66,6 +74,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const socket = useSelector(selectSocket);
 
   const [properties, setProperties] = useState<FieldsType<any>[]>();
+  const [parentProperties, setParentProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
   const [tab, setTab] = useState<{ type: ITab; index: null | number }>({
     type: ITab.Parent,
@@ -78,8 +87,9 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [fieldDefaultValues, setFieldDefaultValues] = useState<any>();
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
-
-  // console.log("🚀 ~ properties:", properties);
+  const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [warningIndex, setWarningIndex] = useState<number | null>(0);
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
@@ -88,8 +98,10 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const { editAmazonProductValueApi, isLoading: amazonDataLoading } =
     useAmazonEditProductValuesApi();
   const { getAmazonVariationProperties } = useGetAmazonVariationPropertiesApi();
-  const { amazonFormSubmitApi } = useAmazonFormHandleApi();
-  const { createAmazonProductApi } = useCreateAmazonProductApi();
+  const { amazonFormSubmitApi, isLoading: saveAmazonLoading } =
+    useAmazonFormHandleApi();
+  const { createAmazonProductApi, isLoading: listInAmazonLoading } =
+    useCreateAmazonProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
   const { getAmazonChildProductsApi } = useGetAmazonChildProductsApi();
 
@@ -103,14 +115,21 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       categoryData?.value
     );
 
-    // const newProperties = filterAmazonProperties(data?.data?.properties, [
-    //   ...DefaultChildProperties,
-    //   ...DefaultProperties,
-    // ]);
+    const newProperties = filterAmazonProperties(
+      data?.data?.properties,
+      DefaultProperties
+    );
+
+    const newParentProperties = filterAmazonProperties(newProperties, [
+      ...DefaultChildProperties,
+      ["item_name"],
+      ["product_description"],
+    ]);
 
     setVariationThemeData(variationData?.data);
     setCategory(categoryData);
-    setProperties(data?.data?.properties);
+    setProperties(newProperties);
+    setParentProperties(newParentProperties);
     setValidationItems(data?.data?.validationItems);
 
     let defaultValues = getAppendField(data?.data?.properties);
@@ -231,23 +250,46 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             propertiesData?.propertyData
           );
 
-          const mergedData = await mergeDefaults(
+          let mergedData = await mergeDefaults(
             editFinalData,
             propertiesData?.defaultValue
           );
 
           if (editApiResponse?.productData?.variation_theme[0].name) {
-            mergedData.variation_theme[0].name =
-              editApiResponse?.productData?.variation_theme[0].name;
+            mergedData = {
+              ...mergedData,
+              variation_theme: [
+                {
+                  name: editApiResponse?.productData?.variation_theme[0].name,
+                },
+              ],
+            };
           }
 
           if (editApiResponse?.parent_sku) {
             mergedData.parent_sku = editApiResponse?.parent_sku;
           }
 
+          if (editApiResponse?.product) {
+            mergedData = {
+              ...mergedData,
+              item_name: [
+                {
+                  value: editApiResponse?.product?.title,
+                },
+              ],
+              product_description: [
+                {
+                  value: editApiResponse?.product?.description,
+                },
+              ],
+            };
+          }
+
           if (editFinalData) {
             setTimeout(() => {
               setIsSaved(true);
+              setIsEdit(true);
               reset(mergedData);
             }, 1000);
           }
@@ -362,6 +404,17 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
     setTab({ type: ITab.Variation, index: Number(tab.index) + 1 });
   };
 
+  const removeTabHandler = () => {
+    const currentChildProperties = childProperties;
+    currentChildProperties.pop();
+    setChildProperties(currentChildProperties);
+    if (tab.index === 0) {
+      setTab({ type: ITab.Parent, index: null });
+    } else {
+      setTab({ type: ITab.Variation, index: Number(tab.index) - 1 });
+    }
+  };
+
   return (
     <div className="relative">
       {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
@@ -375,7 +428,11 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
           }
           onClick={() => {
-            setTab({ type: ITab.Parent, index: null });
+            if (tab.index !== null) {
+              setWarningIndex(null);
+              setIsWarningModal(true);
+            }
+            // setTab({ type: ITab.Parent, index: null });
           }}
         >
           Parent Product
@@ -390,10 +447,11 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                     : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 }
                 onClick={() => {
-                  // if (variationThemeField) {
-                  if (isSaved) {
-                    setTab({ type: ITab.Variation, index });
+                  if (index !== tab.index) {
+                    setWarningIndex(index);
+                    setIsWarningModal(true);
                   }
+                  // if (variationThemeField) {
                   // }
                 }}
                 key={index}
@@ -437,13 +495,14 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                 value={category ? category : null}
                 className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
                 placeholder="Choose Category"
+                isDisabled={isEdit}
               />
               {variationThemeData && (
                 <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
                   Choose Variation Combination
                 </h2>
               )}
-              <div className="py-3 px-5 border-l border-r border-b rounded-b-md">
+              <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
                 {variationThemeData &&
                   variationThemeData.map((e, index: number) => {
                     return (
@@ -460,7 +519,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                               name="variation_theme[0].name"
                               type="radio"
                               className={` w-4 h-4 accent-greenPrimary `}
-                              // disabled={isDisabled}
+                              disabled={isEdit}
                             />
                           )}
                         />
@@ -471,21 +530,28 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               </div>
               {/* {tab === ITab.Parent ? ( */}
               {/* <> */}
-              <Input
-                placeholder={"Enter parent sku"}
-                control={control}
-                textLabelName={"Parent SKU"}
-                name={"parent_sku"}
-                errors={errors}
-                type={"input"}
-              />
-              {properties && properties.length > 0 && (
+              <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+                Parent SKU
+              </h2>
+              <div className="py-3 px-5 border-l border-r border-b rounded-b-md mb-4">
+                <Input
+                  placeholder={"Enter parent sku"}
+                  control={control}
+                  textLabelName={"Parent SKU"}
+                  name={"parent_sku"}
+                  errors={errors}
+                  type={"input"}
+                  isDisabled={isEdit}
+                />
+              </div>
+              {parentProperties && parentProperties.length > 0 && (
                 <div>
                   <FormBuilder
                     control={control}
                     errors={errors}
-                    fields={properties as any}
+                    fields={parentProperties as any}
                     watch={watch as any}
+                    isEdit={isEdit}
                   />
                   <div className="flex justify-between">
                     <Button
@@ -493,20 +559,19 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                       btnName="Save"
                       type="submit"
                       btnClass="mt-6 !text-base"
+                      isLoading={saveAmazonLoading}
                     />
 
                     <Button
                       showType={btnShowType.primary}
                       btnName="Save and list in Amazon"
                       btnClass="mt-6 !text-base !bg-greenPrimary !text-white "
-                      // isLoading={listInAmazonLoading}
+                      isLoading={listInAmazonLoading}
                       type="button"
                       onClickHandler={async () => {
-                        // setListInAmazonLoading(true);
                         await handleSubmit(
                           onSubmit.bind(this, AmazonSaveType.SaveInAmazon)
                         )();
-                        // setListInAmazonLoading(false);
                       }}
                     />
                   </div>
@@ -518,7 +583,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       </form>
 
       {isDeleteModal && (
-        <ErrorModal
+        <VariantWarningModal
           onClose={() => {
             setChildProperties([properties]);
             setTab({ type: ITab.Variation, index: 0 });
@@ -529,7 +594,29 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             onComplete(productId);
           }}
           heading="Are you sure?"
-          subText="You want to go to next step without creating a variant?"
+          confirmButtonText="Yes"
+          subText="You want to proceed without creating a variant?"
+        />
+      )}
+
+      {isWarningModal && (
+        <VariantWarningModal
+          onClose={() => {
+            setIsWarningModal(false);
+          }}
+          onSave={() => {
+            if (warningIndex === null) {
+              setTab({ type: ITab.Parent, index: null });
+            } else {
+              if (isSaved) {
+                setTab({ type: ITab.Variation, index: warningIndex });
+              }
+            }
+            setIsWarningModal(false);
+          }}
+          heading="Are you sure?"
+          subText="If you haven't saved your changes, All data will be lost."
+          confirmButtonText="Yes"
         />
       )}
 
@@ -548,6 +635,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             variations={variations[tab.index]}
             isLast={tab.index === childProperties.length - 1 ? true : false}
             changeVariationTabHandler={changeVariationTabHandler}
+            removeTabHandler={removeTabHandler}
             key={tab.index}
           />
         </div>
