@@ -67,7 +67,6 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             isSearchable={isSearchable}
             components={components}
             onChange={(selectedOption, e) => {
-              console.log("selected option >>>>>>>>>", innerValue);
               onChange(selectedOption);
               CustomOnChange?.(selectedOption, e);
             }}
@@ -81,7 +80,7 @@ export const SelectField = <T extends FieldValues>(props: ICustomSelect<T>) => {
             menuPlacement="auto"
             styles={customStyles}
             isDisabled={disabled}
-            className={`${className}`}
+            className={`${className}` + (disabled ? "cursor-not-allowed" : "")}
             menuPosition={"fixed"}
           />
         )}

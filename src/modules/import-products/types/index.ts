@@ -18,21 +18,26 @@ export type IOption = {
   value: string;
 };
 
+export type EbayImage = {
+  PictureURL: string[];
+};
+
 export type IItems = {
   id: number;
   marketplace_id: number;
   title: string;
-  picture_url?: string;
+  picture_url?: string | any;
   listed_at: Date;
   price?: number;
   product_portal_id: string;
   is_imported: boolean;
-  type:string;
+  type: string;
 };
 
 export type IItemsProps = {
   item: IItems;
   isCheck: number[];
+  marketplace?: IOption;
   checkboxOnChange: (id: number) => void;
 };
 

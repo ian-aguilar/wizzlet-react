@@ -55,7 +55,6 @@ const LabelManager = () => {
       search,
     });
     if (error) {
-      console.error("API error:", error);
       return { data: [], totalRecord: 0 };
     }
     const responseData = data?.data?.data || [];
@@ -80,8 +79,7 @@ const LabelManager = () => {
   const handleRemove = async () => {
     if (deleteModel) {
       const { error } = await deleteLabelAPI(deleteModel.id);
-      if (error) console.log(error);
-      else {
+      if (!error) {
         closeDeleteModel();
         resetTableToInitial();
       }

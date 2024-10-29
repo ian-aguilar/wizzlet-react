@@ -137,25 +137,21 @@ const ViewUser = () => {
   };
 
   const fetchAllData = async (start: Date, end: Date) => {
-    try {
-      const marketplaceIds =
-        selectedOptions?.map((option) => option.value) || null;
+    const marketplaceIds =
+      selectedOptions?.map((option) => option.value) || null;
 
-      const { data, error } = await getAllDashboardDataAPI(
-        start.toLocaleDateString("en-CA"),
-        end.toLocaleDateString("en-CA"),
-        marketplaceIds,
-        Number(userId)
+    const { data, error } = await getAllDashboardDataAPI(
+      start.toLocaleDateString("en-CA"),
+      end.toLocaleDateString("en-CA"),
+      marketplaceIds,
+      Number(userId)
+    );
+    if (data && !error) {
+      const totalRevenue: number = data?.data?.revenueMarketDetails.reduce(
+        (acc: number, curr: RevenueMarketDetail) => acc + curr.revenue,
+        0
       );
-      if (data && !error) {
-        const totalRevenue: number = data?.data?.revenueMarketDetails.reduce(
-          (acc: number, curr: RevenueMarketDetail) => acc + curr.revenue,
-          0
-        );
-        setMainData({ ...data?.data, totalRevenue });
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setMainData({ ...data?.data, totalRevenue });
     }
   };
 

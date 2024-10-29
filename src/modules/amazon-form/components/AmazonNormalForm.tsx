@@ -42,6 +42,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
   const [validationItems, setValidationItems] = useState<IValidationItem>();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const {
     control,
@@ -210,20 +211,16 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
           if (editFinalData) {
             setTimeout(() => {
+              setIsEdit(true);
               reset(mergedData);
             }, 1000);
           }
         }
-      })
-      .catch((error) => {
-        console.error("Error in promise chain", error);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
-    // console.log("🚀 ~ AmazonForm ~ payload:", payload);
-
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
@@ -301,6 +298,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             value={category ? category : null}
             className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
             placeholder="Choose Category"
+            disabled={isEdit}
           />
         </div>
         {properties && properties.length > 0 && (
@@ -310,6 +308,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
               errors={errors}
               fields={properties as any}
               watch={watch as any}
+              isEdit={isEdit}
             />
             <div className="flex justify-between">
               <Button

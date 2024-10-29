@@ -307,9 +307,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             }, 1000);
           }
         }
-      })
-      .catch((error) => {
-        console.error("Error in promise chain", error);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -518,7 +515,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                 value={category ? category : null}
                 className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
                 placeholder="Choose Category"
-                isDisabled={isEdit}
+                disabled={isEdit}
               />
               {variationThemeData && (
                 <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
