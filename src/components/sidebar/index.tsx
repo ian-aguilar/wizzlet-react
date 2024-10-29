@@ -8,6 +8,8 @@ import { LeftArrowIcon } from "@/assets/Svg";
 
 // ** Hooks **
 import useSideBarColumn from "./hooks/useSideBarColumn";
+import { useDispatch } from "react-redux";
+import { toggleSidebar } from "@/redux/slices/sidebarSlice";
 
 const Sidebar = ({ handleIsOpen }: { handleIsOpen: (a: boolean) => void }) => {
   const [active, setActive] = useState(sidebarList.dashboard);
@@ -16,6 +18,7 @@ const Sidebar = ({ handleIsOpen }: { handleIsOpen: (a: boolean) => void }) => {
 
   const sidebarColumn = useSideBarColumn();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (location.pathname) {
@@ -62,6 +65,7 @@ const Sidebar = ({ handleIsOpen }: { handleIsOpen: (a: boolean) => void }) => {
               }
               setIsOpen(!isOpen);
               handleIsOpen(!isOpen);
+              dispatch(toggleSidebar());
             }}
           >
             <LeftArrowIcon

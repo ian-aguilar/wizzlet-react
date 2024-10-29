@@ -6,6 +6,7 @@ import {
   useGetAllAmazonPropertiesApi,
   useGetAmazonChildProductsApi,
   useGetAmazonVariationPropertiesApi,
+  useGetProductApi,
 } from "../services/amazonForm.service";
 import { FieldsType, IValidationItem } from "@/components/form-builder/types";
 import { Option } from "@/modules/inventory-management/types";
@@ -45,6 +46,7 @@ import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
 import VariantWarningModal from "./WarningModal";
+import { RootState } from "@/redux/store";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
   const { productId, onComplete } = props;
@@ -90,6 +92,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [warningIndex, setWarningIndex] = useState<number | null>(0);
+  const [categoryChangeLoader, setCategoryChangeLoader] =
+    useState<boolean>(false);
+
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.sidebar.isSidebarOpen
+  );
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
@@ -104,6 +112,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
     useCreateAmazonProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
   const { getAmazonChildProductsApi } = useGetAmazonChildProductsApi();
+  const { getProductApi } = useGetProductApi();
 
   const getProperties = async (categoryData: ICategoryData) => {
     if (!categoryData?.value) {
@@ -153,8 +162,26 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       ],
     };
 
-    const modifiedDefaultValues = {
-      ...defaultValues,
+    let modifiedDefaultValues = { ...defaultValues };
+
+    const { data: productData, error } = await getProductApi(+productId);
+    if (productData && !error) {
+      modifiedDefaultValues = {
+        ...modifiedDefaultValues,
+        item_name: [
+          {
+            value: productData?.data?.title,
+          },
+        ],
+        product_description: [
+          {
+            value: productData?.data?.description,
+          },
+        ],
+      };
+    }
+    modifiedDefaultValues = {
+      ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
 
@@ -170,8 +197,10 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
   // const getVariationThemeFields = () => {};
 
-  const handleGetCategoryWiseProperty = (categoryData: ICategoryData) => {
-    getProperties(categoryData);
+  const handleGetCategoryWiseProperty = async (categoryData: ICategoryData) => {
+    setCategoryChangeLoader(true);
+    await getProperties(categoryData);
+    setCategoryChangeLoader(false);
   };
 
   const variationThemeField = watch("variation_theme[0].name");
@@ -255,7 +284,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             propertiesData?.defaultValue
           );
 
-          if (editApiResponse?.productData?.variation_theme[0].name) {
+          if (editApiResponse?.productData?.variation_theme[0]?.name) {
             mergedData = {
               ...mergedData,
               variation_theme: [
@@ -268,22 +297,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
           if (editApiResponse?.parent_sku) {
             mergedData.parent_sku = editApiResponse?.parent_sku;
-          }
-
-          if (editApiResponse?.product) {
-            mergedData = {
-              ...mergedData,
-              item_name: [
-                {
-                  value: editApiResponse?.product?.title,
-                },
-              ],
-              product_description: [
-                {
-                  value: editApiResponse?.product?.description,
-                },
-              ],
-            };
           }
 
           if (editFinalData) {
@@ -417,10 +430,20 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
   return (
     <div className="relative">
-      {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
+      {categoryLoading ||
+      amazonDataLoading ||
+      amazonPropertiesLoading ||
+      categoryChangeLoader ? (
         <Loader loaderClass="!absolute !h-full" />
       ) : null}
-      <div className="flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap !w-[calc(100vw_-_480px)]   scroll-design pr-6 ">
+      <div
+        className={
+          "flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap scroll-design pr-6" +
+          (isSidebarOpen
+            ? "!w-[calc(100vw_-_680px)]"
+            : "!w-[calc(100vw_-_480px)]")
+        }
+      >
         <span
           className={
             tab.type === ITab.Parent
