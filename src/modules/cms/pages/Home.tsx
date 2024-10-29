@@ -24,8 +24,6 @@ const CMSHome = () => {
   const getHomeData = async () => {
     const { data, error } = await getHomeAPI();
     if (!error && data) {
-      console.log(data.data, "hjome data");
-
       setHomeData(data.data);
     }
   };

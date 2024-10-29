@@ -108,25 +108,21 @@ const UserDashboard: React.FC = () => {
 
   // Function to handle the API call for /getAllData
   const fetchAllData = async (start: Date, end: Date) => {
-    try {
-      const marketplaceIds =
-        selectedOptions?.map((option) => option.value) || null;
+    const marketplaceIds =
+      selectedOptions?.map((option) => option.value) || null;
 
-      const { data, error } = await getAllDashboardDataAPI(
-        start.toLocaleDateString("en-CA"),
-        end.toLocaleDateString("en-CA"),
-        marketplaceIds
+    const { data, error } = await getAllDashboardDataAPI(
+      start.toLocaleDateString("en-CA"),
+      end.toLocaleDateString("en-CA"),
+      marketplaceIds
+    );
+    if (data && !error) {
+      // Calculate total revenue
+      const totalRevenue: number = data?.data?.revenueMarketDetails.reduce(
+        (acc: number, curr: RevenueMarketDetail) => acc + curr.revenue,
+        0
       );
-      if (data && !error) {
-        // Calculate total revenue
-        const totalRevenue: number = data?.data?.revenueMarketDetails.reduce(
-          (acc: number, curr: RevenueMarketDetail) => acc + curr.revenue,
-          0
-        );
-        setMainData({ ...data?.data, totalRevenue });
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      setMainData({ ...data?.data, totalRevenue });
     }
   };
 

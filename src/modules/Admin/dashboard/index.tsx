@@ -184,20 +184,16 @@ const AdminDashboard = () => {
 
   // Function to handle the API call for /getAllData
   const fetchAllData = async (start: Date, end: Date) => {
-    try {
-      const marketplaceIds =
-        selectedMarketplaceOptions?.map((option) => option.value) || null;
+    const marketplaceIds =
+      selectedMarketplaceOptions?.map((option) => option.value) || null;
 
-      const { data, error } = await getDashboardRevenueDataApi(
-        start.toLocaleDateString("en-CA"),
-        end.toLocaleDateString("en-CA"),
-        marketplaceIds
-      );
-      if (data && !error) {
-        setMainData(data?.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    const { data, error } = await getDashboardRevenueDataApi(
+      start.toLocaleDateString("en-CA"),
+      end.toLocaleDateString("en-CA"),
+      marketplaceIds
+    );
+    if (data && !error) {
+      setMainData(data?.data);
     }
   };
 

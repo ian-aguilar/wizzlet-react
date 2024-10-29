@@ -36,7 +36,6 @@ const Profile = () => {
     resolver: yupResolver(profileValidationSchema),
     defaultValues: profileDefaultValue,
   });
-  console.log(errors, "==============");
 
   // ================= Custom hooks ====================
   const { getProfileDataAPI } = useFetchProfileDataAPI();

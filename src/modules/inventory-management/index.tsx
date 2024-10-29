@@ -313,8 +313,7 @@ const InventoryManagement = () => {
     setIsDeleteModel(false);
     if (checkboxes?.length) {
       const { error } = await deleteProductsAPI(checkboxes as number[]);
-      if (error) console.log(error);
-      else {
+      if (!error) {
         closeDeleteModel();
         setIsDeleteModel(false);
         await getProductsDetails(
