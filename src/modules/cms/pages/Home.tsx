@@ -14,11 +14,15 @@ import { RoutesPath } from "@/modules/Auth/types";
 
 // ** Services **
 import { usefetchHomeAPI } from "@/modules/Admin/Home/services/home.service";
+import { useSelector } from "react-redux";
+import { getAuth } from "@/redux/slices/authSlice";
 
 const CMSHome = () => {
   const [homeData, setHomeData] = useState<IForm>();
 
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useSelector(getAuth);
 
   const { getHomeAPI, isLoading } = usefetchHomeAPI();
   const getHomeData = async () => {
@@ -51,12 +55,14 @@ const CMSHome = () => {
                 <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
                   {homeData.topSection.description}
                 </p>
-                <Button
-                  showType={btnShowType.greenRound}
-                  onClickHandler={() => navigate(RoutesPath.SignUp)}
-                  btnName={homeData.topSection.greenButton}
-                  btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto  "
-                />
+                {!isAuthenticated && (
+                  <Button
+                    showType={btnShowType.greenRound}
+                    onClickHandler={() => navigate(RoutesPath.SignUp)}
+                    btnName={homeData.topSection.greenButton}
+                    btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto  "
+                  />
+                )}
               </div>
             </div>
           </section>
@@ -126,14 +132,16 @@ const CMSHome = () => {
                 <p className="  px-7 md:px-20 text-grayText text-xl font-normal pt-6 ">
                   {homeData.bottomSection.description}
                 </p>
-                <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
-                  <Button
-                    showType={btnShowType.greenRound}
-                    btnClass=" border-greenPrimary bg-greenPrimary text-white "
-                    btnName={homeData.bottomSection.greenButton}
-                    onClickHandler={() => navigate(RoutesPath.SignUp)}
-                  />
-                </div>
+                {!isAuthenticated && (
+                  <div className="flex flex-wrap sm:flex-nowrap gap-2 justify-center items-center pt-6 md:pt-12">
+                    <Button
+                      showType={btnShowType.greenRound}
+                      btnClass=" border-greenPrimary bg-greenPrimary text-white "
+                      btnName={homeData.bottomSection.greenButton}
+                      onClickHandler={() => navigate(RoutesPath.SignUp)}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </section>
