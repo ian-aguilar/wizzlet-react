@@ -67,7 +67,8 @@ const ImportProducts = () => {
   const [counter, setCounter] = useState(0);
   const { getImportedProductsApi, isLoading: isLoadProduct } =
     useGetImportedProductsApi();
-  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { getMarketplaceListingAPI, isLoading: marketLoading } =
+    useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
   const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
@@ -294,7 +295,7 @@ const ImportProducts = () => {
     }
   }, [counter, synced]);
 
-  if (isLoadProduct) {
+  if (isLoadProduct || marketLoading) {
     return (
       <div>
         <Loader />
@@ -506,6 +507,7 @@ const ImportProducts = () => {
                   return (
                     <ItemCard
                       item={item}
+                      marketplace = {selectedMarketplace}
                       isCheck={isCheck ? isCheck : []}
                       checkboxOnChange={handleProductCheckboxChange}
                       key={item.id}
