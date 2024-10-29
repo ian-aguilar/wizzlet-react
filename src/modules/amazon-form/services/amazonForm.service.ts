@@ -139,3 +139,13 @@ export const useCreateAmazonChildProductApi = () => {
 
   return { createAmazonChildProductApi, isLoading, isError, isSuccess };
 };
+
+export const useGetProductApi = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
+
+  const getProductApi = async (id: number | null | undefined) => {
+    return callApi(`/products/${id}`, {});
+  };
+
+  return { getProductApi, isLoading, isError, isSuccess };
+};
