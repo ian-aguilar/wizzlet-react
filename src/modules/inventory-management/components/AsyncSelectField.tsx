@@ -95,11 +95,13 @@ const AsyncSelectField = <TFormValues extends Record<string, unknown>>(
     <div
       className={`field__wrapper ${
         errors?.message ? "field__has__error" : ""
-      } ${disabled ? "disable" : ""} ${fromGroupClass}`}>
+      } ${disabled ? "disable cursor-not-allowed" : ""} ${fromGroupClass}`}
+    >
       <div
         className={`field__inner__wrapper ${icon ? "field__has__icon" : ""} ${
           isIconRight ? "icon__right" : ""
-        }`}>
+        }`}
+      >
         <ReactSelect
           name={name}
           value={value}

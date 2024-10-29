@@ -44,7 +44,7 @@ const UserMarketplace = () => {
 
   useEffect(() => {
     marketplaceListing();
-  }, [isDeleteModel,disconnectMarketplace]);
+  }, [isDeleteModel, disconnectMarketplace]);
 
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
@@ -89,9 +89,7 @@ const UserMarketplace = () => {
       const { error } = await disconnectMarketplaceAPI({
         marketId: disconnectMarketplace,
       });
-      if (error) {
-        console.log(error);
-      } else {
+      if (!error) {
         setIsDeleteModel(false);
         setDisconnectMarketplace(null);
       }

@@ -55,7 +55,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       });
 
       if (filteredFiles.length) {
-        // console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
         setValue(name, [...defaultValue, ...filteredFiles] as PathValue<
           T,

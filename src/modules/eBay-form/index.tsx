@@ -85,14 +85,12 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   };
 
   const handleCommonField = async () => {
-    try {
-      const { data } = await getAllFieldsApi(null);
+    const { data, error } = await getAllFieldsApi(null);
+    if (data && !error) {
       setPropertiesState((prevState) => ({
         ...prevState,
         nullCategory: data?.data?.nullCategoryProperties || [],
       }));
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -166,11 +164,8 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   } = useForm<any>({
     resolver: yupResolver(finalValidationSchema),
   });
-  console.log("🚀 ~ errors:", errors);
 
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
-    console.log("🚀 ~ onSubmit ~ payload:", payload);
-
     if (amazonVariantData?.length === 0) {
       payload.combinations = payload.combinations.map((item: any) => {
         delete item["amazonVariant"];

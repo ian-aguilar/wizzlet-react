@@ -46,7 +46,7 @@ const LabelView = () => {
       currentPage: page,
       itemPerPage: limit,
     });
-    console.log("data: ", data?.data);
+
     if (data && !error) {
       setLabelProduct(data?.data.products);
       setTotalItem(data?.data?.totalRecords);

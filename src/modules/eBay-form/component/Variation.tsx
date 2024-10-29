@@ -120,7 +120,6 @@ const Variation: React.FC<VariantImageProps> = ({
           (options: { value: string }) => options?.value?.length === 0
         )
       ) {
-        console.log("Please select options for all properties.");
         return;
       }
 
@@ -182,8 +181,6 @@ const Variation: React.FC<VariantImageProps> = ({
         quantity: 0,
         amazonVariant: [],
       });
-    } else {
-      console.log("No more combinations available to add.");
     }
   };
 
@@ -258,7 +255,8 @@ const Variation: React.FC<VariantImageProps> = ({
                 <button
                   type="button"
                   className="p-1 text-red-500"
-                  onClick={() => removeVariant(index)}>
+                  onClick={() => removeVariant(index)}
+                >
                   <DeleteIcon className="w-6 h-6 min-w-6 mt-4" />
                 </button>
               )}
@@ -294,7 +292,8 @@ const Variation: React.FC<VariantImageProps> = ({
           {combinationFields?.map((item: any, index) => (
             <div
               key={item.id}
-              className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md ">
+              className="flex items-start gap-4  py-3 px-5 border-l border-r border-b   rounded-b-md "
+            >
               <div className="min-w-[180px] mt-9 ">
                 {item?.combination
                   ?.map((e: { value: string }) => e.value)
@@ -329,7 +328,8 @@ const Variation: React.FC<VariantImageProps> = ({
               <button
                 type="button"
                 className="p-1 text-red-500"
-                onClick={() => removeCombination(index)}>
+                onClick={() => removeCombination(index)}
+              >
                 <DeleteIcon className="w-6 h-6 min-w-6 mt-8 " />
               </button>
               {amazonVariantData && amazonVariantData?.length > 0 ? (
@@ -398,7 +398,8 @@ const Variation: React.FC<VariantImageProps> = ({
                           imageIndex === index
                             ? "bg-greenPrimary text-white"
                             : "bg-gray-200"
-                        }`}>
+                        }`}
+                      >
                         {item.value}
                       </div>
                     </div>
