@@ -45,6 +45,7 @@ import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
 import VariantWarningModal from "./WarningModal";
+import { RootState } from "@/redux/store";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
   const { productId, onComplete } = props;
@@ -90,6 +91,11 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [warningIndex, setWarningIndex] = useState<number | null>(0);
+
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.sidebar.isSidebarOpen
+  );
+  console.log("🚀 ~ isSidebarOpen:", isSidebarOpen);
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
@@ -420,7 +426,14 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
         <Loader loaderClass="!absolute !h-full" />
       ) : null}
-      <div className="flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap !w-[calc(100vw_-_480px)]   scroll-design pr-6 ">
+      <div
+        className={
+          "flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap scroll-design pr-6" +
+          (isSidebarOpen
+            ? "!w-[calc(100vw_-_680px)]"
+            : "!w-[calc(100vw_-_480px)]")
+        }
+      >
         <span
           className={
             tab.type === ITab.Parent
