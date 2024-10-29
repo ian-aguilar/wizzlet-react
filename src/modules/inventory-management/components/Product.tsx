@@ -60,14 +60,15 @@ const Product = ({
     return <Loader />;
   } else {
     return (
-      <div className="grid grid-cols-12 items-start xl:gap-x-3 gap-y-3  h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_510px)]  overflow-y-auto scroll-design ">
+      <div className="grid grid-cols-12 items-start 2xl:gap-x-3 gap-y-3  h-[calc(100vh_-_620px)]  lg:h-[calc(100vh_-_510px)]  overflow-y-auto scroll-design ">
         {currentData?.length ? (
           <>
             {currentData?.map((item, index) => {
               return (
                 <div
                   key={index}
-                  className=" col-span-12 xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3">
+                  className=" col-span-12 2xl:col-span-6 InventorySelectBox bg-white p-3 flex items-center gap-3"
+                >
                   <div>
                     <Checkbox
                       isChecked={checkboxes?.includes(item.id)}
@@ -98,7 +99,8 @@ const Product = ({
                           onClick={() => {
                             setIsDeleteModel(true);
                             setDeleteProduct(item.id);
-                          }}>
+                          }}
+                        >
                           <DeleteIcon className="text-redAlert cursor-pointer" />
                         </div>
                       </div>
@@ -111,7 +113,8 @@ const Product = ({
                             return (
                               <div
                                 key={category?.id}
-                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 ">
+                                className="rounded-[5px] bg-greenPrimary/20 capitalize text-greenPrimary font-normal p-1 "
+                              >
                                 {category?.name}
                               </div>
                             );
@@ -120,12 +123,20 @@ const Product = ({
                       ) : null}
                       <div className="DescSpecifications flex flex-wrap gap-6 py-5">
                         <div>
-                          <span className="uppercase font-normal text-sm text-grayText">
-                            Price
-                          </span>
-                          <p className="text-blackPrimary font-medium ">
-                            {item?.price}
-                          </p>
+                          {item.type === "VARIANT" ? (
+                            <div className="bg-greenPrimary/10 text-greenPrimary align-middle text-s font-medium py-0.5 rounded-md px-1 ml-2 mt-2 ">
+                              Variant Product
+                            </div>
+                          ) : (
+                            <>
+                              <span className="uppercase font-normal text-sm text-grayText">
+                                Price
+                              </span>
+                              <p className="text-blackPrimary font-medium ">
+                                {item?.price}
+                              </p>
+                            </>
+                          )}
                         </div>
                         <div className="border-r border-dashed border-grayText/30">
                           &nbsp;
@@ -142,17 +153,22 @@ const Product = ({
                             })}
                           </p>
                         </div>
-                        <div className="border-r border-dashed border-grayText/30">
-                          &nbsp;
-                        </div>
-                        <div>
-                          <span className="uppercase font-normal text-sm text-grayText">
-                            QTY
-                          </span>
-                          <p className="text-blackPrimary font-medium ">
-                            {item?.quantity}
-                          </p>
-                        </div>
+                        {item.type === "VARIANT" ? null : (
+                          <>
+                            <div className="border-r border-dashed border-grayText/30">
+                              &nbsp;
+                            </div>
+                            <div>
+                              <span className="uppercase font-normal text-sm text-grayText">
+                                QTY
+                              </span>
+                              <p className="text-blackPrimary font-medium ">
+                                {item?.quantity}
+                              </p>
+                            </div>
+                          </>
+                        )}
+
                         <div className="border-r border-dashed border-grayText/30">
                           &nbsp;
                         </div>
@@ -170,7 +186,8 @@ const Product = ({
                           return (
                             <div
                               key={index}
-                              className=" rounded-md  border border-grayText/20 p-1">
+                              className=" rounded-md  border border-grayText/20 p-1"
+                            >
                               <img
                                 src={`${VITE_APP_API_URL}${marketsLogo?.logo}`}
                                 className="w-14 h-auto"

@@ -29,6 +29,7 @@ import { userSelector } from "@/redux/slices/userSlice";
 import { useSelector } from "react-redux";
 import { selectSocket } from "@/redux/slices/socketSlice";
 import Input from "@/components/form-fields/components/Input";
+import MultipleImageUpload from "@/components/form-fields/components/multipleFileField";
 import { ErrorModal } from "@/components/common/ErrorModal";
 
 export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
@@ -53,6 +54,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     watch,
     reset,
     handleSubmit,
+    setValue,
     formState: { errors },
     trigger,
     setError,
@@ -105,9 +107,26 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
     getProperties();
   }, [fieldDefaultValues, variationThemeField]);
 
+  const watchedImage = useWatch({
+    control,
+    name: "image",
+  });
+
   useEffect(() => {
     if (fields) {
       trigger().then(() => {
+        if (!watchedImage || watchedImage.length === 0) {
+          setError("image", {
+            type: "required",
+            message: "Image is required",
+          });
+        }
+        if (watchedImage.length > 10) {
+          setError("image", {
+            type: "required",
+            message: "Maximum 10 images are allowed to upload",
+          });
+        }
         if (!child_sku || child_sku.trim() === "") {
           setError("child_sku", {
             type: "required",
@@ -119,6 +138,20 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   }, [trigger, fields]);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
+    if (!watchedImage || watchedImage.length === 0) {
+      setError("image", {
+        type: "required",
+        message: "Image is required",
+      });
+      return;
+    }
+    if (watchedImage.length > 10) {
+      setError("image", {
+        type: "required",
+        message: "Only 10 Images is allowed to upload",
+      });
+      return;
+    }
     if (!child_sku || child_sku.trim() === "") {
       setError("child_sku", {
         type: "required",
@@ -127,6 +160,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       return;
     }
 
+    //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
     //transform payload structure as per amazon product api
@@ -135,6 +169,10 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
     //payload append into a formData
     const formData = new FormData();
+    payload?.image?.forEach((image: File, index: number) => {
+      formData.append(`image[${index}]`, image);
+    });
+
     appendFormData(formData, filterPayload);
 
     const { error: amazonFormError } = await amazonChildFormSubmitApi(
@@ -214,6 +252,11 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       if (childProduct.sku) {
         mergedData.child_sku = childProduct.sku;
       }
+      if (childProduct.amazonVariationImages?.length > 0) {
+        mergedData.image = childProduct.amazonVariationImages.map(
+          (item: any) => item.url
+        );
+      }
 
       if (editFinalData) {
         setTimeout(() => {
@@ -255,6 +298,23 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
           name={"child_sku"}
           errors={errors}
           type={"input"}
+        />
+      </div>
+      <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
+        Variation Image
+      </h2>
+      <div className="py-3 px-5 border-l border-r border-b rounded-b-md col-span-12 relative mb-4">
+        <MultipleImageUpload
+          name="image"
+          control={control}
+          setError={setError}
+          // clearErrors={clearErrors}
+          errors={errors}
+          maxSize={8}
+          allowedFormat={["image/png", "image/jpeg"]}
+          setValue={setValue}
+          watch={watch}
+          className=""
         />
       </div>
       {variationProperties && variationProperties.length > 0 && (

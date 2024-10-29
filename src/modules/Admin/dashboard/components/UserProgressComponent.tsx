@@ -21,7 +21,7 @@ const UserProgressComponent: React.FC<ProgressComponentProps> = ({
         <div className="max-w-[190px]">
           <CircularProgressbar
             value={percentage}
-            text={`${todaysUsers}`}
+            text={todaysUsers ? `${todaysUsers}` : "0"}
             styles={buildStyles({
               pathColor: "#09A17A",
               textColor: "#333",
