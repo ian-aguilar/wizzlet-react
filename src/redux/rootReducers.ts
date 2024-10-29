@@ -5,6 +5,7 @@ import { reducer as authReducer } from "./slices/authSlice";
 import toastReducer from "./slices/toastSlice";
 import { reducer as userReducer } from "./slices/userSlice";
 import { reducer as socketReducer } from "./slices/socketSlice"; // Import the socket reducer
+import { sidebarReducer } from "./slices/sidebarSlice";
 
 const persistConfig = {
   key: "Import Me",
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   toast: toastReducer,
   user: userReducer,
   socket: socketReducer,
+  sidebar: sidebarReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);
