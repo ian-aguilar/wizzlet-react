@@ -15,6 +15,7 @@ import {
   useAmazonFormHandleApi,
   useCreateAmazonProductApi,
   useGetAllAmazonPropertiesApi,
+  useGetProductApi,
 } from "../services/amazonForm.service";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
@@ -32,6 +33,7 @@ import { selectSocket } from "@/redux/slices/socketSlice";
 import { useSelector } from "react-redux";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
+import { Loader } from "@/components/common/Loader";
 
 export const AmazonNormalForm = (props: IAmazonForm) => {
   const { onComplete, productId } = props;
@@ -66,6 +68,10 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+  const { getProductApi } = useGetProductApi();
+
+  const [categoryChangeLoader, setCategoryChangeLoader] =
+    useState<boolean>(false);
 
   const getProperties = async (categoryData: {
     value: number;
@@ -86,8 +92,47 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     setProperties(newProperties);
     setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
-    const modifiedDefaultValues = {
-      ...defaultValues,
+
+    const { data: productData, error } = await getProductApi(+productId);
+    let modifiedDefaultValues = defaultValues;
+    if (data && !error) {
+      modifiedDefaultValues = {
+        ...modifiedDefaultValues,
+        item_name: [
+          {
+            value: productData?.data?.title,
+          },
+        ],
+        product_description: [
+          {
+            value: productData?.data?.description,
+          },
+        ],
+        purchasable_offer: [
+          {
+            ...modifiedDefaultValues["purchasable_offer"][0],
+            our_price: [
+              {
+                schedule: [
+                  {
+                    value_with_tax: productData?.data?.price,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        fulfillment_availability: [
+          {
+            ...modifiedDefaultValues["fulfillment_availability"][0],
+            quantity: productData?.data?.quantity,
+          },
+        ],
+      };
+    }
+
+    modifiedDefaultValues = {
+      ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
     reset(modifiedDefaultValues);
@@ -108,11 +153,13 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     }
   }, [fields]);
 
-  const handleGetCategoryWiseProperty = (event: {
+  const handleGetCategoryWiseProperty = async (event: {
     value: number;
     label: string;
   }) => {
-    getProperties(event);
+    setCategoryChangeLoader(true);
+    await getProperties(event);
+    setCategoryChangeLoader(false);
   };
 
   const handleAmazonEditApiResponse = async () => {
@@ -151,7 +198,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
       })
       .then(async ({ propertiesData, editApiResponse }) => {
         if (editApiResponse?.productData) {
-          const editFinalData = await mapDataWithReference(
+          const editFinalData = mapDataWithReference(
             editApiResponse?.productData,
             propertiesData?.propertyData
           );
@@ -160,46 +207,6 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             editFinalData,
             propertiesData?.defaultValue
           );
-
-          if (editApiResponse?.product) {
-            mergedData = {
-              ...mergedData,
-              item_name: [
-                {
-                  value: editApiResponse?.product?.title,
-                },
-              ],
-              product_description: [
-                {
-                  value: editApiResponse?.product?.description,
-                },
-              ],
-              purchasable_offer: [
-                {
-                  ...mergedData["purchasable_offer"][0],
-                  our_price: [
-                    {
-                      schedule: [
-                        {
-                          value_with_tax: [
-                            {
-                              value: editApiResponse?.product?.price,
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-              fulfillment_availability: [
-                {
-                  ...mergedData["fulfillment_availability"][0],
-                  quantity: editApiResponse?.product?.quantity,
-                },
-              ],
-            };
-          }
 
           if (editFinalData) {
             setTimeout(() => {
@@ -269,6 +276,9 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
+      {categoryLoading || categoryChangeLoader ? (
+        <Loader loaderClass="!absolute !h-full" />
+      ) : null}
       <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
         <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
           Choose Product Category
