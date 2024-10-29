@@ -564,18 +564,10 @@ const parseProperties = (
 
             const isObject = getValue(data, tempPath);
 
-            if (isObject) {
-              // array2.push(
-              //   ...[
-              //     {
-              //       success: false,
-              //       path: [...path, key],
-              //     },
-              //   ]
-              // );
+            if (isObject !== null && isObject !== undefined) {
               const enumValues = value["enum"].map((e: any) => e.toString());
 
-              if (enumValues.includes(isObject)) {
+              if (enumValues.includes(isObject.toString())) {
                 array2.push({
                   success: true,
                   path: [...path, key],
