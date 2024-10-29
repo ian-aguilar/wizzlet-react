@@ -14,12 +14,14 @@ import { useEffect, useRef, useState } from "react";
 import ModalNav from "@/modules/cms/common/ModalNav";
 import Notifications from "../notification";
 import useSocket from "@/socket/connection";
+import { sidebarList } from "../sidebar/types";
 
 const Header = ({ type }: { type: string }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector(userSelector);
   const auth = useSelector(getAuth);
+  const { isAuthenticated } = useSelector(getAuth);
 
   const socket = useSocket(auth.token);
 
@@ -104,6 +106,7 @@ const Header = ({ type }: { type: string }) => {
                 src={MainLogo}
                 alt="Logo"
                 className="py-1 sm:min-w-[170px] sm:w-[170px] min-w-[120px] w-[120px]"
+                onClick={() => navigate(RoutesPath.CMSHome)}
               />
             </Link>
           </div>
@@ -210,23 +213,37 @@ const Header = ({ type }: { type: string }) => {
                   Contact Us
                 </Link>
               </nav>
-              <div className=" hidden lg:flex ">
-                <Link
-                  to={RoutesPath.Login}
-                  className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
-                >
-                  Log In
-                </Link>
-                <Button
-                  showType={btnShowType.primary}
-                  btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
-                  btnName="Get Started"
-                  btnEndIcon={<RightArrowWhite />}
-                  onClickHandler={() => {
-                    navigate(RoutesPath.SignUp);
-                  }}
-                />
-              </div>
+              {!isAuthenticated ? (
+                <div className=" hidden lg:flex ">
+                  <Link
+                    to={RoutesPath.Login}
+                    className="px-5 py-3 hover:text-greenPrimary transition-all duration-300 hover:transition-all hover:duration-300 text-xl "
+                  >
+                    Log In
+                  </Link>
+                  <Button
+                    showType={btnShowType.primary}
+                    btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
+                    btnName="Get Started"
+                    btnEndIcon={<RightArrowWhite />}
+                    onClickHandler={() => {
+                      navigate(RoutesPath.SignUp);
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className=" hidden lg:flex ">
+                  <Button
+                    showType={btnShowType.primary}
+                    btnClass="!border-greenPrimary !bg-greenPrimary !text-white  "
+                    btnName="Go to Dashboard"
+                    btnEndIcon={<RightArrowWhite />}
+                    onClickHandler={() => {
+                      navigate(sidebarList.dashboard);
+                    }}
+                  />
+                </div>
+              )}
               <div
                 className="HamburgerIcon  lg:hidden block"
                 onClick={() => setIsSidebar(true)}
