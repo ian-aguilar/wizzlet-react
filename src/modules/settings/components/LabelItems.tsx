@@ -16,6 +16,7 @@ import { ILabelViewProps } from "../types/label";
 import { useProductsDeleteAPI } from "@/modules/inventory-management/services";
 import { useState } from "react";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import DummyImage from "/images/dummyImage.png";
 
 const LabelItems = ({
   currentData,
@@ -72,7 +73,12 @@ const LabelItems = ({
                           alt=""
                         />
                       </div>
-                    ) : null}
+                    ) : (
+                      <img
+                        src={DummyImage}
+                        className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
+                      />
+                    )}
                     <div className="relative w-full">
                       <div className="absolute right-1 top-1 flex gap-2 ">
                         <div onClick={() => handleEditProduct(item?.id)}>
@@ -182,7 +188,7 @@ const LabelItems = ({
                   isLoading={deleteLoading}
                   onSave={handleRemove}
                   heading="Are you sure?"
-                  subText="This will delete product data from this platform only."
+                  subText="This will delete product data from every platform."
                 />
               )}
             </div>
