@@ -825,7 +825,7 @@ const InventoryManagement = () => {
                   isLoading={deleteProductLoading}
                   onSave={handleRemove}
                   heading="Are you sure?"
-                  subText="This will delete all selected product data from this platform only."
+                  subText="This will delete all selected products data from every platform."
                 />
               )}
             </div>

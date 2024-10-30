@@ -6,6 +6,7 @@ import { DeleteIcon, EditLabelIcon } from "@/assets/Svg";
 import Checkbox from "@/components/form-fields/components/Checkbox";
 import { Loader } from "@/components/common/Loader";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import DummyImage from "/images/dummyImage.png";
 
 // ** Config **
 import { VITE_APP_API_URL } from "@/config";
@@ -86,7 +87,12 @@ const Product = ({
                           className="max-w-[170px] min-w-[170px]  max-h-[132px] object-contain "
                           alt=""
                         />
-                      ) : null}
+                      ) : (
+                        <img
+                          src={DummyImage}
+                          className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
+                        />
+                      )}
                     </div>
 
                     <div className="relative w-full">
@@ -210,7 +216,7 @@ const Product = ({
                   isLoading={deleteLoading}
                   onSave={handleRemove}
                   heading="Are you sure?"
-                  subText="This will delete product data from this platform only."
+                  subText="This will delete product data from every platform."
                 />
               )}
             </div>

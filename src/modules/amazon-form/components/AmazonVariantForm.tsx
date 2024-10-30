@@ -435,7 +435,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       ) : null}
       <div
         className={
-          "flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap scroll-design pr-6" +
+          "flex items-center gap-1  border-b border-greenPrimary bg-white pt-2 px-4 overflow-x-auto whitespace-nowrap scroll-design pr-6 " +
           (isSidebarOpen
             ? "!w-[calc(100vw_-_680px)]"
             : "!w-[calc(100vw_-_480px)]")
@@ -444,8 +444,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
         <span
           className={
             tab.type === ITab.Parent
-              ? "cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary"
-              : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+              ? "cursor-pointer px-4 py-2 rounded-t-md bg-greenPrimary  text-white"
+              : "cursor-pointer text-greenPrimary  px-4 py-2  hover: rounded-t-md hover:bg-greenPrimary  hover:text-white"
           }
           onClick={() => {
             if (tab.index !== null) {
@@ -463,8 +463,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               <span
                 className={
                   tab.type === ITab.Variation && tab.index === index
-                    ? "cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary"
-                    : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+                    ? "cursor-pointer px-4 py-2 rounded-t-md bg-greenPrimary  text-white"
+                    : "cursor-pointer text-greenPrimary  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 }
                 onClick={() => {
                   if (index !== tab.index) {
@@ -481,7 +481,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             );
           })}
         <span
-          className="cursor-pointer text-white  px-4 py-2 hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+          className="cursor-pointer text-greenPrimary  px-4 py-2 hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
           onClick={() => {
             addChildProperties();
           }}
