@@ -45,8 +45,7 @@ const Product = ({
     setIsDeleteModel(false);
     if (deleteProduct) {
       const { error } = await deleteProductsAPI([Number(deleteProduct)]);
-      if (error) console.log(error);
-      else {
+      if (!error) {
         closeDeleteModel();
         setIsDeleteModel(false);
         await onChangeData();

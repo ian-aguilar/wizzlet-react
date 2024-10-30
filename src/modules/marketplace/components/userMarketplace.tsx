@@ -91,9 +91,7 @@ const UserMarketplace = () => {
       const { error } = await disconnectMarketplaceAPI({
         marketId: disconnectMarketplace,
       });
-      if (error) {
-        console.log(error);
-      } else {
+      if (!error) {
         setIsDeleteModel(false);
         setDisconnectMarketplace(null);
       }

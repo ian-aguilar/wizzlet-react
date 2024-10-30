@@ -108,9 +108,7 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
       marketplace: selectedMarketplaces,
       productId: productId,
     });
-    if (!data && error) {
-      console.log("Error: ", error);
-    } else {
+    if (data && !error) {
       setCompletedStep((prev: number[]) =>
         prev.includes(3) ? prev : [...prev, 3]
       );
@@ -186,7 +184,8 @@ const ChooseMarketplace: React.FC<ProductBasicFormProps> = ({
               return (
                 <div
                   key={item.id}
-                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center">
+                  className="col-span-4 p-4 bg-grayLightBody/10   border border-greyBorder rounded-md text-center"
+                >
                   <img
                     src={VITE_APP_API_URL + item.logo}
                     className="max-w-[77px] h-[23px] object-contain mx-auto"

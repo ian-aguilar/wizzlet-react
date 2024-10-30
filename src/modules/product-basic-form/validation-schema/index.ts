@@ -12,14 +12,12 @@ export const productBasisFormValidationSchema = yup.object().shape({
     .typeError("Product Type is required")
     .required("Product Type is required"),
   image: yup.mixed().required("Image is required"),
-  tagOptions: yup
-    .array()
-    .of(
-      yup.object().shape({
-        value: yup.string().trim().required(),
-        label: yup.string().trim().required(),
-      })
-    ),
+  tagOptions: yup.array().of(
+    yup.object().shape({
+      value: yup.string().trim().required(),
+      label: yup.string().trim().required(),
+    })
+  ),
   sku: yup
     .string()
     .trim()
@@ -31,20 +29,17 @@ export const productBasisFormValidationSchema = yup.object().shape({
     }),
   quantity: yup
     .number()
-    .min(0)
+
     .when("productType", {
       is: (productType: { label: string; value: string }) =>
         productType?.value === "NORMAL",
-      then: (schema) => schema.required("Quantity is required"),
+      then: (schema) => schema.required("Quantity is required").min(0),
       otherwise: (schema) => schema.notRequired(),
     }),
-  price: yup
-    .number()
-    .min(1)
-    .when("productType", {
-      is: (productType: { label: string; value: string }) =>
-        productType?.value === "NORMAL",
-      then: (schema) => schema.required("Price is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+  price: yup.number().when("productType", {
+    is: (productType: { label: string; value: string }) =>
+      productType?.value === "NORMAL",
+    then: (schema) => schema.required("Price is required").min(1),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
