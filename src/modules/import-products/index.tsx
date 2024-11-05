@@ -350,6 +350,7 @@ const ImportProducts = () => {
                 placeholder="Select Marketplace"
                 options={marketplaces}
                 onChange={(result: IOption) => {
+                  setCurrentPage(1);
                   setSelectedMarketplace(result as IOption);
                   setIsCheck([]);
                 }}

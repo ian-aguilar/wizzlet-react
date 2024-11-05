@@ -181,6 +181,9 @@ const InventoryManagement = () => {
       productStatus,
       itemPerPage.value,
       category,
+      productTag,
+      productType,
+      filterDate
     ]
   );
 
@@ -524,17 +527,17 @@ const InventoryManagement = () => {
                         }
                         if (e) {
                           setProductTag(e);
-                          getProductsDetails(
-                            searchTerm,
-                            selectedMarketplace,
-                            productStatus,
-                            1,
-                            Number(itemPerPage.value),
-                            category,
-                            filterDate,
-                            productType,
-                            productTag
-                          );
+                          // getProductsDetails(
+                          //   searchTerm,
+                          //   selectedMarketplace,
+                          //   productStatus,
+                          //   1,
+                          //   Number(itemPerPage.value),
+                          //   category,
+                          //   filterDate,
+                          //   productType,
+                          //   productTag
+                          // );
                         }
                       }}
                       isLoading={productTagLoading}
@@ -689,17 +692,17 @@ const InventoryManagement = () => {
                     }
                     if (e) {
                       setCategory(() => [...e]);
-                      getProductsDetails(
-                        searchTerm,
-                        selectedMarketplace,
-                        productStatus,
-                        1,
-                        Number(itemPerPage.value),
-                        category,
-                        filterDate,
-                        productType,
-                        productTag
-                      );
+                      // getProductsDetails(
+                      //   searchTerm,
+                      //   selectedMarketplace,
+                      //   productStatus,
+                      //   1,
+                      //   Number(itemPerPage.value),
+                      //   category,
+                      //   filterDate,
+                      //   productType,
+                      //   productTag
+                      // );
                     }
                   }}
                   isLoading={categoryLoading}

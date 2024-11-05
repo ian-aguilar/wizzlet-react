@@ -43,6 +43,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const [category, setCategory] = useState<Option | null>(null);
   const [validationItems, setValidationItems] = useState<IValidationItem>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [price, setPrice] = useState<number>();
 
   const {
     control,
@@ -83,12 +84,20 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     }
     const { data } = await getAllAmazonPropertiesApi(categoryData?.value);
     setCategory(categoryData);
-    const newProperties = filterAmazonProperties(data?.data?.properties, [
+    let newProperties = filterAmazonProperties(data?.data?.properties, [
       ...DefaultProperties,
       ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
       ["item_name"],
       ["product_description"],
       ["fulfillment_availability", "quantity"],
+    ]);
+    newProperties = filterAmazonProperties(newProperties, [
+      [
+        "purchasable_offer",
+        "maximum_retail_price",
+        "schedule",
+        "value_with_tax",
+      ],
     ]);
     setProperties(newProperties);
     setValidationItems(data?.data?.validationItems);
@@ -130,12 +139,17 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
           },
         ],
       };
+
+      setPrice(productData?.data?.price);
     }
 
     modifiedDefaultValues = {
       ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
+
+    delete modifiedDefaultValues["purchasable_offer"][0].maximum_retail_price;
+
     reset(modifiedDefaultValues);
     return {
       propertyData: data?.data?.properties,
@@ -209,6 +223,8 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             propertiesData?.defaultValue
           );
 
+          delete mergedData["purchasable_offer"][0].maximum_retail_price;
+
           if (editFinalData) {
             setTimeout(() => {
               setIsEdit(true);
@@ -226,7 +242,25 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
     //transform payload structure as per amazon product api
 
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    let filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    filterPayload = {
+      ...filterPayload,
+      purchasable_offer: [
+        {
+          ...filterPayload["purchasable_offer"][0],
+          maximum_retail_price: [
+            {
+              schedule: [
+                {
+                  value_with_tax: price,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
     //payload append into a formData
     const formData = new FormData();
     appendFormData(formData, filterPayload);
