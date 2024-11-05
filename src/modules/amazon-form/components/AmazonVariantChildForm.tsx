@@ -14,6 +14,7 @@ import {
   amazonTransformData,
   appendFormData,
   cleanPayload,
+  filterAmazonProperties,
   mapDataWithReference,
   mergeDefaults,
 } from "../helper";
@@ -69,8 +70,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
 
   const fields = useWatch({ control });
   const child_sku = watch("child_sku");
+  const price = watch(
+    "purchasable_offer[0].our_price[0].schedule[0].value_with_tax"
+  );
 
   const [isDeleteModal, setIsDeleteModal] = useState<boolean>(false);
+  const [childProperties, setChildProperties] = useState<any[]>();
 
   const { amazonChildFormSubmitApi, isLoading: saveAmazonLoading } =
     useAmazonChildFormHandleApi();
@@ -98,6 +103,8 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
         undefined;
     }
 
+    delete fieldDefaultValues["purchasable_offer"][0].maximum_retail_price;
+
     reset(fieldDefaultValues);
 
     return fieldDefaultValues;
@@ -115,13 +122,13 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   useEffect(() => {
     if (fields) {
       trigger().then(() => {
-        if (!watchedImage || watchedImage.length === 0) {
+        if (!watchedImage || watchedImage?.length === 0) {
           setError("image", {
             type: "required",
             message: "Image is required",
           });
         }
-        if (watchedImage.length > 10) {
+        if (watchedImage?.length > 10) {
           setError("image", {
             type: "required",
             message: "Maximum 10 images are allowed to upload",
@@ -133,19 +140,36 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
             message: "Child SKU is required",
           });
         }
+        if (!price) {
+          setError(
+            "purchasable_offer[0].our_price[0].schedule[0].value_with_tax",
+            {
+              type: "required",
+              message: "value is required",
+            }
+          );
+        } else if (price < 0) {
+          setError(
+            "purchasable_offer[0].our_price[0].schedule[0].value_with_tax",
+            {
+              type: "required",
+              message: "value is invalid",
+            }
+          );
+        }
       });
     }
   }, [trigger, fields]);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
-    if (!watchedImage || watchedImage.length === 0) {
+    if (!watchedImage || watchedImage?.length === 0) {
       setError("image", {
         type: "required",
         message: "Image is required",
       });
       return;
     }
-    if (watchedImage.length > 10) {
+    if (watchedImage?.length > 10) {
       setError("image", {
         type: "required",
         message: "Only 10 Images is allowed to upload",
@@ -159,13 +183,45 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
       });
       return;
     }
+    if (!price) {
+      setError("purchasable_offer[0].our_price[0].schedule[0].value_with_tax", {
+        type: "required",
+        message: "value is required",
+      });
+      return;
+    } else if (price < 0) {
+      setError("purchasable_offer[0].our_price[0].schedule[0].value_with_tax", {
+        type: "required",
+        message: "value is invalid",
+      });
+      return;
+    }
 
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
     //transform payload structure as per amazon product api
 
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    let filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    filterPayload = {
+      ...filterPayload,
+      purchasable_offer: [
+        {
+          ...filterPayload["purchasable_offer"][0],
+          maximum_retail_price: [
+            {
+              schedule: [
+                {
+                  value_with_tax:
+                    filterPayload["purchasable_offer"][0].our_price[0]
+                      .schedule[0].value_with_tax,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
 
     //payload append into a formData
     const formData = new FormData();
@@ -257,6 +313,7 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
           (item: any) => item.url
         );
       }
+      delete mergedData["purchasable_offer"][0].maximum_retail_price;
 
       if (editFinalData) {
         setTimeout(() => {
@@ -269,6 +326,19 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
   useEffect(() => {
     setChildProduct();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const newChildProperties = filterAmazonProperties(variationProperties, [
+      [
+        "purchasable_offer",
+        "maximum_retail_price",
+        "schedule",
+        "value_with_tax",
+      ],
+    ]);
+
+    setChildProperties(newChildProperties);
   }, []);
 
   const deleteVariantHandler = async () => {
@@ -317,12 +387,12 @@ export const AmazonVariantChildForm = (props: IAmazonVariantChildProps) => {
           className=""
         />
       </div>
-      {variationProperties && variationProperties.length > 0 && (
+      {childProperties && childProperties.length > 0 && (
         <div>
           <FormBuilder
             control={control}
             errors={errors}
-            fields={variationProperties as any}
+            fields={childProperties as any}
             watch={watch as any}
           />
 

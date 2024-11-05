@@ -180,6 +180,7 @@ const checkIf = (
         properties,
         path
       );
+
       tempArray.push(...(temp || []));
     }
   }
@@ -392,6 +393,7 @@ const parseProperties = (
       } else {
         const array2: ResType[] = [];
         Object.entries(amazonJson).map(([key, value]: any) => {
+          const tempArray: ResType[] = [];
           if (value["items"]) {
             const temp: ResType[] =
               parseProperties(
@@ -401,7 +403,7 @@ const parseProperties = (
                 properties,
                 [...path, key]
               )?.filter(Boolean) || [];
-            array2.push(...temp);
+            tempArray.push(...temp);
             // const tempValue = getValue(data, [...path, key]);
 
             // if (tempValue !== null && Array.isArray(tempValue)) {
@@ -461,7 +463,7 @@ const parseProperties = (
                   [...path, `${key}`]
                 )?.filter(Boolean) || [];
 
-              array2.push(...temp1);
+              tempArray.push(...temp1);
             }
             if (value["properties"]) {
               const temp1 =
@@ -473,7 +475,7 @@ const parseProperties = (
                   [...path, `${key}`]
                 )?.filter(Boolean) || [];
 
-              array2.push(...temp1);
+              tempArray.push(...temp1);
             }
           }
 
@@ -490,7 +492,7 @@ const parseProperties = (
                   [...path, key]
                 )?.filter(Boolean) || [];
 
-              array2.push(...temp2);
+              tempArray.push(...temp2);
             } else if (typeof tempValue === "object") {
               if (value["contains"]?.properties) {
                 temp2 =
@@ -501,7 +503,7 @@ const parseProperties = (
                     properties,
                     [...path, key]
                   )?.filter(Boolean) || [];
-                array2.push(...temp2);
+                tempArray.push(...temp2);
               }
               if (value["contains"]?.required) {
                 const temp2 =
@@ -513,7 +515,7 @@ const parseProperties = (
                     [...path, key]
                   )?.filter(Boolean) || [];
 
-                array2.push(...temp2);
+                tempArray.push(...temp2);
               }
             }
           }
@@ -522,16 +524,16 @@ const parseProperties = (
             const tempValue = getValue(data, [...path, key]);
             if (Array.isArray(tempValue)) {
               if (tempValue.length < minValue) {
-                array2.push({
+                tempArray.push({
                   success: false,
                   path: [...path, key],
                   message: `${key} should have minimum ${minValue} items`,
                 });
               } else {
-                array2.push({ success: true, path: [...path, key] });
+                tempArray.push({ success: true, path: [...path, key] });
               }
             } else {
-              array2.push({
+              tempArray.push({
                 success: false,
                 path: [...path, key],
                 message: `${key} should be an array`,
@@ -543,16 +545,16 @@ const parseProperties = (
             const tempValue = getValue(data, [...path, key]);
             if (Array.isArray(tempValue)) {
               if (tempValue.length > maxValue) {
-                array2.push({
+                tempArray.push({
                   success: false,
                   path: [...path, key],
                   message: `${key} should have maximum ${maxValue} items`,
                 });
               } else {
-                array2.push(...[{ success: true, path: [...path, key] }]);
+                tempArray.push(...[{ success: true, path: [...path, key] }]);
               }
             } else {
-              array2.push({
+              tempArray.push({
                 success: false,
                 path: [...path, key],
                 message: `${key} should be an array`,
@@ -568,13 +570,13 @@ const parseProperties = (
               const enumValues = value["enum"].map((e: any) => e.toString());
 
               if (enumValues.includes(isObject.toString())) {
-                array2.push({
+                tempArray.push({
                   success: true,
                   path: [...path, key],
                   isVariation: tempPath.includes("variation_theme[0]"),
                 });
               } else {
-                array2.push({
+                tempArray.push({
                   success: false,
                   path: [...path, key],
                   message:
@@ -594,26 +596,66 @@ const parseProperties = (
                 properties,
                 [...path, `${key}`]
               )?.filter(Boolean) || [];
-            const tempArray = temp1?.some((e) => e?.success);
-            if (tempArray) {
-              array2.push(...[{ success: true, path: [] }]);
-            } else {
-              array2.push(...[{ success: false, path: [] }]);
-            }
+
+            const tempArray2 = temp1?.some((e) => e?.success);
+
+            tempArray.push(
+              ...(temp1?.map((item) => {
+                return {
+                  success: Boolean(tempArray2),
+                  path: item.path,
+                  message: item.message,
+                };
+              }) || [])
+            );
+            // if (tempArray2) {
+            //   tempArray.push(...[{ success: true, path: [] }]);
+            // } else {
+            //   tempArray.push(...[{ success: false, path: [] }]);
+            // }
           }
           if (value["if"]) {
             const temp = checkIf(value, data, properties, path);
             if (temp?.length > 0) {
-              array2.push(...temp);
+              tempArray.push(...temp);
             } else {
-              array2.push(
-                ...findProperties(path, data, properties).filter(
-                  (e) => !e.success
-                )
-              );
+              tempArray.push({ success: true, path: [...path, key] });
             }
+            //  else {
+            //   tempArray.push(
+            //     ...findProperties(path, data, properties).filter(
+            //       (e) => !e.success
+            //     )
+            //   );
+            // }
+          }
+
+          const tempValue = tempArray.every((e) => e?.success);
+          if (tempValue) {
+            array2.push(
+              ...(tempArray.map((item) => {
+                return {
+                  success: true,
+                  path: item.path,
+                  message: item.message,
+                  isVariation: item.isVariation,
+                };
+              }) || [])
+            );
+          } else {
+            array2.push(
+              ...(tempArray.map((item) => {
+                return {
+                  success: false,
+                  path: item.path,
+                  message: item.message,
+                  isVariation: item.isVariation,
+                };
+              }) || [])
+            );
           }
         });
+
         return array2;
       }
 
@@ -935,6 +977,7 @@ const parseProperties = (
               )?.filter(Boolean) || []
             );
           });
+
           array5.push(...temp1);
         }
         if (amazonJson["allOf"]) {
@@ -1003,6 +1046,28 @@ const parseProperties = (
             ]);
           });
           array5.push(...temp1);
+        }
+        if (amazonJson["not"]) {
+          const temp1 = tempValueForItems.flatMap((_: any, index: number) => {
+            return (
+              parseProperties(
+                validationEnum.Not,
+                amazonJson["not"],
+                data,
+                properties,
+                [...tempPath, `${lastEle}[${index}]`]
+              )?.filter(Boolean) || []
+            );
+          });
+
+          const newTemp = temp1?.map((e) => {
+            return {
+              ...e,
+              message: "You're not allowed to enter this value",
+            };
+          });
+
+          array5.push(...(newTemp || []));
         }
       }
       return array5;
