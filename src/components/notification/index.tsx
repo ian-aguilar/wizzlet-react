@@ -29,6 +29,7 @@ const Notifications = () => {
 
   // Fetch additional notifications
   const fetchMoreNotifications = async () => {
+    setHasMore(true)
     const { data, error } = await getNotificationAPI({
       page,
       notificationType,
@@ -128,15 +129,15 @@ const Notifications = () => {
         </span>
       </div>
 
-      <div className="TabContent py-5 px-4 max-h-[50vh] overflow-y-auto scroll-design">
+      <div className="TabContent py-5 px-4  overflow-y-auto scroll-design">
         {notifications && notifications.length > 0 ? (
           <InfiniteScroll
-            className="max-h-[50vh] h-[397px]; scroll-design"
+            className="scroll-design"
             dataLength={notifications ? Number(notifications?.length) : 0}
             next={fetchMoreNotifications}
             hasMore={hasMore}
             loader={<p className=""> Loading... </p>}
-            height={400}
+            height={250}
             endMessage={<p className="text-center">No more notifications</p>} // Message when no more data
           >
             {groupedNotifications && groupedNotifications.length > 0 ? (
