@@ -26,6 +26,7 @@ import { AddIconBtn, InfoIcon, SearchIcon } from "@/assets/Svg";
 import { ErrorModal } from "@/components/common/ErrorModal";
 import { BaseModal } from "@/components/common/baseModal";
 import { DataNotFound } from "@/components/svgIcons";
+import { Loader } from "@/components/common/Loader";
 
 const LabelManager = () => {
   //================= States =======================
@@ -124,7 +125,11 @@ const LabelManager = () => {
             className="dataTable"
             columns={columns}
             progressPending={listingLoader}
-            progressComponent={<div>Loading</div>}
+            progressComponent={
+              <div>
+                <Loader />
+              </div>
+            }
             noDataComponent={<DataNotFound className="!h-[50vh]" />}
             {...TableProps}
           />
