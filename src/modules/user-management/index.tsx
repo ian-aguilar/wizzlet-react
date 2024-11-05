@@ -24,6 +24,8 @@ import WarningModal from "@/modules/user-management/components/warningModal";
 import InviteModal from "./components/inviteModal";
 import { AddIconBtn, SearchIcon } from "@/assets/Svg";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import { Loader } from "@/components/common/Loader";
+import { DataNotFound } from "@/components/svgIcons";
 
 const UserManagement = () => {
   //================= States =======================
@@ -141,8 +143,16 @@ const UserManagement = () => {
               className="dataTable"
               columns={userHeaders}
               progressPending={isLoading}
-              progressComponent={<div>Loading</div>}
-              noDataComponent={<>There are no records to display!!!!</>}
+              progressComponent={
+                <div>
+                  <Loader />
+                </div>
+              }
+              noDataComponent={
+                <>
+                  <DataNotFound />
+                </>
+              }
               {...TableProps}
             />
           </div>

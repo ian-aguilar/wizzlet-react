@@ -12,6 +12,8 @@ import { SearchIcon } from "@/assets/Svg";
 import { TableFetchParams, TableFetchResult } from "@/components/common/types/table";
 import { IContactUsListing } from "./types";
 import { ErrorModal } from "@/components/common/ErrorModal";
+import { Loader } from "@/components/common/Loader";
+import { DataNotFound } from "@/components/svgIcons";
 
 const ContactusManagement = () => {
   const [itemForDelete, setItemForDelete] = useState<number | null>(null);
@@ -86,8 +88,16 @@ const ContactusManagement = () => {
               className="dataTable"
               columns={contactusHeader}
               progressPending={isLoading}
-              progressComponent={<div>Loading</div>}
-              noDataComponent={<>There are no records to display!!!!</>}
+              progressComponent={
+                <div>
+                  <Loader />
+                </div>
+              }
+              noDataComponent={
+                <>
+                  <DataNotFound />
+                </>
+              }
               {...TableProps}
             />
           </div>
