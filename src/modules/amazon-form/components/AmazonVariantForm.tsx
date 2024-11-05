@@ -131,6 +131,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
     const newParentProperties = filterAmazonProperties(newProperties, [
       ...DefaultChildProperties,
+      [
+        "purchasable_offer",
+        "maximum_retail_price",
+        "schedule",
+        "value_with_tax",
+      ],
       ["item_name"],
       ["product_description"],
     ]);
@@ -184,6 +190,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
+
+    delete modifiedDefaultValues["purchasable_offer"][0].maximum_retail_price;
 
     setFieldDefaultValues(modifiedDefaultValues);
 
@@ -299,6 +307,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             mergedData.parent_sku = editApiResponse?.parent_sku;
           }
 
+          delete mergedData["purchasable_offer"][0].maximum_retail_price;
+
           if (editFinalData) {
             setTimeout(() => {
               setIsSaved(true);
@@ -355,8 +365,27 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
     //transform payload structure as per amazon product api
 
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    let filterPayload = await amazonTransformData(removeNullValueFromPayload);
     filterPayload.product_type = "parent";
+    filterPayload = {
+      ...filterPayload,
+      purchasable_offer: [
+        {
+          ...filterPayload["purchasable_offer"][0],
+          maximum_retail_price: [
+            {
+              schedule: [
+                {
+                  value_with_tax:
+                    filterPayload["purchasable_offer"][0].our_price[0]
+                      .schedule[0].value_with_tax,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
 
     //payload append into a formData
     const formData = new FormData();
