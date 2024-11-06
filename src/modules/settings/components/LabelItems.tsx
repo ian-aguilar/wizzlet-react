@@ -65,10 +65,14 @@ const LabelItems = ({
                 >
                   <div className="IBox flex gap-6 w-full ">
                     {item?.images !== undefined || null ? (
-                      <div className="prodImg">
+                      <div className="prodImg w-[170px]">
                         <img
-                          src={`${VITE_APP_API_URL}${item?.images}`}
-                          className="max-w-[170px] max-h-[132px] "
+                          src={
+                            item?.images?.indexOf("http") !== -1
+                              ? `${item?.images}`
+                              : `${VITE_APP_API_URL}${item?.images}`
+                          }
+                          className="max-w-[170px] min-w-[170px]  max-h-[132px] object-contain "
                           alt=""
                         />
                       </div>
