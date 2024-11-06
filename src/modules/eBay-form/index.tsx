@@ -171,13 +171,12 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
   const onSubmit = async (type: "Save" | "SaveInEbay", payload: any) => {
     console.log("🚀 ~ onSubmit ~ payload:", payload);
 
-    if (amazonVariantData?.length === 0) {
-      payload.combinations = payload.combinations.map((item: any) => {
+    if (amazonVariantData?.length === 0 && productType === "VARIANT") {
+      payload.combinations = payload?.combinations?.map((item: any) => {
         delete item["amazonVariant"];
         return item;
       });
     }
-
     if (categoriesId == 0) {
       setErrorShow(true);
       return;
@@ -191,7 +190,7 @@ const EbayForm: React.FC<ProductBasicFormSingleProps> = ({
       formData.append(
         "combinations",
         JSON.stringify(
-          payload.combinations.map(({ images, ...rest }: any) => ({
+          payload.combinations?.map(({ images, ...rest }: any) => ({
             ...rest,
             images: images?.map((image: any) => image.name),
           }))
