@@ -25,6 +25,8 @@ import {
 import { AddIconBtn, InfoIcon, SearchIcon } from "@/assets/Svg";
 import { ErrorModal } from "@/components/common/ErrorModal";
 import { BaseModal } from "@/components/common/baseModal";
+import { DataNotFound } from "@/components/svgIcons";
+import { Loader } from "@/components/common/Loader";
 
 const LabelManager = () => {
   //================= States =======================
@@ -55,7 +57,6 @@ const LabelManager = () => {
       search,
     });
     if (error) {
-      console.error("API error:", error);
       return { data: [], totalRecord: 0 };
     }
     const responseData = data?.data?.data || [];
@@ -80,8 +81,7 @@ const LabelManager = () => {
   const handleRemove = async () => {
     if (deleteModel) {
       const { error } = await deleteLabelAPI(deleteModel.id);
-      if (error) console.log(error);
-      else {
+      if (!error) {
         closeDeleteModel();
         resetTableToInitial();
       }
@@ -125,8 +125,12 @@ const LabelManager = () => {
             className="dataTable"
             columns={columns}
             progressPending={listingLoader}
-            progressComponent={<div>Loading</div>}
-            noDataComponent={<>There are no records to display!!!!</>}
+            progressComponent={
+              <div>
+                <Loader />
+              </div>
+            }
+            noDataComponent={<DataNotFound className="!h-[50vh]" />}
             {...TableProps}
           />
         </div>

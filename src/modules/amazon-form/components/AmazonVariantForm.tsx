@@ -6,6 +6,7 @@ import {
   useGetAllAmazonPropertiesApi,
   useGetAmazonChildProductsApi,
   useGetAmazonVariationPropertiesApi,
+  useGetProductApi,
 } from "../services/amazonForm.service";
 import { FieldsType, IValidationItem } from "@/components/form-builder/types";
 import { Option } from "@/modules/inventory-management/types";
@@ -45,6 +46,7 @@ import { RECOMMENDED_BROWSE_NODES } from "../constants";
 import { Loader } from "@/components/common/Loader";
 import Input from "@/components/form-fields/components/Input";
 import VariantWarningModal from "./WarningModal";
+import { RootState } from "@/redux/store";
 
 export const AmazonVariantForm = (props: IAmazonForm) => {
   const { productId, onComplete } = props;
@@ -90,6 +92,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
   const [isWarningModal, setIsWarningModal] = useState<boolean>(false);
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [warningIndex, setWarningIndex] = useState<number | null>(0);
+  const [categoryChangeLoader, setCategoryChangeLoader] =
+    useState<boolean>(false);
+
+  const isSidebarOpen = useSelector(
+    (state: RootState) => state.sidebar.isSidebarOpen
+  );
 
   const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
     useGetAllAmazonPropertiesApi();
@@ -104,6 +112,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
     useCreateAmazonProductApi();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
   const { getAmazonChildProductsApi } = useGetAmazonChildProductsApi();
+  const { getProductApi } = useGetProductApi();
 
   const getProperties = async (categoryData: ICategoryData) => {
     if (!categoryData?.value) {
@@ -122,6 +131,12 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
     const newParentProperties = filterAmazonProperties(newProperties, [
       ...DefaultChildProperties,
+      [
+        "purchasable_offer",
+        "maximum_retail_price",
+        "schedule",
+        "value_with_tax",
+      ],
       ["item_name"],
       ["product_description"],
     ]);
@@ -153,10 +168,30 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
       ],
     };
 
-    const modifiedDefaultValues = {
-      ...defaultValues,
+    let modifiedDefaultValues = { ...defaultValues };
+
+    const { data: productData, error } = await getProductApi(+productId);
+    if (productData && !error) {
+      modifiedDefaultValues = {
+        ...modifiedDefaultValues,
+        item_name: [
+          {
+            value: productData?.data?.title,
+          },
+        ],
+        product_description: [
+          {
+            value: productData?.data?.description,
+          },
+        ],
+      };
+    }
+    modifiedDefaultValues = {
+      ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
+
+    delete modifiedDefaultValues["purchasable_offer"][0].maximum_retail_price;
 
     setFieldDefaultValues(modifiedDefaultValues);
 
@@ -170,8 +205,10 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
   // const getVariationThemeFields = () => {};
 
-  const handleGetCategoryWiseProperty = (categoryData: ICategoryData) => {
-    getProperties(categoryData);
+  const handleGetCategoryWiseProperty = async (categoryData: ICategoryData) => {
+    setCategoryChangeLoader(true);
+    await getProperties(categoryData);
+    setCategoryChangeLoader(false);
   };
 
   const variationThemeField = watch("variation_theme[0].name");
@@ -255,7 +292,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             propertiesData?.defaultValue
           );
 
-          if (editApiResponse?.productData?.variation_theme[0].name) {
+          if (editApiResponse?.productData?.variation_theme[0]?.name) {
             mergedData = {
               ...mergedData,
               variation_theme: [
@@ -270,21 +307,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             mergedData.parent_sku = editApiResponse?.parent_sku;
           }
 
-          if (editApiResponse?.product) {
-            mergedData = {
-              ...mergedData,
-              item_name: [
-                {
-                  value: editApiResponse?.product?.title,
-                },
-              ],
-              product_description: [
-                {
-                  value: editApiResponse?.product?.description,
-                },
-              ],
-            };
-          }
+          delete mergedData["purchasable_offer"][0].maximum_retail_price;
 
           if (editFinalData) {
             setTimeout(() => {
@@ -294,9 +317,6 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             }, 1000);
           }
         }
-      })
-      .catch((error) => {
-        console.error("Error in promise chain", error);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -345,8 +365,27 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
     //transform payload structure as per amazon product api
 
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    let filterPayload = await amazonTransformData(removeNullValueFromPayload);
     filterPayload.product_type = "parent";
+    filterPayload = {
+      ...filterPayload,
+      purchasable_offer: [
+        {
+          ...filterPayload["purchasable_offer"][0],
+          maximum_retail_price: [
+            {
+              schedule: [
+                {
+                  value_with_tax:
+                    filterPayload["purchasable_offer"][0].our_price[0]
+                      .schedule[0].value_with_tax,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
 
     //payload append into a formData
     const formData = new FormData();
@@ -417,15 +456,25 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
 
   return (
     <div className="relative">
-      {categoryLoading || amazonDataLoading || amazonPropertiesLoading ? (
+      {categoryLoading ||
+      amazonDataLoading ||
+      amazonPropertiesLoading ||
+      categoryChangeLoader ? (
         <Loader loaderClass="!absolute !h-full" />
       ) : null}
-      <div className="flex items-center gap-1   bg-blackPrimary pt-2 px-4 overflow-x-auto whitespace-nowrap !w-[calc(100vw_-_480px)]   scroll-design pr-6 ">
+      <div
+        className={
+          "flex items-center gap-1  border-b border-greenPrimary bg-white pt-2 px-4 overflow-x-auto whitespace-nowrap scroll-design pr-6 " +
+          (isSidebarOpen
+            ? "!w-[calc(100vw_-_680px)]"
+            : "!w-[calc(100vw_-_480px)]")
+        }
+      >
         <span
           className={
             tab.type === ITab.Parent
-              ? "cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary"
-              : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+              ? "cursor-pointer px-4 py-2 rounded-t-md bg-greenPrimary  text-white"
+              : "cursor-pointer text-greenPrimary  px-4 py-2  hover: rounded-t-md hover:bg-greenPrimary  hover:text-white"
           }
           onClick={() => {
             if (tab.index !== null) {
@@ -443,8 +492,8 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
               <span
                 className={
                   tab.type === ITab.Variation && tab.index === index
-                    ? "cursor-pointer px-4 py-2 rounded-t-md bg-white  text-blackPrimary"
-                    : "cursor-pointer text-white  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+                    ? "cursor-pointer px-4 py-2 rounded-t-md bg-greenPrimary  text-white"
+                    : "cursor-pointer text-greenPrimary  px-4 py-2  hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
                 }
                 onClick={() => {
                   if (index !== tab.index) {
@@ -461,7 +510,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
             );
           })}
         <span
-          className="cursor-pointer text-white  px-4 py-2 hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
+          className="cursor-pointer text-greenPrimary  px-4 py-2 hover: rounded-t-md hover:bg-white  hover:text-blackPrimary"
           onClick={() => {
             addChildProperties();
           }}
@@ -495,7 +544,7 @@ export const AmazonVariantForm = (props: IAmazonForm) => {
                 value={category ? category : null}
                 className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
                 placeholder="Choose Category"
-                isDisabled={isEdit}
+                disabled={isEdit}
               />
               {variationThemeData && (
                 <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">

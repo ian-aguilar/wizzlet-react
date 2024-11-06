@@ -87,18 +87,12 @@ export const DefaultChildProperties = [
   ["externally_assigned_product_identifier"],
   ["condition_type"],
   ["fulfillment_availability", "quantity"],
-  ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
 ];
 
 export const DefaultProperties = [
   ["parentage_level"],
   ["child_parent_sku_relationship"],
-];
-
-export const ManualProperties = [
-  "parentage_level",
-  "child_parent_sku_relationship",
-  "variation_theme",
+  ["variation_theme"],
 ];
 
 export interface IAmazonVariantChildProps {

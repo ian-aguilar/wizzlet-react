@@ -55,7 +55,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
       });
 
       if (filteredFiles.length) {
-        // console.log({name, dad: [...defaultValue, ...filteredFiles]});
         // setValue(name, ["xyz"] as any);
         setValue(name, [...defaultValue, ...filteredFiles] as PathValue<
           T,
@@ -171,11 +170,6 @@ const FileField = <T extends FieldValues>(fieldProps: FilePropsType<T>) => {
                 />
               </div>
 
-              <div className="attachments__details text-center ">
-                <span className="attachments__name whitespace-normal break-words overflow-hidden  ">
-                  {isUrl ? value.split("/").pop() : (value as File).name}
-                </span>
-              </div>
               <button
                 className="action__btn__SD absolute top-3 right-3 block z-10 "
                 name="Delete"

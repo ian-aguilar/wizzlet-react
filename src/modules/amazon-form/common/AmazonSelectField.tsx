@@ -99,7 +99,7 @@ export const AmazonSelectField = <T extends FieldValues>(
             menuPlacement="auto"
             styles={customStyles}
             isDisabled={disabled}
-            className={`${className}`}
+            className={`${className}` + (disabled ? "cursor-not-allowed" : "")}
             menuPosition={"fixed"}
           />
         )}

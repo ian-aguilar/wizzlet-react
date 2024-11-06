@@ -42,18 +42,18 @@ const AmazonForm: React.FC<ProductBasicFormSingleProps> = ({ onComplete }) => {
 
   return (
     <div className="relative">
-      {/* {categoryLoading ? <Loader loaderClass="!absolute" /> : null} */}
-      {productType === ProductType.Normal ? (
-        <AmazonNormalForm
-          onComplete={onComplete}
-          productId={productId as string}
-        />
-      ) : (
-        <AmazonVariantForm
-          onComplete={onComplete}
-          productId={productId as string}
-        />
-      )}
+      {productType &&
+        (productType === ProductType.Normal ? (
+          <AmazonNormalForm
+            onComplete={onComplete}
+            productId={productId as string}
+          />
+        ) : (
+          <AmazonVariantForm
+            onComplete={onComplete}
+            productId={productId as string}
+          />
+        ))}
     </div>
   );
 };

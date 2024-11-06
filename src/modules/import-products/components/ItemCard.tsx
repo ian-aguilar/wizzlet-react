@@ -1,15 +1,36 @@
 import Checkbox from "@/components/form-fields/components/Checkbox";
 import { IItemsProps } from "../types";
+import { MARKETPLACE } from "@/components/common/types";
+import DummyImage from "/images/dummyImage.png";
 
-export const ItemCard = ({ item, isCheck,checkboxOnChange }: IItemsProps) => {
+export const ItemCard = ({
+  item,
+  isCheck,
+  checkboxOnChange,
+  marketplace,
+}: IItemsProps) => {
   return (
     <div className="flex bg-white items-center mt-2 py-2 px-5  gap-4 border border-grayLightBody/20 rounded-md ">
       <div className="flex gap-4 items-start">
         <div>
-          <img
-            src={item.picture_url}
-            className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
-          />
+          {item.picture_url ? (
+            <img
+              src={
+                marketplace?.value.toLowerCase() !== MARKETPLACE.EBAY
+                  ? item.picture_url
+                  : typeof item.picture_url?.PictureURL === "string"
+                  ? item.picture_url?.PictureURL
+                  : item.picture_url?.PictureURL &&
+                    item.picture_url?.PictureURL[0]
+              }
+              className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
+            />
+          ) : (
+            <img
+              src={DummyImage}
+              className="w-[171px] min-w-[171px] h-[132px] object-cover rounded-md "
+            />
+          )}
         </div>
         <div>
           <div>

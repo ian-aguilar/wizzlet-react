@@ -40,7 +40,7 @@ const AdminMarketplace = () => {
           </h2>
         </div>
       </div>
-      <section className=" w-full bg-white  p-5 mb-5 max-h-[calc(100vh_-_365px)] lg:max-h-[calc(100vh_-_350px)] overflow-y-auto scroll-design relative">
+      <section className=" w-full bg-white  p-5 mb-5 max-h-[calc(100vh_-_180px)]  min-h-[calc(100vh_-_180px)] overflow-y-auto scroll-design relative">
         {isLoading || marketplaceLoading ? (
           <div className="absolute">
             <Loader />

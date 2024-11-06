@@ -16,10 +16,11 @@ import {
 } from "../services/profile.service";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { profileValidationSchema } from "../validation-schema/profileValidation";
-import { useSelector } from "react-redux";
-import { UserRole, userSelector } from "@/redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, UserRole, userSelector } from "@/redux/slices/userSlice";
 import FileField from "@/components/form-fields/components/FileField";
 import { isArray } from "lodash";
+import { Loader } from "@/components/common/Loader";
 
 const Profile = () => {
   const {
@@ -36,11 +37,13 @@ const Profile = () => {
     resolver: yupResolver(profileValidationSchema),
     defaultValues: profileDefaultValue,
   });
-  console.log(errors, "==============");
 
   // ================= Custom hooks ====================
-  const { getProfileDataAPI } = useFetchProfileDataAPI();
+  const { getProfileDataAPI, isLoading: resetLoading } =
+    useFetchProfileDataAPI();
   const { profileDataPostAPI, isLoading: loader } = useProfileDataPostAPI();
+
+  const dispatch = useDispatch();
 
   const user = useSelector(userSelector);
 
@@ -85,7 +88,16 @@ const Profile = () => {
       });
     }
 
-    await profileDataPostAPI(formData);
+    const { data, error } = await profileDataPostAPI(formData);
+    if (data && !error) {
+      const updatedUser = {
+        user: {
+          ...user,
+          url: data?.data[0]?.url,
+        },
+      };
+      dispatch(setUser(updatedUser));
+    }
   };
 
   return (
@@ -97,97 +109,95 @@ const Profile = () => {
         {/* <ModalCommon /> */}
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="SettingsContentBox    2xl:pr-72 ">
-            <div className="grid grid-cols-12 lg:gap-4">
-              <div className=" col-span-12 lg:col-span-6 row-span-3 ">
-                <FileField
-                  name="profileImage"
-                  label="Profile Photo"
-                  control={control}
-                  errors={errors}
-                  maxSize={8}
-                  allowedFormat={["image/png", "image/jpeg"]}
-                  register={register}
-                  setError={setError}
-                  setValue={setValue}
-                  clearErrors={clearErrors}
-                  watch={watch}
-                  isMulti={false}
-                  MainclassName="  h-[20vh] max-h-[25vh] lg:max-h-[300px] lg:h-[95%] min-h-[20vh] lg:mb-0 mb-4"
-                />
-              </div>
-              <div className=" col-span-12 lg:col-span-6">
-                <Input
-                  textLabelName="First Name"
-                  control={control}
-                  placeholder="John"
-                  name="firstName"
-                  errors={errors}
-                  type="text"
-                />
-              </div>
-              <div className=" col-span-12 lg:col-span-6">
-                <Input
-                  textLabelName="Last Name"
-                  control={control}
-                  name="lastName"
-                  placeholder="Doe"
-                  errors={errors}
-                  type="text"
-                />
-              </div>
-
-              {user?.role === UserRole.USER && (
-                <>
+            {resetLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <div className="grid grid-cols-12 lg:gap-4">
+                  <div className=" col-span-12 lg:col-span-6 row-span-3 ">
+                    <FileField
+                      name="profileImage"
+                      label="Profile Photo"
+                      control={control}
+                      errors={errors}
+                      maxSize={8}
+                      allowedFormat={["image/png", "image/jpeg"]}
+                      register={register}
+                      setError={setError}
+                      setValue={setValue}
+                      clearErrors={clearErrors}
+                      watch={watch}
+                      isMulti={false}
+                      MainclassName="h-[20vh] max-h-[25vh] lg:max-h-[300px] lg:h-[95%] min-h-[20vh] lg:mb-0 mb-4"
+                    />
+                  </div>
                   <div className=" col-span-12 lg:col-span-6">
                     <Input
-                      textLabelName="Organization Name"
+                      textLabelName="First Name"
                       control={control}
-                      name="organizationName"
-                      placeholder="xyz"
+                      placeholder="John"
+                      name="firstName"
                       errors={errors}
                       type="text"
                     />
                   </div>
                   <div className=" col-span-12 lg:col-span-6">
                     <Input
-                      textLabelName="Contact Number"
+                      textLabelName="Last Name"
                       control={control}
-                      name="contactNumber"
-                      placeholder="1234567890"
+                      name="lastName"
+                      placeholder="Doe"
                       errors={errors}
-                      type="number"
+                      type="text"
                     />
                   </div>
-                </>
-              )}
-              <div className=" col-span-12 lg:col-span-6">
-                <Input
-                  textLabelName="Email"
-                  control={control}
-                  name="email"
-                  errors={errors}
-                  type="text"
-                  isDisabled={true}
-                />
-              </div>
-              {/* <div className="text-sm text-grayText  ">
-              Do you want to change email?
-              <Link
-                to=""
-                className="font-medium cursor-pointer text-greenPrimary inline-block ml-2 hover:underline hover:underline-offset-2 hover:brightness-110 transition-all duration-300 hover:transition-all hover:duration-300">
-                Change
-              </Link>
-            </div> */}
-            </div>
-            <div className=" ">
-              <Button
-                showType={btnShowType.green}
-                btnClass=" !w-auto !px-14 lg:!mt-14 "
-                type="submit"
-                btnName="Update"
-                isLoading={loader}
-              />
-            </div>
+
+                  {user?.role === UserRole.USER && (
+                    <>
+                      <div className=" col-span-12 lg:col-span-6">
+                        <Input
+                          textLabelName="Organization Name"
+                          control={control}
+                          name="organizationName"
+                          placeholder="Organization Name"
+                          errors={errors}
+                          type="text"
+                        />
+                      </div>
+                      <div className=" col-span-12 lg:col-span-6">
+                        <Input
+                          textLabelName="Contact Number"
+                          control={control}
+                          name="contactNumber"
+                          placeholder="Contact Number"
+                          errors={errors}
+                          type="number"
+                        />
+                      </div>
+                    </>
+                  )}
+                  <div className=" col-span-12 lg:col-span-6">
+                    <Input
+                      textLabelName="Email"
+                      control={control}
+                      name="email"
+                      errors={errors}
+                      type="text"
+                      isDisabled={true}
+                    />
+                  </div>
+                </div>
+                <div className=" ">
+                  <Button
+                    showType={btnShowType.green}
+                    btnClass=" !w-auto !px-14 lg:!mt-14 "
+                    type="submit"
+                    btnName="Update"
+                    isLoading={loader}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </form>
       </div>

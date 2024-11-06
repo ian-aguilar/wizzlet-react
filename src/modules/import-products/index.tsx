@@ -67,7 +67,8 @@ const ImportProducts = () => {
   const [counter, setCounter] = useState(0);
   const { getImportedProductsApi, isLoading: isLoadProduct } =
     useGetImportedProductsApi();
-  const { getMarketplaceListingAPI } = useMarketplaceListingAPI();
+  const { getMarketplaceListingAPI, isLoading: marketLoading } =
+    useMarketplaceListingAPI();
   const { fetchSyncDetailsApi } = useFetchSyncDetailsAPI();
   const { importEbayProductsApi, isLoading } = useImportEbayProductsApi();
   const { importProductsFromAmazonApi, isLoading: storeAmazonLoading } =
@@ -294,7 +295,7 @@ const ImportProducts = () => {
     }
   }, [counter, synced]);
 
-  if (isLoadProduct) {
+  if (isLoadProduct || marketLoading) {
     return (
       <div>
         <Loader />
@@ -349,13 +350,14 @@ const ImportProducts = () => {
                 placeholder="Select Marketplace"
                 options={marketplaces}
                 onChange={(result: IOption) => {
+                  setCurrentPage(1);
                   setSelectedMarketplace(result as IOption);
                   setIsCheck([]);
                 }}
               />
               <Button
                 BtnIconLeft={
-                  <AutoSyncIcon className="inline-flex mr-2 w-5 h-5 text-black " />
+                  <AutoSyncIcon className="inline-flex mr-2 w-5 h-5 text-greenPrimary  " />
                 }
                 btnName={"Sync All Products"}
                 onClickHandler={importProductsHandler}
@@ -369,7 +371,7 @@ const ImportProducts = () => {
                     (ebaySyncStatus === SyncStatus.INPROGRESS ||
                       ebaySyncStatus === SyncStatus.PENDING))
                 }
-                btnClass="!w-auto border border-solid !bg-blend-screen !border-greenPrimary !bg-greenPrimary/40 !text-black !font-semibold "
+                btnClass="!w-auto border border-solid   !border-greenPrimary !bg-white !text-greenPrimary !font-semibold  "
               />
             </div>
             <div>
@@ -384,7 +386,8 @@ const ImportProducts = () => {
                       !importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}>
+                    } px-4 py-2 rounded-full transition-colors`}
+                  >
                     {`${ImportTab.NOT_IMPORTED}(${
                       totalImportData ? totalImportData.totalNotImported : 0
                     })`}
@@ -398,7 +401,8 @@ const ImportProducts = () => {
                       importSelectedTab
                         ? "bg-gray-600 text-white"
                         : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}>
+                    } px-4 py-2 rounded-full transition-colors`}
+                  >
                     {`${ImportTab.IMPORTED}(${
                       totalImportData ? totalImportData.totalImported : 0
                     })`}
@@ -506,6 +510,7 @@ const ImportProducts = () => {
                   return (
                     <ItemCard
                       item={item}
+                      marketplace={selectedMarketplace}
                       isCheck={isCheck ? isCheck : []}
                       checkboxOnChange={handleProductCheckboxChange}
                       key={item.id}

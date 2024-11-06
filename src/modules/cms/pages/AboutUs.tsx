@@ -12,12 +12,16 @@ import { RoutesPath } from "@/modules/Auth/types";
 // ** Services **
 import { useGetAboutusAPI } from "../services/cms.service";
 import { Loader } from "@/components/common/Loader";
+import { useSelector } from "react-redux";
+import { getAuth } from "@/redux/slices/authSlice";
 
 const AboutUs = () => {
   const [aboutus, setAboutus] = useState<IAboutusForm>();
 
   const { getAboutusAPI, isLoading } = useGetAboutusAPI();
   const navigate = useNavigate();
+
+  const { isAuthenticated } = useSelector(getAuth);
 
   useEffect(() => {
     fetchAboutusData();
@@ -45,12 +49,14 @@ const AboutUs = () => {
                 <p className=" font-normal text-xl text-grayText px-2 sm:px-8 lg:px-40  pt-6  ">
                   {aboutus?.topSection.description}
                 </p>
-                <Button
-                  showType={btnShowType.greenRound}
-                  btnName={aboutus?.topSection.greenButton as string}
-                  btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto"
-                  onClickHandler={() => navigate(RoutesPath.SignUp)}
-                />
+                {!isAuthenticated && (
+                  <Button
+                    showType={btnShowType.greenRound}
+                    btnName={aboutus?.topSection.greenButton as string}
+                    btnClass="bg-greenPrimary border-greenPrimary text-white mx-auto mt-10 md:mt-16 !w-auto"
+                    onClickHandler={() => navigate(RoutesPath.SignUp)}
+                  />
+                )}
               </div>
               <div className="grid grid-cols-12 sm:gap-x-7 gap-y-7 mb-10  md:mb-36">
                 {aboutus?.topSection.cards.map((data, i) => (
@@ -90,12 +96,14 @@ const AboutUs = () => {
                 <p className="text-grayText font-normal text-xl   ">
                   {aboutus?.visionSection.description}
                 </p>
-                <Button
-                  showType={btnShowType.greenRound}
-                  btnName={aboutus?.visionSection.greenButton as string}
-                  btnClass="bg-greenPrimary text-white border-greenPrimary mt-8 !w-auto"
-                  onClickHandler={() => navigate(RoutesPath.SignUp)}
-                />
+                {!isAuthenticated && (
+                  <Button
+                    showType={btnShowType.greenRound}
+                    btnName={aboutus?.visionSection.greenButton as string}
+                    btnClass="bg-greenPrimary text-white border-greenPrimary mt-8 !w-auto"
+                    onClickHandler={() => navigate(RoutesPath.SignUp)}
+                  />
+                )}
               </div>
               <div className="lg:w-[45%]">
                 <div className="relative z-10 before:z-0 before:absolute  before:w-full  before:h-full  before:right-[-7px] before:bottom-[-7px]  before:bg-greenPrimary  before:rounded-md ">

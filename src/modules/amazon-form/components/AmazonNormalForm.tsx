@@ -15,6 +15,7 @@ import {
   useAmazonFormHandleApi,
   useCreateAmazonProductApi,
   useGetAllAmazonPropertiesApi,
+  useGetProductApi,
 } from "../services/amazonForm.service";
 import Button from "@/components/form-fields/components/Button";
 import { btnShowType } from "@/components/form-fields/types";
@@ -32,6 +33,7 @@ import { selectSocket } from "@/redux/slices/socketSlice";
 import { useSelector } from "react-redux";
 import { NOTIFICATION_TYPE, Type } from "@/constants";
 import { useCreateUserNotificationInDbApi } from "@/modules/eBay-form/services/productBasicForm.service";
+import { Loader } from "@/components/common/Loader";
 
 export const AmazonNormalForm = (props: IAmazonForm) => {
   const { onComplete, productId } = props;
@@ -40,6 +42,8 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const [properties, setProperties] = useState<FieldsType<any>[]>();
   const [category, setCategory] = useState<Option | null>(null);
   const [validationItems, setValidationItems] = useState<IValidationItem>();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [price, setPrice] = useState<number>();
 
   const {
     control,
@@ -66,6 +70,10 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
+  const { getProductApi } = useGetProductApi();
+
+  const [categoryChangeLoader, setCategoryChangeLoader] =
+    useState<boolean>(false);
 
   const getProperties = async (categoryData: {
     value: number;
@@ -76,20 +84,72 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     }
     const { data } = await getAllAmazonPropertiesApi(categoryData?.value);
     setCategory(categoryData);
-    const newProperties = filterAmazonProperties(data?.data?.properties, [
+    let newProperties = filterAmazonProperties(data?.data?.properties, [
       ...DefaultProperties,
       ["purchasable_offer", "our_price", "schedule", "value_with_tax"],
       ["item_name"],
       ["product_description"],
       ["fulfillment_availability", "quantity"],
     ]);
+    newProperties = filterAmazonProperties(newProperties, [
+      [
+        "purchasable_offer",
+        "maximum_retail_price",
+        "schedule",
+        "value_with_tax",
+      ],
+    ]);
     setProperties(newProperties);
     setValidationItems(data?.data?.validationItems);
     const defaultValues = getAppendField(data?.data?.properties);
-    const modifiedDefaultValues = {
-      ...defaultValues,
+
+    const { data: productData, error } = await getProductApi(+productId);
+    let modifiedDefaultValues = defaultValues;
+    if (data && !error) {
+      modifiedDefaultValues = {
+        ...modifiedDefaultValues,
+        item_name: [
+          {
+            value: productData?.data?.title,
+          },
+        ],
+        product_description: [
+          {
+            value: productData?.data?.description,
+          },
+        ],
+        purchasable_offer: [
+          {
+            ...modifiedDefaultValues["purchasable_offer"][0],
+            our_price: [
+              {
+                schedule: [
+                  {
+                    value_with_tax: productData?.data?.price,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        fulfillment_availability: [
+          {
+            ...modifiedDefaultValues["fulfillment_availability"][0],
+            quantity: productData?.data?.quantity,
+          },
+        ],
+      };
+
+      setPrice(productData?.data?.price);
+    }
+
+    modifiedDefaultValues = {
+      ...modifiedDefaultValues,
       recommended_browse_nodes: RECOMMENDED_BROWSE_NODES,
     };
+
+    delete modifiedDefaultValues["purchasable_offer"][0].maximum_retail_price;
+
     reset(modifiedDefaultValues);
     return {
       propertyData: data?.data?.properties,
@@ -108,11 +168,13 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
     }
   }, [fields]);
 
-  const handleGetCategoryWiseProperty = (event: {
+  const handleGetCategoryWiseProperty = async (event: {
     value: number;
     label: string;
   }) => {
-    getProperties(event);
+    setCategoryChangeLoader(true);
+    await getProperties(event);
+    setCategoryChangeLoader(false);
   };
 
   const handleAmazonEditApiResponse = async () => {
@@ -151,7 +213,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
       })
       .then(async ({ propertiesData, editApiResponse }) => {
         if (editApiResponse?.productData) {
-          const editFinalData = await mapDataWithReference(
+          const editFinalData = mapDataWithReference(
             editApiResponse?.productData,
             propertiesData?.propertyData
           );
@@ -161,68 +223,44 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             propertiesData?.defaultValue
           );
 
-          if (editApiResponse?.product) {
-            mergedData = {
-              ...mergedData,
-              item_name: [
-                {
-                  value: editApiResponse?.product?.title,
-                },
-              ],
-              product_description: [
-                {
-                  value: editApiResponse?.product?.description,
-                },
-              ],
-              purchasable_offer: [
-                {
-                  ...mergedData["purchasable_offer"][0],
-                  our_price: [
-                    {
-                      schedule: [
-                        {
-                          value_with_tax: [
-                            {
-                              value: editApiResponse?.product?.price,
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-              fulfillment_availability: [
-                {
-                  ...mergedData["fulfillment_availability"][0],
-                  quantity: editApiResponse?.product?.quantity,
-                },
-              ],
-            };
-          }
+          delete mergedData["purchasable_offer"][0].maximum_retail_price;
 
           if (editFinalData) {
             setTimeout(() => {
+              setIsEdit(true);
               reset(mergedData);
             }, 1000);
           }
         }
-      })
-      .catch((error) => {
-        console.error("Error in promise chain", error);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit = async (type: AmazonSaveType, payload: any) => {
-    // console.log("🚀 ~ AmazonForm ~ payload:", payload);
-
     //remove undefined and null and blank value from payload
     const removeNullValueFromPayload = cleanPayload(payload);
 
     //transform payload structure as per amazon product api
 
-    const filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    let filterPayload = await amazonTransformData(removeNullValueFromPayload);
+    filterPayload = {
+      ...filterPayload,
+      purchasable_offer: [
+        {
+          ...filterPayload["purchasable_offer"][0],
+          maximum_retail_price: [
+            {
+              schedule: [
+                {
+                  value_with_tax: price,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+
     //payload append into a formData
     const formData = new FormData();
     appendFormData(formData, filterPayload);
@@ -269,6 +307,9 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
+      {categoryLoading || categoryChangeLoader ? (
+        <Loader loaderClass="!absolute !h-full" />
+      ) : null}
       <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
         <h2 className="font-bold text-[22px] text-blackPrimary bg-grayLightBody/20 py-3 px-5 rounded-t-md">
           Choose Product Category
@@ -291,6 +332,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
             value={category ? category : null}
             className=" !font-medium hover:border-blackPrimary/20 text-grayText min-w-80 !text-base  !py-2 !px-3 "
             placeholder="Choose Category"
+            disabled={isEdit}
           />
         </div>
         {properties && properties.length > 0 && (
@@ -300,6 +342,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
               errors={errors}
               fields={properties as any}
               watch={watch as any}
+              isEdit={isEdit}
             />
             <div className="flex justify-between">
               <Button
