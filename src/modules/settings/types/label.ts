@@ -20,10 +20,7 @@ export interface IAddLabelProps {
 export interface ILabelViewProps {
     id: number;
     title: string;
-    images?: {
-      PictureURL?: string;
-      url?: string;
-    };
+    images?: string;
     price?: string;
     date: string;
     quantity?: number;
