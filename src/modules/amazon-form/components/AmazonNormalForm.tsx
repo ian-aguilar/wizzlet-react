@@ -63,10 +63,13 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
   const user = useSelector(userSelector);
   const socket = useSelector(selectSocket);
 
-  const { amazonFormSubmitApi } = useAmazonFormHandleApi();
+  const { amazonFormSubmitApi, isLoading: submitLoading } =
+    useAmazonFormHandleApi();
   const { createAmazonProductApi } = useCreateAmazonProductApi();
-  const { getAllAmazonPropertiesApi } = useGetAllAmazonPropertiesApi();
-  const { editAmazonProductValueApi } = useAmazonEditProductValuesApi();
+  const { getAllAmazonPropertiesApi, isLoading: amazonPropertiesLoading } =
+    useGetAllAmazonPropertiesApi();
+  const { editAmazonProductValueApi, isLoading: amazonDataLoading } =
+    useAmazonEditProductValuesApi();
   const { getCategoriesAPI, isLoading: categoryLoading } =
     useGetCategoriesAPI();
   const { createUserNotificationInDbApi } = useCreateUserNotificationInDbApi();
@@ -307,7 +310,10 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit.bind(this, AmazonSaveType.Save))}>
-      {categoryLoading || categoryChangeLoader ? (
+      {categoryLoading ||
+      categoryChangeLoader ||
+      amazonPropertiesLoading ||
+      amazonDataLoading ? (
         <Loader loaderClass="!absolute !h-full" />
       ) : null}
       <div className="p-5 bg-white max-h-[calc(100vh_-_180px)] scroll-design overflow-y-auto ">
@@ -348,6 +354,7 @@ export const AmazonNormalForm = (props: IAmazonForm) => {
               <Button
                 showType={btnShowType.primary}
                 btnName="Save"
+                isLoading={submitLoading}
                 type="submit"
                 btnClass="mt-6 !text-base"
               />
