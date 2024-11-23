@@ -24,6 +24,7 @@ import {
 import { useAmazonAuthAPI } from "../services/amazon.service";
 import { ErrorModal } from "@/components/common/ErrorModal";
 import { Loader } from "@/components/common/Loader";
+import ShopifyAuthModal from "@/modules/shopify/auth/shopifyAuthModal";
 const UserMarketplace = () => {
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
@@ -32,6 +33,7 @@ const UserMarketplace = () => {
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
   const [buttonLoading, setButtonLoading] = useState<number>();
   const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
+  const [isShopifyModal, setIsShopifyModal] = useState<boolean>(false);
   const [disconnectMarketplace, setDisconnectMarketplace] = useState<
     number | null
   >(null);
@@ -79,6 +81,11 @@ const UserMarketplace = () => {
           }
         }
         break;
+      case "shopify":
+        {
+         setIsShopifyModal(true); 
+        }
+        break;
       default:
         break;
     }
@@ -99,6 +106,7 @@ const UserMarketplace = () => {
   };
   return (
     <>
+    {isShopifyModal && <ShopifyAuthModal handleClose={() => setIsShopifyModal(false)} />}
       {marketLoading ? (
         <div>
           <Loader />
@@ -114,9 +122,8 @@ const UserMarketplace = () => {
                 {marketplace?.connectedMarketplace.map((item) => (
                   <div
                     key={item?.id}
-                    className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
-                      item?.coming_soon ? "relative" : ""
-                    }`}
+                    className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${item?.coming_soon ? "relative" : ""
+                      }`}
                   >
                     <div className="flex flex-wrap justify-between items-start gap-4 ">
                       <div>
@@ -178,9 +185,8 @@ const UserMarketplace = () => {
               {marketplace?.notConnectedMarketplace.map((item) => (
                 <div
                   key={item?.id}
-                  className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${
-                    item?.coming_soon ? "relative" : ""
-                  }`}
+                  className={`col-span-6 sm:col-span-4 bg-grayLightBody/10 p-8 flex flex-col ${item?.coming_soon ? "relative" : ""
+                    }`}
                 >
                   {item?.coming_soon ? (
                     <div className="absolute inset-0 bg-grayLightBody/50 backdrop-blur-sm z-10 flex justify-center items-center text-black text-2xl font-medium  ">
@@ -194,6 +200,7 @@ const UserMarketplace = () => {
                         className="max-w-[150px]  w-full h-auto"
                         alt=""
                       />
+                     <h1> {item.name}</h1>
                     </div>
                     <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
                       <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
