@@ -97,6 +97,7 @@ export interface ModalCommonProps {
   confirmButtonText: string;
   isLoading?: boolean;
   children?: React.ReactNode;
+  modalSizeInX?: string;
 }
 
 export interface BaseModalCommonProps {

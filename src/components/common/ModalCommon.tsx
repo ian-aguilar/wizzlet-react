@@ -11,10 +11,12 @@ export const ModalCommon: React.FC<ModalCommonProps> = ({
   confirmButtonText,
   isLoading,
   children,
+  modalSizeInX
 }) => {
   return (
     <div className="fixed inset-0 w-full h-screen bg-black/80 z-50 flex justify-center items-center">
-      <div className=" w-[80%] sm:max-w-xl  bg-white rounded-md">
+     <div className={`w-[90%] sm:max-w-${modalSizeInX ? modalSizeInX : '2'}xl bg-white rounded-md`}>
+
         <div className="ModalHeader text-2xl font-medium flex justify-between items-center p-5 border-b border-greyBorder ">
           <h2>{heading}</h2>
           <Link

@@ -1,13 +1,25 @@
 import Button from '@/components/form-fields/components/Button';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ShopifyAuthForm } from './types';
+import { ShopifyAuthForm, ShopifyProfileAttributeType } from './types';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { shopifyAuthFormSchema } from './validation-schema';
 import Input from '@/components/form-fields/components/Input';
 import { useShopifyAuthFormApi } from './services/productBasicForm.service';
 import { toast } from 'react-toastify';
-
-const ShopifyAuth = () => {
+import { openSmallTab } from '@/utils';
+import ShopifyProfileTable from './components/ShopifyProfileTable';
+import React from 'react';
+interface ShopifyAuthProps  {  
+  shopifyProfiles?:ShopifyProfileAttributeType[],
+  isLoading?:boolean
+  setSelectedShopifyProfile: (shopifyProfile: ShopifyProfileAttributeType) => void;
+}
+const ShopifyAuth: React.FC<ShopifyAuthProps> = ({
+  shopifyProfiles,
+  isLoading,
+  setSelectedShopifyProfile
+}) => {
+ 
   const { shopifyAuthApi, isLoading: isLoadingSubmit } =
     useShopifyAuthFormApi();
   const {
@@ -20,17 +32,19 @@ const ShopifyAuth = () => {
       shop: "",
     },
   });
-
+  
   const onSubmit: SubmitHandler<ShopifyAuthForm> = async (payload) => {
     const newPayload = {
       ...payload
     };
     const { data, error } = await shopifyAuthApi(newPayload);
+
     if (error) {
-      toast.error(error.message || "Something went wrong");
+      return toast.error(error.message || "Something went wrong");
     }
-    console.log(data);
-  }
+    openSmallTab(data?.data?.authUrl);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} action="">
@@ -48,9 +62,6 @@ const ShopifyAuth = () => {
             .myshopify.com
           </span>
         </div>
-
-
-
         <Button
           btnName="Connect To Shopify"
           isLoading={isLoadingSubmit}
@@ -58,6 +69,7 @@ const ShopifyAuth = () => {
           btnClass=" !w-auto p-2    text-white bg-green-500 rounded-md"
         />
       </form>
+      <ShopifyProfileTable onSelect={(shopifyProfile) => setSelectedShopifyProfile(shopifyProfile)} isLoading={isLoading || false} data={shopifyProfiles as ShopifyProfileAttributeType[]} />
     </div>
   )
 }

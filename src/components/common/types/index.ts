@@ -91,6 +91,7 @@ export interface ISearchBox {
 export enum MARKETPLACE {
   EBAY = "ebay",
   AMAZON = "amazon",
+  SHOPIFY = "shopify"
 }
 
 export enum MARKETPLACEID {

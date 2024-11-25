@@ -29,7 +29,7 @@ import {
 import { useMarketplaceListingAPI } from "../marketplace/services/marketplace.service";
 
 // ** Icon **
-import { AutoSyncIcon, SearchIcon } from "@/assets/Svg";
+import { AutoSyncIcon, SearchIcon, ShopifyIcon } from "@/assets/Svg";
 import { DataNotFound } from "@/components/svgIcons";
 
 // ** Types **
@@ -38,9 +38,19 @@ import { pageLimitStyle, selectedMarketplaceStyle } from "./constants";
 import moment from "moment";
 import InputSearch from "./components/InputSearch";
 import { Loader } from "@/components/common/Loader";
+import ShopifyAuthModal from "../shopify/auth/shopifyAuthModal";
+import { ShopifyProfileAttributeType } from "../shopify/auth/types";
+import { useGetShopifyProfilesApi } from "../shopify/auth/services/productBasicForm.service";
+import { useGetShopifyNonImportedProductsApi } from "../shopify/products/services/productBasicForm.service";
+import { ShopifyProduct } from "../shopify/products/types";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
+  const [selectedShopifyProfile, setSelectedShopifyProfile] = useState<ShopifyProfileAttributeType | null>(null);
+  const [shopifyEndCursor, setShopifyEndCursor] = useState<string | null>("");
+  const [shopifyHasNextPage, setShopifyHasNextPage] = useState<boolean>(true);
+  const [shopifyProducts, setShopifyProducts] = useState<ShopifyProduct[]>([]);
+  const [isShopifyModal, setIsShopifyModal] = useState<boolean>(false);
   const [totalItem, setTotalItem] = useState<number>();
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [countCheckbox, setCountCheckbox] = useState<number>(0);
@@ -54,6 +64,7 @@ const ImportProducts = () => {
     useState<TotalImportDataType | null>(null);
   const [ebaySyncStatus, setEbaySyncStatus] = useState<SyncStatus>();
   const [importSelectedTab, setImportSelectedTab] = useState<boolean>(false);
+  const [shopifyProfiles, setShopifyProfiles] = useState<ShopifyProfileAttributeType[]>([]);
   const [itemPerPage, setItemPerPage] = useState<IOption>({
     label: "10",
     value: "10",
@@ -63,6 +74,35 @@ const ImportProducts = () => {
     connectedMarketplace: IMarketplace[];
     notConnectedMarketplace: IMarketplace[];
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
+
+  const { getShopifyProfileApi, isLoading: shopifyProfilesLoading } =
+    useGetShopifyProfilesApi();
+  const { getShopifyNonImportedProducts, isLoading: shopifyNonImportedProductsLoader } =
+    useGetShopifyNonImportedProductsApi();
+
+  const getShopifyNonImportedProductAndParse = async () => {
+    const { data, error } = await getShopifyNonImportedProducts({
+    }, selectedShopifyProfile?.shop || "", shopifyEndCursor ? `endCursor=${shopifyEndCursor}&&limit=${itemPerPage?.value ? itemPerPage?.value : "10"}` : "");
+    if (!error && data) {
+      console.log(data?.data);
+      setShopifyEndCursor(data?.data?.endCursor);
+      setShopifyHasNextPage(data?.data?.hasNextPage);
+      setShopifyProducts(data?.data?.products);
+    }
+  }
+
+  useEffect(() => {
+    if (selectedShopifyProfile) {
+      getShopifyNonImportedProductAndParse();
+    }
+  }, [selectedShopifyProfile, itemPerPage])
+
+  const getShopifyProfiles = async () => {
+    const { data, error } = await getShopifyProfileApi({});
+    if (!error && data) {
+      setShopifyProfiles(data?.data);
+    }
+  };
   const [syncDetails, setSyncDetails] = useState<ISyncDetails>();
   const [counter, setCounter] = useState(0);
   const { getImportedProductsApi, isLoading: isLoadProduct } =
@@ -160,17 +200,40 @@ const ImportProducts = () => {
       setIsCheck([]);
     }
   };
+  useEffect(() => {
+    const shopifyItems = parseShopifyProductsToItems(shopifyProducts);
+    setItems([...(shopifyItems || [])]);
+  }, [shopifyProducts]);
 
+  const parseShopifyProductsToItems = (products: ShopifyProduct[]): IItems[] => {
+    return products?.map((product) => {
+      return {
+        id: Number(product.id),
+        is_imported: false,
+        listed_at: new Date(product.publishedAt),
+        marketplace_id: 0,
+        title: product.title as string,
+        type: product.productType as string,
+        price: 0,
+        picture_url: product.images?.[0]?.src as string,
+        product_portal_id: product.id as string,
+      };
+    }) as IItems[];
+  }
   useEffect(() => {
     marketplaceListing();
     getSyncData(selectedMarketplace?.value as string);
   }, []);
 
   useEffect(() => {
+    getShopifyProfiles();
+  }, []);
+
+  useEffect(() => {
     getSyncData(selectedMarketplace?.value as string);
   }, [selectedMarketplace]);
 
-  const marketplaces = marketplace?.connectedMarketplace?.map((item) => {
+  const marketplaces = marketplace?.notConnectedMarketplace?.map((item) => {
     return {
       label: item?.name.toUpperCase(),
       value: item?.name.toLowerCase(),
@@ -210,8 +273,8 @@ const ImportProducts = () => {
     const updatedCheckboxes = isChecked
       ? isCheck!.filter((itemId) => itemId !== id)
       : isCheck
-      ? [...isCheck, id]
-      : [id];
+        ? [...isCheck, id]
+        : [id];
     setIsCheck(updatedCheckboxes);
     setIsAllChecked(updatedCheckboxes.length === countCheckbox);
   };
@@ -295,7 +358,7 @@ const ImportProducts = () => {
     }
   }, [counter, synced]);
 
-  if (isLoadProduct || marketLoading) {
+  if (isLoadProduct || marketLoading || shopifyNonImportedProductsLoader) {
     return (
       <div>
         <Loader />
@@ -304,6 +367,10 @@ const ImportProducts = () => {
   } else {
     return (
       <div>
+        {isShopifyModal && <ShopifyAuthModal setSelectedShopifyProfile={(e) => {
+          setSelectedShopifyProfile(e);
+          setIsShopifyModal(false);
+        }} isLoading={shopifyProfilesLoading} shopifyProfiles={shopifyProfiles} handleClose={() => setIsShopifyModal(false)} />}
         <div className="flex justify-between gap-4 mb-2 items-center">
           <h2 className="text-blackPrimary font-bold text-3xl pb-2">Import</h2>
           <div className="flex gap-2 items-center ">
@@ -316,10 +383,10 @@ const ImportProducts = () => {
                 {syncDetails?.status === SyncStatus.PENDING
                   ? "In Pending"
                   : syncDetails?.status === SyncStatus.INPROGRESS
-                  ? "In Progress"
-                  : syncDetails?.end_time
-                  ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
-                  : `Not sync yet`}
+                    ? "In Progress"
+                    : syncDetails?.end_time
+                      ? moment(syncDetails?.end_time).format("D MMM YYYY H:mm A")
+                      : `Not sync yet`}
               </p>
             </div>
           </div>
@@ -353,8 +420,19 @@ const ImportProducts = () => {
                   setCurrentPage(1);
                   setSelectedMarketplace(result as IOption);
                   setIsCheck([]);
+                  if (result.value === MARKETPLACE.SHOPIFY) {
+                    setIsShopifyModal(true);
+                  }
                 }}
               />
+              {selectedShopifyProfile?.shop && <Button
+                BtnIconLeft={
+                  <ShopifyIcon className="inline-flex mr-2 w-5 h-5 text-greenPrimary  " />
+                }
+                btnName={selectedShopifyProfile?.shop || "Connect Shopify"}
+                onClickHandler={importProductsHandler}
+                btnClass="!w-auto border border-solid   !border-greenPrimary !bg-white !text-greenPrimary !font-semibold  "
+              />}
               <Button
                 BtnIconLeft={
                   <AutoSyncIcon className="inline-flex mr-2 w-5 h-5 text-greenPrimary  " />
@@ -382,30 +460,26 @@ const ImportProducts = () => {
                       setImportSelectedTab(false);
                       setCurrentPage(1);
                     }}
-                    className={`${
-                      !importSelectedTab
-                        ? "bg-gray-600 text-white"
-                        : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
+                    className={`${!importSelectedTab
+                      ? "bg-gray-600 text-white"
+                      : "text-gray-400"
+                      } px-4 py-2 rounded-full transition-colors`}
                   >
-                    {`${ImportTab.NOT_IMPORTED}(${
-                      totalImportData ? totalImportData.totalNotImported : 0
-                    })`}
+                    {`${ImportTab.NOT_IMPORTED}(${totalImportData ? totalImportData.totalNotImported : 0
+                      })`}
                   </button>
                   <button
                     onClick={() => {
                       setImportSelectedTab(true);
                       setCurrentPage(1);
                     }}
-                    className={`${
-                      importSelectedTab
-                        ? "bg-gray-600 text-white"
-                        : "text-gray-400"
-                    } px-4 py-2 rounded-full transition-colors`}
+                    className={`${importSelectedTab
+                      ? "bg-gray-600 text-white"
+                      : "text-gray-400"
+                      } px-4 py-2 rounded-full transition-colors`}
                   >
-                    {`${ImportTab.IMPORTED}(${
-                      totalImportData ? totalImportData.totalImported : 0
-                    })`}
+                    {`${ImportTab.IMPORTED}(${totalImportData ? totalImportData.totalImported : 0
+                      })`}
                   </button>
                 </div>
               </div>
@@ -464,6 +538,11 @@ const ImportProducts = () => {
           <div className="bg-[#F7F8FA] py-4 px-7">
             <div className="flex justify-between mb-1 ">
               <h3 className="font-medium text-[26px]">Items</h3>
+              {shopifyHasNextPage
+                ? "There are more products available."
+                : "You've reached the end. No more products to show."
+              }
+
 
               <div className="flex gap-5 items-center pr-8">
                 {items && items?.length > 0 && (
@@ -485,6 +564,7 @@ const ImportProducts = () => {
                           setItemPerPage(e);
                         }
                       }}
+                      value={itemPerPage}
                       placeholder="10"
                     />
                     Entries
@@ -506,7 +586,7 @@ const ImportProducts = () => {
             </div>
             <div className="max-h-[calc(100vh_-_520px)] overflow-y-auto scroll-design ">
               {items && items.length > 0 ? (
-                items.map((item) => {
+                items?.map((item) => {
                   return (
                     <ItemCard
                       item={item}

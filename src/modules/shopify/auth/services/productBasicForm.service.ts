@@ -2,7 +2,7 @@
 import { AxiosRequestConfig } from "axios";
 
 // ** hooks **
-import { useAxiosPost } from "@/hooks/useAxios";
+import { useAxiosGet, useAxiosPost } from "@/hooks/useAxios";
 
 const BASE_PATH = "/shopify";
 
@@ -19,4 +19,13 @@ export const useShopifyAuthFormApi = () => {
 
   return { shopifyAuthApi, isLoading, isError, isSuccess };
 };
+export const useGetShopifyProfilesApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosGet();
 
+  const getShopifyProfileApi = async (data?: object) => {
+    return callApi(`${BASE_PATH}/profiles`, { params: data });
+  };
+
+  return { getShopifyProfileApi, isLoading, isError, isSuccess };
+};

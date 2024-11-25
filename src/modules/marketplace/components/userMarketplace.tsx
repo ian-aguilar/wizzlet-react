@@ -25,15 +25,19 @@ import { useAmazonAuthAPI } from "../services/amazon.service";
 import { ErrorModal } from "@/components/common/ErrorModal";
 import { Loader } from "@/components/common/Loader";
 import ShopifyAuthModal from "@/modules/shopify/auth/shopifyAuthModal";
+import { useGetShopifyProfilesApi } from "@/modules/shopify/auth/services/productBasicForm.service";
+import { ShopifyProfileAttributeType } from "@/modules/shopify/auth/types";
 const UserMarketplace = () => {
   //================== States =========================
   const [marketplace, setMarketplace] = useState<{
     connectedMarketplace: IMarketplace[];
     notConnectedMarketplace: IMarketplace[];
   }>({ connectedMarketplace: [], notConnectedMarketplace: [] });
+  const [selectedShopifyProfile, setSelectedShopifyProfile] = useState<ShopifyProfileAttributeType | null>(null);
   const [buttonLoading, setButtonLoading] = useState<number>();
   const [isDeleteModel, setIsDeleteModel] = useState<boolean>(false);
   const [isShopifyModal, setIsShopifyModal] = useState<boolean>(false);
+  const [shopifyProfiles, setShopifyProfiles] = useState<ShopifyProfileAttributeType[]>([]);
   const [disconnectMarketplace, setDisconnectMarketplace] = useState<
     number | null
   >(null);
@@ -41,7 +45,12 @@ const UserMarketplace = () => {
   // ================= Custom hooks ====================
   const { getMarketplaceListingAPI, isLoading: marketLoading } =
     useMarketplaceListingAPI();
+
+  const { getShopifyProfileApi, isLoading: shopifyProfilesLoading } =
+    useGetShopifyProfilesApi();
+
   const { ebayAuthAPI, isLoading } = useEbayAuthAPI();
+
   const { amazonAuthAPI, isLoading: amazonLoading } = useAmazonAuthAPI();
   const { disconnectMarketplaceAPI, isLoading: isDisconnectBtnLoading } =
     useMarketplaceDisconnectAPI();
@@ -50,10 +59,39 @@ const UserMarketplace = () => {
     marketplaceListing();
   }, [isDeleteModel, disconnectMarketplace]);
 
+  useEffect(() => {
+    getShopifyProfiles();
+  }, []);
+
+  useEffect(() => {
+    if (shopifyProfiles.length > 0) {
+      const shopifyStoresAndMarkets = shopifyProfiles.map((item) => item?.shop) as string[];
+      setMarketplace((prev) => ({
+        ...prev,
+        notConnectedMarketplace: prev?.notConnectedMarketplace.map((item) => {
+          if (item.name === "shopify") {
+            return {
+              ...item,
+              isConnected: shopifyProfiles.length > 0,
+              profilesDisplayNames: shopifyStoresAndMarkets,
+            };
+          }
+          return item;
+        }),
+      }));
+    }
+  }, [shopifyProfiles]);
+
   const marketplaceListing = async () => {
     const { data, error } = await getMarketplaceListingAPI({});
     if (!error && data) {
       setMarketplace(data?.data);
+    }
+  };
+  const getShopifyProfiles = async () => {
+    const { data, error } = await getShopifyProfileApi({});
+    if (!error && data) {
+      setShopifyProfiles(data?.data);
     }
   };
 
@@ -83,7 +121,7 @@ const UserMarketplace = () => {
         break;
       case "shopify":
         {
-         setIsShopifyModal(true); 
+          setIsShopifyModal(true);
         }
         break;
       default:
@@ -106,7 +144,7 @@ const UserMarketplace = () => {
   };
   return (
     <>
-    {isShopifyModal && <ShopifyAuthModal handleClose={() => setIsShopifyModal(false)} />}
+      {isShopifyModal && <ShopifyAuthModal setSelectedShopifyProfile={setSelectedShopifyProfile} isLoading={shopifyProfilesLoading} shopifyProfiles={shopifyProfiles} handleClose={() => setIsShopifyModal(false)} />}
       {marketLoading ? (
         <div>
           <Loader />
@@ -200,14 +238,35 @@ const UserMarketplace = () => {
                         className="max-w-[150px]  w-full h-auto"
                         alt=""
                       />
-                     <h1> {item.name}</h1>
+                      <h1> {item.name}</h1>
                     </div>
-                    <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
-                      <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
-                        &nbsp;
-                      </span>
-                      NOT CONNECTED
-                    </span>
+                    {item?.isConnected ? (
+                      <>
+                        <h5 className="">
+                          {item?.profilesDisplayNames?.join(', ')}
+                        </h5>
+                        {selectedShopifyProfile?.shop && <h5 className="">
+                          Selected: {selectedShopifyProfile?.shop}
+                        </h5>}
+
+                        <span className="inline-flex items-center px-4 gap-2  bg-green-600/10 border border-green-500 text-sm  rounded-full py-1 text-green-500">
+                          <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-green-500 ">
+                            &nbsp;
+                          </span>
+                          CONNECTED
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="inline-flex items-center px-4 gap-2  bg-grayLightBody/10 text-sm  rounded-full py-1 text-grayText">
+                          <span className="inline-block min-w-2 w-2 h-2 rounded-full bg-grayLightBody ">
+                            &nbsp;
+                          </span>
+                          NOT CONNECTED
+                        </span>
+                      </>
+                    )}
+
                   </div>
                   <div className="mt-auto pt-10 ">
                     <Button

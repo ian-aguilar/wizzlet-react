@@ -1,11 +1,18 @@
 import { ModalCommon } from '@/components/common/ModalCommon'
 import React from 'react'
 import ShopifyAuth from '.';
+import { ShopifyProfileAttributeType } from './types';
 interface ShopifyAuthModalProps {
     handleClose: () => void;
+    shopifyProfiles?:ShopifyProfileAttributeType[];
+    isLoading?:boolean;
+    setSelectedShopifyProfile :(shopifyProfile: ShopifyProfileAttributeType) => void;
 }
 const ShopifyAuthModal: React.FC<ShopifyAuthModalProps> = ({
     handleClose,
+    isLoading,
+    shopifyProfiles,
+    setSelectedShopifyProfile
 }) => {
     return (
         <>
@@ -14,12 +21,13 @@ const ShopifyAuthModal: React.FC<ShopifyAuthModalProps> = ({
                 onCancel={handleClose}
                 onConfirm={handleClose}
                 cancelButtonText=""
-                confirmButtonText="Add"
+                confirmButtonText=""
+                modalSizeInX='4'
             >
-                <ShopifyAuth />
+                <ShopifyAuth setSelectedShopifyProfile={setSelectedShopifyProfile} isLoading = {isLoading} shopifyProfiles={shopifyProfiles} />
             </ModalCommon>
         </>
     )
-}
+} 
 
 export default ShopifyAuthModal

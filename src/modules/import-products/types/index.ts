@@ -22,7 +22,7 @@ export type EbayImage = {
   PictureURL: string[];
 };
 
-export type IItems = {
+export interface IItems  {
   id: number;
   marketplace_id: number;
   title: string;

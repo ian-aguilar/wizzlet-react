@@ -42,3 +42,16 @@ export const fileSizeGenerator = (fileSize: number) => {
 
   return { size: Math.max(size, 0.1).toFixed(1), sizeType: sizeType[i] };
 };
+
+export const openSmallTab = (url:string) => {
+  const width = 500; // Width of the popup window
+  const height = 600; // Height of the popup window
+  const left = (window.screen.width - width) / 2; // Center horizontally
+  const top = (window.screen.height - height) / 2; // Center vertically
+
+  window.open(
+    url,
+    '_blank', // Opens in a new tab or window
+    `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes`
+  );
+}
