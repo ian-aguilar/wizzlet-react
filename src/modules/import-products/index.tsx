@@ -43,6 +43,7 @@ import { ShopifyProfileAttributeType } from "../shopify/auth/types";
 import { useGetShopifyProfilesApi } from "../shopify/auth/services/productBasicForm.service";
 import { useGetShopifyNonImportedProductsApi } from "../shopify/products/services/productBasicForm.service";
 import { ShopifyProduct } from "../shopify/products/types";
+import { convertDate } from "../shopify/auth/helper";
 
 const ImportProducts = () => {
   const [items, setItems] = useState<IItems[]>();
@@ -84,7 +85,7 @@ const ImportProducts = () => {
     const { data, error } = await getShopifyNonImportedProducts({
     }, selectedShopifyProfile?.shop || "", shopifyEndCursor ? `endCursor=${shopifyEndCursor}&&limit=${itemPerPage?.value ? itemPerPage?.value : "10"}` : "");
     if (!error && data) {
-      console.log(data?.data);
+      getShopifyProfiles();
       setShopifyEndCursor(data?.data?.endCursor);
       setShopifyHasNextPage(data?.data?.hasNextPage);
       setShopifyProducts(data?.data?.products);
@@ -538,9 +539,16 @@ const ImportProducts = () => {
           <div className="bg-[#F7F8FA] py-4 px-7">
             <div className="flex justify-between mb-1 ">
               <h3 className="font-medium text-[26px]">Items</h3>
-              {shopifyHasNextPage
-                ? "There are more products available."
-                : "You've reached the end. No more products to show."
+              {
+                selectedShopifyProfile?.shop && (
+                  <>
+                    <h5>Last Use for {selectedShopifyProfile?.shop} {convertDate(shopifyProfiles?.find(x => x?.shop === selectedShopifyProfile?.shop)?.lastApiCall as string)} Your Available Points {(shopifyProfiles?.find(x => x?.shop === selectedShopifyProfile?.shop)?.availableApiPoints || 0) - 30  }</h5>
+                    {shopifyHasNextPage
+                      ? "There are more products available."
+                      : "You've reached the end. No more products to show."
+                    }
+                  </>
+                )
               }
 
 
@@ -557,6 +565,9 @@ const ImportProducts = () => {
                         { label: "25", value: "25" },
                         { label: "50", value: "50" },
                         { label: "100", value: "100" },
+                        { label: "150", value: "150" },
+                        { label: "200", value: "200" },
+                        { label: "250", value: "250" },
                       ]}
                       onChange={(e: SetStateAction<IOption>) => {
                         setCurrentPage(1);

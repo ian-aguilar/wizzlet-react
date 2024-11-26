@@ -7,5 +7,8 @@ export type ShopifyProfileAttributeType = {
    shop: string;
    accessToken: string;
    code: string;
-   uniqueId:string
- };
+   uniqueId: string
+   availableApiPoints: number;
+   lastApiCall: string;
+};
+
