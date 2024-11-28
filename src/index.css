@@ -7,3 +7,164 @@
 body {
   @apply font-jost text-base;
 }
+.scroll-design::-webkit-scrollbar {
+  @apply w-1 h-1;
+}
+
+.scroll-design::-webkit-scrollbar-thumb {
+  @apply bg-grayText;
+}
+
+/* loader design */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/9.6px
+      9.6px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(9, 161, 122, 0.3) 0
+    );
+  animation: spinner-aur408 1s infinite linear;
+}
+
+.spinnerW {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(farthest-side, #09a17a 95%, #0000) 50% 0.8px/4px
+      4px no-repeat,
+    radial-gradient(
+      farthest-side,
+      #0000 calc(100% - 11.2px),
+      rgba(255, 255, 255, 0.514) 0
+    );
+  animation: spinner-aur408 1s infinite linear;
+}
+
+@keyframes spinner-aur408 {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* loader design */
+.otp_input {
+  width: 3rem !important;
+  height: 3rem;
+  margin: 0 0.5rem;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  text-align: center;
+  outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* datatable css */
+
+.dataTable {
+  @apply outline-none;
+}
+
+.dataTable .rdt_TableHeadRow .rdt_TableCol {
+  @apply !bg-[#f4f5f7] first:rounded-l-md last:rounded-r-md !border-b-4 !border-transparent font-medium text-[17px];
+}
+
+.dataTable .rdt_TableBody,
+.dataTable .rdt_TableRow,
+.dataTable .rdt_TableHeadRow {
+  @apply bg-[#f4f5f7]  !border-b-4    !border-[#f4f5f7];
+}
+
+.rdt_Pagination {
+  @apply !rounded-md !border-t-0;
+}
+
+.dataTable .rdt_TableRow .rdt_TableCell {
+  @apply first:!rounded-l-md last:!rounded-r-md text-sm;
+}
+
+.dataTable .rdt_TableRow {
+  @apply bg-white hover:!bg-[#f4f5f7]   !rounded-md;
+}
+
+/* .rdt_TableCell .flex div {
+    @apply last:text-redAlert first:text-greenPrimary;
+  } */
+
+.dataTable .rdt_TableRow .label_table {
+  @apply text-greenPrimary bg-greenPrimary/10 py-1 px-2 rounded-md;
+}
+
+/* User managemnet datatable */
+
+.dataTable.manager .rdt_TableHeadRow .rdt_TableCol {
+  @apply !bg-[#ECF0F4] first:rounded-l-md last:rounded-r-md !border-b-4 !border-transparent    !text-base font-medium text-blackPrimary;
+}
+
+.dataTable.manager .rdt_TableRow {
+  @apply bg-white hover:!bg-[#f4f5f7]   !rounded-md;
+}
+
+@layer {
+
+
+
+.termsContainer h1 , .termsContainer h2 , .termsContainer h3 , .termsContainer h4 , .termsContainer h5, .termsContainer h6 {
+  @apply  !font-semibold    !text-blackPrimary ;
+}
+
+
+.termsContainer {
+  @apply !px-4  !pt-10  !container ;
+}
+
+
+.termsContainer h6 {
+  @apply !text-xs !pb-1;
+}
+.termsContainer h5 {
+  @apply !text-sm !pb-2;
+}
+.termsContainer h4 {
+  @apply !text-base !pb-3;
+}
+.termsContainer h3 {
+  @apply !text-xl !pb-4;
+}
+.termsContainer h2 {
+  @apply !text-3xl !pb-6;
+}
+.termsContainer h1 {
+  @apply text-4xl lg:!text-5xl    ;
+}
+
+
+.termsContainer ul {
+  @apply !pl-0 !pb-4 !list-inside !text-blackPrimary ;
+}
+.termsContainer li {
+  @apply !list-disc   ;
+}
+
+.termsContainer p {
+  @apply  !text-blackPrimary !pb-10 ;
+}
+
+.termsContainer ul ul{
+  @apply !pb-0 ;
+ }
+
+ .termsContainer blockquote {
+  @apply  !text-blackPrimary !pb-10 ;
+ }
+
+}

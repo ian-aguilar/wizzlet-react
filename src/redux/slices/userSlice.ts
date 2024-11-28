@@ -1,40 +1,51 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
-export interface IUserInitialRedux {
-  token: null | string;
-  user: any | null;
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
+interface IUser {
+  id?: number;
+  role?: UserRole;
+  email?: string;
+  url?: string;
+  full_name?: string;
+  first_name?: string;
+  last_name?: string;
 }
 
-const initialState = {
-  token: null,
+export interface userInterface {
+  user?: IUser | null;
+}
+
+const initialState: userInterface = {
   user: null,
 };
-export const userSlice = createSlice({
+
+const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state: IUserInitialRedux, action: PayloadAction<any>) => {
-      state.user = action.payload;
+    setRemoveUser(state: userInterface) {
+      state.user = null;
     },
-    setToken: (
-      state: IUserInitialRedux,
-      action: PayloadAction<string | null>
-    ) => {
-      state.token = action.payload;
-    },
-    removeToken: (state: IUserInitialRedux) => {
-      state.token = null;
+
+    setUser(state: userInterface, action: PayloadAction<userInterface>) {
+      const { user } = action.payload;
+      if (user) {
+        state.user = action.payload.user;
+      } else {
+        state.user = null;
+      }
     },
   },
 });
 
-export const userSelector = (state: { user: IUserInitialRedux }) =>
-  state.user.user;
-export const tokenSelector = (state: { user: IUserInitialRedux }) =>
-  state.user.token;
+export const { reducer } = userSlice;
 
-const { actions, reducer } = userSlice;
+export const userSelector = (state: RootState) => state.user.user;
 
-export const { setUser, setToken, removeToken } = actions;
+export const { setRemoveUser, setUser } = userSlice.actions;
 
-export default reducer;
+export default userSlice;

@@ -14,11 +14,17 @@ import { ISignupForm } from "../types/signup";
 // ** validations **
 import { signUpValidationSchema } from "../validation-schema/signupLoginValidation";
 import { ShowPassword } from "@/components/svgIcons";
-import { useRegisterUserApi } from "../services/auth.service";
+import {
+  useCreateNotificationInDbApi,
+  useRegisterUserApi,
+} from "../services/auth.service";
+import { btnShowType } from "@/components/form-fields/types";
+import { Type } from "@/constants";
 
 const Registration = () => {
   const navigate = useNavigate();
   const { registerUserApi, isLoading: loader } = useRegisterUserApi();
+  const { createNotificationInDbApi } = useCreateNotificationInDbApi();
 
   const {
     handleSubmit,
@@ -36,8 +42,16 @@ const Registration = () => {
       password: values.password,
     };
 
-    const { error } = await registerUserApi(registerPayload);
+    const { error, data } = await registerUserApi(registerPayload);
     if (!error) {
+      const notificationPayload = {
+        title: ` Registered`,
+        description: `${values?.firstName} ${values?.lastName} has added a new register`,
+        is_read: false,
+        type: Type.NOTIFICATION,
+        registerUser: data?.data,
+      };
+      await createNotificationInDbApi(notificationPayload);
       navigate(RoutesPath.Otp, { state: { email: values.email } });
     }
   };
@@ -50,22 +64,22 @@ const Registration = () => {
             Welcome{" "}
           </h1>
           <p className="text-grayText text-lg md:text-2xl leading-tight ">
-            Please enter your details to sign up.
+            Please enter your details to signup.
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <div className="grid grid-cols-12 md:gap-2">
               <div className=" col-span-12 md:col-span-6">
                 <Input
                   className=""
                   placeholder="First Name"
                   name="firstName"
-                  label="First Name"
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
               <div className=" col-span-12 md:col-span-6">
@@ -73,10 +87,10 @@ const Registration = () => {
                   className=""
                   placeholder="Last Name"
                   name="lastName"
-                  label="Last Name"
                   type="text"
                   control={control}
                   errors={errors}
+                  autoComplete={""}
                 />
               </div>
             </div>
@@ -84,33 +98,34 @@ const Registration = () => {
               className=""
               placeholder="Email"
               name="email"
-              label="Email"
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
               placeholder="**********"
               name="password"
-              label="Password"
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Input
               className=""
               placeholder="**********"
               name="confirmPassword"
-              label="Confirm Password"
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete="new-password"
             />
             <Button
-              btnName="Submit in"
+              showType={btnShowType.green}
+              btnName="Signup"
               btnClass="mt-9"
               type="submit"
               isLoading={loader}
@@ -123,9 +138,8 @@ const Registration = () => {
             Already have an account?{" "}
             <Link
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
-              to={RoutesPath.Login}
-            >
-              Signin
+              to={RoutesPath.Login}>
+              SignIn
             </Link>
           </p>
         </div>

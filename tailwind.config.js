@@ -9,12 +9,35 @@ export default {
           grayText: "#6C778B",
           grayLightBody:"#97A0B2",
           inputAuthBg: "#EAEDF3",
+          greyBorder: "#D8DCE4",
+          redAlert: "#FC5F5F",
+          yellow: "#E1B000",
       },
       backgroundImage:{
         authPattern: "url('/images/bgPatternAuth.png');",
+        CMSPageTop: "url('/images/bgCMSPattern.png');",
+        CMSPageTile: "url('/images/bg-dots-tile-CMS.png');",
+        MarketPlaceDB: "url('/images/MarketplaceImgBg.png');",
       },
       fontFamily:{
         jost : "Jost",
+      },
+      container: {
+        // you can configure the container to be centered
+        center: true,
+        // or have default horizontal padding
+        padding: '1rem',
+        screens: {
+          sm: '600px',
+          md: '768px',
+          lg: '990px',
+          xl: '1280px',
+          '2xl': '1340px',
+        },
+      },
+      boxShadow:{
+        headerWeb: " 0px 4px 4px 0px #0000000A",
+        aboutBox: "0px 18.22px 42.51px 0px #0000000D"
       }
     },
   },

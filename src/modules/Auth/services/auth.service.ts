@@ -74,3 +74,60 @@ export const useForgotPasswordPostAPI = () => {
 
   return { forgotPasswordPostAPI, isLoading, isError, isSuccess };
 };
+
+// ** Validate Token **
+export const useIsValidateTokenAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const isValidateTokenAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/token-validate`, data, config);
+  };
+
+  return { isValidateTokenAPI, isLoading, isError, isSuccess };
+};
+
+// ** Reset password **
+export const useResetPasswordAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const resetPasswordAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/reset-password`, data, config);
+  };
+
+  return { resetPasswordAPI, isLoading, isError, isSuccess };
+};
+
+// ** change password **
+export const useChangePasswordPostAPI = () => {
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const changePasswordPostAPI = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`${AUTH_API_BASE_PATH}/change-password`, data, config);
+  };
+
+  return { changePasswordPostAPI, isLoading, isError, isSuccess };
+};
+
+// ** create notification in database **
+export const useCreateNotificationInDbApi = () => {
+  // ** custom Hooks **
+  const [callApi, { isLoading, isError, isSuccess }] = useAxiosPost();
+
+  const createNotificationInDbApi = async (
+    data: object,
+    config: AxiosRequestConfig<object> = {}
+  ) => {
+    return callApi(`notification/admin-db-create`, data, config);
+  };
+
+  return { createNotificationInDbApi, isLoading, isError, isSuccess };
+};

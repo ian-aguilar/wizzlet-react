@@ -1,6 +1,7 @@
 // ** Packages **
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // ** validations **
@@ -8,16 +9,20 @@ import { LoginValidationSchema } from "../validation-schema/signupLoginValidatio
 
 // ** types **
 import { ILoginForm } from "../types/login";
-import { RoutesPath } from "../types";
+import { PrivateRoutesPath, RoutesPath } from "../types";
 
 // ** common components **
 import Button from "@/components/form-fields/components/Button";
 import Input from "@/components/form-fields/components/Input";
 import { ShowPassword } from "@/components/svgIcons";
 import { useLoginPostAPI } from "../services/auth.service";
+import { setCredentials } from "@/redux/slices/authSlice";
+import { setUser } from "@/redux/slices/userSlice";
+import { btnShowType } from "@/components/form-fields/types";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { loginPostAPI, isLoading: loader } = useLoginPostAPI();
 
   const {
@@ -32,8 +37,18 @@ const Login = () => {
       email: values.email,
       password: values.password,
     });
-    if (!error && data) {
-      navigate(RoutesPath.Home);
+    if (data?.data?.isVerified === false) {
+      navigate(RoutesPath.Otp, {
+        state: {
+          email: values.email,
+          previousRoute: RoutesPath.Login,
+        },
+      });
+    }
+    if (!error && data?.data?.user) {
+      dispatch(setCredentials({ token: data?.data?.access_token }));
+      dispatch(setUser({ user: data?.data?.user }));
+      navigate(PrivateRoutesPath.dashboard.view);
     }
   };
 
@@ -51,37 +66,41 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className=" pt-6 md:pt-9 pb-14 md:pb-32">
+          <div className=" pt-6 md:pt-9 pb-14">
             <Input
               className=""
               placeholder="Email"
               name="email"
-              label="Email"
               type="text"
               control={control}
               errors={errors}
+              autoComplete={""}
             />
             <Input
               className=""
               placeholder="**********"
               name="password"
-              label="Password"
               type="password"
               control={control}
               errors={errors}
-              InputEndIcon={<ShowPassword />}
+              inputEndIcon={<ShowPassword />}
+              autoComplete={"new-password"}
             />
 
             <div className="flex gap-2 justify-center items-center">
               <Link
                 className="my-4 cursor-pointer text-greenPrimary bg-transparent p-0 border-none font-normal text-base leading-4 hover:underline hover:underline-offset-2  duration-300 transition-all"
-                to={RoutesPath.ForgotPassword}
-              >
+                to={RoutesPath.ForgotPassword}>
                 Forgot Password?
               </Link>
             </div>
 
-            <Button btnName="Sign in" type="submit" isLoading={loader} />
+            <Button
+              showType={btnShowType.green}
+              btnName="Sign in"
+              type="submit"
+              isLoading={loader}
+            />
           </div>
         </form>
 
@@ -90,13 +109,26 @@ const Login = () => {
             Don’t have an account yet?{" "}
             <Link
               className="text-grayText bg-transparent border-none p-0 font-semibold text-base leading-4 hover:underline hover:underline-offset-2 duration-300 transition-all cursor-pointer"
-              to={RoutesPath.SignUp}
-            >
+              to={RoutesPath.SignUp}>
               Signup
             </Link>
           </p>
         </div>
       </div>
+      {/* <div className="Error404Design flex flex-col w-full justify-center items-center min-h-screen">
+        <div className="max-w-[90%] mx-auto mb-20 h-full  ">
+          <img src={Img404} alt="" />
+        </div>
+        <div className="text-center">
+          <h2 className=" text-xl md:text-4xl font-bold">
+            Sorry! This Page isn’t available{" "}
+          </h2>
+          <p className="text-grayText text-sm md:text-[19px] pt-3 pb-10">
+            The Page you were looking for couldn’t be found
+          </p>
+          <Button btnName="Back To Home" btnClass="!w-auto" />
+        </div>
+      </div> */}
     </>
   );
 };

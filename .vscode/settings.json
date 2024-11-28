@@ -1,0 +1,28 @@
+{
+  "editor.codeActionsOnSave": {
+    // "source.organizeImports": "explicit",
+    // "source.fixAll": "explicit"
+  },
+  // "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.formatOnPaste": false, // required
+  "editor.formatOnType": false, // required
+  "editor.formatOnSaveMode": "file", // required to format on save
+  // "files.autoSave": "onFocusChange", // optional but recommended
+  "vs-code-prettier-eslint.prettierLast": true,
+  "cSpell.ignoreWords": [
+    "datepicker",
+    "formik",
+    "reduxjs",
+    "tailwindcss",
+    "toastify"
+  ],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  } // set as "true" to run 'prettier' last not first
+}

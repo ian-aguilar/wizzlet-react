@@ -7,30 +7,27 @@ import { ToastShow } from "@/redux/slices/toastSlice";
 
 // ** Others **
 import { VITE_APP_API_URL } from "@/config";
-import { removeToken, setUser } from "@/redux/slices/userSlice";
 
 export const Axios = axios.create({ baseURL: `${VITE_APP_API_URL}` });
 
 export const setupAxios = (store: Store) => {
-  axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+  Axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
     const storeData = store.getState();
-    const authToken = storeData.user.token;
+    const authToken = storeData.auth.token;
+
     if (authToken) {
       (
         request.headers as AxiosRequestHeaders
-      ).Authorization = `jwt ${authToken}`;
-    }
-    if (storeData?.migration?.migrationId) {
-      request.headers.migrationId = storeData.migration.migrationId;
+      ).Authorization = `Bearer ${authToken}`;
     }
     return request;
   });
-  axios.interceptors.response.use(
+  Axios.interceptors.response.use(
     (res) => {
       const toast = res?.data?.toast;
       if (toast) {
         store.dispatch(
-          ToastShow({ message: res.data.message, type: res.data.response_type })
+          ToastShow({ message: res.data.message, type: res.data.responseType })
         );
       }
       return res;
@@ -42,7 +39,7 @@ export const setupAxios = (store: Store) => {
         store.dispatch(
           ToastShow({
             message: message,
-            type: e.response.data.response_type,
+            type: e.response.data.responseType,
           })
         );
       }
@@ -54,12 +51,10 @@ export const setupAxios = (store: Store) => {
             store.dispatch(
               ToastShow({
                 message: e.response.message,
-                type: e.response.data.response_type,
+                type: e.response.data.responseType,
               })
             );
           }
-          store.dispatch(removeToken());
-          store.dispatch(setUser(null));
         }
       }
     }

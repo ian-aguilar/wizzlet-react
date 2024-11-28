@@ -2,8 +2,8 @@
 import { useState } from "react";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
-import { Axios } from "base-axios";
-import { ApiResponseType } from "base-axios/types";
+import { Axios } from "@/base-axios";
+import { ApiResponseType } from "@/base-axios/types";
 
 export const useAxiosGet = (): [
   (
@@ -26,14 +26,12 @@ export const useAxiosGet = (): [
     try {
       setIsSuccess(false);
       setIsLoading(true);
-
       let response: AxiosResponse<any, any>;
       if (baseUrl) {
         response = await Axios.get(url, { ...config });
       } else {
         response = await axios(url, { ...config });
       }
-
       setIsLoading(false);
       setIsSuccess(true);
       return { data: response.data };
@@ -104,11 +102,7 @@ export const useAxiosPut = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const putRequest = async (
-    url: string,
-    data: object,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const putRequest = async (url: string, data: object, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);
@@ -134,7 +128,7 @@ export const useAxiosPut = (): [
 export const useAxiosPatch = (): [
   (
     url: string,
-    data: object,
+    data?: object,
     config?: AxiosRequestConfig<object>
   ) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
@@ -146,7 +140,7 @@ export const useAxiosPatch = (): [
 
   const putRequest = async (
     url: string,
-    data: object,
+    data?: object,
     config: AxiosRequestConfig<object> = {}
   ) => {
     try {
@@ -186,11 +180,7 @@ export const useTempAxiosPatch = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const putRequest = async (
-    url: string,
-    data: object,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const putRequest = async (url: string, data: object, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);
@@ -214,10 +204,7 @@ export const useTempAxiosPatch = (): [
 };
 
 export const useAxiosDelete = (): [
-  (
-    url: string,
-    config?: AxiosRequestConfig<object>
-  ) => Promise<{ data?: any; error?: any }>,
+  (url: string, config?: AxiosRequestConfig<object>) => Promise<{ data?: any; error?: any }>,
   { isLoading: boolean; isError: boolean; isSuccess: boolean }
 ] => {
   // ** State **
@@ -225,10 +212,7 @@ export const useAxiosDelete = (): [
   const [isError, setIsError] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const deleteRequest = async (
-    url: string,
-    config: AxiosRequestConfig<object> = {}
-  ) => {
+  const deleteRequest = async (url: string, config: AxiosRequestConfig<object> = {}) => {
     try {
       setIsSuccess(false);
       setIsLoading(true);

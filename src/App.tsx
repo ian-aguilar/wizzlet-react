@@ -1,11 +1,16 @@
 import "@/App.css";
 import RouterComponent from "@/router";
+import useAuthGuard from "./hooks/useAuthGuard";
+import { Loader } from "./components/common/Loader";
 
 function App() {
+  const { isLoading } = useAuthGuard();
+
   return (
-    <>
-      <RouterComponent />
-    </>
+    // <>
+    //   <RouterComponent />
+    // </>
+    <>{isLoading ? <Loader /> : <RouterComponent />}</>
   );
 }
 
